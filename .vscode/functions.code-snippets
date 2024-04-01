@@ -1,0 +1,17 @@
+{
+	"player": {
+		"prefix":"py",
+		"body": ["PlayerData[playerid][${1}]"],
+		"description":"get player temp"
+	},
+	"Create a function": {
+		"prefix": "newFun",
+		"body": [
+			"forward $1();",
+			"public  $1()",
+			"{",
+			"}"
+		],
+		"description": "Create a function"
+	}
+}

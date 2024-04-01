@@ -1,0 +1,9 @@
+{
+    "[pawn]":{
+        "files.encoding":"windows1252",
+    },
+    "workbench.editorAssociations": {
+        "*.inc": "pawn"
+    }
+    shortcuts
+}

@@ -1,0 +1,81 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "build-amx",
+			"type": "shell",
+			"command": "${workspaceRoot}/pawno/pawncc.exe",
+			"runOptions": {
+				"instanceLimit": 1
+			},
+			"args": [
+				"${workspaceRoot}\\gamemodes\\srp.pwn",
+				"-Dgamemodes",
+				"'-(+'",
+				"'-;+'",
+				"'-d3'"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"isBackground": false,
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated"
+			},
+			"problemMatcher": {
+				"owner": "pawn",
+				"fileLocation": [
+					"relative",
+					"${workspaceRoot}"
+				],
+				"pattern": {
+					"regexp": "^(.*?)\\(([0-9]*)[- 0-9]*\\) \\: (fatal error|error|warning) [0-9]*\\: (.*)$",
+					"file": 1,
+					"location": 2,
+					"severity": 3,
+					"message": 4
+				}
+			}
+		},
+		{
+			"label": "build-amx-filterscripts",
+			"type": "shell",
+			"command": "${workspaceRoot}/pawno/pawncc.exe",
+			"runOptions": {
+				"instanceLimit": 1
+			},
+			"args": [
+				"${file}",
+				"-Dfilterscripts",
+				"'-(+'",
+				"'-;+'",
+				"'-d3'"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"isBackground": false,
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated"
+			},
+			"problemMatcher": {
+				"owner": "pawn",
+				"fileLocation": [
+					"relative",
+					"${workspaceRoot}"
+				],
+				"pattern": {
+					"regexp": "^(.*?)\\(([0-9]*)[- 0-9]*\\) \\: (fatal error|error|warning) [0-9]*\\: (.*)$",
+					"file": 1,
+					"location": 2,
+					"severity": 3,
+					"message": 4
+				}
+			}
+		}
+	]
+}

@@ -1,0 +1,63 @@
+{
+    "#if !defined … #define … #endif": {
+        "prefix": "def",
+        "description": "The #define directive allows the definition of macros within your source code. These macro definitions allow constant values to be declared for use throughout your code.",
+        "body":
+            "#if !defined ${1/([A-Za-z0-9_]+).*/$1/}\n\t#define ${1:SYMBOL} ${2:value}\n#endif$0"
+    },
+
+    "#include \"…\"": {
+        "prefix": "include",
+        "description": "The #include directive tells the preprocessor to insert the contents of another file into the source code at the point where the #include directive is found.",
+        "body": "include \"${1:}\"$0"
+    },
+
+    "#include <…>": {
+        "prefix": "include",
+        "description": "The #include directive tells the preprocessor to insert the contents of another file into the source code at the point where the #include directive is found.",
+        "body": "include <${1:}>$0"
+    },
+
+    "ALS Callback": {
+        "prefix": "ALS",
+        "description": "Callback hook.",
+        "body":
+            "public ${2:Function}(${3:Args})\n{\n\t${4}\n\t#if defined ${1:Prefix}_${2:Function}\n\t\treturn ${1:Prefix}_${2:Function}(${3:Args});\n\t#else\n\t\treturn 1;\n\t#endif\n}\n#if defined _ALS_${2:Function}\n\t#undef ${2:Function}\n#else\n\t#define _ALS_${2:Function}\n#endif\n\n#define ${2:Function} ${1:Prefix}_${2:Function}\n#if defined ${1:Prefix}_${2:Function}\n\tforward ${1:Prefix}_${2:Function}(${3:Args});\n#endif$0"
+    },
+    "y_timers: ptask": {
+        "prefix": "ptask",
+        "body": "ptask ${1:name}[${2:delay}](playerid) \n{\n\t${3}\n}$0"
+    },
+    "y_timers: timer": {
+        "prefix": "timer",
+        "body": "timer ${1:name}[${2:delay}](${3:args}) \n{\n\t${4}\n}$0"
+    },
+    "y_timers: task": {
+        "prefix": "task",
+        "body": "task ${1:name}[${2:delay}]() \n{\n\t${3}\n}$0"
+    },
+    "y_command": {
+        "prefix": "YCMD",
+        "body": "YCMD:${1:command_name}(playerid, params[], help) \n{\n\t${4}\n\treturn 1;\n}$0"
+    },
+    "y_foreach": {
+        "prefix": "foreach",
+        "body": "foreach (${1:expression}) \n{\n${4}\n}\n$0"
+    },
+    "y_hook: function": {
+        "prefix": "hook function",
+        "body": "hook function ${1:function_name}(${2:arguments}) \n${4}\nreturn continue(${2:arguments});\n$0"
+    },
+    "y_hook: callback": {
+        "prefix": "hook",
+        "body": "hook ${1:function_name}(${2:arguments}) \n${4}\nreturn 1;\n$0"
+    },
+    "y_scriptinit: final": {
+        "prefix": "final",
+        "body": "final ${1:variable_name} = ${2:function_name}\n$0"
+    },
+    "zcmd_command": {
+        "prefix": "ZCMD command",
+        "body": "CMD:${1:command_name}(playerid, params[])\n{\n\t${4}\n\treturn 1;\n}$0"
+    }
+}

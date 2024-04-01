@@ -1,0 +1,82 @@
+{
+    "player": {
+        "prefix": "py",
+        "body": ["PlayerData[playerid][${1}]"],
+        "description": "Get the global player variable"
+    },
+    "Create a function": {
+        "prefix": "newcallback",
+        "body": ["forward $1();", "public  $1()", "{", "}"],
+        "description": "Create a function"
+    },
+    "Secure include": {
+        "prefix": "sinclude",
+        "body": [
+            "#if defined $1_included ",
+            "	#endinput",
+            "#endif",
+            "#define $1_included"
+        ]
+        "description":"Secure the include is not reinclude"
+    },
+    "Create entry": {
+        "prefix": "entry",
+        "body": [
+            "#if defined $1_included ",
+            "	#endinput",
+            "#endif",
+            "#define $1_included",
+            "\n",
+            "#include \"_core/$2/$1_header\"",
+            "#include \"_core/$2/$1_functions\""
+            "#include \"_core/$2/$1_commands\"",
+            "#include \"_core/$2/$1_impl\"",
+        ],
+        "description":"Create a new entry for a module and secure the include is not reinclude"
+    },
+    "Create a comment line": {
+        "prefix": "line",
+        "body": ["//------------------------------------------------"],
+        "description": "Create a line for separate large code"
+    },
+    "Comment block": {
+        "prefix":"comment",
+        "body": [
+            "/*",
+            " Description:",
+            "\t$1description",
+            " Parameters:",
+            "\t$2param\tparamDescription",
+            " Returns:",
+            "\t$3return\treturnDescription",
+            " @Note\tnotedescription",
+            "*/",
+        ],
+        "description":"Create a code block comment"
+    },
+    "alss": {
+        "prefix": "alss",
+        "body": [
+            "public Function(Args)",
+            "{",
+            "    ",
+            "    #if defined Prefix_${1:Function}",
+            "        return Prefix_${1:Function}(Args);",
+            "    #else",
+            "        return 1;",
+            "    #endif",
+            "}",
+            "#if defined _ALS_${1:Function}",
+            "    #undef ${1:Function}",
+            "#else",
+            "    #define _ALS_${1:Function}",
+            "#endif",
+            "",
+            "#define ${1:Function} Prefix_${1:Function}",
+            "#if defined Prefix_${1:Function}",
+            "    forward Prefix_${1:Function}(Args);",
+            "#endif"
+        ],
+        "description": "Create a function"
+    }
+}

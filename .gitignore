@@ -1,0 +1,11 @@
+logs
+plugins
+*.amx
+*.dll
+*.so
+*.txt
+*.db
+*.log
+*.exe
+!scriptfiles/SERVER/AC.txt
+!scriptfiles/SERVER/ECO.txt
