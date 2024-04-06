@@ -9,3 +9,5 @@ plugins
 *.exe
 !scriptfiles/SERVER/AC.txt
 !scriptfiles/SERVER/ECO.txt
+*.hmap
+*.pdb
