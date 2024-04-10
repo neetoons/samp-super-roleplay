@@ -1,4 +1,4 @@
-#include <YSI-Includes\YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ) {
     if(PI[playerid][pi_CREW]) {

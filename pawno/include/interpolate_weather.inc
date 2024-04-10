@@ -3,7 +3,7 @@
 #endif
 #define _inc_interpolate_weather
 
-#include <YSI-Includes\YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 #define WEATHER_INTERPOLATION_SECONDS 60 //segundos que toma a GTA:SA interpolar de un clima a otro
 

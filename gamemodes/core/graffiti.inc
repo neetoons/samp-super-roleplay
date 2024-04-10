@@ -1,4 +1,4 @@
-#include <YSI-Includes\YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 #define MAX_GRAFFITI_PER_ZONE 2
 
@@ -76,7 +76,7 @@ hook OnTerritoriesLoaded() {
             }
         }
     }
-    mysql_tquery_inline(srp_db, "SELECT * FROM graffiti;", using inline OnQueryLoaded);
+    MySQL_TQueryInline(srp_db,  using inline OnQueryLoaded, "SELECT * FROM graffiti;");
 }
 
 CountGraffitisInZone(index) {
@@ -232,7 +232,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                                 ",
                                 pos[0], pos[1], pos[2], angle, interior, world, TERRITORIES[territoryIndex][territory_ID], PI[playerid][pi_CREW], PI[playerid][pi_ID], 0xFFFFFFFF
                             );
-                            mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnQueryLoaded);
+                            MySQL_TQueryInline(srp_db, using inline OnQueryLoaded, QUERY_BUFFER);
                         }
                     }
                     case 1: {

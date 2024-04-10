@@ -1,4 +1,4 @@
-#include <YSI-Includes\YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 #define UNCREATED_POBJECTS_PER_PAGE 6
 #define TEXTURES_WEBPAGE "textures.xyin.ws"
@@ -71,7 +71,7 @@ hook OnPropertiesLoaded() {
             }
         }
     }
-    mysql_tquery_inline(srp_db, "SELECT * FROM property_objects WHERE `create` = 1;", using inline OnQueryLoaded);
+    MySQL_TQueryInline(srp_db,  using inline OnQueryLoaded, "SELECT * FROM property_objects WHERE `create` = 1;");
 }
 
 CreatePropertyFurnitureObject(bool:update, property_index, id_object, id_property, modelid, Float:x, Float:y, Float:z, Float:rx = 0.0, Float:ry = 0.0, Float:rz = 0.0, texture0[] = "", texture1[] = "", texture2[] = "", texture3[] = "") {
@@ -121,11 +121,11 @@ CountPropertyUncreatedObjects(id_property) {
 }
 
 RegisterPropertyObject(property_index, id_property, modelid, create = 0, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, Float:rx = 0.0, Float:ry = 0.0, Float:rz = 0.0, texture0[] = "", texture1[] = "", texture2[] = "", texture3[] = "", bool:editWhenCreate = false, forplayerid = INVALID_PLAYER_ID) {
-    inline OnQueryLoaded(n_texture0[], n_texture1[], n_texture2[], n_texture3[])
+    inline OnQueryLoaded()
 	{
 		new id = cache_insert_id();
         if(id > 0 && create) {
-            new objectid = CreatePropertyFurnitureObject(false, property_index, id, id_property, modelid, x, y, z, rx, ry, rz, n_texture0, n_texture1, n_texture2, n_texture3);
+            new objectid = CreatePropertyFurnitureObject(false, property_index, id, id_property, modelid, x, y, z, rx, ry, rz, texture0, texture1, texture2, texture3);
             if(editWhenCreate && forplayerid != INVALID_PLAYER_ID) {
                 Streamer_Update(forplayerid, STREAMER_TYPE_OBJECT);
                 
@@ -145,7 +145,7 @@ RegisterPropertyObject(property_index, id_property, modelid, create = 0, Float:x
 		",
         create, modelid, x, y, z, rx, ry, rz, texture0, texture1, texture2, texture3, id_property
     );
-    mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnQueryLoaded, "ssss", texture0, texture1, texture2, texture3);
+    MySQL_TQueryInline(srp_db,  using inline OnQueryLoaded, QUERY_BUFFER, "ssss", texture0, texture1, texture2, texture3);
 }
 
 DeletePropertyObjects(property_index, bool:db_delete = true) {
@@ -281,7 +281,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                                     }
                                 }
                                 mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM property_objects WHERE id = %d;", pPObjectCurrentID[playerid]);
-                                mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnQueryLoaded);
+                                MySQL_TQueryInline(srp_db, using inline OnQueryLoaded, QUERY_BUFFER);
                             }
                             else SendNotification(playerid, "No tienes suficiente dinero.");
                         }
@@ -456,7 +456,7 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid) {
 
                     new object_id = pPUObjectsMenuIds[playerid][i];
                     mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM property_objects WHERE id = %d;", object_id);
-                    mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnQueryLoaded);
+                    MySQL_TQueryInline(srp_db, using inline OnQueryLoaded, QUERY_BUFFER);
                     return Y_HOOKS_BREAK_RETURN_1;
                 }
                 mdlTdStartIndex ++;
@@ -542,7 +542,7 @@ UpdatePUObjectsTextDraws(playerid) {
         }        
     }
     mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id, modelid FROM property_objects WHERE id_property = %d AND `create` = 0 LIMIT "#UNCREATED_POBJECTS_PER_PAGE" OFFSET %d;", id_property, pPUObjectsMenuCurrentPage[playerid] * UNCREATED_POBJECTS_PER_PAGE);
-    mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnQueryLoaded);
+    MySQL_TQueryInline(srp_db, using inline OnQueryLoaded, QUERY_BUFFER);
 }
 
 DestroyPlayerPUObjectsMenu(playerid) {
@@ -884,7 +884,7 @@ DeletePObjectTexture(property_index, id_object, objectid, materialindex, bool:me
         }
     }
     mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM property_objects WHERE id = %d;", id_object);
-    mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnQueryLoaded);
+    MySQL_TQueryInline(srp_db, using inline OnQueryLoaded, QUERY_BUFFER);
 }
 
 hook OnDefaultPFurChanged(index) {

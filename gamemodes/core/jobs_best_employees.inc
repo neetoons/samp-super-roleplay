@@ -1,4 +1,4 @@
-#include <YSI-Includes\YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 #define RESET_JOBS_EMPLOYEES_RECORD 48 //horas
 #define MAX_JOBS_TOP_EMPLOYEES 8 //aparecerán X empleados en el top (en la pizarra y a quienes se les entrega premio)
@@ -122,7 +122,7 @@ LoadPlayerWorksPoints(playerid) {
         }
     }
     mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM pworks_points WHERE id_player = %d;", PI[playerid][pi_ID]);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnQueryLoaded);
+	MySQL_TQueryInline(srp_db, using inline OnQueryLoaded, QUERY_BUFFER);
 }
 
 AddPlayerJobPoints(playerid, work, points = 1, bool:message = true) {
@@ -194,7 +194,7 @@ UpdateJobBoard(work, bool:check_time = false) {
         }
     }
     mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT pworks_points.points, player.name AS player_name FROM pworks_points INNER JOIN player ON pworks_points.id_player = player.id WHERE pworks_points.id_work = %d AND pworks_points.points > 0 ORDER BY pworks_points.points DESC LIMIT "#MAX_JOBS_TOP_EMPLOYEES";", work);
-    mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnQueryLoaded);
+    MySQL_TQueryInline(srp_db, using inline OnQueryLoaded, QUERY_BUFFER);
     return 1;
 }
 
@@ -282,7 +282,7 @@ public OnJobsRecordsRequestUpdate() {
                 UpdateJobBoard(i);
             }
             mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT player.id, player.connected, player.playerid FROM pworks_points INNER JOIN player ON pworks_points.id_player = player.id WHERE pworks_points.id_work = %d AND pworks_points.points > 0 ORDER BY pworks_points.points DESC LIMIT "#MAX_JOBS_TOP_EMPLOYEES";", i);
-            mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnQueryLoaded);
+            MySQL_TQueryInline(srp_db, using inline OnQueryLoaded, QUERY_BUFFER);
         }
 
         //resetear

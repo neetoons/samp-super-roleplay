@@ -13,21 +13,22 @@
 */
 
 #pragma option -d2
-#pragma warning disable 239
 #include <a_samp>
-
+#include <a_http>
+#pragma warning disable 239
 //MODIFICAR SEGUN SLOTS DEL SERVIDOR
 #undef MAX_PLAYERS
 #define MAX_PLAYERS 500
 
 #include <crashdetect>
-#include <YSI-Includes\YSI\y_inline>
-#include <YSI-Includes\YSI\y_va>
-#include <YSI-Includes\YSI\y_stringhash>
-#include <YSI-Includes\YSI\y_timers>
-#include <YSI-Includes\YSI\y_vehicledata>
+#define YSI_NO_HEAP_MALLOC
+#include <YSI_Coding\y_va>
+#include <YSI_Coding\y_stringhash>
+#include <YSI_Coding\y_timers>
+#include <YSI_Game\y_vehicledata>
 #include <a_mysql>
-#include <a_mysql_yinline>
+#include <YSI_Coding\y_inline>
+#include <YSI_Extra\y_inline_mysql>
 #include <streamer>
 #include <sscanf2>
 #include <Pawn.CMD>
@@ -35,6 +36,7 @@
 #include <Pawn.RakNet>
 #include <interpolate_weather>
 #include <mapandreas>
+
 #define PP_SYNTAX_FOR_LIST
 #include <PawnPlus>
 
@@ -5181,7 +5183,8 @@ public OnPlayerSpawn(playerid)
 				mysql_tquery(srp_db, QUERY_BUFFER);
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM pmessages WHERE to_id = %d AND offline = 1;", PI[playerid][pi_ID]);
-			mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnOfflineMessagesChecked);
+			MySQL_TQueryInline(srp_db, using inline OnOfflineMessagesChecked, QUERY_BUFFER);
+
 		}
 	}
 	else if(PLAYER_TEMP[playerid][pt_GAME_STATE] == GAME_STATE_DEAD) // Viene de morir
@@ -5705,13 +5708,13 @@ public OnPlayerRequestClass(playerid, classid)
 							else Kick(playerid);
 						}
 						mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id, ip, email, salt, pass, config_secure_login FROM player WHERE name = '%e';", PLAYER_TEMP[playerid][pt_NAME]);
-						mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnPlayerCheck);
+						MySQL_TQueryInline(srp_db,  using inline OnPlayerCheck, QUERY_BUFFER);
 					}
 				}
 				else Kick(playerid);
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT *, UNIX_TIMESTAMP(bans.expire_date) AS expire_date_ts, NOW() AS now, UNIX_TIMESTAMP(NOW()) AS now_ts FROM bans LEFT JOIN bad_history ON bans.id_history = bad_history.id WHERE bans.name = '%e' OR bans.ip = '%e';", PLAYER_TEMP[playerid][pt_NAME], PLAYER_TEMP[playerid][pt_IP]);
-			mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnPlayerBannedCheck);
+			MySQL_TQueryInline(srp_db, using inline OnPlayerBannedCheck, QUERY_BUFFER);
 		}
 	}
 	else if((PLAYER_TEMP[playerid][pt_GAME_STATE] == GAME_STATE_NORMAL || PLAYER_TEMP[playerid][pt_GAME_STATE] == GAME_STATE_DEAD) && PLAYER_TEMP[playerid][pt_USER_LOGGED]) // Viene de jugar
@@ -7679,7 +7682,7 @@ CMD:sms(playerid, params[])
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id, connected, playerid FROM player WHERE phone_number = %d;", params_number);
-			mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnPhoneChecked);
+			MySQL_TQueryInline(srp_db, using inline OnPhoneChecked, QUERY_BUFFER);
 		}
 	}
 	else if(!sscanf(params, "s[24]s[64]", params_contact, params_message))
@@ -7717,7 +7720,7 @@ CMD:sms(playerid, params[])
 			}
 		}
 		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT pbook.number, player.id, player.connected, player.playerid FROM pbook LEFT JOIN player ON pbook.number = player.phone_number WHERE pbook.id_player = %d AND pbook.name LIKE '%%%e%%' LIMIT 1;", PI[playerid][pi_ID], params_contact);
-		mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnPhoneChecked);
+		MySQL_TQueryInline(srp_db, using inline OnPhoneChecked, QUERY_BUFFER);
 	}
 	else SendNotification(playerid, "Usa /sms [numero o contacto]");
 	return 1;
@@ -7857,7 +7860,7 @@ CMD:llamar(playerid, params[])
 					}
 				}
 				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id, connected, playerid FROM player WHERE phone_number = %d;", params_number);
-				mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnPhoneChecked);
+				MySQL_TQueryInline(srp_db, using inline OnPhoneChecked, QUERY_BUFFER);
 			}
 		}
 	}
@@ -7909,7 +7912,7 @@ CMD:llamar(playerid, params[])
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT pbook.number, player.id, player.connected, player.playerid FROM pbook LEFT JOIN player ON pbook.number = player.phone_number WHERE pbook.id_player = %d AND pbook.name LIKE '%%%e%%' LIMIT 1;", PI[playerid][pi_ID], params_contact);
-			mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnPhoneChecked);
+			MySQL_TQueryInline(srp_db, using inline OnPhoneChecked, QUERY_BUFFER);
 		}
 	}
 	else SendNotification(playerid, "Usa /llamar [numero o contacto]");
@@ -9512,7 +9515,7 @@ ShowDialog(playerid, dialogid)
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT bank_movements.*, player.bank_account AS from_bankid, player2.bank_account AS to_bankid FROM bank_movements LEFT JOIN player ON bank_movements.from_id = player.id LEFT JOIN player AS player2 ON bank_movements.to_id = player2.id WHERE bank_movements.from_id = %d OR bank_movements.to_id = %d ORDER BY date DESC LIMIT %d;", PI[playerid][pi_ID], PI[playerid][pi_ID], MAX_BANK_TRANSACTIONS_DIALOG);
-			mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnBankMovementsLoad);
+			MySQL_TQueryInline(srp_db, using inline OnBankMovementsLoad, QUERY_BUFFER);
 			return 1;
 		}
 		case DIALOG_247_LIST: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "24/7", DIALOG_247_LIST_String, "Continuar", "Cerrar");
@@ -9683,7 +9686,7 @@ ShowDialog(playerid, dialogid)
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT pmessages.*, player.phone_number FROM pmessages LEFT JOIN player ON pmessages.to_id = player.id WHERE pmessages.from_id = %d ORDER BY pmessages.date DESC LIMIT 10;", PI[playerid][pi_ID]);
-			mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnSentMessagesLoad);
+			MySQL_TQueryInline(srp_db, using inline OnSentMessagesLoad, QUERY_BUFFER);
 			return 1;
 		}
 		case DIALOG_PHONE_RECEIVED_MESSAGES:
@@ -9716,7 +9719,7 @@ ShowDialog(playerid, dialogid)
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT pmessages.*, player.phone_number FROM pmessages LEFT JOIN player ON pmessages.from_id = player.id WHERE pmessages.to_id = %d ORDER BY pmessages.date DESC LIMIT 10;", PI[playerid][pi_ID]);
-			mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnReceivedMessagesLoad);
+			MySQL_TQueryInline(srp_db, using inline OnReceivedMessagesLoad, QUERY_BUFFER);
 			return 1;
 		}
 		case DIALOG_CONFIRM_BUY_PROPERTY:
@@ -10056,7 +10059,7 @@ ShowDialog(playerid, dialogid)
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM properties WHERE id_player = %d;", PI[playerid][pi_ID]);
-			mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnDialogQueryLoad);
+			MySQL_TQueryInline(srp_db, using inline OnDialogQueryLoad, QUERY_BUFFER);
 			return 1;
 		}
 		case DIALOG_PLAYER_GPS_VEHICLES:
@@ -10242,7 +10245,7 @@ ShowDialog(playerid, dialogid)
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id, name FROM properties WHERE id_player = %d;", PI[playerid][pi_ID]);
-			mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnDialogQueryLoad);
+			MySQL_TQueryInline(srp_db, using inline OnDialogQueryLoad, QUERY_BUFFER);
 			return 1;
 		}
 		case DIALOG_PROPERTY_BANK_SELL:
@@ -10465,7 +10468,7 @@ ShowDialog(playerid, dialogid)
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT vcomponents_info.part FROM vcomponents_info INNER JOIN vcomponents ON vcomponents_info.id = vcomponents.componentid WHERE vcomponents.modelid = %d GROUP BY vcomponents_info.part;", GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_MODELID]);
-			mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnComponentsInfoLoad);
+			MySQL_TQueryInline(srp_db, using inline OnComponentsInfoLoad, QUERY_BUFFER);
 			return 1;
 		}
 		case DIALOG_TUNING_MENU_COMPONENT:
@@ -10500,7 +10503,7 @@ ShowDialog(playerid, dialogid)
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT vcomponents_info.id, vcomponents_info.name, vcomponents_info.pieces FROM vcomponents_info INNER JOIN vcomponents ON vcomponents_info.id = vcomponents.componentid WHERE vcomponents_info.part = '%e' AND vcomponents.modelid = %d;", PLAYER_TEMP[playerid][pt_TUNING_SELECTED_PART], GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_MODELID]);
-			mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnComponentsInfoLoad);
+			MySQL_TQueryInline(srp_db, using inline OnComponentsInfoLoad, QUERY_BUFFER);
 			return 1;
 		}
 		case DIALOG_GRAFFITI_EDIT: {
@@ -10674,7 +10677,7 @@ ShowDialog(playerid, dialogid)
 				count ++;
 			}
 			if(!count) SendNotification(playerid, "Vehículo sin tunear.");
-			else mysql_tquery_inline(srp_db, components_query, using inline OnComponentsInfoLoad);
+			else MySQL_TQueryInline(srp_db, using inline OnComponentsInfoLoad, components_query);
 			return 1;
 		}
 		case DIALOG_TUNING_PAINTJOB:
@@ -11041,7 +11044,7 @@ ShowDialog(playerid, dialogid)
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT pworks.level, player.id, player.name, player.last_connection, player.connected FROM pworks INNER JOIN player ON pworks.id_player = player.id WHERE pworks.id_work = %d AND pworks.`set` = 1 ORDER BY player.connected DESC, pworks.level DESC LIMIT %d, %d;", WORK_POLICE, PLAYER_TEMP[playerid][pt_DIALOG_DB_PAGE] * PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT], PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT]);
-			mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnDialogQueryLoad);
+			MySQL_TQueryInline(srp_db, using inline OnDialogQueryLoad, QUERY_BUFFER);
 			return 1;
 		}
 		case DIALOG_POLICE_MODIFY:
@@ -11083,7 +11086,7 @@ ShowDialog(playerid, dialogid)
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT pworks.level, player.name FROM pworks INNER JOIN player ON pworks.id_player = player.id WHERE pworks.id_player = %d AND pworks.id_work = %d AND pworks.`set` = 1;", PLAYER_TEMP[playerid][pt_SELECTED_DB_AC_ID], WORK_POLICE);
-			mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnDialogQueryLoad);
+			MySQL_TQueryInline(srp_db, using inline OnDialogQueryLoad, QUERY_BUFFER);
 			return 1;
 		}
 		case DIALOG_POLICE_SHOP:
@@ -11442,7 +11445,7 @@ ShowDialog(playerid, dialogid)
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id, name, last_connection, connected, playerid, admin_level FROM player WHERE admin_level > 0 ORDER BY connected DESC, admin_level DESC LIMIT %d, %d;", PLAYER_TEMP[playerid][pt_DIALOG_DB_PAGE] * PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT], PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT]);
-			mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnDialogQueryLoad);
+			MySQL_TQueryInline(srp_db, using inline OnDialogQueryLoad, QUERY_BUFFER);
 			return 1;
 		}
 		case DIALOG_ADMIN_MODIFY:
@@ -11486,7 +11489,7 @@ ShowDialog(playerid, dialogid)
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT name, admin_level FROM player WHERE id = %d;", PLAYER_TEMP[playerid][pt_SELECTED_DB_AC_ID]);
-			mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnDialogQueryLoad);
+			MySQL_TQueryInline(srp_db, using inline OnDialogQueryLoad, QUERY_BUFFER);
 			return 1;
 		}
 		case DIALOG_CHANGE_PASSWORD:
@@ -11707,7 +11710,7 @@ ShowDialog(playerid, dialogid)
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT name, last_connection, connected, crew_rank FROM player WHERE crew = %d ORDER BY connected DESC, crew_rank ASC LIMIT %d, %d;", PI[playerid][pi_CREW], PLAYER_TEMP[playerid][pt_DIALOG_DB_PAGE] * PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT], PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT]);
-			mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnDialogQueryLoad);
+			MySQL_TQueryInline(srp_db, using inline OnDialogQueryLoad, QUERY_BUFFER);
 			return 1;
 		}
 		case DIALOG_CREW_CHANGE_NAME:
@@ -11750,7 +11753,7 @@ ShowDialog(playerid, dialogid)
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id, name, last_connection, connected, crew_rank FROM player WHERE crew = %d ORDER BY connected DESC, crew_rank ASC LIMIT %d, %d;", PI[playerid][pi_CREW], PLAYER_TEMP[playerid][pt_DIALOG_DB_PAGE] * PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT], PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT]);
-			mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnDialogQueryLoad);
+			MySQL_TQueryInline(srp_db, using inline OnDialogQueryLoad, QUERY_BUFFER);
 			return 1;
 		}
 		case DIALOG_CREW_CAST_MEMBER_CONFIRM:
@@ -11896,7 +11899,7 @@ ShowDialog(playerid, dialogid)
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d AND crew_rank = %d;", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_ID], PLAYER_TEMP[playerid][pt_CREW_SELECTED_RANK]);
-			mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCrewInfoLoad);
+			MySQL_TQueryInline(srp_db, using inline OnCrewInfoLoad, QUERY_BUFFER);
 			return 1;
 		}
 		case DIALOG_CREW_MODIFY_COLOR:
@@ -11937,7 +11940,7 @@ ShowDialog(playerid, dialogid)
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(player.id), COUNT(territories.id) FROM player, territories WHERE player.crew = %d AND territories.id_crew = %d;", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_ID], CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_ID]);
-			mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCrewInfoLoad);
+			MySQL_TQueryInline(srp_db, using inline OnCrewInfoLoad, QUERY_BUFFER);
 			return 1;
 		}
 		case DIALOG_CREW_LEAVE:
@@ -11978,7 +11981,7 @@ ShowDialog(playerid, dialogid)
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id, name, last_connection, connected, crew_rank FROM player WHERE crew = %d ORDER BY connected DESC, crew_rank ASC LIMIT %d, %d;", PI[playerid][pi_CREW], PLAYER_TEMP[playerid][pt_DIALOG_DB_PAGE] * PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT], PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT]);
-			mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnDialogQueryLoad);
+			MySQL_TQueryInline(srp_db, using inline OnDialogQueryLoad, QUERY_BUFFER);
 			return 1;
 		}
 		case DIALOG_CREW_MODIFY_MEMBER:
@@ -12036,7 +12039,7 @@ ShowDialog(playerid, dialogid)
 									}
 								}
 								mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d AND crew_rank = 0;", PI[playerid][pi_CREW]);
-								mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCountQueryLoad);
+								MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 							}
 							else
 							{
@@ -12067,7 +12070,7 @@ ShowDialog(playerid, dialogid)
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT name, crew_rank FROM player WHERE id = %d;",  PLAYER_TEMP[playerid][pt_SELECTED_DB_AC_ID]);
-			mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCrewInfoLoad);
+			MySQL_TQueryInline(srp_db, using inline OnCrewInfoLoad, QUERY_BUFFER);
 			return 1;
 		}
 		case DIALOG_CREW_PROPERTY_CONFIRM:
@@ -12440,7 +12443,7 @@ ShowDialog(playerid, dialogid)
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT police_history.*, player.name AS toname, player2.name AS fromname FROM police_history INNER JOIN player ON police_history.id_player = player.id LEFT JOIN player AS player2 ON police_history.by_id = player2.id ORDER BY police_history.date DESC LIMIT %d, %d;", PLAYER_TEMP[playerid][pt_DIALOG_DB_PAGE] * PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT], PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT]);
-			mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnPoliceHistoryLoad);
+			MySQL_TQueryInline(srp_db, using inline OnPoliceHistoryLoad, QUERY_BUFFER);
 			return 1;
 		}
 		case DIALOG_POLICE_BYC_LAST_PLAYER:
@@ -12478,7 +12481,7 @@ ShowDialog(playerid, dialogid)
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT police_history.*, player.name AS toname, player2.name AS fromname FROM police_history INNER JOIN player ON police_history.id_player = player.id LEFT JOIN player AS player2 ON police_history.by_id = player2.id WHERE police_history.id_player = %d ORDER BY police_history.date LIMIT %d, %d;", PLAYER_TEMP[playerid][pt_SELECTED_BYC_USER_ID], PLAYER_TEMP[playerid][pt_DIALOG_DB_PAGE] * PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT], PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT]);
-			mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnPoliceHistoryLoad);
+			MySQL_TQueryInline(srp_db, using inline OnPoliceHistoryLoad, QUERY_BUFFER);
 			return 1;
 		}
 		case DIALOG_POLICE_DELETE_BYC:
@@ -12642,7 +12645,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				else Kick(playerid);
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id FROM player WHERE email = '%e';", mail);
-			mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCheckEmail);
+			MySQL_TQueryInline(srp_db, using inline OnCheckEmail, QUERY_BUFFER);
 			return 1;
 		}
 		case DIALOG_LOGIN:
@@ -12736,7 +12739,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				GameTextForPlayer(playerid, "~y~cargando...", 10000, 3);
 				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM player WHERE id = %d;", PI[playerid][pi_ID]);
-				mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnPlayerDataLoad);
+				MySQL_TQueryInline(srp_db, using inline OnPlayerDataLoad, QUERY_BUFFER);
 			}
 			else // Error
 			{
@@ -13216,7 +13219,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 				}
 				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id FROM player WHERE bank_account = %d;", to_bank_account);
-				mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnBankAccountChecked);
+				MySQL_TQueryInline(srp_db, using inline OnBankAccountChecked, QUERY_BUFFER);
 			}
 			else ShowDialog(playerid, DIALOG_BANK);
 			return 1;
@@ -13278,7 +13281,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 					}
 					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id FROM player WHERE bank_account = %d;", PLAYER_TEMP[playerid][pt_SELECT_BANK_TRANSFER_ACCOUNT]);
-					mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnPhoneChecked);
+					MySQL_TQueryInline(srp_db, using inline OnPhoneChecked, QUERY_BUFFER);
 				}
 				else
 				{
@@ -15336,7 +15339,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 				}
 				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM vcomponents_info WHERE id = %d;", GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_COMPONENTS][ PLAYER_TUNING_MENU[playerid][ PLAYER_TEMP[playerid][pt_MECHANIC_SELECTED_COMPONENT] ][tuning_menu_ID] ]);
-				mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnComponentsInfoLoad);
+				MySQL_TQueryInline(srp_db, using inline OnComponentsInfoLoad, QUERY_BUFFER);
 			}
 			else ShowDialog(playerid, DIALOG_MECHANIC_MENU);
 			return 1;
@@ -16290,7 +16293,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 					}
 					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id_player) FROM pworks WHERE pworks.id_work = %d AND pworks.`set` = 1;", WORK_POLICE);
-					mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCountQueryLoad);
+					MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 				}
 				else if(PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] == -3) //Anterior
 				{
@@ -16312,7 +16315,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 					}
 					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id_player) FROM pworks WHERE pworks.id_work = %d AND pworks.`set` = 1;", WORK_POLICE);
-					mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCountQueryLoad);
+					MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 				}
 				else
 				{
@@ -16387,7 +16390,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 				}
 				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT pworks.level, player.name, player.connected, player.playerid FROM pworks INNER JOIN player ON pworks.id_player = player.id WHERE pworks.id_player = %d AND pworks.id_work = %d;", PLAYER_TEMP[playerid][pt_SELECTED_DB_AC_ID], WORK_POLICE);
-				mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnDialogQueryLoad);
+				MySQL_TQueryInline(srp_db, using inline OnDialogQueryLoad, QUERY_BUFFER);
 			}
 			else ShowDialog(playerid, DIALOG_POLICE_LIST);
 			return 1;
@@ -16847,7 +16850,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							}
 						}
 					}
-					mysql_tquery_inline(srp_db, "SELECT COUNT(id) FROM player WHERE admin_level > 0;", using inline OnCountQueryLoad);
+					MySQL_TQueryInline(srp_db,  using inline OnCountQueryLoad, "SELECT COUNT(id) FROM player WHERE admin_level > 0;");
 				}
 				else if(PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] == -3) //Anterior
 				{
@@ -16868,7 +16871,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							}
 						}
 					}
-					mysql_tquery_inline(srp_db, "SELECT COUNT(id) FROM player WHERE admin_level > 0;", using inline OnCountQueryLoad);
+					MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, "SELECT COUNT(id) FROM player WHERE admin_level > 0;");
 				}
 				else
 				{
@@ -16920,7 +16923,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 				}
 				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT name, connected, playerid, admin_level FROM player WHERE id = %d;", PLAYER_TEMP[playerid][pt_SELECTED_DB_AC_ID]);
-				mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnDialogQueryLoad);				
+				MySQL_TQueryInline(srp_db, using inline OnDialogQueryLoad, QUERY_BUFFER);
 			}
 			else ShowDialog(playerid, DIALOG_ADMIN_LIST);
 			return 1;
@@ -17067,7 +17070,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SendNotification(playerid, "El precio de tu artículo ha sido actualizado.");
 				}
 				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE shop SET price = %d WHERE id = %d;", inputtext[0], PLAYER_TEMP[playerid][pt_SHOP_SELECTED_ARTICLE_ID]);
-				mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnShopUpdated);
+				MySQL_TQueryInline(srp_db, using inline OnShopUpdated, QUERY_BUFFER);
 			}
 			return 1;
 		}
@@ -17090,7 +17093,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SendNotification(playerid, "Tu producto se ha eliminado.");
 				}
 				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "DELETE FROM shop WHERE id = %d;", PLAYER_TEMP[playerid][pt_SHOP_SELECTED_ARTICLE_ID]);
-				mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnShopUpdated);
+				MySQL_TQueryInline(srp_db, using inline OnShopUpdated, QUERY_BUFFER);
 			}
 			return 1;
 		}
@@ -17371,7 +17374,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								}
 							}
 							mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d AND crew_rank = 0;", PI[playerid][pi_CREW]);
-							mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCrewInfoLoad);
+							MySQL_TQueryInline(srp_db, using inline OnCrewInfoLoad, QUERY_BUFFER);
 						}
 						else ShowDialog(playerid, DIALOG_CREW_LEAVE);
 					}
@@ -17407,7 +17410,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 					}
 					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d", PI[playerid][pi_CREW]);
-					mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCountQueryLoad);
+					MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 				}
 				else if(PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] == -3) //Anterior
 				{
@@ -17429,7 +17432,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 					}
 					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d", PI[playerid][pi_CREW]);
-					mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCountQueryLoad);
+					MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 				}
 			}
 			else ShowDialog(playerid, DIALOG_CREW_MENU);
@@ -17525,7 +17528,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 					}
 					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d", PI[playerid][pi_CREW]);
-					mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCountQueryLoad);
+					MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 				}
 				else if(PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] == -3) //Anterior
 				{
@@ -17547,7 +17550,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 					}
 					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d", PI[playerid][pi_CREW]);
-					mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCountQueryLoad);
+					MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 				}
 				else
 				{
@@ -17583,7 +17586,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 											}
 										}
 										mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d AND crew_rank = 0;", PI[playerid][pi_CREW]);
-										mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCountQueryLoad);										
+										MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 									}
 									else ShowDialog(playerid, DIALOG_CREW_CAST_MEMBER_CONFIRM);
 								}
@@ -17591,7 +17594,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 					}
 					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT name, crew_rank FROM player WHERE id = %d;", PLAYER_TEMP[playerid][pt_SELECTED_DB_AC_ID]);
-					mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCrewInfoLoad);
+					MySQL_TQueryInline(srp_db, using inline OnCrewInfoLoad, QUERY_BUFFER);
 				}
 			}
 			else ShowDialog(playerid, DIALOG_CREW_MENU);
@@ -17659,7 +17662,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 									}
 								}
 								mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d AND crew_rank = 0;", PI[playerid][pi_CREW]);
-								mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCountQueryLoad);
+								MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 							}
 							else
 							{
@@ -17691,7 +17694,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 				}
 				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT name, connected, playerid, crew_rank FROM player WHERE id = %d;", PLAYER_TEMP[playerid][pt_SELECTED_DB_AC_ID]);
-				mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCrewInfoLoad);
+				MySQL_TQueryInline(srp_db, using inline OnCrewInfoLoad, QUERY_BUFFER);
 			}
 			else ShowDialog(playerid, DIALOG_CREW_MEMBER_LIST_DELETE);
 			return 1;
@@ -18161,7 +18164,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 					}
 					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d AND crew_rank = 0;", PI[playerid][pi_CREW]);
-					mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCountQueryLoad);
+					MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 				}
 				else
 				{
@@ -18214,7 +18217,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 					}
 					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d", PI[playerid][pi_CREW]);
-					mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCountQueryLoad);
+					MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 				}
 				else if(PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] == -3) //Anterior
 				{
@@ -18236,7 +18239,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 					}
 					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d", PI[playerid][pi_CREW]);
-					mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCountQueryLoad);
+					MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 				}
 				else
 				{
@@ -18309,7 +18312,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 										}
 									}
 									mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d AND crew_rank = 0;", PI[playerid][pi_CREW]);
-									mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCountQueryLoad);
+									MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 								}
 								else
 								{
@@ -18331,7 +18334,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 				}
 				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT name, connected, playerid, crew_rank FROM player WHERE id = %d;", PLAYER_TEMP[playerid][pt_SELECTED_DB_AC_ID]);
-				mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCrewInfoLoad);
+				MySQL_TQueryInline(srp_db, using inline OnCrewInfoLoad, QUERY_BUFFER);
 			}
 			else ShowDialog(playerid, DIALOG_CREW_MODIFY_MEMBERS);
 			return 1;
@@ -18607,10 +18610,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 					}
 					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT vip_expire_date FROM player WHERE id = %d;", PI[playerid][pi_ID]);
-					mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCountQueryLoad);
+					MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 				}
 				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET coins = %d, vip = %d, vip_expire_date = DATE_ADD(NOW(), INTERVAL 30 DAY) WHERE id = %d;", PI[playerid][pi_COINS], PI[playerid][pi_VIP], PI[playerid][pi_ID]);
-				mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnInfoQueryLoad);
+				MySQL_TQueryInline(srp_db, using inline OnInfoQueryLoad, QUERY_BUFFER);
 			}
 			return 1;
 		}
@@ -19320,7 +19323,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 				}
 				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id FROM player WHERE name = '%e';", name);
-				mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnDialogQueryLoad);
+				MySQL_TQueryInline(srp_db, using inline OnDialogQueryLoad, QUERY_BUFFER);
 			}
 			return 1;
 		}
@@ -19348,7 +19351,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							}
 						}
 					}
-					mysql_tquery_inline(srp_db, "SELECT COUNT(id) FROM police_history;", using inline OnCountQueryLoad);
+					MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, "SELECT COUNT(id) FROM police_history;");
 				}
 				else if(PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] == -3) //Anterior
 				{
@@ -19369,7 +19372,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							}
 						}
 					}
-					mysql_tquery_inline(srp_db, "SELECT COUNT(id) FROM police_history;", using inline OnCountQueryLoad);
+					MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, "SELECT COUNT(id) FROM police_history;");
 				}
 				else
 				{
@@ -19404,7 +19407,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 					}
 					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM police_history WHERE id_player = %d;", PLAYER_TEMP[playerid][pt_SELECTED_BYC_USER_ID]);
-					mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCountQueryLoad);
+					MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 				}
 				else if(PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] == -3) //Anterior
 				{
@@ -19426,7 +19429,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 					}
 					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM police_history WHERE id_player = %d;", PLAYER_TEMP[playerid][pt_SELECTED_BYC_USER_ID]);
-					mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCountQueryLoad);
+					MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 				}
 				else
 				{
@@ -19480,18 +19483,18 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(name, 24, "%s", inputtext);
 				if(!IsValidRPName(name)) return SendFormatNotification(playerid, "El nombre '%s' no cumple con el formato Nombre_Apellido.", name);
 	
-				inline OnDialogQueryLoad(newName[])
+				inline OnDialogQueryLoad()
 				{
 					new rows;
 					if(cache_get_row_count(rows))
 					{
-						if(rows) SendFormatNotification(playerid, "El nombre '%s' está en uso.", newName);
+						if(rows) SendFormatNotification(playerid, "El nombre '%s' está en uso.", name);
 						else
 						{
-							printf("/cname: %d, '%s'", PI[playerid][pi_ID], newName);
-							if(SetPlayerName(playerid, newName) == 1) {
-								format(PLAYER_TEMP[playerid][pt_NAME], 24, "%s", newName);
-								format(PI[playerid][pi_NAME], 24, "%s", newName);
+							printf("/cname: %d, '%s'", PI[playerid][pi_ID], name);
+							if(SetPlayerName(playerid, name) == 1) {
+								format(PLAYER_TEMP[playerid][pt_NAME], 24, "%s", name);
+								format(PI[playerid][pi_NAME], 24, "%s", name);
 								PLAYER_TEMP[playerid][pt_RP_NAME] = RP_GetPlayerName(playerid);
 								
 								for(new i = 0; i != MAX_PROPERTIES; i ++)
@@ -19525,7 +19528,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 				}
 				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id FROM player WHERE name = '%e';", name);
-				mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnDialogQueryLoad, "s", name);
+ 				MySQL_TQueryInline(srp_db, using inline OnDialogQueryLoad, QUERY_BUFFER, "s", name);
+
 			}
 			return 1;
 		}
@@ -19563,7 +19567,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(email, 32, "%s", inputtext);
 				if(!IsValidEmail(email)) return SendNotification(playerid, "Correo no válido.");
 	
-				inline OnDialogQueryLoad(newEmail[])
+				inline OnDialogQueryLoad()
 				{
 					new rows;
 					if(cache_get_row_count(rows))
@@ -19571,7 +19575,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(rows) SendNotification(playerid, "El correo electrónico introducido está en uso.");
 						else
 						{
-							format(PI[playerid][pi_EMAIL], 32, "%s", newEmail);
+							format(PI[playerid][pi_EMAIL], 32, "%s", email);
 							
 							mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET email = '%e' WHERE id = %d;", PI[playerid][pi_EMAIL], PI[playerid][pi_ID]);
 							mysql_tquery(srp_db, QUERY_BUFFER);
@@ -19580,7 +19584,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 				}
 				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id FROM player WHERE email = '%e';", email);
-				mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnDialogQueryLoad, "s", email);
+				MySQL_TQueryInline(srp_db,  using inline OnDialogQueryLoad, QUERY_BUFFER, "s", email);
 			}
 			return 1;
 		}
@@ -20149,7 +20153,7 @@ RegisterNewPlayer_GPS_Site(playerid, slot)
 		PLAYER_GPS[playerid][slot][player_gps_ID] = cache_insert_id();
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO pgps (id_player, name, x, y, z, world, interior) VALUES(%d, '%e', %f, %f, %f, %d, %d);", PI[playerid][pi_ID], PLAYER_GPS[playerid][slot][player_gps_NAME], PLAYER_GPS[playerid][slot][player_gps_X], PLAYER_GPS[playerid][slot][player_gps_Y], PLAYER_GPS[playerid][slot][player_gps_Z], PLAYER_GPS[playerid][slot][player_gps_WORLD], PLAYER_GPS[playerid][slot][player_gps_INTERIOR]);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnPgpsInserted);
+	MySQL_TQueryInline(srp_db, using inline OnPgpsInserted,QUERY_BUFFER );
 	return 1;
 }
 
@@ -20839,7 +20843,7 @@ RegisterNewPlayer(playerid)
 			PI[playerid][pi_CONFIG_SOUNDS], PI[playerid][pi_CONFIG_AUDIO], PI[playerid][pi_CONFIG_TIME],
 			PI[playerid][pi_CONFIG_HUD], PI[playerid][pi_CONFIG_ADMIN], PI[playerid][pi_CONFIG_SECURE_LOGIN], PI[playerid][pi_PHONE_VISIBLE_NUMBER], PI[playerid][pi_DOUBT_CHANNEL]
 	);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnPlayerInserted);
+	MySQL_TQueryInline(srp_db, using inline OnPlayerInserted, QUERY_BUFFER );
 	return 1;
 }
 
@@ -21139,7 +21143,7 @@ LoadPlayerPhoneBook(playerid)
 		}
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM pbook WHERE id_player = %d LIMIT %d;", PI[playerid][pi_ID], MAX_PHONE_CONTACTS);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnPhoneBookLoad);
+	MySQL_TQueryInline(srp_db,  using inline OnPhoneBookLoad, QUERY_BUFFER);
 	return 1;
 }
 
@@ -21150,7 +21154,7 @@ RegisterNewPlayerPhoneBook(playerid, slot)
 		PLAYER_PHONE_BOOK[playerid][slot][phone_book_contact_ID] = cache_insert_id();
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO pbook (id_player, name, number) VALUES (%d, '%e', %d);", PI[playerid][pi_ID], PLAYER_PHONE_BOOK[playerid][slot][phone_book_contact_NAME], PLAYER_PHONE_BOOK[playerid][slot][phone_book_contact_PHONE_NUMBER]);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnContactInserted);
+	MySQL_TQueryInline(srp_db,  using inline OnContactInserted, QUERY_BUFFER);
 	return 1;
 }
 
@@ -21265,7 +21269,7 @@ RegisterNewPlayerPocketObject(playerid, slot)
 		PLAYER_POCKET[playerid][slot][player_pocket_object_ID] = cache_insert_id();
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO pfoods (id_player, name, hungry, thirst, drunk) VALUES (%d, '%e', %f, %f, %d);", PI[playerid][pi_ID], PLAYER_POCKET[playerid][slot][player_pocket_object_NAME], PLAYER_POCKET[playerid][slot][player_pocket_object_HUNGRY], PLAYER_POCKET[playerid][slot][player_pocket_object_THIRST], PLAYER_POCKET[playerid][slot][player_pocket_object_DRUNK]);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnPfoodInserted);
+	MySQL_TQueryInline(srp_db,  using inline OnPfoodInserted, QUERY_BUFFER);
 	return 1;
 }
 
@@ -21290,7 +21294,7 @@ LoadPlayerPocketData(playerid)
 		}
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM pfoods WHERE id_player = %d;", PI[playerid][pi_ID]);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnPfoodsLoad);
+	MySQL_TQueryInline(srp_db,  using inline OnPfoodsLoad, QUERY_BUFFER);
 	return 1;
 }
 
@@ -21362,7 +21366,7 @@ LoadPlayerGPSData(playerid)
 		}
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM pgps WHERE id_player = %d;", PI[playerid][pi_ID]);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnPgpsLoad);
+	MySQL_TQueryInline(srp_db,  using inline OnPgpsLoad, QUERY_BUFFER);
 	return 1;
 }
 
@@ -21398,7 +21402,7 @@ LoadPlayerToys(playerid)
 		}
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM ptoys WHERE id_player = %d;", PI[playerid][pi_ID]);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnPlayerToysLoad);
+	MySQL_TQueryInline(srp_db,  using inline OnPlayerToysLoad, QUERY_BUFFER);
 	return 1;
 }
 
@@ -22340,7 +22344,7 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid)
 					else SendNotification(playerid, "Este anuncio ya no está disponible.");
 				}
 				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id FROM shop WHERE id = %d;", PLAYER_TEMP[playerid][pt_SHOP_ARTICLE_ID][i]);
-				mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnShopChecked);
+				MySQL_TQueryInline(srp_db,  using inline OnShopChecked, QUERY_BUFFER);
 				break;
 			}
 		}
@@ -23004,7 +23008,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 						}
 					}
 					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM shop WHERE id_player = %d;", PI[playerid][pi_ID]);
-					mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnShopChecked);
+					MySQL_TQueryInline(srp_db,  using inline OnShopChecked, QUERY_BUFFER);
 				}
 			}
 		}
@@ -23067,7 +23071,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 							}
 						}
 					}
-					mysql_tquery_inline(srp_db, "SELECT COUNT(id) FROM shop;", using inline OnCountQueryLoad);
+					MySQL_TQueryInline(srp_db,  using inline OnCountQueryLoad, "SELECT COUNT(id) FROM shop;");
 				}
 				case PLAYER_SHOP_STATE_MY_ADS: // Siguiente
 				{
@@ -23093,7 +23097,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 						}
 					}
 					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM shop WHERE id_player = %d;", PI[playerid][pi_ID]);
-					mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCountQueryLoad);
+					MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 				}
 				case PLAYER_SHOP_STATE_AD: ShowDialog(playerid, DIALOG_SHOP_ARTICLE_REMOVE);
 			}
@@ -23125,7 +23129,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 							}
 						}
 					}
-					mysql_tquery_inline(srp_db, "SELECT COUNT(id) FROM shop;", using inline OnCountQueryLoad);
+					MySQL_TQueryInline(srp_db,  using inline OnCountQueryLoad, "SELECT COUNT(id) FROM shop;");
 				}
 				case PLAYER_SHOP_STATE_MY_ADS: // Anterior
 				{
@@ -23151,7 +23155,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 						}
 					}
 					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM shop WHERE id_player = %d;", PI[playerid][pi_ID]);
-					mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCountQueryLoad);
+					MySQL_TQueryInline(srp_db,  using inline OnCountQueryLoad, QUERY_BUFFER);
 				}
 				case PLAYER_SHOP_STATE_AD: // Atrás
 				{
@@ -23487,7 +23491,7 @@ LoadProperties()
 						}
 					}
 					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT crews.id, crews.name FROM territories INNER JOIN crews ON territories.id_crew = crews.id WHERE territories.id = %d;", tid);
-					mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCrewInfoLoad);
+					MySQL_TQueryInline(srp_db,  using inline OnCrewInfoLoad, QUERY_BUFFER);
 				}
 				else CreatePropertyInfo(i, 0, "", 0, "");
 
@@ -23507,13 +23511,14 @@ LoadProperties()
 					}
 				}
 				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM property_closet WHERE id_property = %d LIMIT %d;", PROPERTY_INFO[i][property_ID], MAX_CLOSET_SLOTS);
-				mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnPropertyClosetLoad);
+				MySQL_TQueryInline(srp_db,  using inline OnPropertyClosetLoad, QUERY_BUFFER);
 			}
 			CallLocalFunction("OnPropertiesLoaded", "");
 			LoadCrews();
 		}
 	}
-	mysql_tquery_inline(srp_db, "SELECT properties.*, player.id AS pid, player.name AS pname, territories.id AS tid FROM properties LEFT JOIN player ON properties.id_player = player.id LEFT JOIN territories ON properties.id_territory = territories.id;", using inline OnPropertiesLoad);
+	new query[] = "SELECT properties.*, player.id AS pid, player.name AS pname, territories.id AS tid FROM properties LEFT JOIN player ON properties.id_player = player.id LEFT JOIN territories ON properties.id_territory = territories.id;";
+	MySQL_TQueryInline(srp_db, using inline OnPropertiesLoad, query);
 	return 1;
 }
 
@@ -23569,7 +23574,7 @@ LoadCrews()
 					}
 				}
 				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d;", CREW_INFO[i][crew_ID]);
-				mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCountQueryLoad);
+				MySQL_TQueryInline(srp_db,  using inline OnCountQueryLoad, QUERY_BUFFER);
 
 				//ranks
 				inline OnCrewRanksLoad()
@@ -23606,12 +23611,12 @@ LoadCrews()
 					}
 				}
 				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM crew_ranks WHERE id_crew = %d;", CREW_INFO[i][crew_ID]);
-				mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCrewRanksLoad);
+				MySQL_TQueryInline(srp_db,  using inline OnCrewRanksLoad, QUERY_BUFFER);
 			}
 			LoadGangZones();
 		}
 	}
-	mysql_tquery_inline(srp_db, "SELECT * FROM crews;", using inline OnCrewsLoad);
+	MySQL_TQueryInline(srp_db,  using inline OnCrewsLoad, "SELECT * FROM crews;");
 	return 1;
 }
 
@@ -23691,7 +23696,7 @@ LoadGangZones()
 		}
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT territories.*, crews.id AS crewid, crews.color FROM territories LEFT JOIN crews ON territories.id_crew = crews.id WHERE territories.gangzone = 1 LIMIT %d;", MAX_TERRITORIES);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnSaZonesLoad);
+	MySQL_TQueryInline(srp_db,   using inline OnSaZonesLoad, QUERY_BUFFER);
 	return 1;
 }
 
@@ -24959,7 +24964,7 @@ RegisterNewPlayerToy(playerid, slot)
 			PLAYER_TOYS[playerid][slot][player_toy_ROT_Z], PLAYER_TOYS[playerid][slot][player_toy_SCALE_X], PLAYER_TOYS[playerid][slot][player_toy_SCALE_Y],
 			PLAYER_TOYS[playerid][slot][player_toy_SCALE_Z], PLAYER_TOYS[playerid][slot][player_toy_COLOR_1], PLAYER_TOYS[playerid][slot][player_toy_COLOR_2]
 	);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnPlayerToyInserted);
+	MySQL_TQueryInline(srp_db, using inline OnPlayerToyInserted, QUERY_BUFFER);
 	return 1;
 }
 
@@ -26524,7 +26529,7 @@ RegisterNewPlayerVehicle(playerid, vehicleid)
 			GLOBAL_VEHICLES[vehicleid][gb_vehicle_SPAWN_ANGLE], GLOBAL_VEHICLES[vehicleid][gb_vehicle_COLOR_1], GLOBAL_VEHICLES[vehicleid][gb_vehicle_COLOR_2], GLOBAL_VEHICLES[vehicleid][gb_vehicle_GAS],
 			GLOBAL_VEHICLES[vehicleid][gb_vehicle_MAX_GAS]
 	);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnVehicleInserted);
+	MySQL_TQueryInline(srp_db, using inline OnVehicleInserted, QUERY_BUFFER);
 	return 1;
 }
 
@@ -26658,7 +26663,7 @@ LoadPlayerVehicles(playerid)
 						}
 					}
 					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM vboot WHERE id_vehicle = %d LIMIT %d;", PLAYER_VEHICLES[vehicle_id][player_vehicle_ID], VEHICLE_INFO[GLOBAL_VEHICLES[vehicle_id][gb_vehicle_MODELID] - 400][vehicle_info_BOOT_SLOTS]);
-					mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnVbootLoad);
+					MySQL_TQueryInline(srp_db, using inline OnVbootLoad, QUERY_BUFFER);
 
 					//vobjects
 					inline OnVobjectsLoad()
@@ -26728,13 +26733,13 @@ LoadPlayerVehicles(playerid)
 						}
 					}
 					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM vobjects WHERE id_vehicle = %d LIMIT %d;", PLAYER_VEHICLES[vehicle_id][player_vehicle_ID], MAX_SU_VOBJECTS);
-					mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnVobjectsLoad);
+					MySQL_TQueryInline(srp_db, using inline OnVobjectsLoad, QUERY_BUFFER);
 				}
 			}
 		}
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM pvehicles WHERE id_player = %d;", PI[playerid][pi_ID]);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnPlayerVehiclesLoad);
+	MySQL_TQueryInline(srp_db, using inline OnPlayerVehiclesLoad, QUERY_BUFFER);
 	return 1;
 }
 
@@ -27664,7 +27669,7 @@ Create_PlayerPropertyConstructo(playerid)
 			PROPERTY_INFO[slot][property_EXT_INTERIOR], PROPERTY_INFO[slot][property_EXT_FREEZE], PROPERTY_INFO[slot][property_ID_INTERIOR],
 			PROPERTY_INFO[slot][property_PRICE_BASE], PROPERTY_INFO[slot][property_LEVEL], PROPERTY_INFO[slot][property_EXTRA], PROPERTY_INFO[slot][property_VIP_LEVEL]
 	);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnPropertyInserted);
+	MySQL_TQueryInline(srp_db, using inline OnPropertyInserted, QUERY_BUFFER);
 	return 1;
 }
 
@@ -27859,7 +27864,7 @@ LoadPlayerWorks(playerid)
 		}
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM pworks WHERE id_player = %d;", PI[playerid][pi_ID]);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnPworksLoad);
+	MySQL_TQueryInline(srp_db, using inline OnPworksLoad, QUERY_BUFFER);
 	return 1;
 }
 
@@ -29475,7 +29480,7 @@ public UpdatePlayer_GPS_Map(playerid)
 	return 1;
 }
 
-SetPlayerPoint_GPS_Map(index, playerid, icon[], color, Float:icon_size_X, Float:icon_size_Y, Float:x, Float:y)
+SetPlayerPoint_GPS_Map(index, playerid, const icon[], color, Float:icon_size_X, Float:icon_size_Y, Float:x, Float:y)
 {
 	new Float:td_X, Float:td_Y,
 		Float:converted_MAP_SIZE_X = floatdiv(map_td_SIZE_X, 2),
@@ -29925,7 +29930,7 @@ RegisterNewPlayerWeapon(playerid, weapon_slot)
 		PLAYER_WEAPONS[playerid][weapon_slot][player_weapon_DB_ID] = cache_insert_id();
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO pweapons (id_player, weaponid, ammo) VALUES (%d, %d, %d);", PI[playerid][pi_ID], PLAYER_WEAPONS[playerid][weapon_slot][player_weapon_ID], PLAYER_WEAPONS[playerid][weapon_slot][player_weapon_AMMO]);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnPweaponInserted);
+	MySQL_TQueryInline(srp_db, using inline OnPweaponInserted, QUERY_BUFFER);
 	QUERY_BUFFER[0] = EOS;
 	return 1;
 }
@@ -29987,7 +29992,7 @@ LoadPlayerWeaponsData(playerid)
 		}
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM pweapons WHERE id_player = %d LIMIT 13;", PI[playerid][pi_ID]);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnPweaponsLoad);
+	MySQL_TQueryInline(srp_db, using inline OnPweaponsLoad, QUERY_BUFFER);
 	return 1;
 }
 
@@ -30453,7 +30458,7 @@ RegisterVehicleBootObject(vehicleid, boot_slot, type, int, extra)
 		if(VEHICLE_BOOT[vehicleid][boot_slot][vehicle_boot_OBJECT_ID]) VEHICLE_BOOT[vehicleid][boot_slot][vehicle_boot_VALID] = true;
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO vboot (id_vehicle, type, `int`, int_extra) VALUES (%d, %d, %d, %d);", PLAYER_VEHICLES[vehicleid][player_vehicle_ID], VEHICLE_BOOT[vehicleid][boot_slot][vehicle_boot_TYPE], VEHICLE_BOOT[vehicleid][boot_slot][vehicle_boot_INT], VEHICLE_BOOT[vehicleid][boot_slot][vehicle_boot_INT_EXTRA]);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnVbootInserted);
+	MySQL_TQueryInline(srp_db, using inline OnVbootInserted, QUERY_BUFFER);
 	return 1;
 }
 
@@ -30487,7 +30492,7 @@ RegisterPropertyClosetObject(index, closet_slot, type, int, extra)
 		if(PROPERTY_CLOSET[index][closet_slot][property_closet_OBJECT_ID]) PROPERTY_CLOSET[index][closet_slot][property_closet_VALID] = true;
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO property_closet (id_property, type, `int`, int_extra) VALUES (%d, %d, %d, %d);", PROPERTY_INFO[index][property_ID], type, int, extra);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnPropertyClosetInserted);
+	MySQL_TQueryInline(srp_db, using inline OnPropertyClosetInserted, QUERY_BUFFER);
 	return 1;
 }
 
@@ -31792,7 +31797,7 @@ AddPlayerBan(account_id, account_name[], account_ip[], by_account_id, type, text
 			}
 		}
 		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO bad_history (id_player, type, `by`, `text`, `date`) VALUES (%d, %d, %d, '%e', '%e');", account_id, type, by_account_id, text, date);
-		mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnBadHistoryInserted1);
+		MySQL_TQueryInline(srp_db, using inline OnBadHistoryInserted1, QUERY_BUFFER);
 	}
 	else
 	{
@@ -31806,7 +31811,7 @@ AddPlayerBan(account_id, account_name[], account_ip[], by_account_id, type, text
 			}
 		}
 		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO bad_history (id_player, type, `by`, `text`, `date`) VALUES (%d, %d, %d, '%e', '%e');", account_id, type, by_account_id, text, date);
-		mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnBadHistoryInserted2);
+		MySQL_TQueryInline(srp_db, using inline OnBadHistoryInserted2, QUERY_BUFFER);
 	}
 	return 1;
 }
@@ -31907,7 +31912,7 @@ CMD:getid(playerid, params[])
 		}
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id, name, connected, playerid FROM player WHERE name LIKE '%%%e%%' LIMIT 20;", findname);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnInfoQueryLoad);
+	MySQL_TQueryInline(srp_db, using inline OnInfoQueryLoad, QUERY_BUFFER);
 	return 1;
 }
 
@@ -31934,7 +31939,7 @@ CMD:getname(playerid, params[])
 		}
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id, name, connected, playerid FROM player WHERE id = %d LIMIT 20;", db_id);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnInfoQueryLoad);
+	MySQL_TQueryInline(srp_db, using inline OnInfoQueryLoad, QUERY_BUFFER);
 	return 1;
 }
 
@@ -31962,7 +31967,7 @@ CMD:aka(playerid, params[])
 		}
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id, name FROM player WHERE ip = '%e' LIMIT 20;", PI[to_player][pi_IP]);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnInfoQueryLoad);
+	MySQL_TQueryInline(srp_db, using inline OnInfoQueryLoad, QUERY_BUFFER);
 	return 1;
 }
 alias:aka("cuentas", "multicuentas");
@@ -32337,13 +32342,13 @@ CMD:unban(playerid, params[])
 					}
 				}
 				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id FROM player WHERE name = '%e' OR ip = '%e';", name, name);
-				mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCountQueryLoad);
+				MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 			}
 			else SendFormatNotification(playerid, "'%s' no está en la lista de baneados.", name);
 		}
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM bans WHERE name = '%e' OR ip = '%e';", name, name);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnInfoQueryLoad);
+	MySQL_TQueryInline(srp_db, using inline OnInfoQueryLoad, QUERY_BUFFER);
 	return 1;
 }
 
@@ -32533,7 +32538,7 @@ CMD:dban(playerid, params[])
 							}
 						}
 						mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM bans WHERE name = '%e' OR ip = '%e';", name, ip);
-						mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCountQueryLoad);
+						MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 					}
 				}
 				else SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
@@ -32542,7 +32547,7 @@ CMD:dban(playerid, params[])
 		}
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id, ip, name, connected, playerid, admin_level FROM player WHERE id = %d;", to_account);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnInfoQueryLoad);
+	MySQL_TQueryInline(srp_db, using inline OnInfoQueryLoad, QUERY_BUFFER);
 	return 1;
 }
 
@@ -32596,7 +32601,7 @@ CMD:dtban(playerid, params[])
 							}
 						}
 						mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM bans WHERE name = '%e' OR ip = '%e';", name, ip);
-						mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCountQueryLoad);
+						MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 					}
 				}
 				else SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
@@ -32605,7 +32610,7 @@ CMD:dtban(playerid, params[])
 		}
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id, ip, name, connected, playerid, admin_level FROM player WHERE id = %d;", to_account);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnInfoQueryLoad);
+	MySQL_TQueryInline(srp_db, using inline OnInfoQueryLoad, QUERY_BUFFER);
 	return 1;
 }
 
@@ -32675,7 +32680,7 @@ CMD:deletead(playerid, params[])
 		}
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id FROM shop WHERE id = %d;", ad_id);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnShopChecked);
+	MySQL_TQueryInline(srp_db, using inline OnShopChecked, QUERY_BUFFER);
 	return 1;
 }
 alias:deletead("borrarad");
@@ -33158,7 +33163,7 @@ CMD:setname(playerid, params[])
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
 	if(!IsValidRPName(new_name)) return SendFormatNotification(playerid, "El nombre '%s' no cumple con el formato Nombre_Apellido.", new_name);
 	
-	inline OnInfoQueryLoad(data[])
+	inline OnInfoQueryLoad()
 	{
 		new rows;
 		if(cache_get_row_count(rows))
@@ -33196,12 +33201,12 @@ CMD:setname(playerid, params[])
 				SendClientMessageEx(to_player, -1, "{"#SILVER_COLOR"}Tu nombre ha sido cambiado a '%s'", new_name);
 				SendFormatNotification(playerid, "El nombre del jugador ha sido cambiado a '%s'", new_name);
 				
-				SendCmdLogToAdmins(playerid, "setname", data);
+				SendCmdLogToAdmins(playerid, "setname", params);
 			}
 		}
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id FROM player WHERE name = '%e';", new_name);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnInfoQueryLoad, "s", params);
+	MySQL_TQueryInline(srp_db,  using inline OnInfoQueryLoad, QUERY_BUFFER, "s", params);
 	return 1;
 }
 
@@ -33294,7 +33299,7 @@ CMD:setpass(playerid, params[])
 		}
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id, name, connected, playerid, admin_level FROM player WHERE id = %d;", to_account);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnInfoQueryLoad);
+	MySQL_TQueryInline(srp_db, using inline OnInfoQueryLoad, QUERY_BUFFER);
 	return 1;
 }
 
@@ -33366,7 +33371,7 @@ CMD:delete(playerid, params[])
 		}
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id, ip, name, connected, playerid, admin_level FROM player WHERE id = %d;", to_account);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnInfoQueryLoad);
+	MySQL_TQueryInline(srp_db, using inline OnInfoQueryLoad, QUERY_BUFFER);
 	return 1;
 }
 
@@ -33710,13 +33715,13 @@ UpdatePlayerShop(playerid)
 								}
 							}
 						}
-						mysql_tquery_inline(srp_db, "SELECT COUNT(id) FROM shop;", using inline OnCountQueryLoad);
+						MySQL_TQueryInline(srp_db,  using inline OnCountQueryLoad, "SELECT COUNT(id) FROM shop;");
 						PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_PAGE]);
 					}
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT player.connected, shop.*, shop.id AS id_ad FROM shop INNER JOIN player ON shop.id_player = player.id ORDER BY player.connected DESC, shop.date DESC LIMIT %d, %d;", PLAYER_TEMP[playerid][pt_DIALOG_DB_PAGE] * PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT], PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT]);
-			mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnShopLoad);
+			MySQL_TQueryInline(srp_db, using inline OnShopLoad, QUERY_BUFFER);
 			return 1;
 		}
 		case PLAYER_SHOP_STATE_MY_ADS:
@@ -33827,7 +33832,7 @@ UpdatePlayerShop(playerid)
 							}
 						}
 						mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM shop WHERE id_player = %d;", PI[playerid][pi_ID]);
-						mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCountQueryLoad);
+						MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 						PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_PAGE]);
 					}
 				}
@@ -33835,7 +33840,7 @@ UpdatePlayerShop(playerid)
 			new limit1 = PLAYER_TEMP[playerid][pt_DIALOG_DB_PAGE] * PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT];
 			if(limit1 < 0) limit1 = 0;
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT player.connected, shop.*, shop.id AS ad_id FROM shop INNER JOIN player ON shop.id_player = player.id WHERE shop.id_player = %d ORDER BY player.connected DESC, shop.date DESC LIMIT %d, %d;", PI[playerid][pi_ID], limit1, PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT]);
-			mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnShopLoad);
+			MySQL_TQueryInline(srp_db, using inline OnShopLoad, QUERY_BUFFER);
 			return 1;
 		}
 		case PLAYER_SHOP_STATE_AD:
@@ -33940,7 +33945,7 @@ UpdatePlayerShop(playerid)
 
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT shop.*, player.connected, player.name, player.phone_number FROM shop INNER JOIN player ON shop.id_player = player.id WHERE shop.id = %d;", PLAYER_TEMP[playerid][pt_SHOP_SELECTED_ARTICLE_ID]);
-			mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnShopAdLoad);
+			MySQL_TQueryInline(srp_db, using inline OnShopAdLoad, QUERY_BUFFER);
 		}
 	}
 	return 1;
@@ -34779,7 +34784,7 @@ NewCrewRegister(index, playerid)
 		}
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO crews (name, color) VALUES ('%e', %d);", CREW_INFO[index][crew_NAME], CREW_INFO[index][crew_COLOR]);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCrewInserted);
+	MySQL_TQueryInline(srp_db, using inline OnCrewInserted, QUERY_BUFFER);
 	return 1;
 }
 
@@ -34816,7 +34821,7 @@ RegisterNewCrewRank(index, rank)
 			CREW_RANK_INFO[index][rank][crew_rank_PERMISSION][5], CREW_RANK_INFO[index][rank][crew_rank_PERMISSION][6], CREW_RANK_INFO[index][rank][crew_rank_PERMISSION][7],
 			CREW_RANK_INFO[index][rank][crew_rank_PERMISSION][8], CREW_RANK_INFO[index][rank][crew_rank_PERMISSION][9], CREW_RANK_INFO[index][rank][crew_rank_PERMISSION][10]
 	);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCrewRankInserted);
+	MySQL_TQueryInline(srp_db, using inline OnCrewRankInserted, QUERY_BUFFER);
 	return 1;
 }
 
@@ -35474,7 +35479,7 @@ ReLockPlayerVehicles(playerid, bool:remove = false)
 		}
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id FROM pvehicles WHERE id_player = %d ORDER BY id DESC LIMIT %d;", PI[playerid][pi_ID], MAX_SU_VEHICLES);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnQueryLoadedInline);
+	MySQL_TQueryInline(srp_db, using inline OnQueryLoadedInline, QUERY_BUFFER);
 	return 1;
 }
 
@@ -35585,7 +35590,7 @@ CheckPlayerSuperUser(playerid)
 			}
 		}
 		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id FROM player WHERE id = %d AND NOW() >= vip_expire_date;", PI[playerid][pi_ID]);
-		mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnInfoQueryLoad);
+		MySQL_TQueryInline(srp_db, using inline OnInfoQueryLoad, QUERY_BUFFER);
 	}
 	return 1;
 }
@@ -35666,7 +35671,7 @@ CMD:lsdb(playerid, params[])
 		}
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id, ip, name, connected, playerid, admin_level FROM player WHERE id = %d;", to_account);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnInfoQueryLoad);
+	MySQL_TQueryInline(srp_db, using inline OnInfoQueryLoad, QUERY_BUFFER);
 	return 1;
 }
 
@@ -36332,7 +36337,7 @@ RegisterNewVehicleObject(vehicleid, slot)
 			VEHICLE_OBJECTS[vehicleid][slot][vobject_COLORS][3], VEHICLE_OBJECTS[vehicleid][slot][vobject_COLORS][4], VEHICLE_OBJECTS[vehicleid][slot][vobject_text_TEXT], VEHICLE_OBJECTS[vehicleid][slot][vobject_text_FONT],
 			VEHICLE_OBJECTS[vehicleid][slot][vobject_text_FONT_SIZE], VEHICLE_OBJECTS[vehicleid][slot][vobject_text_BOLD], VEHICLE_OBJECTS[vehicleid][slot][vobject_text_FONT_COLOR]
 	);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnVobjectInserted);
+	MySQL_TQueryInline(srp_db, using inline OnVobjectInserted, QUERY_BUFFER);
 	return 1;
 }
 
@@ -36395,7 +36400,7 @@ GetRulePagePositions(lines, &Float:pos_descripcion, &Float:pos_pages, &Float:pos
 	return 1;
 }
 
-SetPlayerRulesTextDraw(playerid, title[], info[], info_lines, page, total_pages)
+SetPlayerRulesTextDraw(playerid, const title[], info[], info_lines, page, total_pages)
 {
 	if(PlayerTextdraws[playerid][ptextdraw_GUIDE][0] != PlayerText:INVALID_TEXT_DRAW)
 	{
@@ -36619,10 +36624,10 @@ SetPlayerVip(playerid, vip_level, price_coin = 0, days = 30)
 			}
 		}
 		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT vip_expire_date FROM player WHERE id = %d;", PI[playerid][pi_ID]);
-		mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnCountQueryLoad);
+		MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET coins = %d, vip = %d, vip_expire_date = DATE_ADD(NOW(), INTERVAL %d DAY) WHERE id = %d;", PI[playerid][pi_COINS], PI[playerid][pi_VIP], days, PI[playerid][pi_ID]);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnInfoQueryLoad);
+	MySQL_TQueryInline(srp_db, using inline OnInfoQueryLoad, QUERY_BUFFER);
 	return 1;
 }
 
@@ -37172,7 +37177,7 @@ CMD:presolv(playerid, params[])
 		}	
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id, name, connected, playerid FROM player WHERE phone_number = %d LIMIT 1;", params[0]);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnInfoQueryLoad);
+	MySQL_TQueryInline(srp_db, using inline OnInfoQueryLoad, QUERY_BUFFER);
 	return 1;
 }
 
@@ -37293,12 +37298,12 @@ CMD:osetname(playerid, params[])
 					}
 				}
 				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id, ip, name, connected, playerid, admin_level FROM player WHERE id = %d;", to_account);
-				mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnInfoQueryLoad);
+				MySQL_TQueryInline(srp_db, using inline OnInfoQueryLoad, QUERY_BUFFER);
 			}
 		}
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id FROM player WHERE name = '%e';", new_name);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnNameChecked);
+	MySQL_TQueryInline(srp_db, using inline OnNameChecked, QUERY_BUFFER);
 	return 1;
 }
 
@@ -37334,7 +37339,7 @@ CMD:ogivecoins(playerid, params[])
 		}
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id, ip, name, connected, playerid, admin_level FROM player WHERE id = %d;", to_account);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnInfoQueryLoad);
+	MySQL_TQueryInline(srp_db, using inline OnInfoQueryLoad, QUERY_BUFFER);
 	return 1;
 }
 
@@ -37512,7 +37517,7 @@ CMD:historial(playerid, params[])
 		}
 	}
 	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT bad_history.*, player.name FROM bad_history LEFT JOIN player ON bad_history.by = player.id WHERE bad_history.id_player = %d ORDER BY bad_history.date LIMIT 20;", PI[to_player][pi_ID]);
-	mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnInfoQueryLoad);
+	MySQL_TQueryInline(srp_db, using inline OnInfoQueryLoad, QUERY_BUFFER);
 	return 1;
 }
 
@@ -37829,7 +37834,7 @@ public OnPlayerLogin(playerid)
 				else Kick(playerid);
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT ip FROM player_secure_login WHERE ip = '%e' AND id_player = %d;", PLAYER_TEMP[playerid][pt_IP], PI[playerid][pi_ID]);
-			mysql_tquery_inline(srp_db, QUERY_BUFFER, using inline OnSecureLoginCheck);
+			MySQL_TQueryInline(srp_db, using inline OnSecureLoginCheck, QUERY_BUFFER);
 			return 1;
 		}
 	}

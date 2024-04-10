@@ -1,4 +1,4 @@
-#include <YSI-Includes\YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 #define FURNITURE_CAMERA_MOVE_TIME 2000
 #define FURNITURE_CAMERA_OBJECT_SCALE 10.0

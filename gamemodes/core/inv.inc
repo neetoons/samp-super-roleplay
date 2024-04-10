@@ -1,4 +1,4 @@
-#include <YSI-Includes\YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 #define MAX_INVENTORY_ITEMS 16
 #define MAX_INVENTORY_BUTTONS 6

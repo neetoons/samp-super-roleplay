@@ -1,4 +1,4 @@
-#include <YSI-Includes\YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 #define CHECK_AFK_POS_INTERVAL 600000 //10 min
 #define AFK_POS_DISTANCE 2.0

@@ -1,4 +1,4 @@
-#include <YSI-Includes\YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 #include <Pawn.CMD>
 
 #define WORK_TUTORIAL_DEFAULT_TIME 5000
