@@ -1,4 +1,4 @@
-#include <YSI-Includes\YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 new
     pInjuredTimer[MAX_PLAYERS] = {-1, ...},
