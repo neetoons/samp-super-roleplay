@@ -11,3 +11,4 @@ plugins
 !scriptfiles/SERVER/ECO.txt
 *.hmap
 *.pdb
+pcu
