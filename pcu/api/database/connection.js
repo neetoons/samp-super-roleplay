@@ -16,7 +16,6 @@ sequelize
   .authenticate()
   .then(() => {
     console.log("Database Connected");
-    databaseLoger.info("Database Connected");
   })
   .catch((e) => console.error(e));
 
