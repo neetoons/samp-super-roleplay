@@ -12,4 +12,4 @@ plugins
 *.hmap
 *.pdb
 pcu/node_modules
-pcu/api/.env
+.env
