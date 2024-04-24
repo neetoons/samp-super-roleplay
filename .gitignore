@@ -11,4 +11,5 @@ plugins
 !scriptfiles/SERVER/ECO.txt
 *.hmap
 *.pdb
-pcu
+pcu/node_modules
+pcu/.env
