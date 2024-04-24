@@ -1,1 +1,3 @@
-class userController {}
+class userController {
+  async getAllInfoUser(req, res) {}
+}
