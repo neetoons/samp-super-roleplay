@@ -577,9 +577,9 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid) {
             new dialog_body[(MAX_SU_PROPERTIES * 128) + 1], count = 0;
             dialog_body = "Propiedad\tMuebles\n";
             for(new i = 0; i < sizeof PROPERTY_INFO; i ++) {
-                if(PROPERTY_INFO[i][property_SOLD] && PROPERTY_INFO[i][property_OWNER_ID] == PI[playerid][pi_ID]) {
+                if(PROPERTY_INFO[i][property_SOLD] && PROPERTY_INFO[i][property_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID]) {
                     new string[64];
-                    format(string, sizeof string, "%d. %s [ID: %d]\t%d/%d muebles\n", count + 1, PROPERTY_INFO[i][property_NAME], PROPERTY_INFO[i][property_ID], CountPropertyObjects(PROPERTY_INFO[i][property_ID]), PI[playerid][pi_VIP] ? MAX_SU_PROPERTY_OBJECTS : MAX_NU_PROPERTY_OBJECTS);
+                    format(string, sizeof string, "%d. %s [ID: %d]\t%d/%d muebles\n", count + 1, PROPERTY_INFO[i][property_NAME], PROPERTY_INFO[i][property_ID], CountPropertyObjects(PROPERTY_INFO[i][property_ID]), ACCOUNT_INFO[playerid][ac_VIP] ? MAX_SU_PROPERTY_OBJECTS : MAX_NU_PROPERTY_OBJECTS);
                     strcat(dialog_body, string);
 
                     PLAYER_TEMP[playerid][pt_PLAYER_GPS_SELECTED_PROPERTY][count] = i;
@@ -607,7 +607,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
     if(dialogid == DIALOG_FSHOP_SELECT_PROPERTY) {
         if(response) {
             new property_index = PLAYER_TEMP[playerid][pt_PLAYER_GPS_SELECTED_PROPERTY][listitem];
-            new limit = PI[playerid][pi_VIP] ? MAX_SU_PROPERTY_OBJECTS : MAX_NU_PROPERTY_OBJECTS;
+            new limit = ACCOUNT_INFO[playerid][ac_VIP] ? MAX_SU_PROPERTY_OBJECTS : MAX_NU_PROPERTY_OBJECTS;
             if(CountPropertyObjects(PROPERTY_INFO[property_index][property_ID]) >= limit) SendNotification(playerid, "No puedes añadir más muebles a esta propiedad.");
             else {
                 new objectIndex = GetCurrentFurnitureObjectIndex(playerid);

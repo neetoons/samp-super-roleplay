@@ -115,13 +115,13 @@ LoadPlayerWorksPoints(playerid) {
                         work_info[work][work_info_NAME]
                     );
 
-                    mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pworks_points SET last_prize = 0 WHERE id_player = %d AND id_work = %d;", PI[playerid][pi_ID], work);
+                    mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pworks_points SET last_prize = 0 WHERE id_player = %d AND id_work = %d;", ACCOUNT_INFO[playerid][ac_ID], work);
                     mysql_tquery(srp_db, QUERY_BUFFER);
                 }
             }
         }
     }
-    mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM pworks_points WHERE id_player = %d;", PI[playerid][pi_ID]);
+    mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM pworks_points WHERE id_player = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 	MySQL_TQueryInline(srp_db, using inline OnQueryLoaded, QUERY_BUFFER);
 }
 
@@ -130,7 +130,7 @@ AddPlayerJobPoints(playerid, work, points = 1, bool:message = true) {
 
     mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO pworks_points (points, id_player, id_work) VALUES(%d, %d, %d) ON DUPLICATE KEY UPDATE points = %d;",
         PlayerWorksPoints[playerid][work][pworksPoints_POINTS],
-        PI[playerid][pi_ID],
+        ACCOUNT_INFO[playerid][ac_ID],
         work,
         PlayerWorksPoints[playerid][work][pworksPoints_POINTS]
     );
@@ -227,12 +227,12 @@ public OnJobsRecordsRequestUpdate() {
                             cache_get_value_name_int(j, "connected", connected);
                             cache_get_value_name_int(j, "playerid", playerid);
 
-                            if(connected && PI[playerid][pi_ID] == pid) {
+                            if(connected && ACCOUNT_INFO[playerid][ac_ID] == pid) {
                                 GivePlayerCash(playerid, currentPrize, true, false);
                                 if(j == 0 && work_info[i][work_info_TOP1_COINS_PRIZE] > 0) {
-                                    PI[playerid][pi_COINS] += work_info[i][work_info_TOP1_COINS_PRIZE];
+                                    PI[playerid][ac_COINS] += work_info[i][work_info_TOP1_COINS_PRIZE];
                                     
-                                    mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET coins = %d WHERE id = %d;", PI[playerid][pi_COINS], PI[playerid][pi_ID]);
+                                    mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET coins = %d WHERE id = %d;", PI[playerid][ac_COINS], ACCOUNT_INFO[playerid][ac_ID]);
                                     mysql_tquery(srp_db, QUERY_BUFFER);
 
                                     SendFormatNotification(playerid, "~g~¡Felicidades! ~w~Has quedado en el puesto ~y~n|%d ~w~de mejores empleados en el trabajo de ~y~%s y has recibido ~y~%s$ ~w~ y ~g~%d "SERVER_COIN" ~w~como premio.",

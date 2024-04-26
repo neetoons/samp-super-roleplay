@@ -13,7 +13,7 @@ hook OnPlayerDisconnect(playerid, reason) {
 }
 
 hook OnPlayerSpawn(playerid) {
-    if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK) {
+    if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK) {
         SetPlayerHud(playerid);
         if(PLAYER_TEMP[playerid][pt_GAME_STATE] == GAME_STATE_DEAD) SetPlayerHealthEx(playerid, 60.0);
         SetCameraBehindPlayer(playerid);
@@ -31,13 +31,13 @@ hook OnPlayerSpawn(playerid) {
         pInjuredTimer[playerid] = SetTimerEx("HealthDown", 3000, false, "i", playerid);
         
         ApplyAnimation(playerid, "SWEET", "Sweet_injuredloop", 4.1, true, 0, 0, 0, 0, 1);
-        if(PI[playerid][pi_WANTED_LEVEL] > 0) SendNotification(playerid, "Estás herido y en búsqueda, espera a que la policía venga a por ti.");
+        if(PI[playerid][ac_WANTED_LEVEL] > 0) SendNotification(playerid, "Estás herido y en búsqueda, espera a que la policía venga a por ti.");
         else SendNotification(playerid, "Estás herido, puedes esperar a un médico o usar ~r~/morir~w~.");
     }
 }
 
 hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger) {
-    if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK)
+    if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK)
 	{
 		new Float:sx, Float:sy, Float:sz;
 	    GetPlayerPos(playerid, sx, sy, sz);
@@ -50,7 +50,7 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger) {
 }
 
 hook OnPlayerUpdate(playerid) {
-    if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK) {
+    if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK) {
         new Keys, ud, lr;
         GetPlayerKeys(playerid, Keys, ud, lr);
         if(ud == KEY_UP /*|| ud == KEY_DOWN || lr == KEY_LEFT || lr == KEY_RIGHT*/) {
@@ -80,7 +80,7 @@ public HealthDown(playerid)
         pInjuredTimer[playerid] = -1;
     }
     
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK) {
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK) {
         new Float:rx, Float:rz;
         GetPlayerCameraRotation(playerid, rx, rz);
 

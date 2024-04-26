@@ -218,7 +218,7 @@ stock MinPosYNotification(playerid, TDN)
 {
     if(TDN == 0)
     {
-        TextDrawsNotification[playerid][TDN][MinPosY] = PI[playerid][pi_WANTED_LEVEL] == 0 ? 130.000000 : 153.0;
+        TextDrawsNotification[playerid][TDN][MinPosY] = PI[playerid][ac_WANTED_LEVEL] == 0 ? 130.000000 : 153.0;
     }
     else
     {

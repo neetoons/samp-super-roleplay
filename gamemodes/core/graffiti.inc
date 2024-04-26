@@ -181,12 +181,12 @@ ClearTerritoryGraffitis(territoryId, territoryIndex) {
 }
 
 CMD:graffiti(playerid, params[]) {
-    if(!PI[playerid][pi_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
-	if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_GRAFFITI]) return SendNotification(playerid, "No tienes permiso para crear o borrar graffitis.");
+    if(!PI[playerid][ac_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
+	if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_GRAFFITI]) return SendNotification(playerid, "No tienes permiso para crear o borrar graffitis.");
 	if(PLAYER_TEMP[playerid][pt_LAST_TERRITORY] == INVALID_STREAMER_ID) return SendNotification(playerid, "No estás en un territorio de tu banda.");
 	if(!IsPlayerInDynamicArea(playerid, TERRITORIES[ PLAYER_TEMP[playerid][pt_LAST_TERRITORY] ][territory_AREA])) return SendNotification(playerid, "No estás en un territorio de tu banda.");
-	if(TERRITORIES[ PLAYER_TEMP[playerid][pt_LAST_TERRITORY] ][territory_CREW_ID] != PI[playerid][pi_CREW]) return SendNotification(playerid, "No estás en un territorio de tu banda.");			
-    if(PI[playerid][pi_LEVEL] < 6) return SendNotification(playerid, "Debes ser nivel 6 o superior para usar los graffitis.");
+	if(TERRITORIES[ PLAYER_TEMP[playerid][pt_LAST_TERRITORY] ][territory_CREW_ID] != PI[playerid][ac_CREW]) return SendNotification(playerid, "No estás en un territorio de tu banda.");			
+    if(ACCOUNT_INFO[playerid][ac_LEVEL] < 6) return SendNotification(playerid, "Debes ser nivel 6 o superior para usar los graffitis.");
 	
 	PLAYER_TEMP[playerid][pt_PLAYER_TERRITORY_PRO] = PLAYER_TEMP[playerid][pt_LAST_TERRITORY];
 	PLAYER_TEMP[playerid][pt_DIALOG_RESPONDED] = false;
@@ -218,7 +218,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	                        {
                                 new id = cache_insert_id();
                                 if(id > 0) {
-                                    new objectid = CreateGraffitiFromInfo(id, pos[0], pos[1], pos[2], 0.0, 0.0, angle, interior, world, 19479, "Graffiti", "Arial", 30, 0, 0xFFFFFFFF, TERRITORIES[territoryIndex][territory_ID], PI[playerid][pi_CREW], PI[playerid][pi_ID], territoryIndex, PLAYER_TEMP[playerid][pt_CREW_INDEX]);
+                                    new objectid = CreateGraffitiFromInfo(id, pos[0], pos[1], pos[2], 0.0, 0.0, angle, interior, world, 19479, "Graffiti", "Arial", 30, 0, 0xFFFFFFFF, TERRITORIES[territoryIndex][territory_ID], PI[playerid][ac_CREW], ACCOUNT_INFO[playerid][ac_ID], territoryIndex, PLAYER_TEMP[playerid][pt_CREW_INDEX]);
                                     Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
                                     PLAYER_TEMP[playerid][pt_SELECTED_GRAFFITI] = objectid;
                                     EditDynamicObject(playerid, objectid);
@@ -230,7 +230,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                                     INSERT INTO graffiti(x, y, z, rz, interior, world, modelid, text, id_territory, id_crew, id_player, font_size, font_color)\
                                     VALUES(%f, %f, %f, %f, %d, %d, 19479, 'Graffiti', %d, %d, %d, 30, %d);\
                                 ",
-                                pos[0], pos[1], pos[2], angle, interior, world, TERRITORIES[territoryIndex][territory_ID], PI[playerid][pi_CREW], PI[playerid][pi_ID], 0xFFFFFFFF
+                                pos[0], pos[1], pos[2], angle, interior, world, TERRITORIES[territoryIndex][territory_ID], PI[playerid][ac_CREW], ACCOUNT_INFO[playerid][ac_ID], 0xFFFFFFFF
                             );
                             MySQL_TQueryInline(srp_db, using inline OnQueryLoaded, QUERY_BUFFER);
                         }
@@ -449,7 +449,7 @@ hook OnPlayerSelectDynObject(playerid, STREAMER_TAG_OBJECT objectid, modelid, Fl
     if(info[0] == OBJECT_TYPE_GRAFFITI) {
         new territoryIndex = info[1];
         new crewIndex = info[2];
-        if(PLAYER_TEMP[playerid][pt_PLAYER_TERRITORY_PRO] == territoryIndex && PLAYER_TEMP[playerid][pt_CREW_INDEX] == crewIndex && CREW_RANK_INFO[crewIndex][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_GRAFFITI]) {
+        if(PLAYER_TEMP[playerid][pt_PLAYER_TERRITORY_PRO] == territoryIndex && PLAYER_TEMP[playerid][pt_CREW_INDEX] == crewIndex && CREW_RANK_INFO[crewIndex][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_GRAFFITI]) {
             CancelEdit(playerid);
             PLAYER_TEMP[playerid][pt_SELECTED_GRAFFITI] = objectid;
             ShowDialog(playerid, DIALOG_GRAFFITI_EDIT);

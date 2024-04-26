@@ -140,7 +140,7 @@ public UpdateVehicleTaximeter(taxi, driver, passenger)
 			work_extra_payment = (work_info[WORK_TAXI][work_info_EXTRA_PAY] * floatround(floatdiv(PLAYER_WORKS[ driver ][WORK_TAXI][pwork_LEVEL], work_info[WORK_TAXI][work_info_EXTRA_PAY_EXP])));
 			if(work_info[WORK_TAXI][work_info_EXTRA_PAY_LIMIT] != 0) if(work_extra_payment > work_info[WORK_TAXI][work_info_EXTRA_PAY_LIMIT]) work_extra_payment = work_info[WORK_TAXI][work_info_EXTRA_PAY_LIMIT];
 		
-			if(PI[driver][pi_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
+			if(ACCOUNT_INFO[driver][ac_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
 		}
 		PLAYER_WORKS[driver][WORK_TAXI][pwork_LEVEL] ++;
 		
@@ -176,7 +176,7 @@ public UpdateVehicleTaximeter(taxi, driver, passenger)
 			work_extra_payment = (work_info[WORK_TAXI][work_info_EXTRA_PAY] * floatround(floatdiv(PLAYER_WORKS[ driver ][WORK_TAXI][pwork_LEVEL], work_info[WORK_TAXI][work_info_EXTRA_PAY_EXP])));
 			if(work_info[WORK_TAXI][work_info_EXTRA_PAY_LIMIT] != 0) if(work_extra_payment > work_info[WORK_TAXI][work_info_EXTRA_PAY_LIMIT]) work_extra_payment = work_info[WORK_TAXI][work_info_EXTRA_PAY_LIMIT];
 		
-			if(PI[driver][pi_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
+			if(ACCOUNT_INFO[driver][ac_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
 		}
 		PLAYER_WORKS[driver][WORK_TAXI][pwork_LEVEL] ++;
 		
@@ -199,7 +199,7 @@ public UpdateVehicleTaximeter(taxi, driver, passenger)
 			work_extra_payment = (work_info[WORK_TAXI][work_info_EXTRA_PAY] * floatround(floatdiv(PLAYER_WORKS[ driver ][WORK_TAXI][pwork_LEVEL], work_info[WORK_TAXI][work_info_EXTRA_PAY_EXP])));
 			if(work_info[WORK_TAXI][work_info_EXTRA_PAY_LIMIT] != 0) if(work_extra_payment > work_info[WORK_TAXI][work_info_EXTRA_PAY_LIMIT]) work_extra_payment = work_info[WORK_TAXI][work_info_EXTRA_PAY_LIMIT];
 			
-			if(PI[driver][pi_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
+			if(ACCOUNT_INFO[driver][ac_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
 		}
 		PLAYER_WORKS[driver][WORK_TAXI][pwork_LEVEL] ++;
 		
@@ -239,7 +239,7 @@ public UpdateVehicleTaximeter(taxi, driver, passenger)
 			work_extra_payment = (work_info[WORK_TAXI][work_info_EXTRA_PAY] * floatround(floatdiv(PLAYER_WORKS[ driver ][WORK_TAXI][pwork_LEVEL], work_info[WORK_TAXI][work_info_EXTRA_PAY_EXP])));
 			if(work_info[WORK_TAXI][work_info_EXTRA_PAY_LIMIT] != 0) if(work_extra_payment > work_info[WORK_TAXI][work_info_EXTRA_PAY_LIMIT]) work_extra_payment = work_info[WORK_TAXI][work_info_EXTRA_PAY_LIMIT];
 			
-			if(PI[driver][pi_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
+			if(ACCOUNT_INFO[driver][ac_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
 		}
 		PLAYER_WORKS[driver][WORK_TAXI][pwork_LEVEL] ++;
 		
@@ -262,7 +262,7 @@ public UpdateVehicleTaximeter(taxi, driver, passenger)
 			work_extra_payment = (work_info[WORK_TAXI][work_info_EXTRA_PAY] * floatround(floatdiv(PLAYER_WORKS[ driver ][WORK_TAXI][pwork_LEVEL], work_info[WORK_TAXI][work_info_EXTRA_PAY_EXP])));
 			if(work_info[WORK_TAXI][work_info_EXTRA_PAY_LIMIT] != 0) if(work_extra_payment > work_info[WORK_TAXI][work_info_EXTRA_PAY_LIMIT]) work_extra_payment = work_info[WORK_TAXI][work_info_EXTRA_PAY_LIMIT];
 		
-			if(PI[driver][pi_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
+			if(ACCOUNT_INFO[driver][ac_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
 		}
 		PLAYER_WORKS[driver][WORK_TAXI][pwork_LEVEL] ++;
 		
@@ -294,7 +294,7 @@ public UpdateVehicleTaximeter(taxi, driver, passenger)
 		return 1;
 	}
 
-	if(PI[passenger][pi_CASH] < TAXI_METER_VEHICLE[taxi][veh_taxi_meter_PAYMENT])
+	if(PI[passenger][ac_CASH] < TAXI_METER_VEHICLE[taxi][veh_taxi_meter_PAYMENT])
 	{
 		new work_extra_payment;
 		if(work_info[WORK_TAXI][work_info_EXTRA_PAY] > 0 && work_info[WORK_TAXI][work_info_EXTRA_PAY_EXP] > 0)
@@ -302,7 +302,7 @@ public UpdateVehicleTaximeter(taxi, driver, passenger)
 			work_extra_payment = (work_info[WORK_TAXI][work_info_EXTRA_PAY] * floatround(floatdiv(PLAYER_WORKS[ driver ][WORK_TAXI][pwork_LEVEL], work_info[WORK_TAXI][work_info_EXTRA_PAY_EXP])));
 			if(work_info[WORK_TAXI][work_info_EXTRA_PAY_LIMIT] != 0) if(work_extra_payment > work_info[WORK_TAXI][work_info_EXTRA_PAY_LIMIT]) work_extra_payment = work_info[WORK_TAXI][work_info_EXTRA_PAY_LIMIT];
 		
-			if(PI[driver][pi_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
+			if(ACCOUNT_INFO[driver][ac_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
 		}
 		PLAYER_WORKS[driver][WORK_TAXI][pwork_LEVEL] ++;
 		
@@ -313,7 +313,7 @@ public UpdateVehicleTaximeter(taxi, driver, passenger)
 		SendClientMessageEx(passenger, -1, "{"#SILVER_COLOR"}El taxi te costó %s$.", number_format_thousand(TAXI_METER_VEHICLE[taxi][veh_taxi_meter_PAYMENT]));
 		SendClientMessage(passenger, -1, "{"#SILVER_COLOR"}No tienes suficiente dinero para seguir pagando el viaje.");
 		GivePlayerCash(passenger, -TAXI_METER_VEHICLE[taxi][veh_taxi_meter_PAYMENT], true, true);
-		if(PI[passenger][pi_CASH] < 0) SetPlayerCash(passenger, 0);
+		if(PI[passenger][ac_CASH] < 0) SetPlayerCash(passenger, 0);
 		
 		ResetVehicleTaxiMeter(taxi);
 		HidePlayerTaxiMeter(passenger);

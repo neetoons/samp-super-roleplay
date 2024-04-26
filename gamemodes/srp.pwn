@@ -64,6 +64,11 @@
 #define GREEN_COLOR "98f442"
 #define BLUE_COLOR "90C3D4"
 
+
+
+// -- headers --
+#include "core/player/player_header"
+
 /* LIMITES JUGADOR */
 	// Normal User
 #define MAX_NU_VEHICLES		2
@@ -4422,83 +4427,6 @@ new Textdraws[Textdraws_Enum];
 #define MIN_PASS_LENGTH	6
 #define MAX_PASS_LENGTH	18
 
-enum enum_PI
-{
-	pi_ID,
-	pi_NAME[24],
-	pi_IP[16],
-	pi_EMAIL[32],
-	pi_SALT[16],
-	pi_PASS[65],
-	pi_REG_DATE[24],
-	pi_LAST_CONNECTION[24],
-	pi_LAST_CONNECTION_TIMESTAMP,
-	pi_TIME_PLAYING,
-	pi_LEVEL,
-	pi_REP,
-	pi_CONNECTED,
-	pi_PLAYERID,
-	pi_DOUBT_CHANNEL,
-	pi_TIME_FOR_REP,
-	pi_ADMIN_LEVEL,
-	pi_PAYDAY_REP,
-	pi_VIP,
-	pi_VIP_EXPIRE_DATE[24],
-	pi_COINS,
-	pi_SKIN,
-	pi_CASH,
-	Float:pi_POS_X,
-	Float:pi_POS_Y,
-	Float:pi_POS_Z,
-	Float:pi_ANGLE,
-	pi_STATE,
-	pi_INTERIOR,
-	pi_LOCAL_INTERIOR,
-	pi_FIGHT_STYLE,
-	Float:pi_HEALTH,
-	Float:pi_ARMOUR,
-	pi_GENDER,
-	Float:pi_HUNGRY,
-	Float:pi_THIRST,
-	pi_BLACK_MARKET_LEVEL,
-	pi_WANTED_LEVEL,
-	pi_POLICE_JAIL_TIME,
-	pi_POLICE_DUTY,
-	pi_POLICE_JAIL_ID,
-	pi_DRIVE_LICENSE_POINTS,
-	pi_BANK_ACCOUNT,
-	pi_BANK_MONEY,
-	pi_PHONE_NUMBER,
-	pi_PHONE_STATE,
-	pi_PHONE_VISIBLE_NUMBER,
-	pi_GPS,
-	pi_Maso,
-	pi_MP3,
-	pi_PHONE_RESOLVER,
-	pi_SPEAKERS,
-	pi_MECHANIC_PIECES,
-	pi_FUEL_DRUM,
-	pi_SEED_MEDICINE,
-	pi_SEED_CANNABIS,
-	pi_SEED_CRACK,
-	pi_MEDICINE,
-	pi_CANNABIS,
-	pi_CRACK,
-	pi_CONFIG_SOUNDS,
-	pi_CONFIG_AUDIO,
-	pi_CONFIG_TIME,
-	pi_CONFIG_HUD,
-	pi_CONFIG_ADMIN,
-	pi_CONFIG_SECURE_LOGIN,
-	pi_MUTE,
-	pi_PLACA_PD,
-	pi_CAN_BUY_BM,
-	pi_CREW,
-	pi_CREW_RANK,
-	pi_MECHANIC_KITS,
-	pi_MEDICAL_KITS
-};
-new PI[MAX_PLAYERS][enum_PI];
 
 forward OnPlayerRegister(playerid);
 forward OnPlayerLogin(playerid);
@@ -4773,7 +4701,7 @@ public OnPlayerDisconnect(playerid, reason)
 		KillTimer(PLAYER_TEMP[playerid][pt_COMBAT_TIMER]);
 		PLAYER_TEMP[playerid][pt_COMBAT_TIMER] = -1;
 
-		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "DELETE FROM pweapons WHERE id_player = %d;", PI[playerid][pi_ID]);
+		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "DELETE FROM pweapons WHERE id_player = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 		mysql_tquery(srp_db, QUERY_BUFFER);
 
 		ResetPlayerWeaponsEx(playerid);
@@ -4805,10 +4733,10 @@ public OnPlayerDisconnect(playerid, reason)
 	}
 
 	PLAYER_TEMP[playerid][pt_TIME_PASSED_LAST_REP] = gettime() * 1000 - PLAYER_TEMP[playerid][pt_TIME_PASSED_LAST_REP];
-	PI[playerid][pi_TIME_FOR_REP] -= PLAYER_TEMP[playerid][pt_TIME_PASSED_LAST_REP];
-	if(PI[playerid][pi_CREW]) CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_ONLINE_MEMBERS] --;
+	ACCOUNT_INFO[playerid][ac_TIME_FOR_REP] -= PLAYER_TEMP[playerid][pt_TIME_PASSED_LAST_REP];
+	if(PI[playerid][ac_CREW]) CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_ONLINE_MEMBERS] --;
 	if(PLAYER_TEMP[playerid][pt_PIVOT_OBJECT] != INVALID_OBJECT_ID) DestroyPlayerObject(playerid, PLAYER_TEMP[playerid][pt_PIVOT_OBJECT]);
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL) PI[playerid][pi_POLICE_JAIL_TIME] -= gettime() - PLAYER_TEMP[playerid][pt_ENTER_JAIL_TIME];
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL) PI[playerid][ac_POLICE_JAIL_TIME] -= gettime() - PLAYER_TEMP[playerid][pt_ENTER_JAIL_TIME];
 	if(PLAYER_TEMP[playerid][pt_PLAYER_IN_CALL]) EndPhoneCall(playerid);
 
 	DestroyPlayerCheckpoints(playerid);
@@ -4816,19 +4744,19 @@ public OnPlayerDisconnect(playerid, reason)
 	CallLocalFunction("EndPlayerJob", "iib", playerid, PLAYER_TEMP[playerid][pt_WORKING_IN], false);
 
 	//db
-	if(PI[playerid][pi_ID] != 0)
+	if(ACCOUNT_INFO[playerid][ac_ID] != 0)
 	{
 		if(PLAYER_TEMP[playerid][pt_USER_LOGGED]) //guardar datos solo si ha logeado
 		{
-			if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK && PI[playerid][pi_WANTED_LEVEL] > 0) {
-				PI[playerid][pi_STATE] = ROLEPLAY_STATE_HOSPITAL;
+			if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK && PI[playerid][ac_WANTED_LEVEL] > 0) {
+				ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_HOSPITAL;
 			}
 
-			PI[playerid][pi_CONNECTED] = 0;
-			PI[playerid][pi_PLAYERID] = 0;
+			PI[playerid][ac_CONNECTED] = 0;
+			PI[playerid][ac_PLAYERID] = 0;
 			UpdatePlayerWorldInfo(playerid);
 
-			getDateTime(PI[playerid][pi_LAST_CONNECTION]);
+			getDateTime(ACCOUNT_INFO[playerid][ac_LAST_CONNECTION]);
 			SavePlayerData(playerid);
 			SavePlayerVehicles(playerid, true);
 			SavePlayerToys(playerid);
@@ -4843,10 +4771,10 @@ public OnPlayerDisconnect(playerid, reason)
 				case 1: format(disconnect_message, sizeof disconnect_message, "%s se ha desconectado.", PLAYER_TEMP[playerid][pt_RP_NAME]);
 				case 2: format(disconnect_message, sizeof disconnect_message, "%s se ha desconectado porque fue expulsado del servidor.", PLAYER_TEMP[playerid][pt_RP_NAME]);
 			}
-			NearbyMessage(PI[playerid][pi_POS_X], PI[playerid][pi_POS_Y], PI[playerid][pi_POS_Z], PI[playerid][pi_INTERIOR], GetPlayerVirtualWorld(playerid), 15.0, 0x909D95FF, disconnect_message);
+			NearbyMessage(PI[playerid][ac_POS_X], PI[playerid][ac_POS_Y], PI[playerid][ac_POS_Z], PI[playerid][ac_INTERIOR], GetPlayerVirtualWorld(playerid), 15.0, 0x909D95FF, disconnect_message);
 		}
 		else {
-			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET connected = 0, playerid = 0 WHERE id = %d;", PI[playerid][pi_ID]);
+			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET connected = 0, playerid = 0 WHERE id = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 			mysql_tquery(srp_db, QUERY_BUFFER);
 		}
 	}
@@ -4973,8 +4901,8 @@ public OnPlayerSpawn(playerid)
 			PLAYER_TEMP[playerid][pt_LOGIN_KICK_TIMER] = -1;
 		}
 
-		if(PI[playerid][pi_CONFIG_SECURE_LOGIN]) {
-			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "DELETE FROM player_secure_login WHERE TIMESTAMPDIFF(DAY, last_connection, NOW()) > "#SECURE_LOGIN_IP_DAYS" AND id_player = %d;", PI[playerid][pi_ID]);
+		if(PI[playerid][ac_CONFIG_SECURE_LOGIN]) {
+			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "DELETE FROM player_secure_login WHERE TIMESTAMPDIFF(DAY, last_connection, NOW()) > "#SECURE_LOGIN_IP_DAYS" AND id_player = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 			mysql_tquery(srp_db, QUERY_BUFFER);
 		}
 		else {
@@ -4984,9 +4912,9 @@ public OnPlayerSpawn(playerid)
 		new now = gettime();
 		PLAYER_TEMP[playerid][pt_LAST_PLANT_TIME] = now;
 		PLAYER_TEMP[playerid][pt_COOLDOWN_MEDICAL_KIT] = now + 300;
-		format(PI[playerid][pi_IP], 16, "%s", PLAYER_TEMP[playerid][pt_IP]);
+		format(ACCOUNT_INFO[playerid][ac_IP], 16, "%s", PLAYER_TEMP[playerid][pt_IP]);
 		
-		if(PI[playerid][pi_CREW]) SetPlayerGangZones(playerid);
+		if(PI[playerid][ac_CREW]) SetPlayerGangZones(playerid);
 		SetPlayerSkillLevels(playerid);
 		ApplyAnimation(playerid,"SWAT","null",0.0,0,0,0,0,0);
 		ApplyAnimation(playerid,"MEDIC","null",0.0,0,0,0,0,0);
@@ -5001,12 +4929,12 @@ public OnPlayerSpawn(playerid)
 		ApplyAnimation(playerid,"CRACK","null",0.0,0,0,0,0,0);
 		ApplyAnimation(playerid,"POLICE","null",0.0,0,0,0,0,0);
 
-		if(PI[playerid][pi_POLICE_DUTY] != 0)
+		if(PI[playerid][ac_POLICE_DUTY] != 0)
 		{
 			if(PLAYER_WORKS[playerid][WORK_POLICE][pwork_SET]) CallLocalFunction("StartPlayerJob", "iii", playerid, WORK_POLICE, INVALID_VEHICLE_ID);
-			else PI[playerid][pi_POLICE_DUTY] = 0;
+			else PI[playerid][ac_POLICE_DUTY] = 0;
 		}
-		switch(PI[playerid][pi_STATE])
+		switch(ACCOUNT_INFO[playerid][ac_STATE])
 		{
 			case ROLEPLAY_STATE_NORMAL:
 			{
@@ -5018,23 +4946,23 @@ public OnPlayerSpawn(playerid)
 
 				SetPlayerVirtualWorld(playerid, 0);
 
-				if(PI[playerid][pi_WANTED_LEVEL] > 0)
+				if(PI[playerid][ac_WANTED_LEVEL] > 0)
 				{
-					PI[playerid][pi_POLICE_JAIL_ID] = 0;
+					PI[playerid][ac_POLICE_JAIL_ID] = 0;
 					JailPlayer(playerid);
 				}
 			}
 			case ROLEPLAY_STATE_JAIL:
 			{
-				PI[playerid][pi_STATE] = ROLEPLAY_STATE_JAIL;
-				if(PI[playerid][pi_POLICE_JAIL_TIME] < 5) PI[playerid][pi_POLICE_JAIL_TIME] = 5;
+				ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_JAIL;
+				if(PI[playerid][ac_POLICE_JAIL_TIME] < 5) PI[playerid][ac_POLICE_JAIL_TIME] = 5;
 				KillTimer(PLAYER_TEMP[playerid][pt_TIMERS][15]);
-				PLAYER_TEMP[playerid][pt_TIMERS][15] = SetTimerEx("UnjailPlayer", PI[playerid][pi_POLICE_JAIL_TIME] * 1000, false, "i", playerid);
+				PLAYER_TEMP[playerid][pt_TIMERS][15] = SetTimerEx("UnjailPlayer", PI[playerid][ac_POLICE_JAIL_TIME] * 1000, false, "i", playerid);
 				
 				PLAYER_TEMP[playerid][pt_ENTER_JAIL_TIME] = gettime();
-				SetPlayerPosEx(playerid, JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID] ][jail_X], JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID]  ][jail_Y], JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID]  ][jail_Z], JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID]  ][jail_ANGLE], JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID]  ][jail_INTERIOR], 0, true);
+				SetPlayerPosEx(playerid, JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID] ][jail_X], JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_Y], JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_Z], JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_ANGLE], JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_INTERIOR], 0, true);
 				
-				new time = PI[playerid][pi_POLICE_JAIL_TIME] - (gettime() - PLAYER_TEMP[playerid][pt_ENTER_JAIL_TIME]);
+				new time = PI[playerid][ac_POLICE_JAIL_TIME] - (gettime() - PLAYER_TEMP[playerid][pt_ENTER_JAIL_TIME]);
 				SendFormatNotification(playerid, "Te quedan %s minutos de condena.", TimeConvert(time));
 				
 				SetPlayerHud(playerid);
@@ -5045,20 +4973,20 @@ public OnPlayerSpawn(playerid)
 			}
 			case ROLEPLAY_STATE_ARRESTED:
 			{
-				if(PI[playerid][pi_VIP]) PI[playerid][pi_POLICE_JAIL_TIME] = 150 * PI[playerid][pi_WANTED_LEVEL];
-				else PI[playerid][pi_POLICE_JAIL_TIME] = 300 * PI[playerid][pi_WANTED_LEVEL];
+				if(ACCOUNT_INFO[playerid][ac_VIP]) PI[playerid][ac_POLICE_JAIL_TIME] = 150 * PI[playerid][ac_WANTED_LEVEL];
+				else PI[playerid][ac_POLICE_JAIL_TIME] = 300 * PI[playerid][ac_WANTED_LEVEL];
 				
-				PI[playerid][pi_WANTED_LEVEL] = 0;
+				PI[playerid][ac_WANTED_LEVEL] = 0;
 				
-				PI[playerid][pi_STATE] = ROLEPLAY_STATE_JAIL;
-				if(PI[playerid][pi_POLICE_JAIL_TIME] < 5) PI[playerid][pi_POLICE_JAIL_TIME] = 5;
+				ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_JAIL;
+				if(PI[playerid][ac_POLICE_JAIL_TIME] < 5) PI[playerid][ac_POLICE_JAIL_TIME] = 5;
 				KillTimer(PLAYER_TEMP[playerid][pt_TIMERS][15]);
-				PLAYER_TEMP[playerid][pt_TIMERS][15] = SetTimerEx("UnjailPlayer", PI[playerid][pi_POLICE_JAIL_TIME] * 1000, false, "i", playerid);
+				PLAYER_TEMP[playerid][pt_TIMERS][15] = SetTimerEx("UnjailPlayer", PI[playerid][ac_POLICE_JAIL_TIME] * 1000, false, "i", playerid);
 				
 				PLAYER_TEMP[playerid][pt_ENTER_JAIL_TIME] = gettime();
-				SetPlayerPosEx(playerid, JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID] ][jail_X], JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID]  ][jail_Y], JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID]  ][jail_Z], JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID]  ][jail_ANGLE], JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID]  ][jail_INTERIOR], 0, true);
+				SetPlayerPosEx(playerid, JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID] ][jail_X], JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_Y], JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_Z], JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_ANGLE], JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_INTERIOR], 0, true);
 				
-				new time = PI[playerid][pi_POLICE_JAIL_TIME] - (gettime() - PLAYER_TEMP[playerid][pt_ENTER_JAIL_TIME]);
+				new time = PI[playerid][ac_POLICE_JAIL_TIME] - (gettime() - PLAYER_TEMP[playerid][pt_ENTER_JAIL_TIME]);
 				SendFormatNotification(playerid, "Te quedan %s minutos de condena.", TimeConvert(time));
 				
 				SetPlayerHud(playerid);
@@ -5069,37 +4997,37 @@ public OnPlayerSpawn(playerid)
 			}
 			case ROLEPLAY_STATE_OWN_PROPERTY:
 			{
-				new index = GetPropertyIndexByID(PI[playerid][pi_LOCAL_INTERIOR]);
+				new index = GetPropertyIndexByID(PI[playerid][ac_LOCAL_INTERIOR]);
 				if(index == -1)
 				{
-					PI[playerid][pi_STATE] = ROLEPLAY_STATE_NORMAL;
-					PI[playerid][pi_LOCAL_INTERIOR] = 0;
-					PI[playerid][pi_POS_X] = New_User_Pos[0];
-					PI[playerid][pi_POS_Y] = New_User_Pos[1];
-					PI[playerid][pi_POS_Z] = New_User_Pos[2];
-					PI[playerid][pi_ANGLE] = New_User_Pos[3];
-					PI[playerid][pi_INTERIOR] = 0;
+					ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_NORMAL;
+					PI[playerid][ac_LOCAL_INTERIOR] = 0;
+					PI[playerid][ac_POS_X] = New_User_Pos[0];
+					PI[playerid][ac_POS_Y] = New_User_Pos[1];
+					PI[playerid][ac_POS_Z] = New_User_Pos[2];
+					PI[playerid][ac_ANGLE] = New_User_Pos[3];
+					PI[playerid][ac_INTERIOR] = 0;
 					
-					SetPlayerPosEx(playerid, PI[playerid][pi_POS_X], PI[playerid][pi_POS_Y], PI[playerid][pi_POS_Z], PI[playerid][pi_ANGLE], PI[playerid][pi_INTERIOR], 0);
+					SetPlayerPosEx(playerid, PI[playerid][ac_POS_X], PI[playerid][ac_POS_Y], PI[playerid][ac_POS_Z], PI[playerid][ac_ANGLE], PI[playerid][ac_INTERIOR], 0);
 				}
 				else
 				{
-					if(PROPERTY_INFO[index][property_OWNER_ID] == PI[playerid][pi_ID])
+					if(PROPERTY_INFO[index][property_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
 					{
 						SetPlayerInterior(playerid, PROPERTY_INTERIORS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_INT_INTERIOR]);
 						SetPlayerVirtualWorld(playerid, PROPERTY_INFO[index][property_ID]);
 					}
 					else
 					{
-						PI[playerid][pi_STATE] = ROLEPLAY_STATE_NORMAL;
-						PI[playerid][pi_LOCAL_INTERIOR] = 0;
-						PI[playerid][pi_POS_X] = PROPERTY_INFO[index][property_EXT_X];
-						PI[playerid][pi_POS_Y] = PROPERTY_INFO[index][property_EXT_Y];
-						PI[playerid][pi_POS_Z] = PROPERTY_INFO[index][property_EXT_Z];
-						PI[playerid][pi_ANGLE] = PROPERTY_INFO[index][property_EXT_ANGLE];
-						PI[playerid][pi_INTERIOR] = PROPERTY_INFO[index][property_EXT_INTERIOR];
+						ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_NORMAL;
+						PI[playerid][ac_LOCAL_INTERIOR] = 0;
+						PI[playerid][ac_POS_X] = PROPERTY_INFO[index][property_EXT_X];
+						PI[playerid][ac_POS_Y] = PROPERTY_INFO[index][property_EXT_Y];
+						PI[playerid][ac_POS_Z] = PROPERTY_INFO[index][property_EXT_Z];
+						PI[playerid][ac_ANGLE] = PROPERTY_INFO[index][property_EXT_ANGLE];
+						PI[playerid][ac_INTERIOR] = PROPERTY_INFO[index][property_EXT_INTERIOR];
 						
-						SetPlayerPosEx(playerid, PI[playerid][pi_POS_X], PI[playerid][pi_POS_Y], PI[playerid][pi_POS_Z], PI[playerid][pi_ANGLE], PI[playerid][pi_INTERIOR], 0);
+						SetPlayerPosEx(playerid, PI[playerid][ac_POS_X], PI[playerid][ac_POS_Y], PI[playerid][ac_POS_Z], PI[playerid][ac_ANGLE], PI[playerid][ac_INTERIOR], 0);
 					}
 				}
 					
@@ -5118,7 +5046,7 @@ public OnPlayerSpawn(playerid)
 				TogglePlayerControllableEx(playerid, true);
 				TogglePlayerSpectatingEx(playerid, true);
 				SetPlayerInterior(playerid, 0);
-				PI[playerid][pi_LOCAL_INTERIOR] = 0;
+				PI[playerid][ac_LOCAL_INTERIOR] = 0;
 				PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] = -1;
 				PLAYER_TEMP[playerid][pt_PROPERTY_INDEX] = -1;
 				
@@ -5133,10 +5061,10 @@ public OnPlayerSpawn(playerid)
 				PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_HOSPITAL][2]);
 								
 				//ClearPlayerChat(playerid);
-				if(PI[playerid][pi_WANTED_LEVEL] > 0)
+				if(PI[playerid][ac_WANTED_LEVEL] > 0)
 				{
-					if(PI[playerid][pi_VIP]) PI[playerid][pi_POLICE_JAIL_TIME] = 150 * PI[playerid][pi_WANTED_LEVEL];
-					else PI[playerid][pi_POLICE_JAIL_TIME] = 300 * PI[playerid][pi_WANTED_LEVEL];
+					if(ACCOUNT_INFO[playerid][ac_VIP]) PI[playerid][ac_POLICE_JAIL_TIME] = 150 * PI[playerid][ac_WANTED_LEVEL];
+					else PI[playerid][ac_POLICE_JAIL_TIME] = 300 * PI[playerid][ac_WANTED_LEVEL];
 					
 					SendNotification(playerid, "Fuiste ingresado en ~r~el centro médico más cercano~w~.~n~~n~Espera mientras te recuperas.");
 				}
@@ -5154,18 +5082,18 @@ public OnPlayerSpawn(playerid)
 			TextDrawHideForPlayer(playerid, Textdraws[textdraw_LOAD_SCREEN][i]);
 		}
 
-		new neccessary_rep = PI[playerid][pi_LEVEL] * REP_MULTIPLIER;
-		if(PI[playerid][pi_REP] < neccessary_rep)
+		new neccessary_rep = ACCOUNT_INFO[playerid][ac_LEVEL] * REP_MULTIPLIER;
+		if(ACCOUNT_INFO[playerid][ac_REP] < neccessary_rep)
 		{
-			if(PI[playerid][pi_TIME_FOR_REP] > TIME_FOR_REP) PI[playerid][pi_TIME_FOR_REP] = TIME_FOR_REP;
-			if(PI[playerid][pi_TIME_FOR_REP] <= 900) PI[playerid][pi_TIME_FOR_REP] = 3000;
+			if(ACCOUNT_INFO[playerid][ac_TIME_FOR_REP] > TIME_FOR_REP) ACCOUNT_INFO[playerid][ac_TIME_FOR_REP] = TIME_FOR_REP;
+			if(ACCOUNT_INFO[playerid][ac_TIME_FOR_REP] <= 900) ACCOUNT_INFO[playerid][ac_TIME_FOR_REP] = 3000;
 			
 			PLAYER_TEMP[playerid][pt_TIME_PASSED_LAST_REP] = gettime() * 1000;
-			PLAYER_TEMP[playerid][pt_TIMERS][2] = SetTimerEx("AddPlayerReputation", PI[playerid][pi_TIME_FOR_REP], false, "i", playerid);
+			PLAYER_TEMP[playerid][pt_TIMERS][2] = SetTimerEx("AddPlayerReputation", ACCOUNT_INFO[playerid][ac_TIME_FOR_REP], false, "i", playerid);
 		}
-		else SendFormatNotification(playerid, "Escribe ~g~/comprarnivel ~w~para subir al nivel ~g~%d ~w~por ~g~%d dólares~w~.", PI[playerid][pi_LEVEL] + 1, PI[playerid][pi_LEVEL] * 150); //
+		else SendFormatNotification(playerid, "Escribe ~g~/comprarnivel ~w~para subir al nivel ~g~%d ~w~por ~g~%d dólares~w~.", ACCOUNT_INFO[playerid][ac_LEVEL] + 1, ACCOUNT_INFO[playerid][ac_LEVEL] * 150); //
 		
-		if(PI[playerid][pi_PHONE_NUMBER])
+		if(PI[playerid][ac_PHONE_NUMBER])
 		{
 			inline OnOfflineMessagesChecked()
 			{
@@ -5179,17 +5107,17 @@ public OnPlayerSpawn(playerid)
 						if(unreaded_messages > 0) SendClientMessageEx(playerid, -1, "Tienes {f1f442}%d {FFFFFF}mensajes nuevos en tu /movil desde tu última conexión.", unreaded_messages);
 					}
 				}
-				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pmessages SET offline = 0 WHERE to_id = %d;", PI[playerid][pi_ID]);
+				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pmessages SET offline = 0 WHERE to_id = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 				mysql_tquery(srp_db, QUERY_BUFFER);
 			}
-			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM pmessages WHERE to_id = %d AND offline = 1;", PI[playerid][pi_ID]);
+			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM pmessages WHERE to_id = %d AND offline = 1;", ACCOUNT_INFO[playerid][ac_ID]);
 			MySQL_TQueryInline(srp_db, using inline OnOfflineMessagesChecked, QUERY_BUFFER);
 
 		}
 	}
 	else if(PLAYER_TEMP[playerid][pt_GAME_STATE] == GAME_STATE_DEAD) // Viene de morir
 	{
-		if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_HOSPITAL)
+		if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_HOSPITAL)
 		{
 			if(!PLAYER_TEMP[playerid][pt_PLAYER_FINISH_HOSPITAL])
 			{
@@ -5197,8 +5125,8 @@ public OnPlayerSpawn(playerid)
 				SetPlayerInterior(playerid, 0);
 				SetPlayerVirtualWorld(playerid, 0);
 				PLAYER_TEMP[playerid][pt_PLAYER_FINISH_HOSPITAL] = false;
-				PI[playerid][pi_STATE] = ROLEPLAY_STATE_HOSPITAL;
-				PI[playerid][pi_LOCAL_INTERIOR] = 0;
+				ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_HOSPITAL;
+				PI[playerid][ac_LOCAL_INTERIOR] = 0;
 				if(PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] != -1) {
 					CallLocalFunction("OnPlayerExitInterior", "ii", playerid, PLAYER_TEMP[playerid][pt_INTERIOR_INDEX]);
 				}
@@ -5216,7 +5144,7 @@ public OnPlayerSpawn(playerid)
 				PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_HOSPITAL][2]);
 				
 				ClearPlayerChat(playerid);
-				if(PI[playerid][pi_WANTED_LEVEL] > 0 || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED)
+				if(PI[playerid][ac_WANTED_LEVEL] > 0 || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED)
 				{
 					SendNotification(playerid, "Fuiste ingresado en el centro médico más cercano.");
 					SendNotification(playerid, "Cuando te recuperes serás llevado a la cárcel.");
@@ -5235,12 +5163,12 @@ public OnPlayerSpawn(playerid)
 
 	if(PLAYER_TEMP[playerid][pt_PLAYER_FINISH_HOSPITAL])
 	{
-		if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL)
+		if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL)
 		{
 			KillTimer(PLAYER_TEMP[playerid][pt_TIMERS][15]);
-			PLAYER_TEMP[playerid][pt_TIMERS][15] = SetTimerEx("UnjailPlayer", PI[playerid][pi_POLICE_JAIL_TIME] * 1000, false, "i", playerid);
+			PLAYER_TEMP[playerid][pt_TIMERS][15] = SetTimerEx("UnjailPlayer", PI[playerid][ac_POLICE_JAIL_TIME] * 1000, false, "i", playerid);
 		}
-		SetPlayerInterior(playerid, PI[playerid][pi_INTERIOR]);
+		SetPlayerInterior(playerid, PI[playerid][ac_INTERIOR]);
 		SetPlayerVirtualWorld(playerid, 0);
 		SetPlayerHud(playerid);
 		TogglePlayerControllableEx(playerid, false);
@@ -5250,13 +5178,13 @@ public OnPlayerSpawn(playerid)
 		PLAYER_TEMP[playerid][pt_TIMERS][3] = SetTimerEx("TogglePlayerControl", 2000, false, "ib", playerid, true);
 	}
 	
-	if(PLAYER_TEMP[playerid][pt_WORKING_IN] != WORK_POLICE) SetPlayerSkin(playerid, PI[playerid][pi_SKIN]);
-	else SetPlayerSkin(playerid, PI[playerid][pi_POLICE_DUTY]);
+	if(PLAYER_TEMP[playerid][pt_WORKING_IN] != WORK_POLICE) SetPlayerSkin(playerid, PI[playerid][ac_SKIN]);
+	else SetPlayerSkin(playerid, PI[playerid][ac_POLICE_DUTY]);
 
 	PLAYER_TEMP[playerid][pt_GAME_STATE] = GAME_STATE_NORMAL;
 	SetPlayerToys(playerid);
-	if(PI[playerid][pi_STATE] != ROLEPLAY_STATE_JAIL && PI[playerid][pi_STATE] != ROLEPLAY_STATE_CRACK) SetWeaponsForPlayer(playerid);
-	if(PI[playerid][pi_STATE] != ROLEPLAY_STATE_HOSPITAL) SetPlayerWantedLevelEx(playerid, PI[playerid][pi_WANTED_LEVEL]);
+	if(ACCOUNT_INFO[playerid][ac_STATE] != ROLEPLAY_STATE_JAIL && ACCOUNT_INFO[playerid][ac_STATE] != ROLEPLAY_STATE_CRACK) SetWeaponsForPlayer(playerid);
+	if(ACCOUNT_INFO[playerid][ac_STATE] != ROLEPLAY_STATE_HOSPITAL) SetPlayerWantedLevelEx(playerid, PI[playerid][ac_WANTED_LEVEL]);
 	SetPlayerArmedWeapon(playerid, 0);
 	SetPlayerNormalColor(playerid);
 	SetPlayerCityWeather(playerid);
@@ -5273,14 +5201,14 @@ public OnPlayerSpawn(playerid)
 
 CMD:cachear(playerid, params[])
 {
-	if(!PI[playerid][pi_CREW]) return SendNotification(playerid, "No formas parte de una banda.");
+	if(!PI[playerid][ac_CREW]) return SendNotification(playerid, "No formas parte de una banda.");
 	if(sscanf(params, "u", params[0])) return SendNotification(playerid, "Error: /cachear [playerid/nombre]");
 	if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return SendNotification(playerid, "No estás de pie.");
 	
 	if(!IsPlayerConnected(params[0])) return SendNotification(playerid, "El jugador no está conectado.");
 	new Float:pos[3]; GetPlayerPos(params[0], pos[0], pos[1], pos[2]);
 	if(!IsPlayerInRangeOfPoint(playerid, 2.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "Este jugador no está cerca tuya.");
-	if(PI[params[0]][pi_STATE] != ROLEPLAY_STATE_CRACK) return SendNotification(playerid, "El jugador no está abatido.");
+	if(PI[params[0]][ac_STATE] != ROLEPLAY_STATE_CRACK) return SendNotification(playerid, "El jugador no está abatido.");
 	if(GetPlayerState(params[0]) != PLAYER_STATE_ONFOOT) return SendNotification(playerid, "Para revisar a esta persona tiene que estar de pie.");
 	
 	new dialog[95 * 15], line_str[95];
@@ -5306,7 +5234,7 @@ CMD:cachear(playerid, params[])
 
 CMD:morir(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] != ROLEPLAY_STATE_CRACK) return SendNotification(playerid, "No estás malherido");
+	if(ACCOUNT_INFO[playerid][ac_STATE] != ROLEPLAY_STATE_CRACK) return SendNotification(playerid, "No estás malherido");
 	
 	new now = gettime();
 	if(now < PLAYER_TEMP[playerid][pt_DEATH_TIME] + 30)
@@ -5360,7 +5288,7 @@ hook OnPlayerDeath(playerid, killerid, reason)
 	PLAYER_AC_INFO[playerid][CHEAT_STATE_SPAMMER][p_ac_info_IMMUNITY] = gettime() + 3;
 	PLAYER_AC_INFO[playerid][CHEAT_PLAYER_HEALTH][p_ac_info_IMMUNITY] = gettime() + 3;
 	PLAYER_AC_INFO[playerid][CHEAT_VEHICLE_NOFUEL][p_ac_info_IMMUNITY] = gettime() + 15;
-	if(!PI[playerid][pi_VIP]) SetPlayerArmourEx(playerid, 0.0);
+	if(!ACCOUNT_INFO[playerid][ac_VIP]) SetPlayerArmourEx(playerid, 0.0);
 	
 	if(ac_Info[CHEAT_DEATH_SPAMMER][ac_Enabled])
 	{
@@ -5385,7 +5313,7 @@ hook OnPlayerDeath(playerid, killerid, reason)
 	
 	HidePlayerMessage(playerid);
 	
-	if(IsPlayerConnected(killerid) && PI[killerid][pi_STATE] == ROLEPLAY_STATE_NORMAL && PI[playerid][pi_STATE] == ROLEPLAY_STATE_NORMAL)
+	if(IsPlayerConnected(killerid) && PI[killerid][ac_STATE] == ROLEPLAY_STATE_NORMAL && ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_NORMAL)
 	{
 		if(!PLAYER_WORKS[killerid][WORK_POLICE][pwork_SET])
 		{
@@ -5393,7 +5321,7 @@ hook OnPlayerDeath(playerid, killerid, reason)
 			{
 				SendClientMessage(killerid, -1, "Estás en una zona segura, la policía ha sido avisada del homicidio.");
 				
-				new level = PI[killerid][pi_WANTED_LEVEL] + 3;
+				new level = PI[killerid][ac_WANTED_LEVEL] + 3;
 				if(level > 6) level = 6;
 
 				SetPlayerWantedLevelEx(killerid, level);
@@ -5424,9 +5352,9 @@ hook OnPlayerDeath(playerid, killerid, reason)
 	SetPlayerDrunkLevel(playerid, 0);
 	KillTimer(PLAYER_TEMP[playerid][pt_TIMERS][3]);
 	SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
-	GetPlayerPos(playerid, PI[playerid][pi_POS_X], PI[playerid][pi_POS_Y], PI[playerid][pi_POS_Z]);
-	GetPlayerFacingAngle(playerid, PI[playerid][pi_ANGLE]);
-	PI[playerid][pi_INTERIOR] = GetPlayerInterior(playerid);
+	GetPlayerPos(playerid, PI[playerid][ac_POS_X], PI[playerid][ac_POS_Y], PI[playerid][ac_POS_Z]);
+	GetPlayerFacingAngle(playerid, PI[playerid][ac_ANGLE]);
+	PI[playerid][ac_INTERIOR] = GetPlayerInterior(playerid);
 	HidePlayerHud(playerid);
 	CancelEdit(playerid);
 	HidePlayerDialog(playerid);
@@ -5445,7 +5373,7 @@ hook OnPlayerDeath(playerid, killerid, reason)
 	}
 	if(PLAYER_TEMP[playerid][pt_PLAYER_IN_CALL]) EndPhoneCall(playerid);
 	if(PLAYER_TEMP[playerid][pt_GPS_MAP]) HidePlayerGpsMap(playerid);
-	if(PI[playerid][pi_WANTED_LEVEL] > 0) DisablePlayerPoliceMark(playerid);
+	if(PI[playerid][ac_WANTED_LEVEL] > 0) DisablePlayerPoliceMark(playerid);
 	if(PLAYER_TEMP[playerid][pt_TUNING_GARAGE_SHOP]) CancelPlayerTuningShop(playerid);
 	if(PLAYER_TEMP[playerid][pt_IN_TUNING_GARAGE])
 	{
@@ -5471,43 +5399,43 @@ hook OnPlayerDeath(playerid, killerid, reason)
 		}
 	}
 	
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL)
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL)
 	{
 		KillTimer(PLAYER_TEMP[playerid][pt_TIMERS][15]);
 		PLAYER_TEMP[playerid][pt_PLAYER_FINISH_HOSPITAL] = true;
-		PI[playerid][pi_POLICE_JAIL_TIME] -= gettime() - PLAYER_TEMP[playerid][pt_ENTER_JAIL_TIME];
-		if(PI[playerid][pi_POLICE_JAIL_TIME] < 5) PI[playerid][pi_POLICE_JAIL_TIME] = 5;
+		PI[playerid][ac_POLICE_JAIL_TIME] -= gettime() - PLAYER_TEMP[playerid][pt_ENTER_JAIL_TIME];
+		if(PI[playerid][ac_POLICE_JAIL_TIME] < 5) PI[playerid][ac_POLICE_JAIL_TIME] = 5;
 		PLAYER_TEMP[playerid][pt_ENTER_JAIL_TIME] = gettime();
-		SetSpawnInfo(playerid, NO_TEAM, PI[playerid][pi_SKIN], JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID] ][jail_X], JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID]  ][jail_Y], JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID]  ][jail_Z], JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID]  ][jail_ANGLE], 0, 0, 0, 0, 0, 0);
-		PI[playerid][pi_INTERIOR] = JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID]  ][jail_INTERIOR];
+		SetSpawnInfo(playerid, NO_TEAM, PI[playerid][ac_SKIN], JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID] ][jail_X], JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_Y], JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_Z], JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_ANGLE], 0, 0, 0, 0, 0, 0);
+		PI[playerid][ac_INTERIOR] = JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_INTERIOR];
 		SetPlayerVirtualWorld(playerid, 0);
 	}
 	else
 	{
 		new bool:wanted_level_go_to_hospital = false;
-		/*if(PI[playerid][pi_WANTED_LEVEL] > 0 && CountPolicesOnDuty() < 2) {
+		/*if(PI[playerid][ac_WANTED_LEVEL] > 0 && CountPolicesOnDuty() < 2) {
 			wanted_level_go_to_hospital = true;
 		}*/
 		
-		if(wanted_level_go_to_hospital || PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || GetPlayerInterior(playerid) != 0 || GetPlayerVirtualWorld(playerid) != 0)
+		if(wanted_level_go_to_hospital || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || GetPlayerInterior(playerid) != 0 || GetPlayerVirtualWorld(playerid) != 0)
 		{
 			DisablePlayerInjuredMark(playerid);
 			PLAYER_TEMP[playerid][pt_HOSPITAL] = GetNearestHospitalForPlayer(playerid);
-			PI[playerid][pi_STATE] = ROLEPLAY_STATE_HOSPITAL;
+			ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_HOSPITAL;
 			PLAYER_TEMP[playerid][pt_PLAYER_FINISH_HOSPITAL] = false;
 			KillTimer(PLAYER_TEMP[playerid][pt_TIMERS][16]);
-			SetSpawnInfo(playerid, NO_TEAM, PI[playerid][pi_SKIN], PI[playerid][pi_POS_X], PI[playerid][pi_POS_Y], PI[playerid][pi_POS_Z], PI[playerid][pi_ANGLE], 0, 0, 0, 0, 0, 0);
+			SetSpawnInfo(playerid, NO_TEAM, PI[playerid][ac_SKIN], PI[playerid][ac_POS_X], PI[playerid][ac_POS_Y], PI[playerid][ac_POS_Z], PI[playerid][ac_ANGLE], 0, 0, 0, 0, 0, 0);
 		}
 		else
 		{
 			PLAYER_TEMP[playerid][pt_DEATH_TIME] = gettime();
-			PI[playerid][pi_STATE] = ROLEPLAY_STATE_CRACK;
+			ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_CRACK;
 			
 			new Float:pos[3], Float:angle;
 			GetPlayerPos(playerid, pos[0], pos[1], pos[2]);
 			GetPlayerFacingAngle(playerid, angle);
 			
-			SetSpawnInfo(playerid, NO_TEAM, PI[playerid][pi_SKIN], pos[0], pos[1], pos[2], angle, 0, 0, 0, 0, 0, 0);
+			SetSpawnInfo(playerid, NO_TEAM, PI[playerid][ac_SKIN], pos[0], pos[1], pos[2], angle, 0, 0, 0, 0, 0, 0);
 		}
 	}
 	
@@ -5530,7 +5458,7 @@ public OnSecureLoginCheckCode(index, response_code, data[]) {
 	if(response_code == 200) {
 		PLAYER_TEMP[index][pt_BAD_LOGIN_ATTEMP] = 0;
 		
-		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO player_secure_login (ip, id_player) VALUES ('%e', %d);", PLAYER_TEMP[index][pt_IP], PI[index][pi_ID]);
+		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO player_secure_login (ip, id_player) VALUES ('%e', %d);", PLAYER_TEMP[index][pt_IP], ACCOUNT_INFO[index][ac_ID]);
 		mysql_tquery(srp_db, QUERY_BUFFER);
 
 		SendNotification(index, "Se ha confirmado el inicio de sesión.");
@@ -5659,14 +5587,14 @@ public OnPlayerRequestClass(playerid, classid)
 
 								if(rows)
 								{
-									cache_get_value_name_int(0, "id", PI[playerid][pi_ID]);
-									cache_get_value_name(0, "ip", PI[playerid][pi_IP], 16);
-									cache_get_value_name(0, "email", PI[playerid][pi_EMAIL], 32);
-									cache_get_value_name(0, "salt", PI[playerid][pi_SALT], 16);
-									cache_get_value_name(0, "pass", PI[playerid][pi_PASS], 65);
-									cache_get_value_name_int(0, "config_secure_login", PI[playerid][pi_CONFIG_SECURE_LOGIN]);
+									cache_get_value_name_int(0, "id", ACCOUNT_INFO[playerid][ac_ID]);
+									cache_get_value_name(0, "ip", ACCOUNT_INFO[playerid][ac_IP], 16);
+									cache_get_value_name(0, "email", ACCOUNT_INFO[playerid][ac_EMAIL], 32);
+									cache_get_value_name(0, "salt", ACCOUNT_INFO[playerid][ac_SALT], 16);
+									cache_get_value_name(0, "pass", ACCOUNT_INFO[playerid][ac_PASS], 65);
+									cache_get_value_name_int(0, "config_secure_login", PI[playerid][ac_CONFIG_SECURE_LOGIN]);
 
-									mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET connected = 1, playerid = %d WHERE id = %d;", playerid, PI[playerid][pi_ID]);
+									mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET connected = 1, playerid = %d WHERE id = %d;", playerid, ACCOUNT_INFO[playerid][ac_ID]);
 									mysql_tquery(srp_db, QUERY_BUFFER);
 									PLAYER_TEMP[playerid][pt_USER_EXIST] = true;
 								}
@@ -5683,7 +5611,7 @@ public OnPlayerRequestClass(playerid, classid)
 									SetPlayerMyWeather(playerid, Intro_Info[intro][intro_info_WEATHER]);
 									SetPlayerMyTime(playerid, Intro_Info[intro][intro_info_HOUR], 0);
 
-									if(!PI[playerid][pi_CONFIG_SECURE_LOGIN] && strcmp(PLAYER_TEMP[playerid][pt_IP], PI[playerid][pi_IP])) // La IP actual no es la misma IP de la última conexión
+									if(!PI[playerid][ac_CONFIG_SECURE_LOGIN] && strcmp(PLAYER_TEMP[playerid][pt_IP], ACCOUNT_INFO[playerid][ac_IP])) // La IP actual no es la misma IP de la última conexión
 									{
 										SendNotification(playerid, "Tu dirección IP ha cambiado desde tu última conexión.");
 									}
@@ -5719,7 +5647,7 @@ public OnPlayerRequestClass(playerid, classid)
 	}
 	else if((PLAYER_TEMP[playerid][pt_GAME_STATE] == GAME_STATE_NORMAL || PLAYER_TEMP[playerid][pt_GAME_STATE] == GAME_STATE_DEAD) && PLAYER_TEMP[playerid][pt_USER_LOGGED]) // Viene de jugar
 	{
-		SetSpawnInfo(playerid, NO_TEAM, PI[playerid][pi_SKIN], PI[playerid][pi_POS_X], PI[playerid][pi_POS_Y], PI[playerid][pi_POS_Z], PI[playerid][pi_ANGLE], 0, 0, 0, 0, 0, 0);
+		SetSpawnInfo(playerid, NO_TEAM, PI[playerid][ac_SKIN], PI[playerid][ac_POS_X], PI[playerid][ac_POS_Y], PI[playerid][ac_POS_Z], PI[playerid][ac_ANGLE], 0, 0, 0, 0, 0, 0);
 		SpawnPlayer(playerid);
 		return 0;
 	}
@@ -6982,7 +6910,7 @@ public OnGameModeExit()
 	{
 		if(IsPlayerConnected(i) && PLAYER_TEMP[i][pt_USER_LOGGED])
 		{
-			format(PI[i][pi_LAST_CONNECTION], 24, "%s", date);
+			format(ACCOUNT_INFO[i][ac_LAST_CONNECTION], 24, "%s", date);
 			SavePlayerData(i);
 			SavePlayerVehicles(i, false);
 			SavePlayerToys(i);
@@ -7014,11 +6942,11 @@ public OnGameModeExit()
 
 CMD:a(playerid, params[])
 {
-	if(PI[playerid][pi_ADMIN_LEVEL] < CMD_HELPER_MODERATOR) return -1; //hacemos chequeo aqui para hacer que este comando no necesite duty
+	if(ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] < CMD_HELPER_MODERATOR) return -1; //hacemos chequeo aqui para hacer que este comando no necesite duty
 	if(isnull(params)) return SendNotification(playerid, "~r~Modo de uso:~w~ /a <texto>");
 
   	new string[145];
-    format(string, sizeof(string), "Admin Chat: {90D496}%s (%s): {"#SILVER_COLOR"}%s", PI[playerid][pi_NAME], ADMIN_LEVELS[ PI[playerid][pi_ADMIN_LEVEL] ], params);
+    format(string, sizeof(string), "Admin Chat: {90D496}%s (%s): {"#SILVER_COLOR"}%s", ACCOUNT_INFO[playerid][ac_NAME], ADMIN_LEVELS[ ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] ], params);
 	SendChatMessageToAdmins(0x90C3D4FF, string);
 	return 1;
 }
@@ -7028,11 +6956,11 @@ hook OnPlayerText(playerid, text[])
 {
 	if(PLAYER_TEMP[playerid][pt_KICKED]) return 0;
 	
-	if(PLAYER_TEMP[playerid][pt_GAME_STATE] != GAME_STATE_NORMAL || PLAYER_TEMP[playerid][pt_SELECT_TEXTDRAW] || PI[playerid][pi_STATE] == ROLEPLAY_STATE_HOSPITAL || IsPlayerInWorkTutorial(playerid)) { SendNotification(playerid, "Ahora no puedes hablar."); return 0; }
-	if(text[0] == '#' && PI[playerid][pi_ADMIN_LEVEL] > 1 /*&& PLAYER_TEMP[playerid][pt_ADMIN_SERVICE]*/)
+	if(PLAYER_TEMP[playerid][pt_GAME_STATE] != GAME_STATE_NORMAL || PLAYER_TEMP[playerid][pt_SELECT_TEXTDRAW] || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_HOSPITAL || IsPlayerInWorkTutorial(playerid)) { SendNotification(playerid, "Ahora no puedes hablar."); return 0; }
+	if(text[0] == '#' && ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] > 1 /*&& PLAYER_TEMP[playerid][pt_ADMIN_SERVICE]*/)
 	{
       	new string[145];
-        format(string, sizeof(string), "Admin Chat: {90D496}%s (%s): {"#SILVER_COLOR"}%s", PI[playerid][pi_NAME], ADMIN_LEVELS[ PI[playerid][pi_ADMIN_LEVEL] ], text[1]);
+        format(string, sizeof(string), "Admin Chat: {90D496}%s (%s): {"#SILVER_COLOR"}%s", ACCOUNT_INFO[playerid][ac_NAME], ADMIN_LEVELS[ ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] ], text[1]);
 		SendChatMessageToAdmins(0x90C3D4FF, string);
 		return 0;
 	}
@@ -7102,12 +7030,12 @@ hook OnPlayerText(playerid, text[])
 			return 0;
 		}
 		
-		if(PI[playerid][pi_CREW])
+		if(PI[playerid][ac_CREW])
 		{
 			if(text[1] == '!') format(str_text, sizeof str_text, "** [Radio] (( %s: %s ))", PLAYER_TEMP[playerid][pt_RP_NAME], text[2]);
-			else format(str_text, sizeof str_text, "{8D8DFF}** [Radio] %s %s: %s", PLAYER_TEMP[playerid][pt_RP_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_NAME], text[1]);
+			else format(str_text, sizeof str_text, "{8D8DFF}** [Radio] %s %s: %s", PLAYER_TEMP[playerid][pt_RP_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_NAME], text[1]);
 			
-			SendMessageToCrewMembers(PI[playerid][pi_CREW], 0xCCCCCCCC, str_text);
+			SendMessageToCrewMembers(PI[playerid][ac_CREW], 0xCCCCCCCC, str_text);
 			return 0;
 		}
 	}
@@ -7115,7 +7043,7 @@ hook OnPlayerText(playerid, text[])
 	if(PLAYER_TEMP[playerid][pt_PLAYER_PHONE_CALL_STATE] == CALL_STATE_ESTABLISHED)
 	{
 		format(str_text, 145, "%s dice (por teléfono): %s", PLAYER_TEMP[playerid][pt_RP_NAME], text);
-		SendClientMessageEx(PLAYER_TEMP[playerid][pt_PLAYER_PHONE_CALL_PLAYERID], -1, "{"#SILVER_COLOR"}Teléfono: %s: %s", convertPhoneNumber(PLAYER_TEMP[playerid][pt_PLAYER_PHONE_CALL_PLAYERID], PI[playerid][pi_PHONE_NUMBER]), text);
+		SendClientMessageEx(PLAYER_TEMP[playerid][pt_PLAYER_PHONE_CALL_PLAYERID], -1, "{"#SILVER_COLOR"}Teléfono: %s: %s", convertPhoneNumber(PLAYER_TEMP[playerid][pt_PLAYER_PHONE_CALL_PLAYERID], PI[playerid][ac_PHONE_NUMBER]), text);
 	}
 	else
 	{
@@ -7137,7 +7065,7 @@ CMD:examen(playerid, params[])
 				if(PLAYER_TEMP[playerid][pt_DL_EXAM]) SendNotification(playerid, "Ya estás en el examen, sal afuera y toma un vehículo para empezar con el examen.");
 				else
 				{
-					if(PI[playerid][pi_DRIVE_LICENSE_POINTS] > 6) SendNotification(playerid, "Tienes más de 6 puntos del carnet, no te hace falta hacer el examen.");
+					if(PI[playerid][ac_DRIVE_LICENSE_POINTS] > 6) SendNotification(playerid, "Tienes más de 6 puntos del carnet, no te hace falta hacer el examen.");
 					else
 					{
 						if(GivePlayerCash(playerid, -1750, false, true)) {
@@ -7167,7 +7095,7 @@ CMD:bebida(playerid, params[])
 			{
 				if(GetPlayerSpecialAction(playerid) != SPECIAL_ACTION_DRINK_WINE)
 				{
-					if(PI[playerid][pi_CASH] <= 50) return SendNotification(playerid, "La bebida cuesta 50$.");
+					if(PI[playerid][ac_CASH] <= 50) return SendNotification(playerid, "La bebida cuesta 50$.");
 					
 					if(GivePlayerCash(playerid, -50, false, true)) {
 						SetPlayerSpecialAction(playerid, SPECIAL_ACTION_DRINK_BEER);
@@ -7186,15 +7114,15 @@ CMD:bebida(playerid, params[])
 #define IP_SPAM_MUTE_TIME		5 //minutos
 CMD:duda(playerid, params[])
 {
-	if(!PI[playerid][pi_DOUBT_CHANNEL]) return SendNotification(playerid, "Para enviar una duda primero debes activar el canal de dudas con ~g~/dudas");
+	if(!ACCOUNT_INFO[playerid][ac_DOUBT_CHANNEL]) return SendNotification(playerid, "Para enviar una duda primero debes activar el canal de dudas con ~g~/dudas");
 	if(isnull(params)) return SendNotification(playerid, "~r~Modo de uso: ~w~/duda [DUDA]");
-	if(PI[playerid][pi_MUTE] > gettime())
+	if(PI[playerid][ac_MUTE] > gettime())
 	{
-		new seconds = PI[playerid][pi_MUTE] - gettime();
+		new seconds = PI[playerid][ac_MUTE] - gettime();
 		SendFormatNotification(playerid, "Estás silenciado en el canal de dudas por %s minutos.", TimeConvert(seconds));
 		return 1;
 	}
-	if(!PI[playerid][pi_ADMIN_LEVEL])
+	if(!ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL])
 	{
 		if(gettime() < PLAYER_TEMP[playerid][pt_DOUBT_CHANNEL_TIME] + MIN_TIME_BETWEEN_DOUBT)
 		{
@@ -7210,14 +7138,14 @@ CMD:duda(playerid, params[])
 
 CMD:dudas(playerid, params[])
 {
-	if(PI[playerid][pi_DOUBT_CHANNEL])
+	if(ACCOUNT_INFO[playerid][ac_DOUBT_CHANNEL])
 	{
-		PI[playerid][pi_DOUBT_CHANNEL] = false;
+		ACCOUNT_INFO[playerid][ac_DOUBT_CHANNEL] = false;
 		SendNotification(playerid, "Canal de dudas ~r~deshabilitado~w~.");
 	}
 	else
 	{
-		PI[playerid][pi_DOUBT_CHANNEL] = true;
+		ACCOUNT_INFO[playerid][ac_DOUBT_CHANNEL] = true;
 		SendNotification(playerid, "Canal de dudas ~r~habilitado~w~.");
 	}
 	return 1;
@@ -7288,7 +7216,7 @@ alias:me("y");
 
 CMD:experiencia(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	ShowPlayerSkills(playerid, playerid);
 	return 1;
 }
@@ -7349,14 +7277,14 @@ CMD:ayuda(playerid, params[])
 
 CMD:accesorios(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	ShowDialog(playerid, DIALOG_PLAYER_TOYS);
 	return 1;
 }
 
 CMD:armas(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	ShowDialog(playerid, DIALOG_PLAYER_WEAPONS);
 	return 1;
 }
@@ -7445,8 +7373,8 @@ CMD:mercado(playerid, params[])
 
 CMD:gps(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
-	if(!PI[playerid][pi_GPS])
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(!PI[playerid][ac_GPS])
 	{
 		SendNotification(playerid, "No tienes ningún GPS, puedes ir a cualquier 24/7 para comprar uno.");
 		return 1;
@@ -7459,9 +7387,9 @@ CMD:gps(playerid, params[])
 
 CMD:tiempo(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL)
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL)
 	{
-		new time = PI[playerid][pi_POLICE_JAIL_TIME] - (gettime() - PLAYER_TEMP[playerid][pt_ENTER_JAIL_TIME]);
+		new time = PI[playerid][ac_POLICE_JAIL_TIME] - (gettime() - PLAYER_TEMP[playerid][pt_ENTER_JAIL_TIME]);
 		if(time <= 0)
 		{
 			UnjailPlayer(playerid);
@@ -7475,8 +7403,8 @@ CMD:tiempo(playerid, params[])
 
 CMD:mapa(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
-	if(!PI[playerid][pi_GPS])
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(!PI[playerid][ac_GPS])
 	{
 		SendNotification(playerid, "No tienes ningún GPS, puedes ir a cualquier 24/7 para comprar uno.");
 		return 1;
@@ -7489,8 +7417,8 @@ CMD:mapa(playerid, params[])
 
 CMD:mp3(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
-	if(!PI[playerid][pi_MP3])
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(!PI[playerid][ac_MP3])
 	{
 		SendNotification(playerid, "No tienes ningún MP3, puedes ir a cualquier 24/7 para comprar uno.");
 		PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
@@ -7508,10 +7436,10 @@ CMD:mp3(playerid, params[])
 
 CMD:amp3(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return SendNotification(playerid, "No estás depie.");
 	//if(GetPlayerInterior(playerid)) return SendNotification(playerid, "No puedes hacer esto en un interior");
-	if(!PI[playerid][pi_SPEAKERS])
+	if(!PI[playerid][ac_SPEAKERS])
 	{
 		SendNotification(playerid, "No tienes altavoces, puedes ir a cualquier 24/7 para comprarlos.");
 		PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
@@ -7534,9 +7462,9 @@ CMD:amp3(playerid, params[])
 
 CMD:vmp3(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendNotification(playerid, "No conduces ningún vehículo.");
-	if(!PI[playerid][pi_MP3])
+	if(!PI[playerid][ac_MP3])
 	{
 		SendNotification(playerid, "No tienes ningún MP3, puedes ir a cualquier 24/7 para comprar uno.");
 		return 1;
@@ -7577,8 +7505,8 @@ CMD:gcp(playerid, params[])
 
 CMD:movil(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
-	if(!PI[playerid][pi_PHONE_NUMBER])
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(!PI[playerid][ac_PHONE_NUMBER])
 	{
 		SendNotification(playerid, "No tienes ningún teléfono, puedes ir a cualquier 24/7 para comprar uno.");
 		return 1;
@@ -7599,8 +7527,8 @@ alias:movil("celular", "telefono", "tlf");
 
 CMD:guia(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
-	if(!PI[playerid][pi_PHONE_RESOLVER])
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(!PI[playerid][ac_PHONE_RESOLVER])
 	{
 		SendNotification(playerid, "No tienes una guía telefónica, puedes ir a cualquier 24/7 para comprar una.");
 		return 1;
@@ -7609,30 +7537,30 @@ CMD:guia(playerid, params[])
 	if(sscanf(params, "u", params[0])) return SendNotification(playerid, "~r~Modo de uso: ~w~/guia [PlayerID/Nombre]");
 	if(!IsPlayerConnected(params[0])) return SendNotification(playerid, "Jugador desconectado.");
 	
-	if(!PI[params[0]][pi_PHONE_NUMBER]) return SendNotification(playerid, "Este jugador no tiene teléfono.");
-	if(!PI[params[0]][pi_PHONE_VISIBLE_NUMBER]) return SendNotification(playerid, "Este jugador ha decidido no mostrar su número en la guía.");
+	if(!PI[params[0]][ac_PHONE_NUMBER]) return SendNotification(playerid, "Este jugador no tiene teléfono.");
+	if(!PI[params[0]][ac_PHONE_VISIBLE_NUMBER]) return SendNotification(playerid, "Este jugador ha decidido no mostrar su número en la guía.");
 	
-	SendFormatNotification(playerid, "Persona encontrada:~n~~n~~b~Nombre: ~w~%s~n~~b~Teléfono: ~w~%d.", PLAYER_TEMP[params[0]][pt_RP_NAME], PI[params[0]][pi_PHONE_NUMBER]);
+	SendFormatNotification(playerid, "Persona encontrada:~n~~n~~b~Nombre: ~w~%s~n~~b~Teléfono: ~w~%d.", PLAYER_TEMP[params[0]][pt_RP_NAME], PI[params[0]][ac_PHONE_NUMBER]);
 	return 1;
 }
 
 CMD:sguia(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
-	if(!PI[playerid][pi_PHONE_NUMBER])
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(!PI[playerid][ac_PHONE_NUMBER])
 	{
 		SendNotification(playerid, "No tienes ningún teléfono, puedes ir a cualquier 24/7 para comprar uno.");
 		return 1;
 	}
 	
-	if(PI[playerid][pi_PHONE_VISIBLE_NUMBER])
+	if(PI[playerid][ac_PHONE_VISIBLE_NUMBER])
 	{
-		PI[playerid][pi_PHONE_VISIBLE_NUMBER] = false;
+		PI[playerid][ac_PHONE_VISIBLE_NUMBER] = false;
 		SendNotification(playerid, "Tu número no aparecerá ahora en la guía telefónica.");
 	}
 	else
 	{
-		PI[playerid][pi_PHONE_VISIBLE_NUMBER] = true;
+		PI[playerid][ac_PHONE_VISIBLE_NUMBER] = true;
 		SendNotification(playerid, "Tu número aparecerá en la guía telefónica.");
 	}
 	return 1;
@@ -7640,13 +7568,13 @@ CMD:sguia(playerid, params[])
 
 CMD:sms(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
-	if(!PI[playerid][pi_PHONE_NUMBER])
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(!PI[playerid][ac_PHONE_NUMBER])
 	{
 		SendNotification(playerid, "No tienes ningún teléfono, puedes ir a cualquier 24/7 para comprar uno.");
 		return 1;
 	}
-	if(PI[playerid][pi_PHONE_STATE] == PHONE_STATE_OFF) return SendFormatNotification(playerid, "Tu teléfono está apagado, para encenderlo usa /movil.");
+	if(PI[playerid][ac_PHONE_STATE] == PHONE_STATE_OFF) return SendFormatNotification(playerid, "Tu teléfono está apagado, para encenderlo usa /movil.");
 	if(PLAYER_TEMP[playerid][pt_PLAYER_IN_CALL]) return SendFormatNotification(playerid, "Estás en una llamada.");
 	
 	new params_message[64], params_number, params_contact[24];
@@ -7667,13 +7595,13 @@ CMD:sms(playerid, params[])
 						cache_get_value_name_int(0, "connected", connected);
 						cache_get_value_name_int(0, "playerid", pid);
 
-						if(connected) RegisterPhoneMessage(PI[playerid][pi_ID], id, params_message, 0);
-						else RegisterPhoneMessage(PI[playerid][pi_ID], id, params_message, 1);
+						if(connected) RegisterPhoneMessage(ACCOUNT_INFO[playerid][ac_ID], id, params_message, 0);
+						else RegisterPhoneMessage(ACCOUNT_INFO[playerid][ac_ID], id, params_message, 1);
 						if(connected)
 						{
-							if(PI[pid][pi_PHONE_STATE] == PHONE_STATE_ON)
+							if(PI[pid][ac_PHONE_STATE] == PHONE_STATE_ON)
 							{
-								SendClientMessageEx(pid, -1, "{"#PRIMARY_COLOR"}[Nuevo mensaje recibido] {"#SILVER_COLOR"}Remitente: {FFFFFF}%s {"#SILVER_COLOR"}Mensaje: {FFFFFF}%s", convertPhoneNumber(pid, PI[playerid][pi_PHONE_NUMBER]), params_message);
+								SendClientMessageEx(pid, -1, "{"#PRIMARY_COLOR"}[Nuevo mensaje recibido] {"#SILVER_COLOR"}Remitente: {FFFFFF}%s {"#SILVER_COLOR"}Mensaje: {FFFFFF}%s", convertPhoneNumber(pid, PI[playerid][ac_PHONE_NUMBER]), params_message);
 							}
 						}
 						SendFormatNotification(playerid, "Mensaje enviado a ~b~%s~w~.", convertPhoneNumber(playerid, params_number));
@@ -7702,14 +7630,14 @@ CMD:sms(playerid, params[])
 						cache_get_value_name_int(0, "connected", connected);
 						cache_get_value_name_int(0, "playerid", pid);
 
-						if(connected) RegisterPhoneMessage(PI[playerid][pi_ID], id, params_message, 0);
-						else RegisterPhoneMessage(PI[playerid][pi_ID], id, params_message, 1);
+						if(connected) RegisterPhoneMessage(ACCOUNT_INFO[playerid][ac_ID], id, params_message, 0);
+						else RegisterPhoneMessage(ACCOUNT_INFO[playerid][ac_ID], id, params_message, 1);
 
 						if(connected)
 						{
-							if(PI[pid][pi_PHONE_STATE] == PHONE_STATE_ON)
+							if(PI[pid][ac_PHONE_STATE] == PHONE_STATE_ON)
 							{
-								SendClientMessageEx(pid, -1, "{"#PRIMARY_COLOR"}[Nuevo mensaje recibido] {"#SILVER_COLOR"}Remitente: {FFFFFF}%s {"#SILVER_COLOR"}Mensaje: {FFFFFF}%s", convertPhoneNumber(pid, PI[playerid][pi_PHONE_NUMBER]), params_message);
+								SendClientMessageEx(pid, -1, "{"#PRIMARY_COLOR"}[Nuevo mensaje recibido] {"#SILVER_COLOR"}Remitente: {FFFFFF}%s {"#SILVER_COLOR"}Mensaje: {FFFFFF}%s", convertPhoneNumber(pid, PI[playerid][ac_PHONE_NUMBER]), params_message);
 							}
 						}
 						SendFormatNotification(playerid, "Mensaje enviado a ~b~%s~w~.", convertPhoneNumber(playerid, number));
@@ -7719,7 +7647,7 @@ CMD:sms(playerid, params[])
 				else SendNotification(playerid, "El número destino no es válido.");
 			}
 		}
-		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT pbook.number, player.id, player.connected, player.playerid FROM pbook LEFT JOIN player ON pbook.number = player.phone_number WHERE pbook.id_player = %d AND pbook.name LIKE '%%%e%%' LIMIT 1;", PI[playerid][pi_ID], params_contact);
+		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT pbook.number, player.id, player.connected, player.playerid FROM pbook LEFT JOIN player ON pbook.number = player.phone_number WHERE pbook.id_player = %d AND pbook.name LIKE '%%%e%%' LIMIT 1;", ACCOUNT_INFO[playerid][ac_ID], params_contact);
 		MySQL_TQueryInline(srp_db, using inline OnPhoneChecked, QUERY_BUFFER);
 	}
 	else SendNotification(playerid, "Usa /sms [numero o contacto]");
@@ -7728,13 +7656,13 @@ CMD:sms(playerid, params[])
 
 CMD:agenda(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
-	if(!PI[playerid][pi_PHONE_NUMBER])
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(!PI[playerid][ac_PHONE_NUMBER])
 	{
 		SendNotification(playerid, "No tienes ningún teléfono, puedes ir a cualquier 24/7 para comprar uno.");
 		return 1;
 	}
-	if(PI[playerid][pi_PHONE_STATE] == PHONE_STATE_OFF) return SendFormatNotification(playerid, "Tu teléfono está apagado, para encenderlo usa /movil.");
+	if(PI[playerid][ac_PHONE_STATE] == PHONE_STATE_OFF) return SendFormatNotification(playerid, "Tu teléfono está apagado, para encenderlo usa /movil.");
 	if(PLAYER_TEMP[playerid][pt_PLAYER_IN_CALL]) return SendFormatNotification(playerid, "Estás en una llamada.");
 	
 	ShowDialog(playerid, DIALOG_PHONE_BOOK);
@@ -7743,14 +7671,14 @@ CMD:agenda(playerid, params[])
 
 CMD:tienda(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
-	if(!PI[playerid][pi_PHONE_NUMBER])
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(!PI[playerid][ac_PHONE_NUMBER])
 	{
 		SendNotification(playerid, "No tienes ningún teléfono, puedes ir a cualquier 24/7 para comprar uno.");
 		return 1;
 	}
 	
-	if(PI[playerid][pi_PHONE_STATE] == PHONE_STATE_OFF) return SendFormatNotification(playerid, "Tu teléfono está apagado, para encenderlo usa /movil.");
+	if(PI[playerid][ac_PHONE_STATE] == PHONE_STATE_OFF) return SendFormatNotification(playerid, "Tu teléfono está apagado, para encenderlo usa /movil.");
 	ShowPlayerShop(playerid);
 	return 1;
 }
@@ -7761,7 +7689,7 @@ HandleStaticPhoneNumbers(playerid, call_number)
 	{
 		case 911:
 		{
-			if(PI[playerid][pi_LEVEL] < 2) return SendNotification(playerid, "Debes ser al menos nivel 2 para llamar a la policía.");
+			if(ACCOUNT_INFO[playerid][ac_LEVEL] < 2) return SendNotification(playerid, "Debes ser al menos nivel 2 para llamar a la policía.");
 			PLAYER_TEMP[playerid][pt_PLAYER_IN_CALL] = true;
 			PLAYER_TEMP[playerid][pt_POLICE_CALL_NAME] = true;
 			PLAYER_TEMP[playerid][pt_POLICE_CALL_DESCRIPTION] = false;
@@ -7807,13 +7735,13 @@ HandleStaticPhoneNumbers(playerid, call_number)
 
 CMD:llamar(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
-	if(!PI[playerid][pi_PHONE_NUMBER])
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(!PI[playerid][ac_PHONE_NUMBER])
 	{
 		SendNotification(playerid, "No tienes ningún teléfono, puedes ir a cualquier 24/7 para comprar uno.");
 		return 1;
 	}
-	if(PI[playerid][pi_PHONE_STATE] == PHONE_STATE_OFF) return SendFormatNotification(playerid, "Tu teléfono está apagado, para encenderlo usa /movil.");
+	if(PI[playerid][ac_PHONE_STATE] == PHONE_STATE_OFF) return SendFormatNotification(playerid, "Tu teléfono está apagado, para encenderlo usa /movil.");
 	if(PLAYER_TEMP[playerid][pt_PLAYER_IN_CALL]) return SendFormatNotification(playerid, "Estás en una llamada.");
 
 	new params_number, params_contact[24];
@@ -7840,10 +7768,10 @@ CMD:llamar(playerid, params[])
 							else
 							{
 								if(pid == playerid) return SendNotification(playerid, "El número al que intentas llamar es el tuyo.");
-								if(PI[pid][pi_PHONE_STATE] == PHONE_STATE_OFF) return SendNotification(playerid, "El número al que intentas llamar está apagado o fuera de cobertura.");
+								if(PI[pid][ac_PHONE_STATE] == PHONE_STATE_OFF) return SendNotification(playerid, "El número al que intentas llamar está apagado o fuera de cobertura.");
 								if(PLAYER_TEMP[pid][pt_PLAYER_IN_CALL]) return SendNotification(playerid, "El número al que intentas llamar está en otra llamada.");
 								
-								SendFormatNotification(pid, "~b~[Llamada entrante] ~w~%s te está llamando, para responser usa ~b~/responder ~w~o ~b~/colgar~w~.", convertPhoneNumber(pid, PI[playerid][pi_PHONE_NUMBER]));
+								SendFormatNotification(pid, "~b~[Llamada entrante] ~w~%s te está llamando, para responser usa ~b~/responder ~w~o ~b~/colgar~w~.", convertPhoneNumber(pid, PI[playerid][ac_PHONE_NUMBER]));
 								PLAYER_TEMP[pid][pt_PLAYER_IN_CALL] = true;
 								PLAYER_TEMP[pid][pt_PLAYER_PHONE_CALL_STATE] = CALL_STATE_INCOMING_CALL;
 								PLAYER_TEMP[pid][pt_PLAYER_PHONE_CALL_PLAYERID] = playerid;
@@ -7890,10 +7818,10 @@ CMD:llamar(playerid, params[])
 							else
 							{
 								if(pid == playerid) return SendNotification(playerid, "El número al que intentas llamar es el tuyo.");
-								if(PI[pid][pi_PHONE_STATE] == PHONE_STATE_OFF) return SendNotification(playerid, "El número al que intentas llamar está apagado o fuera de cobertura.");
+								if(PI[pid][ac_PHONE_STATE] == PHONE_STATE_OFF) return SendNotification(playerid, "El número al que intentas llamar está apagado o fuera de cobertura.");
 								if(PLAYER_TEMP[pid][pt_PLAYER_IN_CALL]) return SendNotification(playerid, "El número al que intentas llamar está en otra llamada.");
 								
-								SendFormatNotification(pid, "~b~[Llamada entrante] ~w~%s te está llamando, para responser usa ~b~/responder ~w~o ~b~/colgar~w~.", convertPhoneNumber(pid, PI[playerid][pi_PHONE_NUMBER]));
+								SendFormatNotification(pid, "~b~[Llamada entrante] ~w~%s te está llamando, para responser usa ~b~/responder ~w~o ~b~/colgar~w~.", convertPhoneNumber(pid, PI[playerid][ac_PHONE_NUMBER]));
 								PLAYER_TEMP[pid][pt_PLAYER_IN_CALL] = true;
 								PLAYER_TEMP[pid][pt_PLAYER_PHONE_CALL_STATE] = CALL_STATE_INCOMING_CALL;
 								PLAYER_TEMP[pid][pt_PLAYER_PHONE_CALL_PLAYERID] = playerid;
@@ -7911,7 +7839,7 @@ CMD:llamar(playerid, params[])
 					else SendNotification(playerid, "El número destino no es válido.");
 				}
 			}
-			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT pbook.number, player.id, player.connected, player.playerid FROM pbook LEFT JOIN player ON pbook.number = player.phone_number WHERE pbook.id_player = %d AND pbook.name LIKE '%%%e%%' LIMIT 1;", PI[playerid][pi_ID], params_contact);
+			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT pbook.number, player.id, player.connected, player.playerid FROM pbook LEFT JOIN player ON pbook.number = player.phone_number WHERE pbook.id_player = %d AND pbook.name LIKE '%%%e%%' LIMIT 1;", ACCOUNT_INFO[playerid][ac_ID], params_contact);
 			MySQL_TQueryInline(srp_db, using inline OnPhoneChecked, QUERY_BUFFER);
 		}
 	}
@@ -7921,13 +7849,13 @@ CMD:llamar(playerid, params[])
 
 CMD:responder(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
-	if(!PI[playerid][pi_PHONE_NUMBER])
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(!PI[playerid][ac_PHONE_NUMBER])
 	{
 		SendNotification(playerid, "No tienes ningún teléfono, puedes ir a cualquier 24/7 para comprar uno.");
 		return 1;
 	}
-	if(PI[playerid][pi_PHONE_STATE] == PHONE_STATE_OFF) return SendFormatNotification(playerid, "Tu teléfono está apagado, para encenderlo usa /movil.");
+	if(PI[playerid][ac_PHONE_STATE] == PHONE_STATE_OFF) return SendFormatNotification(playerid, "Tu teléfono está apagado, para encenderlo usa /movil.");
 	
 	if(!PLAYER_TEMP[playerid][pt_PLAYER_IN_CALL]) return SendFormatNotification(playerid, "No hay ninguna llamada entrante.");
 	if(PLAYER_TEMP[playerid][pt_PLAYER_PHONE_CALL_PLAYERID] == INVALID_PLAYER_ID) return SendFormatNotification(playerid, "No hay ninguna llamada entrante."); 
@@ -7953,12 +7881,12 @@ CMD:responder(playerid, params[])
 
 CMD:colgar(playerid, params[])
 {
-	if(!PI[playerid][pi_PHONE_NUMBER])
+	if(!PI[playerid][ac_PHONE_NUMBER])
 	{
 		SendNotification(playerid, "No tienes ningún teléfono, puedes ir a cualquier 24/7 para comprar uno.");
 		return 1;
 	}
-	if(PI[playerid][pi_PHONE_STATE] == PHONE_STATE_OFF) return SendFormatNotification(playerid, "Tu teléfono está apagado, para encenderlo usa /movil.");
+	if(PI[playerid][ac_PHONE_STATE] == PHONE_STATE_OFF) return SendFormatNotification(playerid, "Tu teléfono está apagado, para encenderlo usa /movil.");
 	
 	if(!PLAYER_TEMP[playerid][pt_PLAYER_IN_CALL]) return SendFormatNotification(playerid, "No hay ninguna llamada entrante.");
 	
@@ -8013,13 +7941,13 @@ CMD:comprarcasa(playerid, params[])
 
 	if(!IsPlayerInRangeOfPoint(playerid, 1.0, BUY_PROPERTIES_SITES[site_index][site_X], BUY_PROPERTIES_SITES[site_index][site_Y], BUY_PROPERTIES_SITES[site_index][site_Z])) return SendNotification(playerid, "No estás en el lugar adecuado.");
 	
-	if(PI[playerid][pi_BANK_ACCOUNT] == 0) return SendNotification(playerid, "No puedes comprar una casa sin tener cuenta bancaria.");
+	if(PI[playerid][ac_BANK_ACCOUNT] == 0) return SendNotification(playerid, "No puedes comprar una casa sin tener cuenta bancaria.");
 
 	if(sscanf(params, "d", params[0])) return SendNotification(playerid, "~r~Modo de uso: ~w~/comprarcasa [ID]");
 	if(params[0] <= 0) return SendNotification(playerid, "Error: ID no es válida.");
 	
 	new player_properties = CountPlayerProperties(playerid);
-	if(PI[playerid][pi_VIP])
+	if(ACCOUNT_INFO[playerid][ac_VIP])
 	{
 		if(player_properties >= MAX_SU_PROPERTIES) return SendNotification(playerid, "No puedes comprar más propiedades.");
 	}
@@ -8037,15 +7965,15 @@ CMD:comprarcasa(playerid, params[])
 	if(index == -1) return SendNotification(playerid, "Error: ID no es válida.");
 	
 	if(PROPERTY_INFO[index][property_SOLD]) return SendNotification(playerid, "Está propiedad ya está vendida.");
-	if(PROPERTY_INFO[index][property_LEVEL] > PI[playerid][pi_LEVEL]) return SendFormatNotification(playerid, "Necesitas ser como mínimo nivel %d para comprar esta propiedad.", PROPERTY_INFO[index][property_LEVEL]);
-	if(PROPERTY_INFO[index][property_VIP_LEVEL] > PI[playerid][pi_VIP]) return SendFormatNotification(playerid, "Necesitas membresía VIP (%d) para comprar esta propiedad.", PROPERTY_INFO[index][property_VIP_LEVEL]);
-	if(PROPERTY_INFO[index][property_EXTRA] > PI[playerid][pi_COINS]) return SendFormatNotification(playerid, "Necesitas %d "SERVER_COIN" para comprar esta propiedad.", PROPERTY_INFO[index][property_EXTRA]);
-	if(PI[playerid][pi_BANK_MONEY] >= PROPERTY_INFO[index][property_PRICE])
+	if(PROPERTY_INFO[index][property_LEVEL] > ACCOUNT_INFO[playerid][ac_LEVEL]) return SendFormatNotification(playerid, "Necesitas ser como mínimo nivel %d para comprar esta propiedad.", PROPERTY_INFO[index][property_LEVEL]);
+	if(PROPERTY_INFO[index][property_VIP_LEVEL] > ACCOUNT_INFO[playerid][ac_VIP]) return SendFormatNotification(playerid, "Necesitas membresía VIP (%d) para comprar esta propiedad.", PROPERTY_INFO[index][property_VIP_LEVEL]);
+	if(PROPERTY_INFO[index][property_EXTRA] > PI[playerid][ac_COINS]) return SendFormatNotification(playerid, "Necesitas %d "SERVER_COIN" para comprar esta propiedad.", PROPERTY_INFO[index][property_EXTRA]);
+	if(PI[playerid][ac_BANK_MONEY] >= PROPERTY_INFO[index][property_PRICE])
 	{
 		PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX] = index;
 		ShowDialog(playerid, DIALOG_CONFIRM_BUY_PROPERTY);
 	}
-	else SendFormatNotification(playerid, "No tienes fondos suficientes en tu cuenta, te faltan ~r~%s dólares ~w~para poder comprar esta propiedad.", number_format_thousand(PROPERTY_INFO[index][property_PRICE] - PI[playerid][pi_BANK_MONEY]));
+	else SendFormatNotification(playerid, "No tienes fondos suficientes en tu cuenta, te faltan ~r~%s dólares ~w~para poder comprar esta propiedad.", number_format_thousand(PROPERTY_INFO[index][property_PRICE] - PI[playerid][ac_BANK_MONEY]));
 	return 1;
 }
 
@@ -8070,7 +7998,7 @@ CMD:banco(playerid, params[])
 
 	if(!IsPlayerInRangeOfPoint(playerid, 1.0, Bank_Interior_Positions[index][bank_X], Bank_Interior_Positions[index][bank_Y], Bank_Interior_Positions[index][bank_Z])) return SendNotification(playerid, "No estás en el lugar adecuado.");
 	
-	if(PI[playerid][pi_BANK_ACCOUNT] == 0) // no tiene cuenta bancaria
+	if(PI[playerid][ac_BANK_ACCOUNT] == 0) // no tiene cuenta bancaria
 	{
 		ShowDialog(playerid, DIALOG_CREATE_BANK_ACCOUNT);
 		return 1;
@@ -8094,7 +8022,7 @@ CMD:cajero(playerid, params[])
 
 	if(!IsPlayerInRangeOfPoint(playerid, 1.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "No estás en el lugar adecuado.");
 
-	if(PI[playerid][pi_BANK_ACCOUNT] == 0)
+	if(PI[playerid][ac_BANK_ACCOUNT] == 0)
 	{
 		SendNotification(playerid, "No tienes cuenta bancaria, puedes crearla en cualquier Banco.");
 		return 1;
@@ -8107,7 +8035,7 @@ CMD:cajero(playerid, params[])
 
 CMD:alimentos(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	ShowDialog(playerid, DIALOG_PLAYER_POCKET);
 	return 1;
 }
@@ -8115,8 +8043,8 @@ CMD:alimentos(playerid, params[])
 #define TIME_BETWEEN_GIVE_CASH	30 // segundos
 CMD:dar(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
-	if(PI[playerid][pi_LEVEL] < 2) return SendNotification(playerid, "Debes ser al menos nivel 2 para usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_LEVEL] < 2) return SendNotification(playerid, "Debes ser al menos nivel 2 para usar este comando.");
 	
 	new option[24], to_playerid, extra;
 	if(sscanf(params, "s[24]ud", option, to_playerid, extra)) return SendNotification(playerid, "Error en los parámetros, utilice {"#SILVER_COLOR"}/man dar.");
@@ -8137,7 +8065,7 @@ CMD:dar(playerid, params[])
 				return 1;
 			}
 			
-			if(extra < 0 || extra > PI[playerid][pi_CASH]) return SendNotification(playerid, "Cantidad de dinero incorrecta.");
+			if(extra < 0 || extra > PI[playerid][ac_CASH]) return SendNotification(playerid, "Cantidad de dinero incorrecta.");
 			if(extra > 50000) return SendNotification(playerid, "Para dar tanto dinero tienes que hacerlo a través de transferencias bancarias.");
 			
 			if(GivePlayerCash(playerid, -extra, true, true) && GivePlayerCash(to_playerid, extra, true, false)) {
@@ -8175,10 +8103,10 @@ CMD:dar(playerid, params[])
 		case _I<medicamentos>:
 		{
 			if(extra <= 0 || extra > 10000000) return SendNotification(playerid, "Cantidad incorrecta.");
-			if(extra > PI[playerid][pi_MEDICINE]) return SendNotification(playerid, "No tienes esa cantidad.");
+			if(extra > PI[playerid][ac_MEDICINE]) return SendNotification(playerid, "No tienes esa cantidad.");
 			
-			PI[playerid][pi_MEDICINE] -= extra;
-			PI[to_playerid][pi_MEDICINE] += extra;
+			PI[playerid][ac_MEDICINE] -= extra;
+			PI[to_playerid][ac_MEDICINE] += extra;
 			
 			SendFormatNotification(playerid, "Le has dado ~g~%d gramos~w~ de medicamentos a %s.", extra, PLAYER_TEMP[to_playerid][pt_RP_NAME]);
 			SendFormatNotification(to_playerid, "%s te ha dado ~g~%d gramos~w~ de medicamentos.", PLAYER_TEMP[playerid][pt_RP_NAME], extra);
@@ -8190,10 +8118,10 @@ CMD:dar(playerid, params[])
 		case _I<marihuana>:
 		{
 			if(extra <= 0 || extra > 10000000) return SendNotification(playerid, "Cantidad incorrecta.");
-			if(extra > PI[playerid][pi_CANNABIS]) return SendNotification(playerid, "No tienes esa cantidad.");
+			if(extra > PI[playerid][ac_CANNABIS]) return SendNotification(playerid, "No tienes esa cantidad.");
 			
-			PI[playerid][pi_CANNABIS] -= extra;
-			PI[to_playerid][pi_CANNABIS] += extra;
+			PI[playerid][ac_CANNABIS] -= extra;
+			PI[to_playerid][ac_CANNABIS] += extra;
 			
 			SendFormatNotification(playerid, "Le has dado %dg de marihuana a %s.", extra, PLAYER_TEMP[to_playerid][pt_RP_NAME]);
 			SendFormatNotification(to_playerid, "%s te ha dado %dg de marihuana.", PLAYER_TEMP[playerid][pt_RP_NAME], extra);
@@ -8205,10 +8133,10 @@ CMD:dar(playerid, params[])
 		case _I<crack>:
 		{
 			if(extra <= 0 || extra > 10000000) return SendNotification(playerid, "Cantidad incorrecta.");
-			if(extra > PI[playerid][pi_CRACK]) return SendNotification(playerid, "No tienes esa cantidad.");
+			if(extra > PI[playerid][ac_CRACK]) return SendNotification(playerid, "No tienes esa cantidad.");
 			
-			PI[playerid][pi_CRACK] -= extra;
-			PI[to_playerid][pi_CRACK] += extra;
+			PI[playerid][ac_CRACK] -= extra;
+			PI[to_playerid][ac_CRACK] += extra;
 			
 			SendFormatNotification(playerid, "Le has dado ~g~%d gramos~w~ de crack a %s.", extra, PLAYER_TEMP[to_playerid][pt_RP_NAME]);
 			SendFormatNotification(to_playerid, "%s te ha dado ~g~%d gramos~w~ de crack.", PLAYER_TEMP[playerid][pt_RP_NAME], extra);
@@ -8224,7 +8152,7 @@ CMD:dar(playerid, params[])
 		
 			if(!PLAYER_WEAPONS[playerid][extra][player_weapon_VALID]) return SendNotification(playerid, "No tienes nigún arma en ese slot.");
 			
-			if(PI[to_playerid][pi_LEVEL] < 2) return SendNotification(playerid, "La otra persona tiene que ser al menos nivel 2.");
+			if(PI[to_playerid][ac_LEVEL] < 2) return SendNotification(playerid, "La otra persona tiene que ser al menos nivel 2.");
 			if(PLAYER_WEAPONS[to_playerid][extra][player_weapon_VALID])
 			{
 				PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
@@ -8244,10 +8172,10 @@ CMD:dar(playerid, params[])
 		case _I<kit>:
 		{
 			if(extra <= 0 || extra > 10000000) return SendNotification(playerid, "Cantidad incorrecta.");
-			if(extra > PI[playerid][pi_MECHANIC_KITS]) return SendNotification(playerid, "No tienes esa cantidad.");
+			if(extra > PI[playerid][ac_MECHANIC_KITS]) return SendNotification(playerid, "No tienes esa cantidad.");
 			
-			PI[playerid][pi_MECHANIC_KITS] -= extra;
-			PI[to_playerid][pi_MECHANIC_KITS] += extra;
+			PI[playerid][ac_MECHANIC_KITS] -= extra;
+			PI[to_playerid][ac_MECHANIC_KITS] += extra;
 			
 			SendFormatNotification(playerid, "Le has dado %d kits de reparación a %s.", extra, PLAYER_TEMP[to_playerid][pt_RP_NAME]);
 			SendFormatNotification(to_playerid, "%s te ha dado %d kits de reparación.", PLAYER_TEMP[playerid][pt_RP_NAME], extra);
@@ -8259,10 +8187,10 @@ CMD:dar(playerid, params[])
 		case _I<botiquin>:
 		{
 			if(extra <= 0 || extra > 10000000) return SendNotification(playerid, "Cantidad incorrecta.");
-			if(extra > PI[playerid][pi_MEDICAL_KITS]) return SendNotification(playerid, "No tienes esa cantidad.");
+			if(extra > PI[playerid][ac_MEDICAL_KITS]) return SendNotification(playerid, "No tienes esa cantidad.");
 			
-			PI[playerid][pi_MEDICAL_KITS] -= extra;
-			PI[to_playerid][pi_MEDICAL_KITS] += extra;
+			PI[playerid][ac_MEDICAL_KITS] -= extra;
+			PI[to_playerid][ac_MEDICAL_KITS] += extra;
 			
 			SendFormatNotification(playerid, "Le has dado %d botiquines a %s.", extra, PLAYER_TEMP[to_playerid][pt_RP_NAME]);
 			SendFormatNotification(to_playerid, "%s te ha dado %d botiquines.", PLAYER_TEMP[playerid][pt_RP_NAME], extra);
@@ -8278,8 +8206,8 @@ CMD:dar(playerid, params[])
 
 CMD:vender(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
-	if(PI[playerid][pi_LEVEL] < 2) return SendNotification(playerid, "Debes ser al menos nivel 2 para usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_LEVEL] < 2) return SendNotification(playerid, "Debes ser al menos nivel 2 para usar este comando.");
 	
 	new option[24], to_playerid, extra, price;
 	if(sscanf(params, "s[24]udd", option, to_playerid, extra, price)) return SendNotification(playerid, "Error en los parámetros, utilice ~r~/man vender~w~.");
@@ -8290,14 +8218,14 @@ CMD:vender(playerid, params[])
 	if(!IsPlayerInRangeOfPoint(playerid, NEARS_PLAYERS_DISTANCE, pos[0], pos[1], pos[2])) return SendNotification(playerid, "Este jugador no está cerca tuya.");
 	if(PLAYER_TEMP[to_playerid][pt_GAME_STATE] != GAME_STATE_NORMAL) return SendNotification(playerid, "No puedes venderle nada a este jugador ahora.");
 	
-	if(price > PI[to_playerid][pi_CASH])
+	if(price > PI[to_playerid][ac_CASH])
 	{
 		SendNotification(playerid, "Esta persona no tiene el dinero que pides.");
 		return 1;
 	}
 	
 	PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_PID] = playerid;
-	PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_AID] = PI[playerid][pi_ID];
+	PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_AID] = ACCOUNT_INFO[playerid][ac_ID];
 	PLAYER_TEMP[to_playerid][pt_TRICK_PRICE] = price;
 	PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] = extra;
 	PLAYER_TEMP[to_playerid][pt_TRICK_TIME] = gettime();
@@ -8317,7 +8245,7 @@ CMD:vender(playerid, params[])
 		case _I<medicamentos>:
 		{
 			if(PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] <= 0 || PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] > 10000000) return SendNotification(playerid, "Cantidad incorrecta.");
-			if(PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] > PI[playerid][pi_MEDICINE]) return SendNotification(playerid, "No tienes esa cantidad.");
+			if(PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] > PI[playerid][ac_MEDICINE]) return SendNotification(playerid, "No tienes esa cantidad.");
 			
 			SendFormatNotification(playerid, "Le has ofrecido una venta a ~g~%s~w~, espera a ver si la acepta.", PLAYER_TEMP[to_playerid][pt_RP_NAME]);
 			ShowDialog(to_playerid, DIALOG_TRICKS_MEDICINE);
@@ -8325,7 +8253,7 @@ CMD:vender(playerid, params[])
 		case _I<marihuana>:
 		{
 			if(PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] <= 0 || PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] > 10000000) return SendNotification(playerid, "Cantidad incorrecta.");
-			if(PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] > PI[playerid][pi_CANNABIS]) return SendNotification(playerid, "No tienes esa cantidad.");
+			if(PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] > PI[playerid][ac_CANNABIS]) return SendNotification(playerid, "No tienes esa cantidad.");
 			
 			SendFormatNotification(playerid, "Le has ofrecido una venta a ~g~%s~w~, espera a ver si la acepta.", PLAYER_TEMP[to_playerid][pt_RP_NAME]);
 			ShowDialog(to_playerid, DIALOG_TRICKS_CANNABIS);
@@ -8333,7 +8261,7 @@ CMD:vender(playerid, params[])
 		case _I<crack>:
 		{
 			if(PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] <= 0 || PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] > 10000000) return SendNotification(playerid, "Cantidad incorrecta.");
-			if(PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] > PI[playerid][pi_CRACK]) return SendNotification(playerid, "No tienes esa cantidad.");
+			if(PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] > PI[playerid][ac_CRACK]) return SendNotification(playerid, "No tienes esa cantidad.");
 			
 			SendFormatNotification(playerid, "Le has ofrecido una venta a ~g~%s~w~, espera a ver si la acepta.", PLAYER_TEMP[to_playerid][pt_RP_NAME]);
 			ShowDialog(to_playerid, DIALOG_TRICKS_CRACK);
@@ -8345,7 +8273,7 @@ CMD:vender(playerid, params[])
 		
 			if(!PLAYER_WEAPONS[playerid][ PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] ][player_weapon_VALID]) return SendNotification(playerid, "No tienes nigún arma en ese slot.");
 			
-			if(PI[to_playerid][pi_LEVEL] < 2) return SendNotification(playerid, "La otra persona tiene que ser al menos nivel 2.");
+			if(PI[to_playerid][ac_LEVEL] < 2) return SendNotification(playerid, "La otra persona tiene que ser al menos nivel 2.");
 			
 			SendFormatNotification(playerid, "Le has ofrecido una venta a ~g~%s~w~, espera a ver si la acepta.", PLAYER_TEMP[to_playerid][pt_RP_NAME]);
 			ShowDialog(to_playerid, DIALOG_TRICKS_WEAPON);
@@ -8353,7 +8281,7 @@ CMD:vender(playerid, params[])
 		case _I<coins>:
 		{
 			if(PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] <= 0 || PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] > 10000000) return SendNotification(playerid, "Cantidad incorrecta.");
-			if(PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] > PI[playerid][pi_COINS]) return SendNotification(playerid, "No tienes esa cantidad de "SERVER_COIN".");
+			if(PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] > PI[playerid][ac_COINS]) return SendNotification(playerid, "No tienes esa cantidad de "SERVER_COIN".");
 			
 			SendFormatNotification(playerid, "Le has ofrecido una venta a ~g~%s~w~, espera a ver si la acepta.", PLAYER_TEMP[to_playerid][pt_RP_NAME]);
 			ShowDialog(to_playerid, DIALOG_TRICKS_SU);
@@ -8365,7 +8293,7 @@ CMD:vender(playerid, params[])
 
 CMD:consumir(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	new option[24], slot;
 	if(!sscanf(params, "s[24]d", option, slot))	
 	{
@@ -8376,7 +8304,7 @@ CMD:consumir(playerid, params[])
 			slot --;
 			
 			if(!PLAYER_POCKET[playerid][slot][player_pocket_VALID]) return SendNotification(playerid, "No tienes nada en ese slot.");
-			if(PI[playerid][pi_HUNGRY] >= 99.0 && PI[playerid][pi_THIRST] >= 99.0) return SendNotification(playerid, "¿Es que quieres reventar?");
+			if(PI[playerid][ac_HUNGRY] >= 99.0 && PI[playerid][ac_THIRST] >= 99.0) return SendNotification(playerid, "¿Es que quieres reventar?");
 
 			Add_Hungry_Thirst(playerid, PLAYER_POCKET[playerid][slot][player_pocket_object_HUNGRY], PLAYER_POCKET[playerid][slot][player_pocket_object_THIRST]);
 			GivePlayerDrunkLevel(playerid, PLAYER_POCKET[playerid][slot][player_pocket_object_DRUNK]);
@@ -8400,10 +8328,10 @@ CMD:consumir(playerid, params[])
 			{
 				if(PLAYER_TEMP[playerid][pt_COOLDOWN_MEDICINE] > gettime()) return SendFormatNotification(playerid, "Debes esperar %d segundos para volver a poder consumir medicamentos", PLAYER_TEMP[playerid][pt_COOLDOWN_MEDICINE] - gettime());
 
-				if(PI[playerid][pi_MEDICINE] <= 0) return SendNotification(playerid, "No tienes medicamentos.");
+				if(PI[playerid][ac_MEDICINE] <= 0) return SendNotification(playerid, "No tienes medicamentos.");
 				
 				PLAYER_TEMP[playerid][pt_COOLDOWN_MEDICINE] = gettime() + 30;
-				PI[playerid][pi_MEDICINE] --;
+				PI[playerid][ac_MEDICINE] --;
 				GivePlayerHealthEx(playerid, 25.0);
 				Auto_SendPlayerAction(playerid, "se toma un medicamento.");
 			}
@@ -8411,11 +8339,11 @@ CMD:consumir(playerid, params[])
 			{
 				if(PLAYER_TEMP[playerid][pt_COOLDOWN_WEED] > gettime()) return SendFormatNotification(playerid, "Debes esperar %d segundos para volver a poder consumir marihuana", PLAYER_TEMP[playerid][pt_COOLDOWN_WEED] - gettime());
 
-				if(PI[playerid][pi_CANNABIS] <= 0) return SendNotification(playerid, "No tienes marihuana.");
+				if(PI[playerid][ac_CANNABIS] <= 0) return SendNotification(playerid, "No tienes marihuana.");
 
 				PLAYER_TEMP[playerid][pt_COOLDOWN_WEED] = gettime() + 30;
 				
-				PI[playerid][pi_CANNABIS] --;
+				PI[playerid][ac_CANNABIS] --;
 				GivePlayerHealthEx(playerid, 30.0);
 				Auto_SendPlayerAction(playerid, "consume marihuana.");
 				GivePlayerDrunkLevel(playerid, 1000);
@@ -8424,10 +8352,10 @@ CMD:consumir(playerid, params[])
 			{
 				if(PLAYER_TEMP[playerid][pt_COOLDOWN_CRACK] > gettime()) return SendFormatNotification(playerid, "Debes esperar %d segundos para volver a poder consumir crack", PLAYER_TEMP[playerid][pt_COOLDOWN_CRACK] - gettime());
 
-				if(PI[playerid][pi_CRACK] <= 0) return SendNotification(playerid, "No tienes crack.");
+				if(PI[playerid][ac_CRACK] <= 0) return SendNotification(playerid, "No tienes crack.");
 
 				PLAYER_TEMP[playerid][pt_COOLDOWN_CRACK] = gettime() + 30;
-				PI[playerid][pi_CRACK] --;
+				PI[playerid][ac_CRACK] --;
 				GivePlayerArmourEx(playerid, 20.0);
 				Auto_SendPlayerAction(playerid, "consume crack.");
 				GivePlayerDrunkLevel(playerid, 2000);
@@ -8575,7 +8503,7 @@ CMD:man(playerid, params[])
 
 CMD:tirar(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	new option[24], extra;
 	if(sscanf(params, "s[24]d", option, extra)) return SendNotification(playerid, "Error en los parámetros, utilice ~r~/man tirar~w~.");
 
@@ -8583,7 +8511,7 @@ CMD:tirar(playerid, params[])
 	{
 		case _I<dinero>:
 		{
-			if(extra < 0 || extra > PI[playerid][pi_CASH]) return SendNotification(playerid, "Cantidad de dinero incorrecta.");
+			if(extra < 0 || extra > PI[playerid][ac_CASH]) return SendNotification(playerid, "Cantidad de dinero incorrecta.");
 			
 			if(GivePlayerCash(playerid, -extra, true, true)) {
 				SendFormatNotification(playerid, "Has tirado al suelo ~g~%s dólares~w~.", number_format_thousand(extra));
@@ -8606,9 +8534,9 @@ CMD:tirar(playerid, params[])
 		case _I<medicamentos>:
 		{
 			if(extra <= 0 || extra > 10000000) return SendNotification(playerid, "Cantidad incorrecta.");
-			if(extra > PI[playerid][pi_MEDICINE]) return SendNotification(playerid, "No tienes esa cantidad.");
+			if(extra > PI[playerid][ac_MEDICINE]) return SendNotification(playerid, "No tienes esa cantidad.");
 			
-			PI[playerid][pi_MEDICINE] -= extra;
+			PI[playerid][ac_MEDICINE] -= extra;
 			
 			SendFormatNotification(playerid, "Has tirado ~g~%d gramos~w~ de medicamentos.", extra);
 			return 1;
@@ -8616,9 +8544,9 @@ CMD:tirar(playerid, params[])
 		case _I<marihuana>:
 		{
 			if(extra <= 0 || extra > 10000000) return SendNotification(playerid, "Cantidad incorrecta.");
-			if(extra > PI[playerid][pi_CANNABIS]) return SendNotification(playerid, "No tienes esa cantidad.");
+			if(extra > PI[playerid][ac_CANNABIS]) return SendNotification(playerid, "No tienes esa cantidad.");
 			
-			PI[playerid][pi_CANNABIS] -= extra;
+			PI[playerid][ac_CANNABIS] -= extra;
 			
 			SendFormatNotification(playerid, "Has tirado ~g~%d gramos~w~ de marihuana.", extra);
 			return 1;
@@ -8626,9 +8554,9 @@ CMD:tirar(playerid, params[])
 		case _I<crack>:
 		{
 			if(extra <= 0 || extra > 10000000) return SendNotification(playerid, "Cantidad incorrecta.");
-			if(extra > PI[playerid][pi_CRACK]) return SendNotification(playerid, "No tienes esa cantidad.");
+			if(extra > PI[playerid][ac_CRACK]) return SendNotification(playerid, "No tienes esa cantidad.");
 			
-			PI[playerid][pi_CRACK] -= extra;
+			PI[playerid][ac_CRACK] -= extra;
 			
 			SendFormatNotification(playerid, "Has tirado ~g~%d gramos~w~ de crack.", extra);
 			return 1;
@@ -8651,9 +8579,9 @@ CMD:tirar(playerid, params[])
 		case _I<kit>:
 		{
 			if(extra <= 0 || extra > 10000000) return SendNotification(playerid, "Cantidad incorrecta.");
-			if(extra > PI[playerid][pi_MECHANIC_KITS]) return SendNotification(playerid, "No tienes esa cantidad.");
+			if(extra > PI[playerid][ac_MECHANIC_KITS]) return SendNotification(playerid, "No tienes esa cantidad.");
 			
-			PI[playerid][pi_MECHANIC_KITS] -= extra;
+			PI[playerid][ac_MECHANIC_KITS] -= extra;
 			
 			SendFormatNotification(playerid, "Has tirado ~g~%d ~w~kits de reparación.", extra);
 			return 1;
@@ -8661,9 +8589,9 @@ CMD:tirar(playerid, params[])
 		case _I<botiquin>:
 		{
 			if(extra <= 0 || extra > 10000000) return SendNotification(playerid, "Cantidad incorrecta.");
-			if(extra > PI[playerid][pi_MEDICAL_KITS]) return SendNotification(playerid, "No tienes esa cantidad.");
+			if(extra > PI[playerid][ac_MEDICAL_KITS]) return SendNotification(playerid, "No tienes esa cantidad.");
 			
-			PI[playerid][pi_MEDICAL_KITS] -= extra;
+			PI[playerid][ac_MEDICAL_KITS] -= extra;
 			
 			SendFormatNotification(playerid, "Has tirado ~g~%d ~w~botiquines.", extra);
 			return 1;
@@ -8675,7 +8603,7 @@ CMD:tirar(playerid, params[])
 
 CMD:entrar(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	if(PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID] == 0) return SendNotification(playerid, "No estás en el lugar adecuado.");
 		
 	new info[3];
@@ -8700,8 +8628,8 @@ CMD:entrar(playerid, params[])
 			{
 				if(ENTER_EXIT[info[1]][ee_TIME_OPEN] == 0 && ENTER_EXIT[info[1]][ee_TIME_CLOSE] == 0) // 24 horas
 				{
-					PI[playerid][pi_STATE] = ROLEPLAY_STATE_INTERIOR;
-					PI[playerid][pi_LOCAL_INTERIOR] = ENTER_EXIT[info[1]][ee_ID];
+					ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_INTERIOR;
+					PI[playerid][ac_LOCAL_INTERIOR] = ENTER_EXIT[info[1]][ee_ID];
 					PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] = info[1];
 					SetPlayerPosEx(playerid, ENTER_EXIT[info[1]][ee_INT_X], ENTER_EXIT[info[1]][ee_INT_Y], ENTER_EXIT[info[1]][ee_INT_Z], ENTER_EXIT[info[1]][ee_INT_ANGLE], ENTER_EXIT[info[1]][ee_INT_INTERIOR], ENTER_EXIT[info[1]][ee_INT_WORLD], false /*ENTER_EXIT[info[1]][ee_INT_FREEZE]*/, true);
 					FreezePlayer(playerid);
@@ -8711,8 +8639,8 @@ CMD:entrar(playerid, params[])
 				{
 					if(is_open(GetMyWorldHour(), ENTER_EXIT[info[1]][ee_TIME_OPEN], ENTER_EXIT[info[1]][ee_TIME_CLOSE]))
 					{
-						PI[playerid][pi_STATE] = ROLEPLAY_STATE_INTERIOR;
-						PI[playerid][pi_LOCAL_INTERIOR] = ENTER_EXIT[info[1]][ee_ID];
+						ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_INTERIOR;
+						PI[playerid][ac_LOCAL_INTERIOR] = ENTER_EXIT[info[1]][ee_ID];
 						PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] = info[1];
 						SetPlayerPosEx(playerid, ENTER_EXIT[info[1]][ee_INT_X], ENTER_EXIT[info[1]][ee_INT_Y], ENTER_EXIT[info[1]][ee_INT_Z], ENTER_EXIT[info[1]][ee_INT_ANGLE], ENTER_EXIT[info[1]][ee_INT_INTERIOR], ENTER_EXIT[info[1]][ee_INT_WORLD], false /*ENTER_EXIT[info[1]][ee_INT_FREEZE]*/, true);
 						FreezePlayer(playerid);
@@ -8744,11 +8672,11 @@ CMD:entrar(playerid, params[])
 				if(!PROPERTY_INFO[info[1]][property_SOLD]) return SendNotification(playerid, "Esta propiedad está en venta.");
 				if(PROPERTY_INFO[info[1]][property_CREW])
 				{
-					if(!PI[playerid][pi_CREW]) return SendFormatNotification(playerid, "Solo miembros de la banda pueden entrar.");
-					if(PI[playerid][pi_CREW] != PROPERTY_INFO[info[1]][property_CREW_ID]) return SendFormatNotification(playerid, "Solo miembros de la banda pueden entrar.");
+					if(!PI[playerid][ac_CREW]) return SendFormatNotification(playerid, "Solo miembros de la banda pueden entrar.");
+					if(PI[playerid][ac_CREW] != PROPERTY_INFO[info[1]][property_CREW_ID]) return SendFormatNotification(playerid, "Solo miembros de la banda pueden entrar.");
 					
-					PI[playerid][pi_STATE] = ROLEPLAY_STATE_GUEST_PROPERTY;
-					PI[playerid][pi_LOCAL_INTERIOR] = PROPERTY_INFO[info[1]][property_ID];
+					ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_GUEST_PROPERTY;
+					PI[playerid][ac_LOCAL_INTERIOR] = PROPERTY_INFO[info[1]][property_ID];
 					PLAYER_TEMP[playerid][pt_PROPERTY_INDEX] = info[1];
 
 					new Float:z_pos = PROPERTY_INTERIORS[ PROPERTY_INFO[info[1]][property_ID_INTERIOR] ][property_INT_Z];
@@ -8758,10 +8686,10 @@ CMD:entrar(playerid, params[])
 				}
 				else
 				{
-					if(PROPERTY_INFO[info[1]][property_OWNER_ID] == PI[playerid][pi_ID])
+					if(PROPERTY_INFO[info[1]][property_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
 					{
-						PI[playerid][pi_STATE] = ROLEPLAY_STATE_OWN_PROPERTY;
-						PI[playerid][pi_LOCAL_INTERIOR] = PROPERTY_INFO[info[1]][property_ID];
+						ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_OWN_PROPERTY;
+						PI[playerid][ac_LOCAL_INTERIOR] = PROPERTY_INFO[info[1]][property_ID];
 						PLAYER_TEMP[playerid][pt_PROPERTY_INDEX] = info[1];
 
 						new Float:z_pos = PROPERTY_INTERIORS[ PROPERTY_INFO[info[1]][property_ID_INTERIOR] ][property_INT_Z];
@@ -8792,7 +8720,7 @@ CMD:entrar(playerid, params[])
 
 CMD:puerta(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] != ROLEPLAY_STATE_OWN_PROPERTY) return SendNotification(playerid, "No estás en el lugar adecuado.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] != ROLEPLAY_STATE_OWN_PROPERTY) return SendNotification(playerid, "No estás en el lugar adecuado.");
 	if(PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID] == 0) return SendNotification(playerid, "No estás en el lugar adecuado.");
 		
 	new info[3];
@@ -8808,7 +8736,7 @@ CMD:puerta(playerid, params[])
 	
 	if(info[2] == 1) // Está en el Pickup Interior
 	{
-		if(PROPERTY_INFO[info[1]][property_OWNER_ID] == PI[playerid][pi_ID])
+		if(PROPERTY_INFO[info[1]][property_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
 		{
 			if(PLAYER_TEMP[playerid][pt_KNOCK_PLAYER_ID] == INVALID_PLAYER_ID) return SendNotification(playerid, "Nadie ha tocado en la puerta.");
 			if(!IsPlayerConnected(PLAYER_TEMP[playerid][pt_KNOCK_PLAYER_ID])) return SendNotification(playerid, "Nadie ha tocado en la puerta o ya se ha ido.");
@@ -8817,8 +8745,8 @@ CMD:puerta(playerid, params[])
 			
 			PLAYER_TEMP[PLAYER_TEMP[playerid][pt_KNOCK_PLAYER_ID]][pt_HOSPITAL] = GetNearestHospitalForPlayer(PLAYER_TEMP[playerid][pt_KNOCK_PLAYER_ID]);
 			
-			PI[PLAYER_TEMP[playerid][pt_KNOCK_PLAYER_ID]][pi_STATE] = ROLEPLAY_STATE_GUEST_PROPERTY;
-			PI[PLAYER_TEMP[playerid][pt_KNOCK_PLAYER_ID]][pi_LOCAL_INTERIOR] = PROPERTY_INFO[info[1]][property_ID];
+			PI[PLAYER_TEMP[playerid][pt_KNOCK_PLAYER_ID]][ac_STATE] = ROLEPLAY_STATE_GUEST_PROPERTY;
+			PI[PLAYER_TEMP[playerid][pt_KNOCK_PLAYER_ID]][ac_LOCAL_INTERIOR] = PROPERTY_INFO[info[1]][property_ID];
 			PLAYER_TEMP[PLAYER_TEMP[playerid][pt_KNOCK_PLAYER_ID]][pt_PROPERTY_INDEX] = info[1];
 
 			new Float:z_pos = PROPERTY_INTERIORS[ PROPERTY_INFO[info[1]][property_ID_INTERIOR] ][property_INT_Z];
@@ -8836,8 +8764,8 @@ CMD:pvender(playerid, params[])
 {
 	if(PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] == -1 || ENTER_EXIT[ PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] ][ee_INTERIOR_TYPE] != INTERIOR_CITY_HALL_LS) return 1;
 	if(!IsPlayerInRangeOfPoint(playerid, 1.0, -474.596282, 289.679107, 2004.584960)) return 1;
-	if(PI[playerid][pi_LEVEL] < 2) return SendNotification(playerid, "Debes ser al menos nivel 2 para usar este comando.");
-	if(PI[playerid][pi_BANK_ACCOUNT] == 0) return SendNotification(playerid, "Necesitas tener una cuenta bancaria para poder realizar estas operaciones.");
+	if(ACCOUNT_INFO[playerid][ac_LEVEL] < 2) return SendNotification(playerid, "Debes ser al menos nivel 2 para usar este comando.");
+	if(PI[playerid][ac_BANK_ACCOUNT] == 0) return SendNotification(playerid, "Necesitas tener una cuenta bancaria para poder realizar estas operaciones.");
 	
 	ShowDialog(playerid, DIALOG_NOTARY);
 	return 1;
@@ -8856,25 +8784,25 @@ CMD:casa(playerid, params[])
 {
 	if(PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID] == 0) return SendNotification(playerid, "No estás en el lugar adecuado.");
 	
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_OWN_PROPERTY || PI[playerid][pi_STATE] == ROLEPLAY_STATE_GUEST_PROPERTY) {
-		new index = GetPropertyIndexByID(PI[playerid][pi_LOCAL_INTERIOR]);
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_OWN_PROPERTY || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_GUEST_PROPERTY) {
+		new index = GetPropertyIndexByID(PI[playerid][ac_LOCAL_INTERIOR]);
 		if(index == -1) return SendNotification(playerid, "No estás en el lugar adecuado.");
 
-		if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_OWN_PROPERTY)
+		if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_OWN_PROPERTY)
 		{	
-			if(PROPERTY_INFO[index][property_OWNER_ID] == PI[playerid][pi_ID])
+			if(PROPERTY_INFO[index][property_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
 			{
 				PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] = index;
 				ShowDialog(playerid, DIALOG_PROPERTY_OPTIONS);
 			}
 			else SendNotification(playerid, "No estás en el lugar adecuado.");
 		}
-		else if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_GUEST_PROPERTY)
+		else if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_GUEST_PROPERTY)
 		{
 			if(PROPERTY_INFO[index][property_CREW])
 			{
-				if(PROPERTY_INFO[index][property_CREW_ID] != PI[playerid][pi_CREW]) return SendNotification(playerid, "Esta no es una propiedad de tu banda.");
-				if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_DELETE_PROPERTIES]) return SendNotification(playerid, "No tienes permiso.");
+				if(PROPERTY_INFO[index][property_CREW_ID] != PI[playerid][ac_CREW]) return SendNotification(playerid, "Esta no es una propiedad de tu banda.");
+				if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_DELETE_PROPERTIES]) return SendNotification(playerid, "No tienes permiso.");
 				if(CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_FIGHTING]) return SendNotification(playerid, "No puedes liberar una propiedad cuando tu banda está en combate."); 
 				
 				PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] = index;
@@ -8889,11 +8817,11 @@ CMD:casa(playerid, params[])
 
 CMD:armario(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_OWN_PROPERTY)
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_OWN_PROPERTY)
 	{
-		new index = GetPropertyIndexByID(PI[playerid][pi_LOCAL_INTERIOR]);
+		new index = GetPropertyIndexByID(PI[playerid][ac_LOCAL_INTERIOR]);
 		if(index == -1) return SendNotification(playerid, "BUG: CMD /armario, Tome captura y contacte con administrador.");
-		if(PROPERTY_INFO[index][property_OWNER_ID] != PI[playerid][pi_ID]) return SendNotification(playerid, "Esta no es tu casa");
+		if(PROPERTY_INFO[index][property_OWNER_ID] != ACCOUNT_INFO[playerid][ac_ID]) return SendNotification(playerid, "Esta no es tu casa");
 
 		new Float:z_pos = PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_Z];
 		if(PROPERTY_INFO[index][property_DIS_DEFAULT_INTERIOR]) z_pos += PROPERTY_EMPTY_INTERIOR_Z_OFFSET;
@@ -8914,15 +8842,15 @@ CMD:echar(playerid, params[])
 	if(!IsPlayerConnected(params[0])) return SendNotification(playerid, "El jugador no está conectado.");
 	if(playerid == params[0]) return SendNotification(playerid, "No te eches a ti mismo.");
 	
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_OWN_PROPERTY)
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_OWN_PROPERTY)
 	{
-		if( PI[params[0]][pi_STATE] == ROLEPLAY_STATE_GUEST_PROPERTY && PI[params[0]][pi_LOCAL_INTERIOR] == PI[playerid][pi_LOCAL_INTERIOR])
+		if( PI[params[0]][ac_STATE] == ROLEPLAY_STATE_GUEST_PROPERTY && PI[params[0]][ac_LOCAL_INTERIOR] == PI[playerid][ac_LOCAL_INTERIOR])
 		{		
-			new index = GetPropertyIndexByID(PI[playerid][pi_LOCAL_INTERIOR]);
+			new index = GetPropertyIndexByID(PI[playerid][ac_LOCAL_INTERIOR]);
 			if(index == -1) return SendNotification(playerid, "BUG: CMD /ECHAR, Tome captura y contacte con administrador.");
 				
-			PI[params[0]][pi_STATE] = ROLEPLAY_STATE_NORMAL;
-			PI[params[0]][pi_LOCAL_INTERIOR] = 0;
+			PI[params[0]][ac_STATE] = ROLEPLAY_STATE_NORMAL;
+			PI[params[0]][ac_LOCAL_INTERIOR] = 0;
 			PLAYER_TEMP[params[0]][pt_PROPERTY_INDEX] = -1;
 			SetPlayerPosEx(params[0], PROPERTY_INFO[ index ][property_EXT_X], PROPERTY_INFO[ index ][property_EXT_Y], PROPERTY_INFO[ index ][property_EXT_Z], PROPERTY_INFO[ index ][property_EXT_ANGLE], PROPERTY_INFO[ index ][property_EXT_INTERIOR], 0, false /*PROPERTY_INFO[ index ][property_EXT_FREEZE]*/, false);
 			StopAudioStreamForPlayer(params[0]);
@@ -8940,7 +8868,7 @@ CMD:echar(playerid, params[])
 		new vehicleid = GetPlayerVehicleID(playerid);
 		
 		if(!PLAYER_VEHICLES[vehicleid][player_vehicle_VALID]) return SendNotification(playerid, "Este no es tú vehículo.");
-		if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] != PI[playerid][pi_ID]) return SendNotification(playerid, "Este no es tú vehículo.");
+		if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] != ACCOUNT_INFO[playerid][ac_ID]) return SendNotification(playerid, "Este no es tú vehículo.");
 		if(GetPlayerVehicleID(params[0]) != vehicleid) return SendNotification(playerid, "Este jugador no está en tu vehículo.");
 		
 		RemovePlayerFromVehicle(params[0]);
@@ -8996,7 +8924,7 @@ CMD:cargar(playerid, params[])
 					if(TRUCK_VEHICLE[vehicleid][truck_vehicle_LOADING]) return SendNotification(playerid, "El camión ya se está cargando.");
 		
 					TRUCK_VEHICLE[vehicleid][truck_vehicle_LOADING] = true;
-					TRUCK_VEHICLE[vehicleid][truck_vehicle_DRIVER_USER_ID] = PI[playerid][pi_ID];
+					TRUCK_VEHICLE[vehicleid][truck_vehicle_DRIVER_USER_ID] = ACCOUNT_INFO[playerid][ac_ID];
 					
 					SetVehicleVelocity(vehicleid, 0.0, 0.0, 0.0);
 					
@@ -9020,7 +8948,7 @@ CMD:cargar(playerid, params[])
 
 CMD:salir(playerid, params[])
 {	
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	if(PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID] == 0) return SendNotification(playerid, "No estás en el lugar adecuado.");
 		
 	new info[3];
@@ -9041,8 +8969,8 @@ CMD:salir(playerid, params[])
 		{
 			if(info[2] == 1) // Está en el Pickup Interior y quiere ir al exterior
 			{
-				PI[playerid][pi_STATE] = ROLEPLAY_STATE_NORMAL;
-				PI[playerid][pi_LOCAL_INTERIOR] = 0;
+				ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_NORMAL;
+				PI[playerid][ac_LOCAL_INTERIOR] = 0;
 				PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] = -1;
 				SetPlayerPosEx(playerid, ENTER_EXIT[info[1]][ee_EXT_X], ENTER_EXIT[info[1]][ee_EXT_Y], ENTER_EXIT[info[1]][ee_EXT_Z], ENTER_EXIT[info[1]][ee_EXT_ANGLE], ENTER_EXIT[info[1]][ee_EXT_INTERIOR], ENTER_EXIT[info[1]][ee_EXT_WORLD], false /*ENTER_EXIT[info[1]][ee_EXT_FREEZE]*/);
 				SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
@@ -9056,8 +8984,8 @@ CMD:salir(playerid, params[])
 		{
 			if(info[2] == 1) // Está en el Pickup Interior y quiere ir al exterior
 			{
-				PI[playerid][pi_STATE] = ROLEPLAY_STATE_NORMAL;
-				PI[playerid][pi_LOCAL_INTERIOR] = 0;
+				ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_NORMAL;
+				PI[playerid][ac_LOCAL_INTERIOR] = 0;
 				PLAYER_TEMP[playerid][pt_PROPERTY_INDEX] = -1;
 				SetPlayerPosEx(playerid, PROPERTY_INFO[info[1]][property_EXT_X], PROPERTY_INFO[info[1]][property_EXT_Y], PROPERTY_INFO[info[1]][property_EXT_Z], PROPERTY_INFO[info[1]][property_EXT_ANGLE], PROPERTY_INFO[info[1]][property_EXT_INTERIOR], 0, false /*PROPERTY_INFO[info[1]][property_EXT_FREEZE]*/, false);
 				SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
@@ -9105,7 +9033,7 @@ CMD:gasolina(playerid, params[])
 		
 		new price = floatround( floatmul(amount, 9.0) );
 		
-		if(PI[playerid][pi_CASH] >= price)
+		if(PI[playerid][ac_CASH] >= price)
 		{
 			if(GivePlayerCash(playerid, -price, true, true)) {
 				GLOBAL_VEHICLES[vehicleid][gb_vehicle_GAS] += amount;
@@ -9118,7 +9046,7 @@ CMD:gasolina(playerid, params[])
 		else
 		{
 			PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
-			SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder repostar {588dc9}%.1f.", number_format_thousand(price - PI[playerid][pi_CASH]), amount);
+			SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder repostar {588dc9}%.1f.", number_format_thousand(price - PI[playerid][ac_CASH]), amount);
 		}
 		return 1;
 	}
@@ -9131,7 +9059,7 @@ CMD:gasolina(playerid, params[])
 			new Float:amount = floatsub(GLOBAL_VEHICLES[vehicleid][gb_vehicle_MAX_GAS], GLOBAL_VEHICLES[vehicleid][gb_vehicle_GAS]);
 
 			new price = floatround( floatmul(amount, 9.0) );
-			if(PI[playerid][pi_CASH] >= price)
+			if(PI[playerid][ac_CASH] >= price)
 			{
 				if(GivePlayerCash(playerid, -price, true, true)) {
 					GLOBAL_VEHICLES[vehicleid][gb_vehicle_GAS] = GLOBAL_VEHICLES[vehicleid][gb_vehicle_MAX_GAS];
@@ -9144,7 +9072,7 @@ CMD:gasolina(playerid, params[])
 			else
 			{
 				PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
-				SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder repostar {588dc9}%.1f.", number_format_thousand(price - PI[playerid][pi_CASH]), amount);
+				SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder repostar {588dc9}%.1f.", number_format_thousand(price - PI[playerid][ac_CASH]), amount);
 			}
 		}
 		else SendNotification(playerid, "~r~Modo de uso: ~w~/gasolina [litros / lleno]");
@@ -9170,26 +9098,26 @@ CMD:bidon(playerid, params[])
 	}
 	if(fuel_station == -1) return SendNotification(playerid, "No estás en el lugar adecuado.");
 	
-	if(PI[playerid][pi_FUEL_DRUM] <= 0)
+	if(PI[playerid][ac_FUEL_DRUM] <= 0)
 	{
-		PI[playerid][pi_FUEL_DRUM] = 0;
+		PI[playerid][ac_FUEL_DRUM] = 0;
 		if(GivePlayerCash(playerid, -250, true, true)) {
-			PI[playerid][pi_FUEL_DRUM] = 20;
+			PI[playerid][ac_FUEL_DRUM] = 20;
 			SendNotification(playerid, "Has comprado un bidón de gasolina de 20 litros por 250$, usa ~g~/vertir ~w~para repostar un vehículo.");
 		}
 		else SendNotification(playerid, "No tienes suficiente dinero para comprar el bidón.");
 	}
 	else
 	{
-		if(PI[playerid][pi_FUEL_DRUM] >= 20) return SendNotification(playerid, "Tu bidón de gasolina está lleno.");
+		if(PI[playerid][ac_FUEL_DRUM] >= 20) return SendNotification(playerid, "Tu bidón de gasolina está lleno.");
 		
-		new amount = (20 - PI[playerid][pi_FUEL_DRUM]);
+		new amount = (20 - PI[playerid][ac_FUEL_DRUM]);
 		new price = (13 * amount);
 		
-		if(PI[playerid][pi_CASH] >= price)
+		if(PI[playerid][ac_CASH] >= price)
 		{
 			if(GivePlayerCash(playerid, -price, true, true)) {
-				PI[playerid][pi_FUEL_DRUM] += amount;
+				PI[playerid][ac_FUEL_DRUM] += amount;
 				SendFormatNotification(playerid, "Has llenado tu bidón de gasolina con 20 litros por %d$, usa ~g~/vertir ~w~para repostar un vehículo.", price);
 			}
 		}
@@ -9214,14 +9142,14 @@ CMD:vertir(playerid, params[])
 
 	if(sscanf(params, "d", params[0])) return SendNotification(playerid, "~r~Modo de uso: ~w~/vetir [Cantidad de litros]");
 	if(params[0] <= 0) return SendNotification(playerid, "Cantidad de litros no válida.");
-	if(params[0] > PI[playerid][pi_FUEL_DRUM]) return SendFormatNotification(playerid, "Solo tienes %d.0 litros en el bidón.", PI[playerid][pi_FUEL_DRUM]);
+	if(params[0] > PI[playerid][ac_FUEL_DRUM]) return SendFormatNotification(playerid, "Solo tienes %d.0 litros en el bidón.", PI[playerid][ac_FUEL_DRUM]);
 	
 	new Float:amount = float(params[0]);
 	if(amount + GLOBAL_VEHICLES[vehicleid][gb_vehicle_GAS] > GLOBAL_VEHICLES[vehicleid][gb_vehicle_MAX_GAS]) amount = GLOBAL_VEHICLES[vehicleid][gb_vehicle_MAX_GAS] - GLOBAL_VEHICLES[vehicleid][gb_vehicle_GAS];
 	
-	PI[playerid][pi_FUEL_DRUM] -= floatround(amount);
+	PI[playerid][ac_FUEL_DRUM] -= floatround(amount);
 	GLOBAL_VEHICLES[vehicleid][gb_vehicle_GAS] += amount;
-	SendFormatNotification(playerid, "Has vertido ~b~%.1f litros~w~ del bidón, te quedan ~b~%d.0 litros~w~.", amount, PI[playerid][pi_FUEL_DRUM]);
+	SendFormatNotification(playerid, "Has vertido ~b~%.1f litros~w~ del bidón, te quedan ~b~%d.0 litros~w~.", amount, PI[playerid][ac_FUEL_DRUM]);
 	Auto_SendPlayerAction(playerid, "ha repostado el vehículo.");
 	return 1;
 }
@@ -9232,7 +9160,7 @@ CMD:setfdrum(playerid, params[])
 	if(sscanf(params, "ud", to_player, amount)) return SendNotification(playerid, "~r~Modo de uso:~w~ /setfdrum <player_id> <valor>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
 	
-	PI[to_player][pi_FUEL_DRUM] = amount;
+	PI[to_player][ac_FUEL_DRUM] = amount;
 	
 	SendCmdLogToAdmins(playerid, "setfdrum", params);
 	return 1;
@@ -9282,7 +9210,7 @@ ShowDialog(playerid, dialogid)
 			format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Accesorio\t{"#BLUE_COLOR"}Colocado\n");
 			for(new i; i != MAX_SU_TOYS; i ++)
 			{
-				if(PI[playerid][pi_VIP])
+				if(ACCOUNT_INFO[playerid][ac_VIP])
 				{
 					if(PLAYER_TOYS[playerid][i][player_toy_VALID])
 					{
@@ -9398,10 +9326,10 @@ ShowDialog(playerid, dialogid)
 		case DIALOG_PLAYER_TOY_DELETE_ALL: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Accesorios - Eliminar todo", "¿Estás seguro de que quiere eliminar todos sus accesorios?\nEsta opción no se puede deshacer.", "Eliminar", "Atrás");	
 		case DIALOG_BANK:
 		{
-			if(PI[playerid][pi_BANK_ACCOUNT] == 0) return SendNotification(playerid, "No tienes cuenta bancaria.");
+			if(PI[playerid][ac_BANK_ACCOUNT] == 0) return SendNotification(playerid, "No tienes cuenta bancaria.");
 			
 			new caption[80];
-			format(caption, sizeof caption, "Mi cuenta bancaria: {"#BLUE_COLOR"}%s {FFFFFF}- Balance actual: {"#BLUE_COLOR"}%s$", number_format_thousand(PI[playerid][pi_BANK_ACCOUNT]), number_format_thousand(PI[playerid][pi_BANK_MONEY]));
+			format(caption, sizeof caption, "Mi cuenta bancaria: {"#BLUE_COLOR"}%s {FFFFFF}- Balance actual: {"#BLUE_COLOR"}%s$", number_format_thousand(PI[playerid][ac_BANK_ACCOUNT]), number_format_thousand(PI[playerid][ac_BANK_MONEY]));
 			
 			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, 
 				"{"#SILVER_COLOR"}1. Retirar dinero\n{"#SILVER_COLOR"}2. Depositar dinero\n{"#SILVER_COLOR"}3. Transferir dinero\n{"#SILVER_COLOR"}4. Últimas transacciones", 
@@ -9418,7 +9346,7 @@ ShowDialog(playerid, dialogid)
 		case DIALOG_BANK_WITHDRAW:
 		{
 			new dialog[100];
-			format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Balance actual: {"#BLUE_COLOR"}%s$\n{"#SILVER_COLOR"}¿Cuánto quiere retirar?", number_format_thousand(PI[playerid][pi_BANK_MONEY]));
+			format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Balance actual: {"#BLUE_COLOR"}%s$\n{"#SILVER_COLOR"}¿Cuánto quiere retirar?", number_format_thousand(PI[playerid][ac_BANK_MONEY]));
 			
 			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Banco - Retirar", dialog, "Continuar", "Atrás");
 			return 1;
@@ -9426,7 +9354,7 @@ ShowDialog(playerid, dialogid)
 		case DIALOG_BANK_DEPOSIT:
 		{
 			new dialog[100];
-			format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Dinero actual: {"#BLUE_COLOR"}%s$\n{"#SILVER_COLOR"}¿Cuánto quiere depositar?", number_format_thousand(PI[playerid][pi_CASH]));
+			format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Dinero actual: {"#BLUE_COLOR"}%s$\n{"#SILVER_COLOR"}¿Cuánto quiere depositar?", number_format_thousand(PI[playerid][ac_CASH]));
 			
 			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Banco - Depositar", dialog, "Continuar", "Atrás");
 			return 1;
@@ -9435,7 +9363,7 @@ ShowDialog(playerid, dialogid)
 		case DIALOG_BANK_TRANSFER_SEND:
 		{
 			new dialog[170];
-			format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Transferir a cuenta: {"#BLUE_COLOR"}%s\n{"#SILVER_COLOR"}Balance actual: {"#BLUE_COLOR"}%s$\n\n{"#SILVER_COLOR"}¿Cuánto quiere transferir?", number_format_thousand(PLAYER_TEMP[playerid][pt_SELECT_BANK_TRANSFER_ACCOUNT]), number_format_thousand(PI[playerid][pi_BANK_MONEY]));
+			format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Transferir a cuenta: {"#BLUE_COLOR"}%s\n{"#SILVER_COLOR"}Balance actual: {"#BLUE_COLOR"}%s$\n\n{"#SILVER_COLOR"}¿Cuánto quiere transferir?", number_format_thousand(PLAYER_TEMP[playerid][pt_SELECT_BANK_TRANSFER_ACCOUNT]), number_format_thousand(PI[playerid][ac_BANK_MONEY]));
 			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Banco - Transferir", dialog, "Continuar", "Atrás");
 			return 1;
 		}
@@ -9478,7 +9406,7 @@ ShowDialog(playerid, dialogid)
 								}
 								case BANK_TRANSACTION_TRANSFER:
 								{
-									if(from_id == PI[playerid][pi_ID]) format(line_str, sizeof line_str, "{"#SILVER_COLOR"}%s\t{"#BLUE_COLOR"}Transferencia a %d\t{"#SILVER_COLOR"}-%s$\n", date, to_bankid, number_format_thousand(amount));
+									if(from_id == ACCOUNT_INFO[playerid][ac_ID]) format(line_str, sizeof line_str, "{"#SILVER_COLOR"}%s\t{"#BLUE_COLOR"}Transferencia a %d\t{"#SILVER_COLOR"}-%s$\n", date, to_bankid, number_format_thousand(amount));
 									else format(line_str, sizeof line_str, "{"#SILVER_COLOR"}%s\t{"#BLUE_COLOR"}Transferencia de %d\t{"#SILVER_COLOR"}%s$\n", date, from_bankid, number_format_thousand(amount));
 									strcat(dialog, line_str);
 								}
@@ -9514,7 +9442,7 @@ ShowDialog(playerid, dialogid)
 					ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, caption, dialog, "Cerrar", "Atrás");
 				}
 			}
-			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT bank_movements.*, player.bank_account AS from_bankid, player2.bank_account AS to_bankid FROM bank_movements LEFT JOIN player ON bank_movements.from_id = player.id LEFT JOIN player AS player2 ON bank_movements.to_id = player2.id WHERE bank_movements.from_id = %d OR bank_movements.to_id = %d ORDER BY date DESC LIMIT %d;", PI[playerid][pi_ID], PI[playerid][pi_ID], MAX_BANK_TRANSACTIONS_DIALOG);
+			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT bank_movements.*, player.bank_account AS from_bankid, player2.bank_account AS to_bankid FROM bank_movements LEFT JOIN player ON bank_movements.from_id = player.id LEFT JOIN player AS player2 ON bank_movements.to_id = player2.id WHERE bank_movements.from_id = %d OR bank_movements.to_id = %d ORDER BY date DESC LIMIT %d;", ACCOUNT_INFO[playerid][ac_ID], ACCOUNT_INFO[playerid][ac_ID], MAX_BANK_TRANSACTIONS_DIALOG);
 			MySQL_TQueryInline(srp_db, using inline OnBankMovementsLoad, QUERY_BUFFER);
 			return 1;
 		}
@@ -9554,19 +9482,19 @@ ShowDialog(playerid, dialogid)
 
 			new dialog_body[1024] = "- Dar\n- Vender\n- Eliminar\n";
 
-			if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_NORMAL || PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK) {
+			if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_NORMAL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK) {
 				new vehicleid = GetPlayerCameraTargetVehicle(playerid);
-				if(vehicleid != INVALID_VEHICLE_ID && PLAYER_VEHICLES[vehicleid][player_vehicle_VALID] && PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == PI[playerid][pi_ID]) {
+				if(vehicleid != INVALID_VEHICLE_ID && PLAYER_VEHICLES[vehicleid][player_vehicle_VALID] && PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID]) {
 					strcat(dialog_body, "- Guardar en el maletero");
 				}
 			}
-			else if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_OWN_PROPERTY) {
-				new index = GetPropertyIndexByID(PI[playerid][pi_LOCAL_INTERIOR]);
+			else if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_OWN_PROPERTY) {
+				new index = GetPropertyIndexByID(PI[playerid][ac_LOCAL_INTERIOR]);
 
 				if(index != -1) {
 					new Float:z_pos = PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_Z];
 					if(PROPERTY_INFO[index][property_DIS_DEFAULT_INTERIOR]) z_pos += PROPERTY_EMPTY_INTERIOR_Z_OFFSET;
-					if(PROPERTY_INFO[index][property_OWNER_ID] == PI[playerid][pi_ID] && IsPlayerInRangeOfPoint(playerid, NEARS_PLAYERS_DISTANCE, PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_X], PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_Y], z_pos)) {
+					if(PROPERTY_INFO[index][property_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID] && IsPlayerInRangeOfPoint(playerid, NEARS_PLAYERS_DISTANCE, PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_X], PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_Y], z_pos)) {
 						strcat(dialog_body, "- Guardar en el armario");
 					}
 				}
@@ -9579,10 +9507,10 @@ ShowDialog(playerid, dialogid)
 		case DIALOG_PHONE:
 		{
 			new caption[50];
-			format(caption, sizeof caption, "Mi teléfono - %d", PI[playerid][pi_PHONE_NUMBER]);
+			format(caption, sizeof caption, "Mi teléfono - %d", PI[playerid][ac_PHONE_NUMBER]);
 			
 			new dialog[200];
-			if(PI[playerid][pi_PHONE_STATE] == PHONE_STATE_ON) format(dialog, sizeof dialog, "{"#SILVER_COLOR"}1. Agenda\n{"#SILVER_COLOR"}2. Llamar\n{"#SILVER_COLOR"}3. Enviar mensaje\n{"#SILVER_COLOR"}4. Ver mensajes recibidos\n{"#SILVER_COLOR"}5. Ver mensajes enviados\n{"#SILVER_COLOR"}6. Tienda de compra y venta\n{"#SILVER_COLOR"}7. Apagar teléfono");
+			if(PI[playerid][ac_PHONE_STATE] == PHONE_STATE_ON) format(dialog, sizeof dialog, "{"#SILVER_COLOR"}1. Agenda\n{"#SILVER_COLOR"}2. Llamar\n{"#SILVER_COLOR"}3. Enviar mensaje\n{"#SILVER_COLOR"}4. Ver mensajes recibidos\n{"#SILVER_COLOR"}5. Ver mensajes enviados\n{"#SILVER_COLOR"}6. Tienda de compra y venta\n{"#SILVER_COLOR"}7. Apagar teléfono");
 			else format(dialog, sizeof dialog, "{"#SILVER_COLOR"}1. Encender teléfono\n{"#SILVER_COLOR"}2. Agenda\n{"#SILVER_COLOR"}3. Llamar\n{"#SILVER_COLOR"}4. Enviar mensaje\n{"#SILVER_COLOR"}5. Ver mensajes recibidos\n{"#SILVER_COLOR"}6. Ver mensajes enviados\n{"#SILVER_COLOR"}7. Tienda de compra y venta");
 			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, dialog, "Continuar", "Cerrar");
 			return 1;
@@ -9685,7 +9613,7 @@ ShowDialog(playerid, dialogid)
 					ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, caption, dialog, "Cerrar", "Atrás");
 				}
 			}
-			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT pmessages.*, player.phone_number FROM pmessages LEFT JOIN player ON pmessages.to_id = player.id WHERE pmessages.from_id = %d ORDER BY pmessages.date DESC LIMIT 10;", PI[playerid][pi_ID]);
+			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT pmessages.*, player.phone_number FROM pmessages LEFT JOIN player ON pmessages.to_id = player.id WHERE pmessages.from_id = %d ORDER BY pmessages.date DESC LIMIT 10;", ACCOUNT_INFO[playerid][ac_ID]);
 			MySQL_TQueryInline(srp_db, using inline OnSentMessagesLoad, QUERY_BUFFER);
 			return 1;
 		}
@@ -9718,7 +9646,7 @@ ShowDialog(playerid, dialogid)
 					ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, caption, dialog, "Cerrar", "Atrás");
 				}
 			}
-			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT pmessages.*, player.phone_number FROM pmessages LEFT JOIN player ON pmessages.from_id = player.id WHERE pmessages.to_id = %d ORDER BY pmessages.date DESC LIMIT 10;", PI[playerid][pi_ID]);
+			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT pmessages.*, player.phone_number FROM pmessages LEFT JOIN player ON pmessages.from_id = player.id WHERE pmessages.to_id = %d ORDER BY pmessages.date DESC LIMIT 10;", ACCOUNT_INFO[playerid][ac_ID]);
 			MySQL_TQueryInline(srp_db, using inline OnReceivedMessagesLoad, QUERY_BUFFER);
 			return 1;
 		}
@@ -9728,11 +9656,11 @@ ShowDialog(playerid, dialogid)
 			
 			if(PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_EXTRA])
 			{
-				format(dialog, sizeof dialog, "Coste de la propiedad: %d "SERVER_COIN"\nSeguro: NO\nMonedas "SERVER_COIN" actuales: %d "SERVER_COIN"\nMonedas "SERVER_COIN" tras la compra: %d "SERVER_COIN"\n\n¿De verdad desea comprar esta propiedad?", PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX] ][property_EXTRA], PI[playerid][pi_COINS], PI[playerid][pi_COINS] - PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX] ][property_EXTRA]);
+				format(dialog, sizeof dialog, "Coste de la propiedad: %d "SERVER_COIN"\nSeguro: NO\nMonedas "SERVER_COIN" actuales: %d "SERVER_COIN"\nMonedas "SERVER_COIN" tras la compra: %d "SERVER_COIN"\n\n¿De verdad desea comprar esta propiedad?", PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX] ][property_EXTRA], PI[playerid][ac_COINS], PI[playerid][ac_COINS] - PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX] ][property_EXTRA]);
 			}
 			else
 			{
-				format(dialog, sizeof dialog, "Precio de la propiedad: %s$\nSeguro: %s$\nBalance actual: %s$\nBalance tras la compra: %s$\n\n¿De verdad desea comprar esta propiedad?", number_format_thousand(PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX] ][property_PRICE]), number_format_thousand(PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX] ][property_PRICE_BASE] / 200), number_format_thousand(PI[playerid][pi_BANK_MONEY]), number_format_thousand(PI[playerid][pi_BANK_MONEY] - PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX] ][property_PRICE]));
+				format(dialog, sizeof dialog, "Precio de la propiedad: %s$\nSeguro: %s$\nBalance actual: %s$\nBalance tras la compra: %s$\n\n¿De verdad desea comprar esta propiedad?", number_format_thousand(PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX] ][property_PRICE]), number_format_thousand(PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX] ][property_PRICE_BASE] / 200), number_format_thousand(PI[playerid][ac_BANK_MONEY]), number_format_thousand(PI[playerid][ac_BANK_MONEY] - PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX] ][property_PRICE]));
 			}
 			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Comprar propiedad",  dialog, "Comprar", "Cerrar");
 			return 1;
@@ -10058,7 +9986,7 @@ ShowDialog(playerid, dialogid)
 					ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "GPS - Mis propiedades", dialog, "Continuar", "Atrás");
 				}
 			}
-			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM properties WHERE id_player = %d;", PI[playerid][pi_ID]);
+			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM properties WHERE id_player = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 			MySQL_TQueryInline(srp_db, using inline OnDialogQueryLoad, QUERY_BUFFER);
 			return 1;
 		}
@@ -10074,7 +10002,7 @@ ShowDialog(playerid, dialogid)
 				if(!PLAYER_VEHICLES[i][player_vehicle_VALID]) continue;
 				if(total_vehicles > MAX_SU_VEHICLES) break;
 
-				if(PLAYER_VEHICLES[i][player_vehicle_OWNER_ID] == PI[playerid][pi_ID])
+				if(PLAYER_VEHICLES[i][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
 				{
 					PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][total_vehicles] = i;
 
@@ -10108,9 +10036,9 @@ ShowDialog(playerid, dialogid)
 			if(PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_DIS_DEFAULT_INTERIOR]) strcat(dialog, "5. Crear muebles por defecto\n");
 			else strcat(dialog, "5. Eliminar muebles por defecto\n");
 
-			if(PI[playerid][pi_CREW])
+			if(PI[playerid][ac_CREW])
 			{
-				if(CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_ADD_PROPERTIES])
+				if(CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_ADD_PROPERTIES])
 				{
 					strcat(dialog, "6. Pasar a propiedad de banda\n");
 				}
@@ -10152,7 +10080,7 @@ ShowDialog(playerid, dialogid)
 			);
 			
 			new str[145];
-			if(SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_LEVEL] > PI[playerid][pi_LEVEL])
+			if(SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_LEVEL] > ACCOUNT_INFO[playerid][ac_LEVEL])
 			{
 				format(str, sizeof str, "{"#RED_COLOR"}- Necesitas ser al menos nivel %d para poder comprar este vehículo.", SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_LEVEL]);
 				strcat(dialog, str);
@@ -10161,7 +10089,7 @@ ShowDialog(playerid, dialogid)
 				return 1;
 			}
 			
-			if(SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_VIP_LEVEL] > PI[playerid][pi_VIP])
+			if(SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_VIP_LEVEL] > ACCOUNT_INFO[playerid][ac_VIP])
 			{
 				format(str, sizeof str, "{"#RED_COLOR"}- Necesitas membresía VIP (%d) para poder comprar este vehículo.", SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_VIP_LEVEL]);
 				strcat(dialog, str);
@@ -10170,7 +10098,7 @@ ShowDialog(playerid, dialogid)
 				return 1;
 			}
 			
-			if(PI[playerid][pi_BANK_ACCOUNT] == 0)
+			if(PI[playerid][ac_BANK_ACCOUNT] == 0)
 			{
 				strcat(dialog, "{"#RED_COLOR"}- Necesitas una cuenta bancaria para poder comprar vehículos.");
 				PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] = INVALID_VEHICLE_ID;
@@ -10178,9 +10106,9 @@ ShowDialog(playerid, dialogid)
 				return 1;
 			}
 	
-			if(SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_PRICE] > PI[playerid][pi_BANK_MONEY])
+			if(SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_PRICE] > PI[playerid][ac_BANK_MONEY])
 			{
-				new diff = SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_PRICE] - PI[playerid][pi_BANK_MONEY];
+				new diff = SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_PRICE] - PI[playerid][ac_BANK_MONEY];
 				format(str, sizeof str, "{"#RED_COLOR"}- Te faltan %s$ en tu cuenta bancaria para poder comprar este vehículo.", number_format_thousand(diff));
 				strcat(dialog, str);
 				PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] = INVALID_VEHICLE_ID;
@@ -10188,16 +10116,16 @@ ShowDialog(playerid, dialogid)
 				return 1;
 			}
 			
-			if(SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_EXTRA] > PI[playerid][pi_COINS])
+			if(SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_EXTRA] > PI[playerid][ac_COINS])
 			{
-				format(str, sizeof str, "{"#RED_COLOR"}- Te faltan %d "SERVER_COIN" para poder comprar este vehículo.", SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_EXTRA] - PI[playerid][pi_COINS]);
+				format(str, sizeof str, "{"#RED_COLOR"}- Te faltan %d "SERVER_COIN" para poder comprar este vehículo.", SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_EXTRA] - PI[playerid][ac_COINS]);
 				strcat(dialog, str);
 				PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] = INVALID_VEHICLE_ID;
 				ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Comprar vehículo", dialog, "Cerrar", "");
 				return 1;
 			}
 
-			if(PI[playerid][pi_DRIVE_LICENSE_POINTS] == 0)
+			if(PI[playerid][ac_DRIVE_LICENSE_POINTS] == 0)
 			{
 				strcat(dialog, "{"#RED_COLOR"}- No puedes comprar vehículos sin una licencia.");
 				PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] = INVALID_VEHICLE_ID;
@@ -10205,8 +10133,8 @@ ShowDialog(playerid, dialogid)
 				return 1;
 			}
 			
-			if(!SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_EXTRA]) format(str, sizeof str, "Balance de tu cuenta bancaria: %s$\nBalance tras la compra: %s$\n\n¿De verdad desea comprar este vehículo?", number_format_thousand(PI[playerid][pi_BANK_MONEY]), number_format_thousand(PI[playerid][pi_BANK_MONEY] - SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_PRICE]));
-			else format(str, sizeof str, "Tus monedas: %d "SERVER_COIN"\nMonedas tras la compra: %d "SERVER_COIN"\n\n¿De verdad desea comprar este vehículo?", PI[playerid][pi_COINS], PI[playerid][pi_COINS] - SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_EXTRA]);
+			if(!SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_EXTRA]) format(str, sizeof str, "Balance de tu cuenta bancaria: %s$\nBalance tras la compra: %s$\n\n¿De verdad desea comprar este vehículo?", number_format_thousand(PI[playerid][ac_BANK_MONEY]), number_format_thousand(PI[playerid][ac_BANK_MONEY] - SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_PRICE]));
+			else format(str, sizeof str, "Tus monedas: %d "SERVER_COIN"\nMonedas tras la compra: %d "SERVER_COIN"\n\n¿De verdad desea comprar este vehículo?", PI[playerid][ac_COINS], PI[playerid][ac_COINS] - SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_EXTRA]);
 			strcat(dialog, str);
 			
 			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Comprar vehículo", dialog, "Comprar", "Cerrar");
@@ -10244,7 +10172,7 @@ ShowDialog(playerid, dialogid)
 					ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "Selecciona la propiedad que quieres vender", dialog, "Continuar", "Atrás");
 				}
 			}
-			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id, name FROM properties WHERE id_player = %d;", PI[playerid][pi_ID]);
+			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id, name FROM properties WHERE id_player = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 			MySQL_TQueryInline(srp_db, using inline OnDialogQueryLoad, QUERY_BUFFER);
 			return 1;
 		}
@@ -10255,7 +10183,7 @@ ShowDialog(playerid, dialogid)
 			
 			new Float:price, payment;
 			price = PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_PRICE_BASE];
-			if(PI[playerid][pi_VIP]) payment = floatround( floatmul(price, 0.50) );
+			if(ACCOUNT_INFO[playerid][ac_VIP]) payment = floatround( floatmul(price, 0.50) );
 			else payment = floatround( floatmul(price, 0.25) );
 			
 			new dialog[160];
@@ -10305,7 +10233,7 @@ ShowDialog(playerid, dialogid)
 				PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_NOTARY_TO_PLAYER] ][pt_RP_NAME],
 				PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_ID],
 				number_format_thousand(PLAYER_TEMP[playerid][pt_NOTARY_PRICE]),
-				number_format_thousand( PI[playerid][pi_BANK_MONEY] - PLAYER_TEMP[playerid][pt_NOTARY_PRICE] )
+				number_format_thousand( PI[playerid][ac_BANK_MONEY] - PLAYER_TEMP[playerid][pt_NOTARY_PRICE] )
 			);
 			
 			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Oferta recibida", dialog, "Comprar", "Cerrar");
@@ -10323,7 +10251,7 @@ ShowDialog(playerid, dialogid)
 				if(!PLAYER_VEHICLES[i][player_vehicle_VALID]) continue;
 				if(total_vehicles > MAX_SU_VEHICLES) break;
 				
-				if(PLAYER_VEHICLES[i][player_vehicle_OWNER_ID] == PI[playerid][pi_ID])
+				if(PLAYER_VEHICLES[i][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
 				{
 					PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][total_vehicles] = i;
 					
@@ -10345,7 +10273,7 @@ ShowDialog(playerid, dialogid)
 			
 			new Float:price, payment;
 			price = VEHICLE_INFO[ GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_PLAYER_VEHICLE_SELECTED] ][gb_vehicle_MODELID] - 400 ][vehicle_info_PRICE];
-			if(PI[playerid][pi_VIP]) payment = floatround( floatmul(price, 0.50) );
+			if(ACCOUNT_INFO[playerid][ac_VIP]) payment = floatround( floatmul(price, 0.50) );
 			else payment = floatround( floatmul(price, 0.25) );
 			
 			new dialog[160];
@@ -10397,7 +10325,7 @@ ShowDialog(playerid, dialogid)
 				VEHICLE_INFO[ GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_PLAYER_VEHICLE_SELECTED] ][gb_vehicle_MODELID] - 400 ][vehicle_info_NAME],
 				GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_PLAYER_VEHICLE_SELECTED] ][gb_vehicle_NUMBER_PLATE],
 				number_format_thousand(PLAYER_TEMP[playerid][pt_NOTARY_PRICE]),
-				number_format_thousand( PI[playerid][pi_BANK_MONEY] - PLAYER_TEMP[playerid][pt_NOTARY_PRICE] )
+				number_format_thousand( PI[playerid][ac_BANK_MONEY] - PLAYER_TEMP[playerid][pt_NOTARY_PRICE] )
 			);
 			
 			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Oferta recibida", dialog, "Comprar", "Cerrar");
@@ -10411,7 +10339,7 @@ ShowDialog(playerid, dialogid)
 				work_extra_payment = (work_info[WORK_TRUCK][work_info_EXTRA_PAY] * floatround(floatdiv(PLAYER_WORKS[playerid][WORK_TRUCK][pwork_LEVEL], work_info[WORK_TRUCK][work_info_EXTRA_PAY_EXP])));
 				if(work_info[WORK_TRUCK][work_info_EXTRA_PAY_LIMIT] != 0) if(work_extra_payment > work_info[WORK_TRUCK][work_info_EXTRA_PAY_LIMIT]) work_extra_payment = work_info[WORK_TRUCK][work_info_EXTRA_PAY_LIMIT];
 				
-				if(PI[playerid][pi_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
+				if(ACCOUNT_INFO[playerid][ac_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
 			}
 			
 			new dialog[105 * (sizeof(Truck_Contents) + 2)], listitem;
@@ -10512,7 +10440,7 @@ ShowDialog(playerid, dialogid)
 		case DIALOG_MECHANIC_MENU:
 		{
 			new caption[60];
-			format(caption, sizeof caption, "%s piezas disponibles - %s", number_format_thousand(PI[playerid][pi_MECHANIC_PIECES]), VEHICLE_INFO[ GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_MODELID] - 400 ][vehicle_info_NAME]);
+			format(caption, sizeof caption, "%s piezas disponibles - %s", number_format_thousand(PI[playerid][ac_MECHANIC_PIECES]), VEHICLE_INFO[ GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_MODELID] - 400 ][vehicle_info_NAME]);
 			
 			new dialog[450];
 			format(dialog, sizeof dialog, 
@@ -10762,7 +10690,7 @@ ShowDialog(playerid, dialogid)
 			for(new i = 0; i != sizeof BLACK_MARKT_WEAPONS; i ++)
 			{
 				new line_str[64];
-				if(BLACK_MARKT_WEAPONS[i][black_market_EXP] > PI[playerid][pi_BLACK_MARKET_LEVEL])
+				if(BLACK_MARKT_WEAPONS[i][black_market_EXP] > PI[playerid][ac_BLACK_MARKET_LEVEL])
 				{
 					format(line_str, sizeof line_str, "{666666}%s\t{666666}%s$\n", WEAPON_INFO[ BLACK_MARKT_WEAPONS[i][black_market_WEAPON_ID] ][weapon_info_NAME], number_format_thousand(BLACK_MARKT_WEAPONS[i][black_market_WEAPON_PRICE]));
 					strcat(dialog, line_str);
@@ -10984,7 +10912,7 @@ ShowDialog(playerid, dialogid)
 			format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Ropa\t{"#SILVER_COLOR"}Rango necesario\n");
 			for(new i = 0; i != sizeof POLICE_SKINS; i ++)
 			{
-				if(POLICE_SKINS[i][police_skin_TYPE] != PI[playerid][pi_GENDER]) continue;
+				if(POLICE_SKINS[i][police_skin_TYPE] != PI[playerid][ac_GENDER]) continue;
 				
 				if(POLICE_SKINS[i][police_skin_RANK] > PLAYER_WORKS[playerid][WORK_POLICE][pwork_LEVEL]) format(line_str, sizeof line_str, "{666666}%d\t{666666}%s\n", POLICE_SKINS[i][police_skin_SKIN], POLICE_RANKS[ POLICE_SKINS[i][police_skin_RANK] ]);
 				else format(line_str, sizeof line_str, "{"#SILVER_COLOR"}%d\t{"#SILVER_COLOR"}%s\n", POLICE_SKINS[i][police_skin_SKIN], POLICE_RANKS[ POLICE_SKINS[i][police_skin_RANK] ]);
@@ -11402,7 +11330,7 @@ ShowDialog(playerid, dialogid)
 					\n\
 					Para activar o desactivar la verificación en dos pasos utiliza el comando /panel.\
 				",
-					PI[playerid][pi_EMAIL]
+					ACCOUNT_INFO[playerid][ac_EMAIL]
 			);
 			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Verificación en dos pasos", string, "Cerrar", "");
 			return 1;
@@ -11461,7 +11389,7 @@ ShowDialog(playerid, dialogid)
 						cache_get_value_name(0, "name", name);
 						cache_get_value_name_int(0, "admin_level", admin_level);
 
-						if(admin_level > PI[playerid][pi_ADMIN_LEVEL]) SendNotification(playerid, "No puedes modificar el rango de este admin porque es un rango superior al tuyo.");
+						if(admin_level > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) SendNotification(playerid, "No puedes modificar el rango de este admin porque es un rango superior al tuyo.");
 						else
 						{
 							new caption[45], dialog[45 * sizeof(ADMIN_LEVELS)], line_str[45];
@@ -11470,7 +11398,7 @@ ShowDialog(playerid, dialogid)
 
 							for(new i = 1; i != sizeof ADMIN_LEVELS; i ++)
 							{
-								if(i > PI[playerid][pi_ADMIN_LEVEL])
+								if(i > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL])
 								{
 									if(admin_level == i) format(line_str, sizeof line_str, "{666666}%s (actual)\n", ADMIN_LEVELS[i]);
 									else format(line_str, sizeof line_str, "{666666}%s\n", ADMIN_LEVELS[i]);
@@ -11506,7 +11434,7 @@ ShowDialog(playerid, dialogid)
 		}
 		case DIALOG_ANTI_CHEAT:
 		{
-			if(PI[playerid][pi_ADMIN_LEVEL] < 4) return 0;
+			if(ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] < 4) return 0;
 			
 			new dialog[115 * sizeof(ac_Info) + 1], line_str[115];
 			dialog = "Tipo\tEstado\tAccionar\tAcción\n";
@@ -11522,7 +11450,7 @@ ShowDialog(playerid, dialogid)
 		}
 		case DIALOG_ANTI_CHEAT_MODIFY:
 		{
-			if(PI[playerid][pi_ADMIN_LEVEL] < 4) return 0;
+			if(ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] < 4) return 0;
 			
 			new caption[45], dialog[90];
 			
@@ -11571,7 +11499,7 @@ ShowDialog(playerid, dialogid)
 				if(!PLAYER_VEHICLES[i][player_vehicle_VALID]) continue;
 				if(total_vehicles > MAX_SU_VEHICLES) break;
 				
-				if(PLAYER_VEHICLES[i][player_vehicle_OWNER_ID] == PI[playerid][pi_ID])
+				if(PLAYER_VEHICLES[i][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
 				{
 					PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][total_vehicles] = i;
 					
@@ -11633,37 +11561,37 @@ ShowDialog(playerid, dialogid)
 			PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] = CREW_RANK_SIZE;
 			listitem ++;
 
-			if(CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_CHANGE_NAME])
+			if(CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_CHANGE_NAME])
 			{
 				strcat(dialog, "Cambiar nombre de la banda\n");
 				PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] = CREW_RANK_CHANGE_NAME;
 				listitem ++;
 			}
-			if(CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_CAST_MEMBERS])
+			if(CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_CAST_MEMBERS])
 			{
 				strcat(dialog, "Echar a un miembro\n");
 				PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] = CREW_RANK_CAST_MEMBERS;
 				listitem ++;
 			}
-			if(CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_MODIFY_MEMBERS])
+			if(CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_MODIFY_MEMBERS])
 			{
 				strcat(dialog, "Cambiar rango de un miembro\n");
 				PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] = CREW_RANK_MODIFY_MEMBERS;
 				listitem ++;
 			}
-			if(CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_MODIFY_RANKS])
+			if(CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_MODIFY_RANKS])
 			{
 				strcat(dialog, "Crear rangos o modificarlos\n");
 				PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] = CREW_RANK_MODIFY_RANKS;
 				listitem ++;
 			}
-			if(CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_CHANGE_COLOR])
+			if(CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_CHANGE_COLOR])
 			{
 				strcat(dialog, "Cambiar color de la banda\n");
 				PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] = CREW_RANK_CHANGE_COLOR;
 				listitem ++;
 			}
-			if(CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_DELETE])
+			if(CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_DELETE])
 			{
 				strcat(dialog, "Eliminar la banda\n");
 				PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] = CREW_RANK_DELETE;
@@ -11709,7 +11637,7 @@ ShowDialog(playerid, dialogid)
 					ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, caption, dialog, "Continuar", "Cerrar");
 				}
 			}
-			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT name, last_connection, connected, crew_rank FROM player WHERE crew = %d ORDER BY connected DESC, crew_rank ASC LIMIT %d, %d;", PI[playerid][pi_CREW], PLAYER_TEMP[playerid][pt_DIALOG_DB_PAGE] * PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT], PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT]);
+			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT name, last_connection, connected, crew_rank FROM player WHERE crew = %d ORDER BY connected DESC, crew_rank ASC LIMIT %d, %d;", PI[playerid][ac_CREW], PLAYER_TEMP[playerid][pt_DIALOG_DB_PAGE] * PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT], PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT]);
 			MySQL_TQueryInline(srp_db, using inline OnDialogQueryLoad, QUERY_BUFFER);
 			return 1;
 		}
@@ -11752,7 +11680,7 @@ ShowDialog(playerid, dialogid)
 					ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "Echar a un miembro", dialog, "Continuar", "Cerrar");
 				}
 			}
-			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id, name, last_connection, connected, crew_rank FROM player WHERE crew = %d ORDER BY connected DESC, crew_rank ASC LIMIT %d, %d;", PI[playerid][pi_CREW], PLAYER_TEMP[playerid][pt_DIALOG_DB_PAGE] * PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT], PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT]);
+			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id, name, last_connection, connected, crew_rank FROM player WHERE crew = %d ORDER BY connected DESC, crew_rank ASC LIMIT %d, %d;", PI[playerid][ac_CREW], PLAYER_TEMP[playerid][pt_DIALOG_DB_PAGE] * PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT], PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT]);
 			MySQL_TQueryInline(srp_db, using inline OnDialogQueryLoad, QUERY_BUFFER);
 			return 1;
 		}
@@ -11771,7 +11699,7 @@ ShowDialog(playerid, dialogid)
 				if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][i][crew_rank_VALID]) continue;
 				
 				PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] = i;
-				if(i < PI[playerid][pi_CREW_RANK]) format(line_str, sizeof line_str, "{666666}%d. %s\n", listitem + 1, CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][i][crew_rank_NAME]);
+				if(i < PI[playerid][ac_CREW_RANK]) format(line_str, sizeof line_str, "{666666}%d. %s\n", listitem + 1, CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][i][crew_rank_NAME]);
 				else format(line_str, sizeof line_str, "{"#SILVER_COLOR"}%d. %s\n", listitem + 1, CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][i][crew_rank_NAME]);
 				strcat(dialog, line_str);
 				
@@ -11794,12 +11722,12 @@ ShowDialog(playerid, dialogid)
 			{
 				if(CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][i][crew_rank_VALID])
 				{
-					if(i < PI[playerid][pi_CREW_RANK]) format(line_str, sizeof line_str, "{666666}%d. %s\n", i + 1, CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][i][crew_rank_NAME]);
+					if(i < PI[playerid][ac_CREW_RANK]) format(line_str, sizeof line_str, "{666666}%d. %s\n", i + 1, CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][i][crew_rank_NAME]);
 					else format(line_str, sizeof line_str, "{"#SILVER_COLOR"}%d. %s\n", i + 1, CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][i][crew_rank_NAME]);
 				}
 				else
 				{
-					if(i < PI[playerid][pi_CREW_RANK]) format(line_str, sizeof line_str, "{666666}%d. Slot vacío\n", i + 1, CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][i][crew_rank_NAME]);
+					if(i < PI[playerid][ac_CREW_RANK]) format(line_str, sizeof line_str, "{666666}%d. Slot vacío\n", i + 1, CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][i][crew_rank_NAME]);
 					else format(line_str, sizeof line_str, "{FFFFFF}%d. Slot vacío\n", i + 1, CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][i][crew_rank_NAME]);
 				}
 				strcat(dialog, line_str);
@@ -11829,7 +11757,7 @@ ShowDialog(playerid, dialogid)
 			
 			for(new i = 0; i != CREW_RANK_SIZE; i ++)
 			{
-				if(CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][i]) format(line_str, sizeof line_str, "%s\t%s\n", CREW_RANKS_PERMISSIONS[i], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PLAYER_TEMP[playerid][pt_CREW_SELECTED_RANK] ][crew_rank_PERMISSION][i] ? "Sí" : "No");
+				if(CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][i]) format(line_str, sizeof line_str, "%s\t%s\n", CREW_RANKS_PERMISSIONS[i], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PLAYER_TEMP[playerid][pt_CREW_SELECTED_RANK] ][crew_rank_PERMISSION][i] ? "Sí" : "No");
 				else format(line_str, sizeof line_str, "{666666}%s\t{666666}%s\n", CREW_RANKS_PERMISSIONS[i], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PLAYER_TEMP[playerid][pt_CREW_SELECTED_RANK] ][crew_rank_PERMISSION][i] ? "Sí" : "No");
 				
 				strcat(dialog, line_str);
@@ -11854,7 +11782,7 @@ ShowDialog(playerid, dialogid)
 				if(i == PLAYER_TEMP[playerid][pt_CREW_SELECTED_RANK]) continue;
 				
 				PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] = i;
-				if(i < PI[playerid][pi_CREW_RANK]) format(line_str, sizeof line_str, "{666666}%d. %s\n", listitem + 1, CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][i][crew_rank_NAME]);
+				if(i < PI[playerid][ac_CREW_RANK]) format(line_str, sizeof line_str, "{666666}%d. %s\n", listitem + 1, CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][i][crew_rank_NAME]);
 				else format(line_str, sizeof line_str, "{"#SILVER_COLOR"}%d. %s\n", listitem + 1, CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][i][crew_rank_NAME]);
 				strcat(dialog, line_str);
 				
@@ -11980,7 +11908,7 @@ ShowDialog(playerid, dialogid)
 					ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "Modificar rango de un miembro", dialog, "Continuar", "Cerrar");
 				}
 			}
-			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id, name, last_connection, connected, crew_rank FROM player WHERE crew = %d ORDER BY connected DESC, crew_rank ASC LIMIT %d, %d;", PI[playerid][pi_CREW], PLAYER_TEMP[playerid][pt_DIALOG_DB_PAGE] * PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT], PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT]);
+			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id, name, last_connection, connected, crew_rank FROM player WHERE crew = %d ORDER BY connected DESC, crew_rank ASC LIMIT %d, %d;", PI[playerid][ac_CREW], PLAYER_TEMP[playerid][pt_DIALOG_DB_PAGE] * PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT], PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT]);
 			MySQL_TQueryInline(srp_db, using inline OnDialogQueryLoad, QUERY_BUFFER);
 			return 1;
 		}
@@ -11997,7 +11925,7 @@ ShowDialog(playerid, dialogid)
 						cache_get_value_name(0, "name", name);
 						cache_get_value_name_int(0, "crew_rank", crew_rank);
 
-						if(crew_rank < PI[playerid][pi_CREW_RANK]) SendNotification(playerid, "No puedes modificar el rango de este miembro porque es un rango superior al tuyo.");
+						if(crew_rank < PI[playerid][ac_CREW_RANK]) SendNotification(playerid, "No puedes modificar el rango de este miembro porque es un rango superior al tuyo.");
 						else
 						{
 							if(crew_rank == 0)
@@ -12020,7 +11948,7 @@ ShowDialog(playerid, dialogid)
 												{
 													if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][i][crew_rank_VALID]) continue;
 													
-													if(i < PI[playerid][pi_CREW_RANK])
+													if(i < PI[playerid][ac_CREW_RANK])
 													{
 														if(crew_rank == i) format(line_str, sizeof line_str, "{666666}%s (actual)\n", CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][i][crew_rank_NAME]);
 														else format(line_str, sizeof line_str, "{666666}%s\n", CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][i][crew_rank_NAME]);
@@ -12038,7 +11966,7 @@ ShowDialog(playerid, dialogid)
 										}
 									}
 								}
-								mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d AND crew_rank = 0;", PI[playerid][pi_CREW]);
+								mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d AND crew_rank = 0;", PI[playerid][ac_CREW]);
 								MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 							}
 							else
@@ -12050,7 +11978,7 @@ ShowDialog(playerid, dialogid)
 								{
 									if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][i][crew_rank_VALID]) continue;
 									
-									if(i < PI[playerid][pi_CREW_RANK])
+									if(i < PI[playerid][ac_CREW_RANK])
 									{
 										if(crew_rank == i) format(line_str, sizeof line_str, "{666666}%s (actual)\n", CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][i][crew_rank_NAME]);
 										else format(line_str, sizeof line_str, "{666666}%s\n", CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][i][crew_rank_NAME]);
@@ -12162,7 +12090,7 @@ ShowDialog(playerid, dialogid)
 					\n\
 				",
 					current_date,
-					PI[playerid][pi_VIP_EXPIRE_DATE],
+					ACCOUNT_INFO[playerid][ac_VIP_EXPIRE_DATE],
 					SU_SD_PRICE
 			);
 			
@@ -12383,14 +12311,14 @@ ShowDialog(playerid, dialogid)
 					Canal de dudas\t%s\n\
 					Verificación en dos pasos\t%s\
 				",
-					(PI[playerid][pi_CONFIG_AUDIO] ? "Sí" : "No"),
-					(PI[playerid][pi_CONFIG_HUD] ? "Sí" : "No"),
-					(PI[playerid][pi_CONFIG_ADMIN] ? "Sí" : "No"),
-					(PI[playerid][pi_PHONE_VISIBLE_NUMBER] ? "Sí" : "No"),
-					(PI[playerid][pi_CONFIG_SOUNDS] ? "Sí" : "No"),
-					(PI[playerid][pi_CONFIG_TIME] ? "Sí" : "No"),
-					(PI[playerid][pi_DOUBT_CHANNEL] ? "Sí" : "No"),
-					(PI[playerid][pi_CONFIG_SECURE_LOGIN] ? "Sí" : "No")
+					(PI[playerid][ac_CONFIG_AUDIO] ? "Sí" : "No"),
+					(PI[playerid][ac_CONFIG_HUD] ? "Sí" : "No"),
+					(PI[playerid][ac_CONFIG_ADMIN] ? "Sí" : "No"),
+					(PI[playerid][ac_PHONE_VISIBLE_NUMBER] ? "Sí" : "No"),
+					(PI[playerid][ac_CONFIG_SOUNDS] ? "Sí" : "No"),
+					(PI[playerid][ac_CONFIG_TIME] ? "Sí" : "No"),
+					(ACCOUNT_INFO[playerid][ac_DOUBT_CHANNEL] ? "Sí" : "No"),
+					(PI[playerid][ac_CONFIG_SECURE_LOGIN] ? "Sí" : "No")
 			);
 			
 			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST, "Panel de configuración del usuario", dialog, "Cambiar", "Cerrar");	
@@ -12399,7 +12327,7 @@ ShowDialog(playerid, dialogid)
 		case DIALOG_POLICE_BYC:
 		{
 			new caption[128];
-			format(caption, sizeof caption, "Placa Nº%d | %c. %s", PI[playerid][pi_PLACA_PD], PLAYER_TEMP[playerid][pt_FIRST_NAME][0], PLAYER_TEMP[playerid][pt_SUB_NAME]);
+			format(caption, sizeof caption, "Placa Nº%d | %c. %s", PI[playerid][ac_PLACA_PD], PLAYER_TEMP[playerid][pt_FIRST_NAME][0], PLAYER_TEMP[playerid][pt_SUB_NAME]);
 			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST, caption, "Ver Últimos registros a BYC\nBuscar BYC de una persona", "Continuar", "Cerrar");	
 			return 1;
 		}
@@ -12600,8 +12528,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				
 				new salt[16];
 				getRandomSalt(salt);
-				format(PI[playerid][pi_SALT], 16, "%s", salt);
-				SHA256_PassHash(inputtext, PI[playerid][pi_SALT], PI[playerid][pi_PASS], 64 + 1);
+				format(ACCOUNT_INFO[playerid][ac_SALT], 16, "%s", salt);
+				SHA256_PassHash(inputtext, ACCOUNT_INFO[playerid][ac_SALT], ACCOUNT_INFO[playerid][ac_PASS], 64 + 1);
 				ShowDialog(playerid, DIALOG_REGISTER_EMAIL);
 			}
 			else Kick(playerid);
@@ -12632,7 +12560,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					else
 					{
-						format(PI[playerid][pi_EMAIL], 32, "%s", mail);
+						format(ACCOUNT_INFO[playerid][ac_EMAIL], 32, "%s", mail);
 			
 						ApplyActorAnimation(PLAYER_TEMP[playerid][pt_REGISTER_ACTOR], "INT_SHOP", "shop_loop", 4.1, 1, 1, 1, 0, 0);
 						PLAYER_TEMP[playerid][pt_READING_GUIDE] = true;
@@ -12654,8 +12582,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(!strlen(inputtext)) return ShowDialog(playerid, dialogid);
 			
 			new password[64 + 1];
-			SHA256_PassHash(inputtext, PI[playerid][pi_SALT], password, sizeof password);
-			if(!strcmp(password, PI[playerid][pi_PASS], false))
+			SHA256_PassHash(inputtext, ACCOUNT_INFO[playerid][ac_SALT], password, sizeof password);
+			if(!strcmp(password, ACCOUNT_INFO[playerid][ac_PASS], false))
 			{
 				inline OnPlayerDataLoad()
 				{
@@ -12665,72 +12593,72 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(rows)
 						{
 							new bool:isnull_crew;
-							cache_get_value_name(0, "reg_date", PI[playerid][pi_REG_DATE], 24);
-							cache_get_value_name(0, "last_connection", PI[playerid][pi_LAST_CONNECTION], 24);
-							cache_get_value_name_int(0, "last_connection_timestamp", PI[playerid][pi_LAST_CONNECTION_TIMESTAMP]);
-							cache_get_value_name_int(0, "time_playing", PI[playerid][pi_TIME_PLAYING]);
-							cache_get_value_name_int(0, "level", PI[playerid][pi_LEVEL]);
-							cache_get_value_name_int(0, "rep", PI[playerid][pi_REP]);
-							cache_get_value_name_int(0, "doubt_channel", PI[playerid][pi_DOUBT_CHANNEL]);
-							cache_get_value_name_int(0, "time_for_rep", PI[playerid][pi_TIME_FOR_REP]);
-							cache_get_value_name_int(0, "admin_level", PI[playerid][pi_ADMIN_LEVEL]);
-							cache_get_value_name_int(0, "payday_rep", PI[playerid][pi_PAYDAY_REP]);
-							cache_get_value_name_int(0, "vip", PI[playerid][pi_VIP]);
-							cache_get_value_name(0, "vip_expire_date", PI[playerid][pi_VIP_EXPIRE_DATE], 24);
-							cache_get_value_name_int(0, "coins", PI[playerid][pi_COINS]);
-							cache_get_value_name_int(0, "skin", PI[playerid][pi_SKIN]);
-							cache_get_value_name_int(0, "cash", PI[playerid][pi_CASH]);
-							cache_get_value_name_float(0, "pos_x", PI[playerid][pi_POS_X]);
-							cache_get_value_name_float(0, "pos_y", PI[playerid][pi_POS_Y]);
-							cache_get_value_name_float(0, "pos_z", PI[playerid][pi_POS_Z]);
-							cache_get_value_name_float(0, "angle", PI[playerid][pi_ANGLE]);
-							cache_get_value_name_int(0, "state", PI[playerid][pi_STATE]);
-							cache_get_value_name_int(0, "interior", PI[playerid][pi_INTERIOR]);
-							cache_get_value_name_int(0, "local_interior", PI[playerid][pi_LOCAL_INTERIOR]);
-							cache_get_value_name_int(0, "fight_style", PI[playerid][pi_FIGHT_STYLE]);
-							cache_get_value_name_float(0, "health", PI[playerid][pi_HEALTH]);
-							cache_get_value_name_float(0, "armour", PI[playerid][pi_ARMOUR]);
-							cache_get_value_name_int(0, "gender", PI[playerid][pi_GENDER]);
-							cache_get_value_name_float(0, "hungry", PI[playerid][pi_HUNGRY]);
-							cache_get_value_name_float(0, "thirst", PI[playerid][pi_THIRST]);
-							cache_get_value_name_int(0, "black_market_level", PI[playerid][pi_BLACK_MARKET_LEVEL]);
-							cache_get_value_name_int(0, "wanted_level", PI[playerid][pi_WANTED_LEVEL]);
-							cache_get_value_name_int(0, "police_jail_time", PI[playerid][pi_POLICE_JAIL_TIME]);
-							cache_get_value_name_int(0, "police_duty", PI[playerid][pi_POLICE_DUTY]);
-							cache_get_value_name_int(0, "police_jail_id", PI[playerid][pi_POLICE_JAIL_ID]);
-							cache_get_value_name_int(0, "drive_license_points", PI[playerid][pi_DRIVE_LICENSE_POINTS]);
-							cache_get_value_name_int(0, "bank_account", PI[playerid][pi_BANK_ACCOUNT]);
-							cache_get_value_name_int(0, "bank_money", PI[playerid][pi_BANK_MONEY]);
-							cache_get_value_name_int(0, "phone_number", PI[playerid][pi_PHONE_NUMBER]);
-							cache_get_value_name_int(0, "phone_state", PI[playerid][pi_PHONE_STATE]);
-							cache_get_value_name_int(0, "phone_visible_number", PI[playerid][pi_PHONE_VISIBLE_NUMBER]);
-							cache_get_value_name_int(0, "gps", PI[playerid][pi_GPS]);
-							cache_get_value_name_int(0, "maso", PI[playerid][pi_Maso]);
-							cache_get_value_name_int(0, "mp3", PI[playerid][pi_MP3]);
-							cache_get_value_name_int(0, "phone_resolver", PI[playerid][pi_PHONE_RESOLVER]);
-							cache_get_value_name_int(0, "speakers", PI[playerid][pi_SPEAKERS]);
-							cache_get_value_name_int(0, "mechanic_pieces", PI[playerid][pi_MECHANIC_PIECES]);
-							cache_get_value_name_int(0, "fuel_drum", PI[playerid][pi_FUEL_DRUM]);
-							cache_get_value_name_int(0, "seed_medicine", PI[playerid][pi_SEED_MEDICINE]);
-							cache_get_value_name_int(0, "seed_cannabis", PI[playerid][pi_SEED_CANNABIS]);
-							cache_get_value_name_int(0, "seed_crack", PI[playerid][pi_SEED_CRACK]);
-							cache_get_value_name_int(0, "medicine", PI[playerid][pi_MEDICINE]);
-							cache_get_value_name_int(0, "cannabis", PI[playerid][pi_CANNABIS]);
-							cache_get_value_name_int(0, "crack", PI[playerid][pi_CRACK]);
-							cache_get_value_name_int(0, "config_sounds", PI[playerid][pi_CONFIG_SOUNDS]);
-							cache_get_value_name_int(0, "config_audio", PI[playerid][pi_CONFIG_AUDIO]);
-							cache_get_value_name_int(0, "config_time", PI[playerid][pi_CONFIG_TIME]);
-							cache_get_value_name_int(0, "config_hud", PI[playerid][pi_CONFIG_HUD]);
-							cache_get_value_name_int(0, "config_admin", PI[playerid][pi_CONFIG_ADMIN]);
-							cache_get_value_name_int(0, "config_secure_login", PI[playerid][pi_CONFIG_SECURE_LOGIN]);
-							cache_get_value_name_int(0, "mute", PI[playerid][pi_MUTE]);
-							cache_get_value_name_int(0, "placa_pd", PI[playerid][pi_PLACA_PD]);
-							cache_get_value_name_int(0, "can_buy_bm", PI[playerid][pi_CAN_BUY_BM]);
+							cache_get_value_name(0, "reg_date", PI[playerid][ac_REG_DATE], 24);
+							cache_get_value_name(0, "last_connection", ACCOUNT_INFO[playerid][ac_LAST_CONNECTION], 24);
+							cache_get_value_name_int(0, "last_connection_timestamp", ACCOUNT_INFO[playerid][ac_LAST_CONNECTION_TIMESTAMP]);
+							cache_get_value_name_int(0, "time_playing", ACCOUNT_INFO[playerid][ac_TIME_PLAYING]);
+							cache_get_value_name_int(0, "level", ACCOUNT_INFO[playerid][ac_LEVEL]);
+							cache_get_value_name_int(0, "rep", ACCOUNT_INFO[playerid][ac_REP]);
+							cache_get_value_name_int(0, "doubt_channel", ACCOUNT_INFO[playerid][ac_DOUBT_CHANNEL]);
+							cache_get_value_name_int(0, "time_for_rep", ACCOUNT_INFO[playerid][ac_TIME_FOR_REP]);
+							cache_get_value_name_int(0, "admin_level", ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]);
+							cache_get_value_name_int(0, "payday_rep", ACCOUNT_INFO[playerid][ac_PAYDAY_REP]);
+							cache_get_value_name_int(0, "vip", ACCOUNT_INFO[playerid][ac_VIP]);
+							cache_get_value_name(0, "vip_expire_date", ACCOUNT_INFO[playerid][ac_VIP_EXPIRE_DATE], 24);
+							cache_get_value_name_int(0, "coins", PI[playerid][ac_COINS]);
+							cache_get_value_name_int(0, "skin", PI[playerid][ac_SKIN]);
+							cache_get_value_name_int(0, "cash", PI[playerid][ac_CASH]);
+							cache_get_value_name_float(0, "pos_x", PI[playerid][ac_POS_X]);
+							cache_get_value_name_float(0, "pos_y", PI[playerid][ac_POS_Y]);
+							cache_get_value_name_float(0, "pos_z", PI[playerid][ac_POS_Z]);
+							cache_get_value_name_float(0, "angle", PI[playerid][ac_ANGLE]);
+							cache_get_value_name_int(0, "state", ACCOUNT_INFO[playerid][ac_STATE]);
+							cache_get_value_name_int(0, "interior", PI[playerid][ac_INTERIOR]);
+							cache_get_value_name_int(0, "local_interior", PI[playerid][ac_LOCAL_INTERIOR]);
+							cache_get_value_name_int(0, "fight_style", PI[playerid][ac_FIGHT_STYLE]);
+							cache_get_value_name_float(0, "health", PI[playerid][ac_HEALTH]);
+							cache_get_value_name_float(0, "armour", PI[playerid][ac_ARMOUR]);
+							cache_get_value_name_int(0, "gender", PI[playerid][ac_GENDER]);
+							cache_get_value_name_float(0, "hungry", PI[playerid][ac_HUNGRY]);
+							cache_get_value_name_float(0, "thirst", PI[playerid][ac_THIRST]);
+							cache_get_value_name_int(0, "black_market_level", PI[playerid][ac_BLACK_MARKET_LEVEL]);
+							cache_get_value_name_int(0, "wanted_level", PI[playerid][ac_WANTED_LEVEL]);
+							cache_get_value_name_int(0, "police_jail_time", PI[playerid][ac_POLICE_JAIL_TIME]);
+							cache_get_value_name_int(0, "police_duty", PI[playerid][ac_POLICE_DUTY]);
+							cache_get_value_name_int(0, "police_jail_id", PI[playerid][ac_POLICE_JAIL_ID]);
+							cache_get_value_name_int(0, "drive_license_points", PI[playerid][ac_DRIVE_LICENSE_POINTS]);
+							cache_get_value_name_int(0, "bank_account", PI[playerid][ac_BANK_ACCOUNT]);
+							cache_get_value_name_int(0, "bank_money", PI[playerid][ac_BANK_MONEY]);
+							cache_get_value_name_int(0, "phone_number", PI[playerid][ac_PHONE_NUMBER]);
+							cache_get_value_name_int(0, "phone_state", PI[playerid][ac_PHONE_STATE]);
+							cache_get_value_name_int(0, "phone_visible_number", PI[playerid][ac_PHONE_VISIBLE_NUMBER]);
+							cache_get_value_name_int(0, "gps", PI[playerid][ac_GPS]);
+							cache_get_value_name_int(0, "maso", PI[playerid][ac_Maso]);
+							cache_get_value_name_int(0, "mp3", PI[playerid][ac_MP3]);
+							cache_get_value_name_int(0, "phone_resolver", PI[playerid][ac_PHONE_RESOLVER]);
+							cache_get_value_name_int(0, "speakers", PI[playerid][ac_SPEAKERS]);
+							cache_get_value_name_int(0, "mechanic_pieces", PI[playerid][ac_MECHANIC_PIECES]);
+							cache_get_value_name_int(0, "fuel_drum", PI[playerid][ac_FUEL_DRUM]);
+							cache_get_value_name_int(0, "seed_medicine", PI[playerid][ac_SEED_MEDICINE]);
+							cache_get_value_name_int(0, "seed_cannabis", PI[playerid][ac_SEED_CANNABIS]);
+							cache_get_value_name_int(0, "seed_crack", PI[playerid][ac_SEED_CRACK]);
+							cache_get_value_name_int(0, "medicine", PI[playerid][ac_MEDICINE]);
+							cache_get_value_name_int(0, "cannabis", PI[playerid][ac_CANNABIS]);
+							cache_get_value_name_int(0, "crack", PI[playerid][ac_CRACK]);
+							cache_get_value_name_int(0, "config_sounds", PI[playerid][ac_CONFIG_SOUNDS]);
+							cache_get_value_name_int(0, "config_audio", PI[playerid][ac_CONFIG_AUDIO]);
+							cache_get_value_name_int(0, "config_time", PI[playerid][ac_CONFIG_TIME]);
+							cache_get_value_name_int(0, "config_hud", PI[playerid][ac_CONFIG_HUD]);
+							cache_get_value_name_int(0, "config_admin", PI[playerid][ac_CONFIG_ADMIN]);
+							cache_get_value_name_int(0, "config_secure_login", PI[playerid][ac_CONFIG_SECURE_LOGIN]);
+							cache_get_value_name_int(0, "mute", PI[playerid][ac_MUTE]);
+							cache_get_value_name_int(0, "placa_pd", PI[playerid][ac_PLACA_PD]);
+							cache_get_value_name_int(0, "can_buy_bm", PI[playerid][ac_CAN_BUY_BM]);
 							cache_is_value_name_null(0, "crew", isnull_crew);
-							if(!isnull_crew) cache_get_value_name_int(0, "crew", PI[playerid][pi_CREW]);
-							cache_get_value_name_int(0, "crew_rank", PI[playerid][pi_CREW_RANK]);
-							cache_get_value_name_int(0, "mechanic_kits", PI[playerid][pi_MECHANIC_KITS]);
-							cache_get_value_name_int(0, "medical_kits", PI[playerid][pi_MEDICAL_KITS]);
+							if(!isnull_crew) cache_get_value_name_int(0, "crew", PI[playerid][ac_CREW]);
+							cache_get_value_name_int(0, "crew_rank", PI[playerid][ac_CREW_RANK]);
+							cache_get_value_name_int(0, "mechanic_kits", PI[playerid][ac_MECHANIC_KITS]);
+							cache_get_value_name_int(0, "medical_kits", PI[playerid][ac_MEDICAL_KITS]);
 							CallLocalFunction("OnPlayerLogin", "i", playerid);
 						}
 						else Kick(playerid);
@@ -12738,7 +12666,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					else Kick(playerid);
 				}
 				GameTextForPlayer(playerid, "~y~cargando...", 10000, 3);
-				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM player WHERE id = %d;", PI[playerid][pi_ID]);
+				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM player WHERE id = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 				MySQL_TQueryInline(srp_db, using inline OnPlayerDataLoad, QUERY_BUFFER);
 			}
 			else // Error
@@ -12754,7 +12682,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(!strlen(inputtext)) return ShowDialog(playerid, dialogid);
 
 			new string[128];
-			format(string, sizeof string, "id=%d&code=%s", PI[playerid][pi_ID], SpaceFix(inputtext));
+			format(string, sizeof string, "id=%d&code=%s", ACCOUNT_INFO[playerid][ac_ID], SpaceFix(inputtext));
 			HTTP(playerid, HTTP_POST, SECURE_LOGIN_CHECK_URL, string, "OnSecureLoginCheckCode");
 		}
 		case DIALOG_CLOTHES:
@@ -12781,9 +12709,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(response)
 			{
-				if(PI[playerid][pi_CASH] >= PIZZA_FOOD[listitem][food_PRICE])
+				if(PI[playerid][ac_CASH] >= PIZZA_FOOD[listitem][food_PRICE])
 				{
-					if(PI[playerid][pi_HUNGRY] >= 99.0 && PI[playerid][pi_THIRST] >= 99.0) return SendNotification(playerid, "¿Es que quieres reventar?");
+					if(PI[playerid][ac_HUNGRY] >= 99.0 && PI[playerid][ac_THIRST] >= 99.0) return SendNotification(playerid, "¿Es que quieres reventar?");
 					
 					if(GivePlayerCash(playerid, -PIZZA_FOOD[listitem][food_PRICE], true, true)) {
 						Add_Hungry_Thirst(playerid, PIZZA_FOOD[listitem][food_HUNGRY], PIZZA_FOOD[listitem][food_THIRST]);
@@ -12803,7 +12731,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				else
 				{
 					PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
-					SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%d dólares ~w~para poder comprarlo.", PIZZA_FOOD[listitem][food_PRICE] - PI[playerid][pi_CASH]);
+					SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%d dólares ~w~para poder comprarlo.", PIZZA_FOOD[listitem][food_PRICE] - PI[playerid][ac_CASH]);
 				}
 			}
 			else SendFormatNotification(playerid, "Gracias por su visita a ~g~%s ~w~vuelva pronto.", ENTER_EXIT[ PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] ][ee_NAME]);
@@ -12813,9 +12741,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(response)
 			{
-				if(PI[playerid][pi_CASH] >= BURGER_SHOT_FOOD[listitem][food_PRICE])
+				if(PI[playerid][ac_CASH] >= BURGER_SHOT_FOOD[listitem][food_PRICE])
 				{
-					if(PI[playerid][pi_HUNGRY] >= 99.0 && PI[playerid][pi_THIRST] >= 99.0) return SendNotification(playerid, "¿Es que quieres reventar?");
+					if(PI[playerid][ac_HUNGRY] >= 99.0 && PI[playerid][ac_THIRST] >= 99.0) return SendNotification(playerid, "¿Es que quieres reventar?");
 					
 					if(GivePlayerCash(playerid, -BURGER_SHOT_FOOD[listitem][food_PRICE], true, true)) {
 						Add_Hungry_Thirst(playerid, BURGER_SHOT_FOOD[listitem][food_HUNGRY], BURGER_SHOT_FOOD[listitem][food_THIRST]);
@@ -12835,7 +12763,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				else
 				{
 					PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
-					SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%d dólares ~w~para poder comprarlo.", BURGER_SHOT_FOOD[listitem][food_PRICE] - PI[playerid][pi_CASH]);
+					SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%d dólares ~w~para poder comprarlo.", BURGER_SHOT_FOOD[listitem][food_PRICE] - PI[playerid][ac_CASH]);
 				}
 			}
 			else SendFormatNotification(playerid, "Gracias por su visita a ~g~%s ~w~vuelva pronto.", ENTER_EXIT[ PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] ][ee_NAME]);
@@ -12845,9 +12773,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(response)
 			{
-				if(PI[playerid][pi_CASH] >= CLUCKIN_BELL_FOOD[listitem][food_PRICE])
+				if(PI[playerid][ac_CASH] >= CLUCKIN_BELL_FOOD[listitem][food_PRICE])
 				{
-					if(PI[playerid][pi_HUNGRY] >= 99.0 && PI[playerid][pi_THIRST] >= 99.0) return SendNotification(playerid, "¿Es que quieres reventar?");
+					if(PI[playerid][ac_HUNGRY] >= 99.0 && PI[playerid][ac_THIRST] >= 99.0) return SendNotification(playerid, "¿Es que quieres reventar?");
 					
 					if(GivePlayerCash(playerid, -CLUCKIN_BELL_FOOD[listitem][food_PRICE], true, true)) {
 						Add_Hungry_Thirst(playerid, CLUCKIN_BELL_FOOD[listitem][food_HUNGRY], CLUCKIN_BELL_FOOD[listitem][food_THIRST]);
@@ -12867,7 +12795,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				else
 				{
 					PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
-					SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%d dólares ~w~para poder comprarlo.", CLUCKIN_BELL_FOOD[listitem][food_PRICE] - PI[playerid][pi_CASH]);
+					SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%d dólares ~w~para poder comprarlo.", CLUCKIN_BELL_FOOD[listitem][food_PRICE] - PI[playerid][ac_CASH]);
 				}
 			}
 			else SendFormatNotification(playerid, "Gracias por su visita a ~g~%s ~w~vuelva pronto.", ENTER_EXIT[ PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] ][ee_NAME]);
@@ -12878,7 +12806,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(response)
 			{	
 				if(listitem == MAX_SU_TOYS) return ShowDialog(playerid, DIALOG_PLAYER_TOY_DELETE_ALL);
-				if(!PI[playerid][pi_VIP] && listitem >= MAX_NU_TOYS)
+				if(!ACCOUNT_INFO[playerid][ac_VIP] && listitem >= MAX_NU_TOYS)
 				{
 					SendFormatNotification(playerid, "¡Los jugadores ~y~VIP ~w~pueden tener hasta %d accesorios! Usa ~y~/ayuda ~w~si quieres ser ~y~VIP.", MAX_SU_TOYS);
 					ShowDialog(playerid, dialogid);
@@ -13051,7 +12979,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(response)
 			{
-				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "DELETE FROM ptoys WHERE id_player = %d;", PI[playerid][pi_ID]);
+				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "DELETE FROM ptoys WHERE id_player = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 				mysql_tquery(srp_db, QUERY_BUFFER);
 				
 				new temp_PLAYER_TOYS[Player_Toys_Info];
@@ -13099,7 +13027,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					ShowDialog(playerid, dialogid);
 					return 1;
 				}
-				if(inputtext[0] > PI[playerid][pi_BANK_MONEY])
+				if(inputtext[0] > PI[playerid][ac_BANK_MONEY])
 				{
 					PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
 					SendNotification(playerid, "Saldo insuficiente.");
@@ -13118,9 +13046,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				
 				if(GivePlayerCash(playerid, inputtext[0], true, false)) {
-					PI[playerid][pi_BANK_MONEY] -= inputtext[0];
+					PI[playerid][ac_BANK_MONEY] -= inputtext[0];
 					
-					RegisterBankAccountTransaction(PI[playerid][pi_ID], PI[playerid][pi_ID], BANK_TRANSACTION_WITHDRAW, inputtext[0]);
+					RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID], ACCOUNT_INFO[playerid][ac_ID], BANK_TRANSACTION_WITHDRAW, inputtext[0]);
 					
 					SendFormatNotification(playerid, "Operación realizada con éxito, has retirado ~g~%s dólares~w~.", number_format_thousand(inputtext[0]));
 					PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);
@@ -13148,7 +13076,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					ShowDialog(playerid, dialogid);
 					return 1;
 				}
-				if(inputtext[0] > PI[playerid][pi_CASH])
+				if(inputtext[0] > PI[playerid][ac_CASH])
 				{
 					PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
 					SendNotification(playerid, "Dinero insuficiente.");
@@ -13167,9 +13095,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				
 				if(GivePlayerCash(playerid, -inputtext[0], true, true)) {
-					PI[playerid][pi_BANK_MONEY] += inputtext[0];
+					PI[playerid][ac_BANK_MONEY] += inputtext[0];
 					
-					RegisterBankAccountTransaction(PI[playerid][pi_ID], PI[playerid][pi_ID], BANK_TRANSACTION_DEPOSIT, inputtext[0]);
+					RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID], ACCOUNT_INFO[playerid][ac_ID], BANK_TRANSACTION_DEPOSIT, inputtext[0]);
 					
 					SendFormatNotification(playerid, "Operación realizada con éxito, has depositado ~g~%s dólares~w~.", number_format_thousand(inputtext[0]));
 					PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);
@@ -13242,7 +13170,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					ShowDialog(playerid, dialogid);
 					return 1;
 				}
-				if(inputtext[0] > PI[playerid][pi_BANK_MONEY])
+				if(inputtext[0] > PI[playerid][ac_BANK_MONEY])
 				{
 					PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
 					SendNotification(playerid, "Saldo insuficiente.");
@@ -13260,7 +13188,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 				}
 				
-				PI[playerid][pi_BANK_MONEY] -= inputtext[0];
+				PI[playerid][ac_BANK_MONEY] -= inputtext[0];
 				new transfer_player_id = GetPlayerIdByBankAccountId(PLAYER_TEMP[playerid][pt_SELECT_BANK_TRANSFER_ACCOUNT]);
 				
 				new message[64];
@@ -13285,12 +13213,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				else
 				{
-					PI[transfer_player_id][pi_BANK_MONEY] += inputtext[0];
+					PI[transfer_player_id][ac_BANK_MONEY] += inputtext[0];
 					
-					if(PI[transfer_player_id][pi_PHONE_NUMBER])
+					if(PI[transfer_player_id][ac_PHONE_NUMBER])
 					{
-						RegisterPhoneMessage(0, PI[transfer_player_id][pi_ID], message);
-						if(PI[transfer_player_id][pi_PHONE_STATE] == PHONE_STATE_ON)
+						RegisterPhoneMessage(0, ACCOUNT_INFO[transfer_player_id][ac_ID], message);
+						if(PI[transfer_player_id][ac_PHONE_STATE] == PHONE_STATE_ON)
 						{
 							if((PLAYER_TEMP[transfer_player_id][pt_GAME_STATE] == GAME_STATE_NORMAL || PLAYER_TEMP[transfer_player_id][pt_GAME_STATE] == GAME_STATE_DEAD))
 							{
@@ -13304,10 +13232,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_money = bank_money + %d WHERE bank_account = %d;", inputtext[0], PLAYER_TEMP[playerid][pt_SELECT_BANK_TRANSFER_ACCOUNT]);
 				mysql_tquery(srp_db, QUERY_BUFFER);
 
-				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_money = %d WHERE id = %d;", PI[playerid][pi_BANK_MONEY], PI[playerid][pi_ID]);
+				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_money = %d WHERE id = %d;", PI[playerid][ac_BANK_MONEY], ACCOUNT_INFO[playerid][ac_ID]);
 				mysql_tquery(srp_db, QUERY_BUFFER);
 				
-				RegisterBankAccountTransaction(PI[playerid][pi_ID], PLAYER_TEMP[playerid][pt_SELECT_BANK_TRANSFER_ID], BANK_TRANSACTION_TRANSFER, inputtext[0]);
+				RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID], PLAYER_TEMP[playerid][pt_SELECT_BANK_TRANSFER_ID], BANK_TRANSACTION_TRANSFER, inputtext[0]);
 				
 				SendFormatNotification(playerid, "Operación realizada con éxito, has transferido ~g~%s dólares ~w~al número de cuenta ~g~%s~w~.", number_format_thousand(inputtext[0]), number_format_thousand(PLAYER_TEMP[playerid][pt_SELECT_BANK_TRANSFER_ACCOUNT]));
 				PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);
@@ -13325,24 +13253,24 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(response)
 			{
-				if(PI[playerid][pi_CASH] >= 500)
+				if(PI[playerid][ac_CASH] >= 500)
 				{
 					if(GivePlayerCash(playerid, -500, true, true)) {
-						PI[playerid][pi_BANK_MONEY] = 500;
-						PI[playerid][pi_BANK_ACCOUNT] = getBankAccountNumber(PI[playerid][pi_ID]);
-						mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_account = %d, bank_money = %d WHERE id = %d;", PI[playerid][pi_BANK_ACCOUNT], PI[playerid][pi_BANK_MONEY], PI[playerid][pi_ID]);
+						PI[playerid][ac_BANK_MONEY] = 500;
+						PI[playerid][ac_BANK_ACCOUNT] = getBankAccountNumber(ACCOUNT_INFO[playerid][ac_ID]);
+						mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_account = %d, bank_money = %d WHERE id = %d;", PI[playerid][ac_BANK_ACCOUNT], PI[playerid][ac_BANK_MONEY], ACCOUNT_INFO[playerid][ac_ID]);
 						mysql_tquery(srp_db, QUERY_BUFFER);
 						
-						RegisterBankAccountTransaction(PI[playerid][pi_ID], PI[playerid][pi_ID], BANK_TRANSACTION_CREATE_ACCOUNT, 500);
+						RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID], ACCOUNT_INFO[playerid][ac_ID], BANK_TRANSACTION_CREATE_ACCOUNT, 500);
 						
 						PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);
-						SendFormatNotification(playerid, "Tu cuenta bancaria ha sido creada con éxito, tu número de cuenta es ~g~%s~w~.", number_format_thousand(PI[playerid][pi_BANK_ACCOUNT]));
+						SendFormatNotification(playerid, "Tu cuenta bancaria ha sido creada con éxito, tu número de cuenta es ~g~%s~w~.", number_format_thousand(PI[playerid][ac_BANK_ACCOUNT]));
 					}
 				}
 				else
 				{
 					PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
-					SendFormatNotification(playerid, "No tienes dinero suficiente para crear la cuenta bancaria, te faltan ~r~%d dólares~w~.", 500 - PI[playerid][pi_CASH]);
+					SendFormatNotification(playerid, "No tienes dinero suficiente para crear la cuenta bancaria, te faltan ~r~%d dólares~w~.", 500 - PI[playerid][ac_CASH]);
 				}
 			}
 			return 1;
@@ -13361,7 +13289,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					case PRODUCT_TYPE_FOOD:
 					{
-						if(PI[playerid][pi_CASH] >= Supermarket_Product_List[listitem][product_PRICE])
+						if(PI[playerid][ac_CASH] >= Supermarket_Product_List[listitem][product_PRICE])
 						{
 							new slot = GetEmptyPlayerPocketSlot(playerid);
 							if(slot == -1)
@@ -13386,14 +13314,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						else
 						{
 							PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
-							SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar este producto.", number_format_thousand(Supermarket_Product_List[listitem][product_PRICE] - PI[playerid][pi_CASH]));
+							SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar este producto.", number_format_thousand(Supermarket_Product_List[listitem][product_PRICE] - PI[playerid][ac_CASH]));
 						}
 					}
 					case PRODUCT_TYPE_PHONE:
 					{						
-						if(PI[playerid][pi_CASH] >= Supermarket_Product_List[listitem][product_PRICE])
+						if(PI[playerid][ac_CASH] >= Supermarket_Product_List[listitem][product_PRICE])
 						{
-							if(PI[playerid][pi_PHONE_NUMBER])
+							if(PI[playerid][ac_PHONE_NUMBER])
 							{
 								SendNotification(playerid, "Ya tienes un teléfono.");
 								PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
@@ -13401,29 +13329,29 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							}
 							
 							if(GivePlayerCash(playerid, -Supermarket_Product_List[listitem][product_PRICE], true, true)) {
-								PI[playerid][pi_PHONE_NUMBER] = getPhoneNumber(PI[playerid][pi_ID]);
-								PI[playerid][pi_PHONE_STATE] = PHONE_STATE_ON;
-								PI[playerid][pi_PHONE_VISIBLE_NUMBER] = true;
+								PI[playerid][ac_PHONE_NUMBER] = getPhoneNumber(ACCOUNT_INFO[playerid][ac_ID]);
+								PI[playerid][ac_PHONE_STATE] = PHONE_STATE_ON;
+								PI[playerid][ac_PHONE_VISIBLE_NUMBER] = true;
 
-								mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET phone_number = %d, phone_state = %d, phone_visible_number = %d WHERE id = %d;", PI[playerid][pi_PHONE_NUMBER], PI[playerid][pi_PHONE_STATE], PI[playerid][pi_PHONE_VISIBLE_NUMBER], PI[playerid][pi_ID]);
+								mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET phone_number = %d, phone_state = %d, phone_visible_number = %d WHERE id = %d;", PI[playerid][ac_PHONE_NUMBER], PI[playerid][ac_PHONE_STATE], PI[playerid][ac_PHONE_VISIBLE_NUMBER], ACCOUNT_INFO[playerid][ac_ID]);
 								mysql_tquery(srp_db, QUERY_BUFFER);
 								
-								SendFormatNotification(playerid, "Has comprado un ~b~%s ~w~por ~b~%d dólares~w~, tu número es ~y~%d~w~.", Supermarket_Product_List[listitem][product_NAME], Supermarket_Product_List[listitem][product_PRICE], PI[playerid][pi_PHONE_NUMBER]);
+								SendFormatNotification(playerid, "Has comprado un ~b~%s ~w~por ~b~%d dólares~w~, tu número es ~y~%d~w~.", Supermarket_Product_List[listitem][product_NAME], Supermarket_Product_List[listitem][product_PRICE], PI[playerid][ac_PHONE_NUMBER]);
 								PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);
 							}
 						}
 						else
 						{
 							PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
-							SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar este producto.", number_format_thousand(Supermarket_Product_List[listitem][product_PRICE] - PI[playerid][pi_CASH]));
+							SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar este producto.", number_format_thousand(Supermarket_Product_List[listitem][product_PRICE] - PI[playerid][ac_CASH]));
 						}
 						
 					}
 					case PRODUCT_TYPE_GPS:
 					{
-						if(PI[playerid][pi_CASH] >= Supermarket_Product_List[listitem][product_PRICE])
+						if(PI[playerid][ac_CASH] >= Supermarket_Product_List[listitem][product_PRICE])
 						{
-							if(PI[playerid][pi_GPS])
+							if(PI[playerid][ac_GPS])
 							{
 								SendNotification(playerid, "Ya tienes un GPS.");
 								PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
@@ -13431,7 +13359,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							}
 							
 							if(GivePlayerCash(playerid, -Supermarket_Product_List[listitem][product_PRICE], true, true)) {	
-								PI[playerid][pi_GPS] = true;
+								PI[playerid][ac_GPS] = true;
 								SendFormatNotification(playerid, "Has comprado un ~b~%s ~w~por ~b~%d dólares~w~, usa ~b~/GPS ~w~para usarlo.", Supermarket_Product_List[listitem][product_NAME], Supermarket_Product_List[listitem][product_PRICE]);
 								PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);
 							}
@@ -13439,14 +13367,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						else
 						{
 							PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
-							SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar este producto.", number_format_thousand(Supermarket_Product_List[listitem][product_PRICE] - PI[playerid][pi_CASH]));
+							SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar este producto.", number_format_thousand(Supermarket_Product_List[listitem][product_PRICE] - PI[playerid][ac_CASH]));
 						}
 					}
 					case PRODUCT_TYPE_MP3:
 					{
-						if(PI[playerid][pi_CASH] >= Supermarket_Product_List[listitem][product_PRICE])
+						if(PI[playerid][ac_CASH] >= Supermarket_Product_List[listitem][product_PRICE])
 						{
-							if(PI[playerid][pi_MP3])
+							if(PI[playerid][ac_MP3])
 							{
 								SendNotification(playerid, "Ya tienes un MP3.");
 								PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
@@ -13454,7 +13382,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							}
 							
 							if(GivePlayerCash(playerid, -Supermarket_Product_List[listitem][product_PRICE], true, true)) {
-								PI[playerid][pi_MP3] = true;
+								PI[playerid][ac_MP3] = true;
 								SendFormatNotification(playerid, "Has comprado un ~b~%s ~w~por ~b~%d dólares~w~, usa ~b~/MP3 ~w~para usarlo.", Supermarket_Product_List[listitem][product_NAME], Supermarket_Product_List[listitem][product_PRICE]);
 								PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);
 							}
@@ -13462,14 +13390,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						else
 						{
 							PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
-							SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar este producto.", number_format_thousand(Supermarket_Product_List[listitem][product_PRICE] - PI[playerid][pi_CASH]));
+							SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar este producto.", number_format_thousand(Supermarket_Product_List[listitem][product_PRICE] - PI[playerid][ac_CASH]));
 						}
 					}
 					case PRODUCT_TYPE_SPEAKERS:
 					{
-						if(PI[playerid][pi_CASH] >= Supermarket_Product_List[listitem][product_PRICE])
+						if(PI[playerid][ac_CASH] >= Supermarket_Product_List[listitem][product_PRICE])
 						{
-							if(PI[playerid][pi_SPEAKERS])
+							if(PI[playerid][ac_SPEAKERS])
 							{
 								SendNotification(playerid, "Ya tienes altavoces.");
 								PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
@@ -13477,7 +13405,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							}
 							
 							if(GivePlayerCash(playerid, -Supermarket_Product_List[listitem][product_PRICE], true, true)) {
-								PI[playerid][pi_SPEAKERS] = true;
+								PI[playerid][ac_SPEAKERS] = true;
 								SendFormatNotification(playerid, "Has comprado ~b~%s ~w~por ~b~%d dólares~w~, ~w~usa ~b~/amp3 ~w~para usarlo.", Supermarket_Product_List[listitem][product_NAME], Supermarket_Product_List[listitem][product_PRICE]);
 								PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);
 							}
@@ -13485,14 +13413,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						else
 						{
 							PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
-							SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar este producto.", number_format_thousand(Supermarket_Product_List[listitem][product_PRICE] - PI[playerid][pi_CASH]));
+							SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar este producto.", number_format_thousand(Supermarket_Product_List[listitem][product_PRICE] - PI[playerid][ac_CASH]));
 						}
 					}
 					case PRODUCT_TYPE_PHONE_RESOLVER:
 					{
-						if(PI[playerid][pi_CASH] >= Supermarket_Product_List[listitem][product_PRICE])
+						if(PI[playerid][ac_CASH] >= Supermarket_Product_List[listitem][product_PRICE])
 						{
-							if(PI[playerid][pi_PHONE_RESOLVER])
+							if(PI[playerid][ac_PHONE_RESOLVER])
 							{
 								SendNotification(playerid, "Ya tienes una guía telefónica.");
 								PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
@@ -13500,7 +13428,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							}
 							
 							if(GivePlayerCash(playerid, -Supermarket_Product_List[listitem][product_PRICE], true, true)) {
-								PI[playerid][pi_PHONE_RESOLVER] = true;
+								PI[playerid][ac_PHONE_RESOLVER] = true;
 								SendFormatNotification(playerid, "Has comprado una ~b~%s ~w~por ~b~%d dólares~w~, ~w~usa ~b~/guia ~w~para usarla.", Supermarket_Product_List[listitem][product_NAME], Supermarket_Product_List[listitem][product_PRICE]);
 								PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);
 							}
@@ -13508,7 +13436,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						else
 						{
 							PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
-							SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar este producto.", number_format_thousand(Supermarket_Product_List[listitem][product_PRICE] - PI[playerid][pi_CASH]));
+							SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar este producto.", number_format_thousand(Supermarket_Product_List[listitem][product_PRICE] - PI[playerid][ac_CASH]));
 						}
 					}
 				}
@@ -13554,7 +13482,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					case 0: //Consumir
 					{
-						if(PI[playerid][pi_HUNGRY] >= 99.0 && PI[playerid][pi_THIRST] >= 99.0) 
+						if(PI[playerid][ac_HUNGRY] >= 99.0 && PI[playerid][ac_THIRST] >= 99.0) 
 						{
 							PLAYER_TEMP[playerid][pt_POCKET_SLOT_SELECTED] = 0;
 							SendNotification(playerid, "¿Es que quieres reventar?");
@@ -13590,7 +13518,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(response)
 			{
-				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "DELETE FROM pfoods WHERE id_player = %d;", PI[playerid][pi_ID]);
+				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "DELETE FROM pfoods WHERE id_player = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 				mysql_query(srp_db, QUERY_BUFFER);
 				
 				new temp_PLAYER_POCKET[Player_Pocket_Enum];
@@ -13609,9 +13537,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					case 0: //Agenda
 					{
-						if(PI[playerid][pi_PHONE_STATE] == PHONE_STATE_OFF)
+						if(PI[playerid][ac_PHONE_STATE] == PHONE_STATE_OFF)
 						{
-							PI[playerid][pi_PHONE_STATE] = PHONE_STATE_ON;
+							PI[playerid][ac_PHONE_STATE] = PHONE_STATE_ON;
 							ShowDialog(playerid, dialogid);
 							return 1;
 						}
@@ -13619,36 +13547,36 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					case 1: //Llamar
 					{
-						if(PI[playerid][pi_PHONE_STATE] == PHONE_STATE_OFF) return SendNotification(playerid, "Tu teléfono está apagado, enciéndelo para usarlo.");
+						if(PI[playerid][ac_PHONE_STATE] == PHONE_STATE_OFF) return SendNotification(playerid, "Tu teléfono está apagado, enciéndelo para usarlo.");
 						ShowDialog(playerid, DIALOG_PHONE_CALL_NUMBER);
 					}
 					case 2: //Enviar mensaje
 					{
-						if(PI[playerid][pi_PHONE_STATE] == PHONE_STATE_OFF) return SendNotification(playerid, "Tu teléfono está apagado, enciéndelo para usarlo.");
+						if(PI[playerid][ac_PHONE_STATE] == PHONE_STATE_OFF) return SendNotification(playerid, "Tu teléfono está apagado, enciéndelo para usarlo.");
 						ShowDialog(playerid, DIALOG_PHONE_SMS_NUMBER);
 					}
 					case 3: //Ver mensajes recibidos
 					{
-						if(PI[playerid][pi_PHONE_STATE] == PHONE_STATE_OFF) return SendNotification(playerid, "Tu teléfono está apagado, enciéndelo para usarlo.");
+						if(PI[playerid][ac_PHONE_STATE] == PHONE_STATE_OFF) return SendNotification(playerid, "Tu teléfono está apagado, enciéndelo para usarlo.");
 						ShowDialog(playerid, DIALOG_PHONE_RECEIVED_MESSAGES);
 					}
 					case 4: //Ver mensajes enviados
 					{
-						if(PI[playerid][pi_PHONE_STATE] == PHONE_STATE_OFF) return SendNotification(playerid, "Tu teléfono está apagado, enciéndelo para usarlo.");
+						if(PI[playerid][ac_PHONE_STATE] == PHONE_STATE_OFF) return SendNotification(playerid, "Tu teléfono está apagado, enciéndelo para usarlo.");
 						ShowDialog(playerid, DIALOG_PHONE_SENT_MESSAGES);
 					}
 					case 5: //Tienda
 					{
-						if(PI[playerid][pi_PHONE_STATE] == PHONE_STATE_OFF) return SendNotification(playerid, "Tu teléfono está apagado, enciéndelo para usarlo.");
+						if(PI[playerid][ac_PHONE_STATE] == PHONE_STATE_OFF) return SendNotification(playerid, "Tu teléfono está apagado, enciéndelo para usarlo.");
 						
 						ShowPlayerShop(playerid);
 					}
 					case 6: //Apagar
 					{
-						if(PI[playerid][pi_PHONE_STATE] == PHONE_STATE_OFF) return SendNotification(playerid, "Tu teléfono está apagado, enciéndelo para usarlo.");
+						if(PI[playerid][ac_PHONE_STATE] == PHONE_STATE_OFF) return SendNotification(playerid, "Tu teléfono está apagado, enciéndelo para usarlo.");
 						
 						if(PLAYER_TEMP[playerid][pt_PLAYER_IN_CALL]) EndPhoneCall(playerid);
-						PI[playerid][pi_PHONE_STATE] = PHONE_STATE_OFF;
+						PI[playerid][ac_PHONE_STATE] = PHONE_STATE_OFF;
 						SendNotification(playerid, "Has apagado tu teléfono, ahora no recibirás llamadas.");
 					}
 				}
@@ -13792,7 +13720,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(response)
 			{
-				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "DELETE FROM pbook WHERE id_player = %d;", PI[playerid][pi_ID]);
+				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "DELETE FROM pbook WHERE id_player = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 				mysql_tquery(srp_db, QUERY_BUFFER);
 				
 				new temp_PLAYER_PHONE_BOOK[Phone_Book_Enum]; 
@@ -13842,31 +13770,31 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(response)
 			{
 				if(PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_SOLD]) return SendNotification(playerid, "Está propiedad ya está vendida.");
-				if(PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_LEVEL] > PI[playerid][pi_LEVEL]) return SendFormatNotification(playerid, "Necesitas ser como mínimo nivel %d para comprar esta propiedad.", PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_LEVEL]);
-				if(PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_PRICE] > PI[playerid][pi_BANK_MONEY]) return SendNotification(playerid, "No.");
-				if(PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_VIP_LEVEL] > PI[playerid][pi_VIP]) return SendNotification(playerid, "No.");
-				if(PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_EXTRA] > PI[playerid][pi_COINS]) return SendNotification(playerid, "No.");
+				if(PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_LEVEL] > ACCOUNT_INFO[playerid][ac_LEVEL]) return SendFormatNotification(playerid, "Necesitas ser como mínimo nivel %d para comprar esta propiedad.", PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_LEVEL]);
+				if(PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_PRICE] > PI[playerid][ac_BANK_MONEY]) return SendNotification(playerid, "No.");
+				if(PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_VIP_LEVEL] > ACCOUNT_INFO[playerid][ac_VIP]) return SendNotification(playerid, "No.");
+				if(PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_EXTRA] > PI[playerid][ac_COINS]) return SendNotification(playerid, "No.");
 	
 				if(!PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_EXTRA])
 				{
-					if(PI[playerid][pi_PHONE_NUMBER])
+					if(PI[playerid][ac_PHONE_NUMBER])
 					{
 						new message[64]; format(message, sizeof message, "PROPIEDAD COMPRADA: -%s$", number_format_thousand(PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_PRICE]));
-						RegisterPhoneMessage(0, PI[playerid][pi_ID], message);
-						if(PI[playerid][pi_PHONE_STATE] == PHONE_STATE_ON) SendClientMessageEx(playerid, -1, "{"#PRIMARY_COLOR"}[Nuevo mensaje recibido] {"#SILVER_COLOR"}Remitente: {FFFFFF}%s {"#SILVER_COLOR"}Mensaje: {FFFFFF}%s", convertPhoneNumber(playerid, 6740), message);
+						RegisterPhoneMessage(0, ACCOUNT_INFO[playerid][ac_ID], message);
+						if(PI[playerid][ac_PHONE_STATE] == PHONE_STATE_ON) SendClientMessageEx(playerid, -1, "{"#PRIMARY_COLOR"}[Nuevo mensaje recibido] {"#SILVER_COLOR"}Remitente: {FFFFFF}%s {"#SILVER_COLOR"}Mensaje: {FFFFFF}%s", convertPhoneNumber(playerid, 6740), message);
 					}
 					
-					PI[playerid][pi_BANK_MONEY] -= PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_PRICE];
+					PI[playerid][ac_BANK_MONEY] -= PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_PRICE];
 				
-					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_money = %d WHERE id = %d;", PI[playerid][pi_BANK_MONEY], PI[playerid][pi_ID]);
+					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_money = %d WHERE id = %d;", PI[playerid][ac_BANK_MONEY], ACCOUNT_INFO[playerid][ac_ID]);
 					mysql_tquery(srp_db, QUERY_BUFFER);
-					RegisterBankAccountTransaction(PI[playerid][pi_ID], PI[playerid][pi_ID], BANK_TRANSACTION_BUY_PROPERTY, PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_PRICE]);
+					RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID], ACCOUNT_INFO[playerid][ac_ID], BANK_TRANSACTION_BUY_PROPERTY, PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_PRICE]);
 				}
 				else
 				{
-					PI[playerid][pi_COINS] -= PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_EXTRA];
+					PI[playerid][ac_COINS] -= PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_EXTRA];
 					
-					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET coins = %d WHERE id = %d;", PI[playerid][pi_COINS], PI[playerid][pi_ID]);
+					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET coins = %d WHERE id = %d;", PI[playerid][ac_COINS], ACCOUNT_INFO[playerid][ac_ID]);
 					mysql_tquery(srp_db, QUERY_BUFFER);
 					
 					SendFormatNotification(playerid, "Has gastado %d "SERVER_COIN" en la compra de esta propiedad.", PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_EXTRA]);
@@ -13875,9 +13803,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				
 				PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_SOLD] = true;
 				PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_CREW] = false;
-				PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_OWNER_ID] = PI[playerid][pi_ID];
-				CreatePropertyInfo(PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX], PI[playerid][pi_ID], PI[playerid][pi_NAME], 0, "");
-				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE properties SET id_player = %d, id_territory = NULL WHERE id = %d;", PI[playerid][pi_ID], PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_ID]);
+				PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_OWNER_ID] = ACCOUNT_INFO[playerid][ac_ID];
+				CreatePropertyInfo(PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX], ACCOUNT_INFO[playerid][ac_ID], ACCOUNT_INFO[playerid][ac_NAME], 0, "");
+				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE properties SET id_player = %d, id_territory = NULL WHERE id = %d;", ACCOUNT_INFO[playerid][ac_ID], PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_ID]);
 				mysql_tquery(srp_db, QUERY_BUFFER);
 				
 				
@@ -14024,7 +13952,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(response)
 			{
-				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "DELETE FROM pgps WHERE id_player = %d;", PI[playerid][pi_ID]);
+				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "DELETE FROM pgps WHERE id_player = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 				mysql_tquery(srp_db, QUERY_BUFFER);
 				
 				new temp_PLAYER_GPS[Player_GPS_Enum]; 
@@ -14133,7 +14061,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 				if(vehicleid == -1) return ShowDialog(playerid, DIALOG_PLAYER_GPS);
 
-				if(!PI[playerid][pi_VIP])
+				if(!ACCOUNT_INFO[playerid][ac_VIP])
 				{
 					if(!PLAYER_VEHICLES[vehicleid][player_vehicle_ACCESSIBLE])
 					{
@@ -14162,14 +14090,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						{
 							if(IsPlayerConnected(i))
 							{
-								if( PI[i][pi_STATE] == ROLEPLAY_STATE_GUEST_PROPERTY && PI[i][pi_LOCAL_INTERIOR] == PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_ID])
+								if( PI[i][ac_STATE] == ROLEPLAY_STATE_GUEST_PROPERTY && PI[i][ac_LOCAL_INTERIOR] == PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_ID])
 								{
 									if(PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_POLICE_FORCED] && (PLAYER_WORKS[i][WORK_POLICE][pwork_SET] && PLAYER_TEMP[i][pt_WORKING_IN] == WORK_POLICE)) {
 										continue;
 									}
 
-									PI[i][pi_STATE] = ROLEPLAY_STATE_NORMAL;
-									PI[i][pi_LOCAL_INTERIOR] = 0;
+									PI[i][ac_STATE] = ROLEPLAY_STATE_NORMAL;
+									PI[i][ac_LOCAL_INTERIOR] = 0;
 									PLAYER_TEMP[i][pt_PROPERTY_INDEX] = -1;
 									SetPlayerPosEx(i, PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_X], PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_Y], PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_Z], PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_ANGLE], PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_INTERIOR], 0, PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_FREEZE], false);
 									StopAudioStreamForPlayer(i);
@@ -14183,7 +14111,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					case 2:
 					{
-						if(!PI[playerid][pi_MP3])
+						if(!PI[playerid][ac_MP3])
 						{
 							SendFormatNotification(playerid, "No tienes ningún MP3, puedes ir a cualquier 24/7 para comprar uno.");
 							PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
@@ -14213,15 +14141,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					case 5:
 					{
-						if(!PI[playerid][pi_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
-						if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_ADD_PROPERTIES]) return SendNotification(playerid, "No tienes permiso.");
+						if(!PI[playerid][ac_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
+						if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_ADD_PROPERTIES]) return SendNotification(playerid, "No tienes permiso.");
 						
 						
 						for(new i = 0; i != MAX_TERRITORIES; i ++)
 						{
 							if(!TERRITORIES[i][territory_VALID]) continue;
 							if(!TERRITORIES[i][territory_OCCUPIED]) continue;
-							if(TERRITORIES[i][territory_CREW_ID] != PI[playerid][pi_CREW]) continue;
+							if(TERRITORIES[i][territory_CREW_ID] != PI[playerid][ac_CREW]) continue;
 							
 							if(IsPointInDynamicArea(TERRITORIES[i][territory_AREA], PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_X], PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_Y], PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_Z]))
 							{
@@ -14241,7 +14169,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(response)
 			{
 				if(!PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_VALID]) return 1;
-				if(PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_OWNER_ID] != PI[playerid][pi_ID]) return 1;
+				if(PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_OWNER_ID] != ACCOUNT_INFO[playerid][ac_ID]) return 1;
 				
 				if(isnull(inputtext)) return ShowDialog(playerid, dialogid);
 				if(strlen(inputtext) > 24)
@@ -14302,11 +14230,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(!GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][gb_vehicle_VALID]) return 1;
 				if(GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][gb_vehicle_TYPE] != VEHICLE_TYPE_SELL) return 1;
 				if(!SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_VALID]) return 1;
-				if(SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_VIP_LEVEL] > PI[playerid][pi_VIP]) return 1;
-				if(SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_LEVEL] > PI[playerid][pi_LEVEL]) return 1;
-				if(PI[playerid][pi_BANK_ACCOUNT] == 0) return 1;
-				if(SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_PRICE] > PI[playerid][pi_BANK_MONEY]) return 1;
-				if(SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_EXTRA] > PI[playerid][pi_COINS]) return 1;
+				if(SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_VIP_LEVEL] > ACCOUNT_INFO[playerid][ac_VIP]) return 1;
+				if(SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_LEVEL] > ACCOUNT_INFO[playerid][ac_LEVEL]) return 1;
+				if(PI[playerid][ac_BANK_ACCOUNT] == 0) return 1;
+				if(SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_PRICE] > PI[playerid][ac_BANK_MONEY]) return 1;
+				if(SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_EXTRA] > PI[playerid][ac_COINS]) return 1;
 			
 				new vid = AddPersonalVehicle
 				(
@@ -14324,26 +14252,26 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				
 				if(SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_EXTRA])
 				{
-					PI[playerid][pi_COINS] -= SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_EXTRA];
+					PI[playerid][ac_COINS] -= SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_EXTRA];
 					
-					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET coins = %d WHERE id = %d;", PI[playerid][pi_COINS], PI[playerid][pi_ID]);
+					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET coins = %d WHERE id = %d;", PI[playerid][ac_COINS], ACCOUNT_INFO[playerid][ac_ID]);
 					mysql_tquery(srp_db, QUERY_BUFFER);
 					
 					SendFormatNotification(playerid, "Has gastado ~r~%d "SERVER_COIN"~w~ en la compra de este vehículo.", SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_EXTRA]);
 				}
 				else
 				{
-					if(PI[playerid][pi_PHONE_NUMBER])
+					if(PI[playerid][ac_PHONE_NUMBER])
 					{
 						new message[64]; format(message, sizeof message, "VEHICULO COMPRADO: -%s$", number_format_thousand(SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_PRICE]));
-						RegisterPhoneMessage(0, PI[playerid][pi_ID], message);
-						if(PI[playerid][pi_PHONE_STATE] == PHONE_STATE_ON) SendClientMessageEx(playerid, -1, "{"#PRIMARY_COLOR"}[Nuevo mensaje recibido] {"#SILVER_COLOR"}Remitente: {FFFFFF}%s {"#SILVER_COLOR"}Mensaje: {FFFFFF}%s", convertPhoneNumber(playerid, 6740), message);
+						RegisterPhoneMessage(0, ACCOUNT_INFO[playerid][ac_ID], message);
+						if(PI[playerid][ac_PHONE_STATE] == PHONE_STATE_ON) SendClientMessageEx(playerid, -1, "{"#PRIMARY_COLOR"}[Nuevo mensaje recibido] {"#SILVER_COLOR"}Remitente: {FFFFFF}%s {"#SILVER_COLOR"}Mensaje: {FFFFFF}%s", convertPhoneNumber(playerid, 6740), message);
 					}
 					
-					PI[playerid][pi_BANK_MONEY] -= SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_PRICE];
-					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_money = %d WHERE id = %d;", PI[playerid][pi_BANK_MONEY], PI[playerid][pi_ID]);
+					PI[playerid][ac_BANK_MONEY] -= SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_PRICE];
+					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_money = %d WHERE id = %d;", PI[playerid][ac_BANK_MONEY], ACCOUNT_INFO[playerid][ac_ID]);
 					mysql_tquery(srp_db, QUERY_BUFFER);
-					RegisterBankAccountTransaction(PI[playerid][pi_ID], PI[playerid][pi_ID], BANK_TRANSACTION_BUY_VEHICLE, SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_PRICE]);
+					RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID], ACCOUNT_INFO[playerid][ac_ID], BANK_TRANSACTION_BUY_VEHICLE, SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_PRICE]);
 				}	
 				
 				SendNotification(playerid, "~g~¡Vehículo comprado! ~n~~n~~w~Utiliza ~y~/ayuda vehiculos ~w~para ver que puedes hacer con tu vehículo.");
@@ -14359,7 +14287,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				pos[1] += (2.0 * floatcos(-(pos[3] + 90.0), degrees));
 				SetPlayerPosEx(playerid, pos[0], pos[1], pos[2], pos[3], 0, 0);
 				
-				if(!PI[playerid][pi_VIP]) ReLockPlayerVehicles(playerid);
+				if(!ACCOUNT_INFO[playerid][ac_VIP]) ReLockPlayerVehicles(playerid);
 			}
 			return 1;
 		}
@@ -14428,8 +14356,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(response)
 			{
 				if(!PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_VALID]) return 1;
-				if(PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_OWNER_ID] != PI[playerid][pi_ID]) return 1;
-				if(PI[playerid][pi_BANK_ACCOUNT] == 0) return SendNotification(playerid, "Necesitas tener una cuenta bancaria para vender la propiedad.");
+				if(PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_OWNER_ID] != ACCOUNT_INFO[playerid][ac_ID]) return 1;
+				if(PI[playerid][ac_BANK_ACCOUNT] == 0) return SendNotification(playerid, "Necesitas tener una cuenta bancaria para vender la propiedad.");
 
 				PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_SOLD] = false;
 				PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_CREW] = false;
@@ -14450,24 +14378,24 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				
 				new Float:price, payment;
 				price = PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_PRICE_BASE];
-				if(PI[playerid][pi_VIP]) payment = floatround( floatmul(price, 0.50) );
+				if(ACCOUNT_INFO[playerid][ac_VIP]) payment = floatround( floatmul(price, 0.50) );
 				else payment = floatround( floatmul(price, 0.25) );
 				
-				if(PI[playerid][pi_PHONE_NUMBER])
+				if(PI[playerid][ac_PHONE_NUMBER])
 				{
 					new message[64]; format(message, sizeof message, "PROPIEDAD VENDIDA: +%s$", number_format_thousand(payment));
-					RegisterPhoneMessage(0, PI[playerid][pi_ID], message);
-					if(PI[playerid][pi_PHONE_STATE] == PHONE_STATE_ON) SendClientMessageEx(playerid, -1, "{"#PRIMARY_COLOR"}[Nuevo mensaje recibido] {"#SILVER_COLOR"}Remitente: {FFFFFF}%s {"#SILVER_COLOR"}Mensaje: {FFFFFF}%s", convertPhoneNumber(playerid, 6740), message);
+					RegisterPhoneMessage(0, ACCOUNT_INFO[playerid][ac_ID], message);
+					if(PI[playerid][ac_PHONE_STATE] == PHONE_STATE_ON) SendClientMessageEx(playerid, -1, "{"#PRIMARY_COLOR"}[Nuevo mensaje recibido] {"#SILVER_COLOR"}Remitente: {FFFFFF}%s {"#SILVER_COLOR"}Mensaje: {FFFFFF}%s", convertPhoneNumber(playerid, 6740), message);
 				}
 				
-				PI[playerid][pi_BANK_MONEY] += payment;
-				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_money = %d WHERE id = %d;", PI[playerid][pi_BANK_MONEY], PI[playerid][pi_ID]);
+				PI[playerid][ac_BANK_MONEY] += payment;
+				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_money = %d WHERE id = %d;", PI[playerid][ac_BANK_MONEY], ACCOUNT_INFO[playerid][ac_ID]);
 				mysql_tquery(srp_db, QUERY_BUFFER);
 
 				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE properties SET id_player = NULL, id_territory = NULL WHERE id = %d;", PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_ID]);
 				mysql_tquery(srp_db, QUERY_BUFFER);
 						
-				RegisterBankAccountTransaction(PI[playerid][pi_ID], PI[playerid][pi_ID], BANK_TRANSACTION_SOLD_PROPERTY, payment);
+				RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID], ACCOUNT_INFO[playerid][ac_ID], BANK_TRANSACTION_SOLD_PROPERTY, payment);
 				SendFormatNotification(playerid, "Has vendido esta propiedad, has recibido %s$ en tu cuenta bancaria.", number_format_thousand(payment));
 				PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);
 			
@@ -14511,17 +14439,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				
 				if(ENTER_EXIT[ PLAYER_TEMP[inputtext[0]][pt_INTERIOR_INDEX] ][ee_INTERIOR_TYPE] != INTERIOR_CITY_HALL_LS) return SendNotification(playerid, "El comprador no está en la sala.");
 				if(!IsPlayerInRangeOfPoint(inputtext[0], 3.0, -474.596282, 289.679107, 2004.584960)) return SendNotification(playerid, "El comprador no está en la sala.");
-				if(PI[inputtext[0]][pi_BANK_ACCOUNT] == 0) return SendNotification(playerid, "El comprador no tiene cuenta bancaria.");
+				if(PI[inputtext[0]][ac_BANK_ACCOUNT] == 0) return SendNotification(playerid, "El comprador no tiene cuenta bancaria.");
 				
 				new player_properties = CountPlayerProperties(inputtext[0]);
 				if(player_properties >= MAX_SU_PROPERTIES) return SendNotification(playerid, "El comprador no puede adquirir más propiedades.");
-				if(!PI[inputtext[0]][pi_VIP])
+				if(!ACCOUNT_INFO[inputtext[0]][ac_VIP])
 				{
 					if(player_properties >= MAX_NU_PROPERTIES) return SendNotification(playerid, "El comprador no puede adquirir más propiedades.");
 				}
 				
-				if(PI[inputtext[0]][pi_LEVEL] < 2) return SendNotification(playerid, "Error, el comprador necesita ser al menos nivel 2.");
-				if(PLAYER_TEMP[playerid][pt_NOTARY_PRICE] > PI[inputtext[0]][pi_BANK_MONEY]) return SendNotification(playerid, "Error, el comprador no tiene el dinero que pides.");
+				if(PI[inputtext[0]][ac_LEVEL] < 2) return SendNotification(playerid, "Error, el comprador necesita ser al menos nivel 2.");
+				if(PLAYER_TEMP[playerid][pt_NOTARY_PRICE] > PI[inputtext[0]][ac_BANK_MONEY]) return SendNotification(playerid, "Error, el comprador no tiene el dinero que pides.");
 				
 				SendNotification(playerid, "Tu oferta se ha enviado al comprador, espera para ver si la acepta.");
 				
@@ -14547,7 +14475,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_NOTARY_TO_PLAYER] ][pt_GAME_STATE] != GAME_STATE_NORMAL) return SendNotification(playerid, "Error, el vendedor no está disponible.");
 				if(ENTER_EXIT[ PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_NOTARY_TO_PLAYER] ][pt_INTERIOR_INDEX] ][ee_INTERIOR_TYPE] != INTERIOR_CITY_HALL_LS) return SendNotification(playerid, "El vendedor no está en la sala.");
 				if(!IsPlayerInRangeOfPoint(PLAYER_TEMP[playerid][pt_NOTARY_TO_PLAYER], 3.0, -474.596282, 289.679107, 2004.584960)) return SendNotification(playerid, "El vendedor no está en la sala.");
-				if(PI[ PLAYER_TEMP[playerid][pt_NOTARY_TO_PLAYER] ][pi_BANK_ACCOUNT] == 0) return SendNotification(playerid, "El vendedor no tiene cuenta bancaria.");
+				if(PI[ PLAYER_TEMP[playerid][pt_NOTARY_TO_PLAYER] ][ac_BANK_ACCOUNT] == 0) return SendNotification(playerid, "El vendedor no tiene cuenta bancaria.");
 				
 				// Traspasar
 				new label_str[256];
@@ -14559,38 +14487,38 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						Propiedad {"#PRIMARY_COLOR"}#%d\n\n\
 						{FFFFFF}Propietario: {"#PRIMARY_COLOR"}%s\n\
 						{FFFFFF}Presiona {"#PRIMARY_COLOR"}~k~~CONVERSATION_YES~ {FFFFFF}para entrar.\
-					", PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_ID], PI[playerid][pi_NAME]
+					", PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_ID], ACCOUNT_INFO[playerid][ac_NAME]
 				);
 				UpdateDynamic3DTextLabelText(PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_LABEL_ID], 0xFFFFFFFF, label_str);
 				
-				PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_OWNER_ID] = PI[playerid][pi_ID];
-				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE properties SET id_player = %d, id_territory = NULL WHERE id = %d;", PI[playerid][pi_ID], PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_ID]);
+				PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_OWNER_ID] = ACCOUNT_INFO[playerid][ac_ID];
+				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE properties SET id_player = %d, id_territory = NULL WHERE id = %d;", ACCOUNT_INFO[playerid][ac_ID], PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_ID]);
 				mysql_tquery(srp_db, QUERY_BUFFER);
 				
 				// Banco
 				new price = PLAYER_TEMP[playerid][pt_NOTARY_PRICE], seller = PLAYER_TEMP[playerid][pt_NOTARY_TO_PLAYER];
 				
-				if(PI[playerid][pi_PHONE_NUMBER])
+				if(PI[playerid][ac_PHONE_NUMBER])
 				{
 					new message[64]; format(message, sizeof message, "PROPIEDAD COMPRADA: -%s$", number_format_thousand(price));
-					RegisterPhoneMessage(0, PI[playerid][pi_ID], message);
-					if(PI[playerid][pi_PHONE_STATE] == PHONE_STATE_ON) SendClientMessageEx(playerid, -1, "{"#PRIMARY_COLOR"}[Nuevo mensaje recibido] {"#SILVER_COLOR"}Remitente: {FFFFFF}%s {"#SILVER_COLOR"}Mensaje: {FFFFFF}%s", convertPhoneNumber(playerid, 6740), message);
+					RegisterPhoneMessage(0, ACCOUNT_INFO[playerid][ac_ID], message);
+					if(PI[playerid][ac_PHONE_STATE] == PHONE_STATE_ON) SendClientMessageEx(playerid, -1, "{"#PRIMARY_COLOR"}[Nuevo mensaje recibido] {"#SILVER_COLOR"}Remitente: {FFFFFF}%s {"#SILVER_COLOR"}Mensaje: {FFFFFF}%s", convertPhoneNumber(playerid, 6740), message);
 				}
-				if(PI[seller][pi_PHONE_NUMBER])
+				if(PI[seller][ac_PHONE_NUMBER])
 				{
 					new message[64]; format(message, sizeof message, "PROPIEDAD VENDIDA: +%s$", number_format_thousand(price));
-					RegisterPhoneMessage(0, PI[seller][pi_ID], message);
-					if(PI[seller][pi_PHONE_STATE] == PHONE_STATE_ON) SendClientMessageEx(seller, -1, "{"#PRIMARY_COLOR"}[Nuevo mensaje recibido] {"#SILVER_COLOR"}Remitente: {FFFFFF}%s {"#SILVER_COLOR"}Mensaje: {FFFFFF}%s", convertPhoneNumber(seller, 6740), message);
+					RegisterPhoneMessage(0, ACCOUNT_INFO[seller][ac_ID], message);
+					if(PI[seller][ac_PHONE_STATE] == PHONE_STATE_ON) SendClientMessageEx(seller, -1, "{"#PRIMARY_COLOR"}[Nuevo mensaje recibido] {"#SILVER_COLOR"}Remitente: {FFFFFF}%s {"#SILVER_COLOR"}Mensaje: {FFFFFF}%s", convertPhoneNumber(seller, 6740), message);
 				}
 				
-				PI[playerid][pi_BANK_MONEY] -= price;
-				PI[seller][pi_BANK_MONEY] += price;
-				RegisterBankAccountTransaction(PI[playerid][pi_ID], PI[seller][pi_ID], BANK_TRANSACTION_TRANSFER, price);
+				PI[playerid][ac_BANK_MONEY] -= price;
+				PI[seller][ac_BANK_MONEY] += price;
+				RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID], ACCOUNT_INFO[seller][ac_ID], BANK_TRANSACTION_TRANSFER, price);
 				
-				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_money = %d WHERE id = %d;", PI[playerid][pi_BANK_MONEY], PI[playerid][pi_ID]);
+				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_money = %d WHERE id = %d;", PI[playerid][ac_BANK_MONEY], ACCOUNT_INFO[playerid][ac_ID]);
 				mysql_tquery(srp_db, QUERY_BUFFER);
 
-				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_money = %d WHERE id = %d;", PI[seller][pi_BANK_MONEY], PI[seller][pi_ID]);
+				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_money = %d WHERE id = %d;", PI[seller][ac_BANK_MONEY], ACCOUNT_INFO[seller][ac_ID]);
 				mysql_tquery(srp_db, QUERY_BUFFER);
 				
 				SendFormatNotification(playerid, "~g~¡Propiedad %d comprada!~n~~n~~w~Ahora puedes ir a tu casa, si no sabes donde es puedes marcarla con el ~b~/GPS~w~.", PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_ID]);
@@ -14636,12 +14564,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(response)
 			{
 				if(!GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_PLAYER_VEHICLE_SELECTED] ][gb_vehicle_VALID]) return 1;
-				if(PLAYER_VEHICLES[ PLAYER_TEMP[playerid][pt_PLAYER_VEHICLE_SELECTED] ][player_vehicle_OWNER_ID] != PI[playerid][pi_ID]) return 1;
-				if(PI[playerid][pi_BANK_ACCOUNT] == 0) return SendNotification(playerid, "Necesitas tener una cuenta bancaria para vender el vehículo.");
+				if(PLAYER_VEHICLES[ PLAYER_TEMP[playerid][pt_PLAYER_VEHICLE_SELECTED] ][player_vehicle_OWNER_ID] != ACCOUNT_INFO[playerid][ac_ID]) return 1;
+				if(PI[playerid][ac_BANK_ACCOUNT] == 0) return SendNotification(playerid, "Necesitas tener una cuenta bancaria para vender el vehículo.");
 
 				new Float:price, payment;
 				price = VEHICLE_INFO[ GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_PLAYER_VEHICLE_SELECTED] ][gb_vehicle_MODELID] - 400 ][vehicle_info_PRICE];
-				if(PI[playerid][pi_VIP]) payment = floatround( floatmul(price, 0.50) );
+				if(ACCOUNT_INFO[playerid][ac_VIP]) payment = floatround( floatmul(price, 0.50) );
 				else payment = floatround( floatmul(price, 0.25) );
 				
 				//Destruir veh
@@ -14651,21 +14579,21 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				DestroyVehicleEx(PLAYER_TEMP[playerid][pt_PLAYER_VEHICLE_SELECTED]);
 				
 				
-				if(PI[playerid][pi_PHONE_NUMBER])
+				if(PI[playerid][ac_PHONE_NUMBER])
 				{
 					new message[64]; format(message, sizeof message, "VEHICULO VENDIDO: +%s$", number_format_thousand(payment));
-					RegisterPhoneMessage(0, PI[playerid][pi_ID], message);
-					if(PI[playerid][pi_PHONE_STATE] == PHONE_STATE_ON) SendClientMessageEx(playerid, -1, "{"#PRIMARY_COLOR"}[Nuevo mensaje recibido] {"#SILVER_COLOR"}Remitente: {FFFFFF}%s {"#SILVER_COLOR"}Mensaje: {FFFFFF}%s", convertPhoneNumber(playerid, 6740), message);
+					RegisterPhoneMessage(0, ACCOUNT_INFO[playerid][ac_ID], message);
+					if(PI[playerid][ac_PHONE_STATE] == PHONE_STATE_ON) SendClientMessageEx(playerid, -1, "{"#PRIMARY_COLOR"}[Nuevo mensaje recibido] {"#SILVER_COLOR"}Remitente: {FFFFFF}%s {"#SILVER_COLOR"}Mensaje: {FFFFFF}%s", convertPhoneNumber(playerid, 6740), message);
 				}
-				PI[playerid][pi_BANK_MONEY] += payment;
-				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_money = %d WHERE id = %d;", PI[playerid][pi_BANK_MONEY], PI[playerid][pi_ID]);
+				PI[playerid][ac_BANK_MONEY] += payment;
+				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_money = %d WHERE id = %d;", PI[playerid][ac_BANK_MONEY], ACCOUNT_INFO[playerid][ac_ID]);
 				mysql_tquery(srp_db, QUERY_BUFFER);
-				RegisterBankAccountTransaction(PI[playerid][pi_ID], PI[playerid][pi_ID], BANK_TRANSACTION_SOLD_VEHICLE, payment);
+				RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID], ACCOUNT_INFO[playerid][ac_ID], BANK_TRANSACTION_SOLD_VEHICLE, payment);
 				
 				SendFormatNotification(playerid, "Has vendido este vehículo, has recibido %s$ en tu cuenta bancaria.", number_format_thousand(payment));
 				PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);
 				
-				if(!PI[playerid][pi_VIP]) ReLockPlayerVehicles(playerid);
+				if(!ACCOUNT_INFO[playerid][ac_VIP]) ReLockPlayerVehicles(playerid);
 			}
 			else ShowDialog(playerid, DIALOG_NOTARY_SELECT_VEHICLE);
 			return 1;
@@ -14706,19 +14634,19 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				
 				if(PLAYER_TEMP[inputtext[0]][pt_INTERIOR_INDEX] == -1 || ENTER_EXIT[ PLAYER_TEMP[inputtext[0]][pt_INTERIOR_INDEX] ][ee_INTERIOR_TYPE] != INTERIOR_CITY_HALL_LS) return SendNotification(playerid, "El comprador no está en la sala.");
 				if(!IsPlayerInRangeOfPoint(inputtext[0], 3.0, -474.596282, 289.679107, 2004.584960)) return SendNotification(playerid, "El comprador no está en la sala.");
-				if(PI[inputtext[0]][pi_BANK_ACCOUNT] == 0) return SendNotification(playerid, "El comprador no tiene cuenta bancaria.");
+				if(PI[inputtext[0]][ac_BANK_ACCOUNT] == 0) return SendNotification(playerid, "El comprador no tiene cuenta bancaria.");
 				
 				new pvehicles = CountPlayerVehicles(inputtext[0]);
 				if(pvehicles >= MAX_SU_VEHICLES) return SendNotification(playerid, "El comprador no puede adquirir más vehículos.");
-				if(!PI[inputtext[0]][pi_VIP])
+				if(!ACCOUNT_INFO[inputtext[0]][ac_VIP])
 				{
 					if(pvehicles >= MAX_NU_VEHICLES) return SendNotification(playerid, "El comprador no puede adquirir más vehículos.");
 				}
 				
-				if(PI[inputtext[0]][pi_LEVEL] < 2) return SendNotification(playerid, "Error, el comprador necesita ser al menos nivel 2.");
-				if(PLAYER_TEMP[playerid][pt_NOTARY_PRICE] > PI[inputtext[0]][pi_BANK_MONEY]) return SendNotification(playerid, "Error, el comprador no tiene el dinero que pides.");
+				if(PI[inputtext[0]][ac_LEVEL] < 2) return SendNotification(playerid, "Error, el comprador necesita ser al menos nivel 2.");
+				if(PLAYER_TEMP[playerid][pt_NOTARY_PRICE] > PI[inputtext[0]][ac_BANK_MONEY]) return SendNotification(playerid, "Error, el comprador no tiene el dinero que pides.");
 				
-				if(PI[inputtext[0]][pi_DRIVE_LICENSE_POINTS] == 0)
+				if(PI[inputtext[0]][ac_DRIVE_LICENSE_POINTS] == 0)
 				{
 					SendNotification(playerid, "Tu oferta se ha enviado al comprador, pero el no tiene licencia de conducir y no puede aceptar tu oferta.");
 					SendFormatNotification(inputtext[0], "%s te ha ofrecido un vehículo, pero ~r~necesitas una licencia de conducir~w~ para aceptarlo.", PLAYER_TEMP[playerid][pt_RP_NAME]);
@@ -14749,38 +14677,38 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_NOTARY_TO_PLAYER] ][pt_GAME_STATE] != GAME_STATE_NORMAL) return SendNotification(playerid, "Error, el vendedor no está disponible.");
 				if(ENTER_EXIT[ PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_NOTARY_TO_PLAYER] ][pt_INTERIOR_INDEX] ][ee_INTERIOR_TYPE] != INTERIOR_CITY_HALL_LS) return SendNotification(playerid, "El vendedor no está en la sala.");
 				if(!IsPlayerInRangeOfPoint(PLAYER_TEMP[playerid][pt_NOTARY_TO_PLAYER], 3.0, -474.596282, 289.679107, 2004.584960)) return SendNotification(playerid, "El vendedor no está en la sala.");
-				if(PI[ PLAYER_TEMP[playerid][pt_NOTARY_TO_PLAYER] ][pi_BANK_ACCOUNT] == 0) return SendNotification(playerid, "El vendedor no tiene cuenta bancaria.");
+				if(PI[ PLAYER_TEMP[playerid][pt_NOTARY_TO_PLAYER] ][ac_BANK_ACCOUNT] == 0) return SendNotification(playerid, "El vendedor no tiene cuenta bancaria.");
 				
 				// Traspasar
-				PLAYER_VEHICLES[ PLAYER_TEMP[playerid][pt_PLAYER_VEHICLE_SELECTED] ][player_vehicle_OWNER_ID] = PI[playerid][pi_ID];
-				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pvehicles SET id_player = %d WHERE id = %d;", PI[playerid][pi_ID], PLAYER_VEHICLES[ PLAYER_TEMP[playerid][pt_PLAYER_VEHICLE_SELECTED] ][player_vehicle_ID]);
+				PLAYER_VEHICLES[ PLAYER_TEMP[playerid][pt_PLAYER_VEHICLE_SELECTED] ][player_vehicle_OWNER_ID] = ACCOUNT_INFO[playerid][ac_ID];
+				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pvehicles SET id_player = %d WHERE id = %d;", ACCOUNT_INFO[playerid][ac_ID], PLAYER_VEHICLES[ PLAYER_TEMP[playerid][pt_PLAYER_VEHICLE_SELECTED] ][player_vehicle_ID]);
 				mysql_tquery(srp_db, QUERY_BUFFER);
 				
 				
 				// Banco
 				new price = PLAYER_TEMP[playerid][pt_NOTARY_PRICE], seller = PLAYER_TEMP[playerid][pt_NOTARY_TO_PLAYER];
 				
-				if(PI[playerid][pi_PHONE_NUMBER])
+				if(PI[playerid][ac_PHONE_NUMBER])
 				{
 					new message[64]; format(message, sizeof message, "VEHICULO COMPRADO: -%s$", number_format_thousand(price));
-					RegisterPhoneMessage(0, PI[playerid][pi_ID], message);
-					if(PI[playerid][pi_PHONE_STATE] == PHONE_STATE_ON) SendClientMessageEx(playerid, -1, "{"#PRIMARY_COLOR"}[Nuevo mensaje recibido] {"#SILVER_COLOR"}Remitente: {FFFFFF}%s {"#SILVER_COLOR"}Mensaje: {FFFFFF}%s", convertPhoneNumber(playerid, 6740), message);
+					RegisterPhoneMessage(0, ACCOUNT_INFO[playerid][ac_ID], message);
+					if(PI[playerid][ac_PHONE_STATE] == PHONE_STATE_ON) SendClientMessageEx(playerid, -1, "{"#PRIMARY_COLOR"}[Nuevo mensaje recibido] {"#SILVER_COLOR"}Remitente: {FFFFFF}%s {"#SILVER_COLOR"}Mensaje: {FFFFFF}%s", convertPhoneNumber(playerid, 6740), message);
 				}
-				if(PI[seller][pi_PHONE_NUMBER])
+				if(PI[seller][ac_PHONE_NUMBER])
 				{
 					new message[64]; format(message, sizeof message, "VEHICULO VENDIDO: +%s$", number_format_thousand(price));
-					RegisterPhoneMessage(0, PI[seller][pi_ID], message);
-					if(PI[seller][pi_PHONE_STATE] == PHONE_STATE_ON) SendClientMessageEx(seller, -1, "{"#PRIMARY_COLOR"}[Nuevo mensaje recibido] {"#SILVER_COLOR"}Remitente: {FFFFFF}%s {"#SILVER_COLOR"}Mensaje: {FFFFFF}%s", convertPhoneNumber(seller, 6740), message);
+					RegisterPhoneMessage(0, ACCOUNT_INFO[seller][ac_ID], message);
+					if(PI[seller][ac_PHONE_STATE] == PHONE_STATE_ON) SendClientMessageEx(seller, -1, "{"#PRIMARY_COLOR"}[Nuevo mensaje recibido] {"#SILVER_COLOR"}Remitente: {FFFFFF}%s {"#SILVER_COLOR"}Mensaje: {FFFFFF}%s", convertPhoneNumber(seller, 6740), message);
 				}
 				
-				PI[playerid][pi_BANK_MONEY] -= price;
-				PI[seller][pi_BANK_MONEY] += price;
-				RegisterBankAccountTransaction(PI[playerid][pi_ID], PI[seller][pi_ID], BANK_TRANSACTION_TRANSFER, price);
+				PI[playerid][ac_BANK_MONEY] -= price;
+				PI[seller][ac_BANK_MONEY] += price;
+				RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID], ACCOUNT_INFO[seller][ac_ID], BANK_TRANSACTION_TRANSFER, price);
 				
-				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_money = %d WHERE id = %d;", PI[playerid][pi_BANK_MONEY], PI[playerid][pi_ID]);
+				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_money = %d WHERE id = %d;", PI[playerid][ac_BANK_MONEY], ACCOUNT_INFO[playerid][ac_ID]);
 				mysql_tquery(srp_db, QUERY_BUFFER);
 
-				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_money = %d WHERE id = %d;", PI[seller][pi_BANK_MONEY], PI[seller][pi_ID]);
+				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_money = %d WHERE id = %d;", PI[seller][ac_BANK_MONEY], ACCOUNT_INFO[seller][ac_ID]);
 				mysql_tquery(srp_db, QUERY_BUFFER);
 				
 				
@@ -14792,8 +14720,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				new action[64]; format(action, sizeof action, "y %s han llegado a un acuerdo.", PLAYER_TEMP[seller][pt_RP_NAME]);
 				Auto_SendPlayerAction(playerid, action);
 				
-				if(!PI[seller][pi_VIP]) ReLockPlayerVehicles(seller);
-				if(!PI[playerid][pi_VIP]) ReLockPlayerVehicles(playerid);
+				if(!ACCOUNT_INFO[seller][ac_VIP]) ReLockPlayerVehicles(seller);
+				if(!ACCOUNT_INFO[playerid][ac_VIP]) ReLockPlayerVehicles(playerid);
 			}
 			return 1;
 		}
@@ -14869,13 +14797,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				
 				if(!IsPlayerInRangeOfPoint(playerid, 5.0, Vehicle_Pos[0], Vehicle_Pos[1], Vehicle_Pos[2])) return SendNotification(playerid, "El vehículo está demasiado lejos.");
 				
-				if(PI[playerid][pi_MECHANIC_PIECES] < PLAYER_TUNING_MENU[playerid][listitem][tuning_menu_PIECES])
+				if(PI[playerid][ac_MECHANIC_PIECES] < PLAYER_TUNING_MENU[playerid][listitem][tuning_menu_PIECES])
 				{
 					SendNotification(playerid, "No tienes suficientes piezas, puedes comprar más piezas en el taller.");
 					return 1;
 				}
 				
-				if(PLAYER_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][player_vehicle_OWNER_ID] == PI[playerid][pi_ID])
+				if(PLAYER_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
 				{
 					new vehicleid = PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID];
 					
@@ -14886,7 +14814,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					GLOBAL_VEHICLES[vehicleid][gb_vehicle_COMPONENTS][slot] = PLAYER_TUNING_MENU[playerid][listitem][tuning_menu_ID];
 					AddVehicleComponent(vehicleid, PLAYER_TUNING_MENU[playerid][listitem][tuning_menu_ID]);
 					
-					PI[playerid][pi_MECHANIC_PIECES] -= PLAYER_TUNING_MENU[playerid][listitem][tuning_menu_PIECES];
+					PI[playerid][ac_MECHANIC_PIECES] -= PLAYER_TUNING_MENU[playerid][listitem][tuning_menu_PIECES];
 					SendFormatNotification(playerid, "Componente '%s' añadido, has necesitado %d piezas.", PLAYER_TUNING_MENU[playerid][listitem][tuning_menu_NAME], PLAYER_TUNING_MENU[playerid][listitem][tuning_menu_PIECES]);
 				}
 				else
@@ -14916,7 +14844,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					case 0: // Reparar
 					{
-						if(PI[playerid][pi_MECHANIC_PIECES] < 10) return SendNotification(playerid, "No tienes suficientes piezas, puedes comprar más piezas en el taller.");
+						if(PI[playerid][ac_MECHANIC_PIECES] < 10) return SendNotification(playerid, "No tienes suficientes piezas, puedes comprar más piezas en el taller.");
 						
 						if(gettime() < GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_LAST_REPAIR_TIME] + 300)
 						{
@@ -14925,9 +14853,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							return 1;
 						}
 						
-						if(PLAYER_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][player_vehicle_OWNER_ID] == PI[playerid][pi_ID])
+						if(PLAYER_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
 						{
-							PI[playerid][pi_MECHANIC_PIECES] -= 10;
+							PI[playerid][ac_MECHANIC_PIECES] -= 10;
 							RepairVehicleEx(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID], playerid);
 							
 							SendNotification(playerid, "Este es tu vehículo por lo que no se cobrará.");
@@ -14941,7 +14869,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								if(GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_DRIVER] == playerid || GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_LAST_DRIVER] == playerid)
 								{
 									PLAYER_AC_INFO[playerid][CHEAT_VEHICLE_HEALTH][p_ac_info_IMMUNITY] = gettime() + 3;
-									PI[playerid][pi_MECHANIC_PIECES] -= 10;
+									PI[playerid][ac_MECHANIC_PIECES] -= 10;
 									RepairVehicleEx(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID], playerid);
 									
 									SendNotification(playerid, "Eres el conductor o el último conductor de este vehículo por lo que no se cobrará.");
@@ -14954,7 +14882,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					case 1:
 					{
-						if(PI[playerid][pi_MECHANIC_PIECES] < 5)
+						if(PI[playerid][ac_MECHANIC_PIECES] < 5)
 						{
 							ShowDialog(playerid, dialogid);
 							SendNotification(playerid, "No tienes suficientes piezas, puedes comprar más piezas en el taller.");
@@ -15055,7 +14983,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					if(!IsPlayerInRangeOfPoint(buyer, 10.0, mechanic_pos[0], mechanic_pos[1], mechanic_pos[2])) return SendNotification(playerid, "El dueño del vehículo está demasiado lejos.");
 					
 					PLAYER_TEMP[buyer][pt_MECHANIC_PID] = playerid;
-					PLAYER_TEMP[buyer][pt_MECHANIC_AID] = PI[playerid][pi_ID];
+					PLAYER_TEMP[buyer][pt_MECHANIC_AID] = ACCOUNT_INFO[playerid][ac_ID];
 					PLAYER_TEMP[buyer][pt_MECHANIC_PRICE] = price;
 					format(PLAYER_TEMP[buyer][pt_MECHANIC_TEXT], 64, "Reparación completa del vehículo");
 					PLAYER_TEMP[buyer][pt_MECHANIC_TYPE] = MECHANIC_OPTION_REPAIR;
@@ -15079,7 +15007,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(!IsPlayerInRangeOfPoint(buyer, 10.0, mechanic_pos[0], mechanic_pos[1], mechanic_pos[2])) return SendNotification(playerid, "El conductor del vehículo está demasiado lejos.");
 						
 						PLAYER_TEMP[buyer][pt_MECHANIC_PID] = playerid;
-						PLAYER_TEMP[buyer][pt_MECHANIC_AID] = PI[playerid][pi_ID];
+						PLAYER_TEMP[buyer][pt_MECHANIC_AID] = ACCOUNT_INFO[playerid][ac_ID];
 						PLAYER_TEMP[buyer][pt_MECHANIC_PRICE] = price;
 						format(PLAYER_TEMP[buyer][pt_MECHANIC_TEXT], 64, "Reparación completa del vehículo");
 						PLAYER_TEMP[buyer][pt_MECHANIC_TYPE] = MECHANIC_OPTION_REPAIR;
@@ -15101,7 +15029,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(!IsPlayerInRangeOfPoint(buyer, 10.0, mechanic_pos[0], mechanic_pos[1], mechanic_pos[2])) return SendNotification(playerid, "El conductor del vehículo está demasiado lejos.");
 						
 						PLAYER_TEMP[buyer][pt_MECHANIC_PID] = playerid;
-						PLAYER_TEMP[buyer][pt_MECHANIC_AID] = PI[playerid][pi_ID];
+						PLAYER_TEMP[buyer][pt_MECHANIC_AID] = ACCOUNT_INFO[playerid][ac_ID];
 						PLAYER_TEMP[buyer][pt_MECHANIC_PRICE] = price;
 						format(PLAYER_TEMP[buyer][pt_MECHANIC_TEXT], 64, "Reparación completa del vehículo");
 						PLAYER_TEMP[buyer][pt_MECHANIC_TYPE] = MECHANIC_OPTION_REPAIR;
@@ -15151,7 +15079,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(!IsPlayerInRangeOfPoint(buyer, 10.0, mechanic_pos[0], mechanic_pos[1], mechanic_pos[2])) return SendNotification(playerid, "El dueño del vehículo está demasiado lejos.");
 				
 				PLAYER_TEMP[buyer][pt_MECHANIC_PID] = playerid;
-				PLAYER_TEMP[buyer][pt_MECHANIC_AID] = PI[playerid][pi_ID];
+				PLAYER_TEMP[buyer][pt_MECHANIC_AID] = ACCOUNT_INFO[playerid][ac_ID];
 				PLAYER_TEMP[buyer][pt_MECHANIC_PRICE] = price;
 				
 				switch(PLAYER_TEMP[playerid][pt_MECHANIC_COLOR_SLOT])
@@ -15213,7 +15141,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(!IsPlayerInRangeOfPoint(buyer, 10.0, mechanic_pos[0], mechanic_pos[1], mechanic_pos[2])) return SendNotification(playerid, "El dueño del vehículo está demasiado lejos.");
 				
 				PLAYER_TEMP[buyer][pt_MECHANIC_PID] = playerid;
-				PLAYER_TEMP[buyer][pt_MECHANIC_AID] = PI[playerid][pi_ID];
+				PLAYER_TEMP[buyer][pt_MECHANIC_AID] = ACCOUNT_INFO[playerid][ac_ID];
 				PLAYER_TEMP[buyer][pt_MECHANIC_PRICE] = price;
 				format(PLAYER_TEMP[buyer][pt_MECHANIC_TEXT], 64, "'%s' > '%s'", PLAYER_TEMP[playerid][pt_TUNING_SELECTED_PART], PLAYER_TEMP[playerid][pt_TUNING_SELECTED_COMPONENT]);
 				PLAYER_TEMP[buyer][pt_MECHANIC_TYPE] = MECHANIC_OPTION_TUNING;
@@ -15262,7 +15190,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(!IsPlayerInRangeOfPoint(buyer, 10.0, mechanic_pos[0], mechanic_pos[1], mechanic_pos[2])) return SendNotification(playerid, "El dueño del vehículo está demasiado lejos.");
 				
 				PLAYER_TEMP[buyer][pt_MECHANIC_PID] = playerid;
-				PLAYER_TEMP[buyer][pt_MECHANIC_AID] = PI[playerid][pi_ID];
+				PLAYER_TEMP[buyer][pt_MECHANIC_AID] = ACCOUNT_INFO[playerid][ac_ID];
 				PLAYER_TEMP[buyer][pt_MECHANIC_PRICE] = price;
 				if(PLAYER_TEMP[playerid][pt_PAINTJOB_SELECTED_ID] == 3)
 					format(PLAYER_TEMP[buyer][pt_MECHANIC_TEXT], 64, "Eliminar Paintjob", PLAYER_TEMP[playerid][pt_PAINTJOB_SELECTED_ID]);
@@ -15325,7 +15253,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							cache_get_value_name(0, "name", name);
 
 							PLAYER_TEMP[buyer][pt_MECHANIC_PID] = playerid;
-							PLAYER_TEMP[buyer][pt_MECHANIC_AID] = PI[playerid][pi_ID];
+							PLAYER_TEMP[buyer][pt_MECHANIC_AID] = ACCOUNT_INFO[playerid][ac_ID];
 							PLAYER_TEMP[buyer][pt_MECHANIC_PRICE] = price;
 							format(PLAYER_TEMP[buyer][pt_MECHANIC_TEXT], 64, "Eliminar componente (%s > %s)", part, name);
 							PLAYER_TEMP[buyer][pt_MECHANIC_TYPE] = MECHANIC_OPTION_REMOVE_COMPONEN;
@@ -15350,19 +15278,19 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(gettime() > PLAYER_TEMP[playerid][pt_MECHANIC_TIME] + 20) return SendNotification(playerid, "Has tardardo mucho en aceptarlo.");
 				if(!IsPlayerConnected(PLAYER_TEMP[playerid][pt_MECHANIC_PID])) return SendNotification(playerid, "El mecánico ya no está en el servidor.");
-				if(PI[ PLAYER_TEMP[playerid][pt_MECHANIC_PID] ][pi_ID] != PLAYER_TEMP[playerid][pt_MECHANIC_AID]) return SendNotification(playerid, "El mecánico ya no está en el servidor.");
+				if(ACCOUNT_INFO[PLAYER_TEMP[playerid][pt_MECHANIC_PID]][ac_ID] != PLAYER_TEMP[playerid][pt_MECHANIC_AID]) return SendNotification(playerid, "El mecánico ya no está en el servidor.");
 
 				new Float:pos[3]; GetPlayerPos(PLAYER_TEMP[playerid][pt_MECHANIC_PID], pos[0], pos[1], pos[2]);
 				if(!IsPlayerInRangeOfPoint(playerid, 10.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "El mecánico está demasiado lejos.");
 				if(PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_MECHANIC_PID] ][pt_GAME_STATE] != GAME_STATE_NORMAL) return SendNotification(playerid, "El mecánico no está disponible.");
 				
-				if(PLAYER_TEMP[playerid][pt_MECHANIC_PRICE] > PI[playerid][pi_CASH])
+				if(PLAYER_TEMP[playerid][pt_MECHANIC_PRICE] > PI[playerid][ac_CASH])
 				{
 					SendClientMessage(PLAYER_TEMP[playerid][pt_MECHANIC_PID], -1, "{"#SILVER_COLOR"}La persona no tiene suficiente dinero.");
-					SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder aceptarlo.", number_format_thousand(PLAYER_TEMP[playerid][pt_MECHANIC_PRICE] - PI[playerid][pi_CASH]));
+					SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder aceptarlo.", number_format_thousand(PLAYER_TEMP[playerid][pt_MECHANIC_PRICE] - PI[playerid][ac_CASH]));
 					return 1;
 				}
-				if(PLAYER_TEMP[playerid][pt_MECHANIC_PIECES] > PI[ PLAYER_TEMP[playerid][pt_MECHANIC_PID] ][pi_MECHANIC_PIECES])
+				if(PLAYER_TEMP[playerid][pt_MECHANIC_PIECES] > PI[ PLAYER_TEMP[playerid][pt_MECHANIC_PID] ][ac_MECHANIC_PIECES])
 				{
 					SendNotification(playerid, "Al mecánico no le quedan piezas para el trabajo.");
 					SendClientMessage(PLAYER_TEMP[playerid][pt_MECHANIC_PID], -1, "{"#SILVER_COLOR"}La persona ha aceptado pero no tienes piezas suficientes para el trabajo.");
@@ -15387,7 +15315,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					{
 						case MECHANIC_OPTION_REPAIR:
 						{
-							PI[ PLAYER_TEMP[playerid][pt_MECHANIC_PID] ][pi_MECHANIC_PIECES] -= PLAYER_TEMP[playerid][pt_MECHANIC_PIECES];
+							PI[ PLAYER_TEMP[playerid][pt_MECHANIC_PID] ][ac_MECHANIC_PIECES] -= PLAYER_TEMP[playerid][pt_MECHANIC_PIECES];
 							PLAYER_WORKS[ PLAYER_TEMP[playerid][pt_MECHANIC_PID] ][WORK_MECHANIC][pwork_LEVEL] ++;
 							AddPlayerJobPoints(PLAYER_TEMP[playerid][pt_MECHANIC_PID], WORK_MECHANIC);
 							
@@ -15396,7 +15324,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 						case MECHANIC_OPTION_COLOR_1:
 						{
-							PI[ PLAYER_TEMP[playerid][pt_MECHANIC_PID] ][pi_MECHANIC_PIECES] -= 5;
+							PI[ PLAYER_TEMP[playerid][pt_MECHANIC_PID] ][ac_MECHANIC_PIECES] -= 5;
 							GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_MECHANIC_VEHICLE_ID] ][gb_vehicle_COLOR_1] = PLAYER_TEMP[playerid][pt_MECHANIC_EXTRA];
 							ChangeVehicleColor(PLAYER_TEMP[playerid][pt_MECHANIC_VEHICLE_ID], GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_MECHANIC_VEHICLE_ID] ][gb_vehicle_COLOR_1], GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_MECHANIC_VEHICLE_ID] ][gb_vehicle_COLOR_2]);
 							
@@ -15404,7 +15332,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 						case MECHANIC_OPTION_COLOR_2:
 						{
-							PI[ PLAYER_TEMP[playerid][pt_MECHANIC_PID] ][pi_MECHANIC_PIECES] -= 5;
+							PI[ PLAYER_TEMP[playerid][pt_MECHANIC_PID] ][ac_MECHANIC_PIECES] -= 5;
 							GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_MECHANIC_VEHICLE_ID] ][gb_vehicle_COLOR_2] = PLAYER_TEMP[playerid][pt_MECHANIC_EXTRA];
 							ChangeVehicleColor(PLAYER_TEMP[playerid][pt_MECHANIC_VEHICLE_ID], GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_MECHANIC_VEHICLE_ID] ][gb_vehicle_COLOR_1], GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_MECHANIC_VEHICLE_ID] ][gb_vehicle_COLOR_2]);
 							
@@ -15419,19 +15347,19 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_MECHANIC_VEHICLE_ID] ][gb_vehicle_COMPONENTS][slot] = PLAYER_TEMP[playerid][pt_MECHANIC_EXTRA];
 							AddVehicleComponent(PLAYER_TEMP[playerid][pt_MECHANIC_VEHICLE_ID], PLAYER_TEMP[playerid][pt_MECHANIC_EXTRA]);
 							
-							PI[ PLAYER_TEMP[playerid][pt_MECHANIC_PID] ][pi_MECHANIC_PIECES] -= PLAYER_TEMP[playerid][pt_MECHANIC_PIECES];
+							PI[ PLAYER_TEMP[playerid][pt_MECHANIC_PID] ][ac_MECHANIC_PIECES] -= PLAYER_TEMP[playerid][pt_MECHANIC_PIECES];
 							SendFormatNotification(PLAYER_TEMP[playerid][pt_MECHANIC_PID], "Has necesitado ~r~%d piezas~w~ para tunear el vehículo.", PLAYER_TEMP[playerid][pt_MECHANIC_PIECES]);
 						}
 						case MECHANIC_OPTION_PAINTJOB:
 						{
 							if(PLAYER_TEMP[playerid][pt_MECHANIC_EXTRA] == 3)
 							{
-								PI[ PLAYER_TEMP[playerid][pt_MECHANIC_PID] ][pi_MECHANIC_PIECES] += 15;
-								SendFormatNotification(playerid, "Paintjob eliminado, piezas ganadas: 15, piezas totales: %d.", PI[playerid][pi_MECHANIC_PIECES]);
+								PI[ PLAYER_TEMP[playerid][pt_MECHANIC_PID] ][ac_MECHANIC_PIECES] += 15;
+								SendFormatNotification(playerid, "Paintjob eliminado, piezas ganadas: 15, piezas totales: %d.", PI[playerid][ac_MECHANIC_PIECES]);
 							}
 							else
 							{
-								PI[ PLAYER_TEMP[playerid][pt_MECHANIC_PID] ][pi_MECHANIC_PIECES] -= 15;
+								PI[ PLAYER_TEMP[playerid][pt_MECHANIC_PID] ][ac_MECHANIC_PIECES] -= 15;
 								SendNotification(playerid, "Has necesitado 15 piezas para el paintjob de el vehículo.");
 							}
 							GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_MECHANIC_VEHICLE_ID] ][gb_vehicle_PAINTJOB] = PLAYER_TEMP[playerid][pt_MECHANIC_EXTRA];
@@ -15444,8 +15372,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							RemoveVehicleComponent(PLAYER_TEMP[playerid][pt_MECHANIC_VEHICLE_ID], GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_MECHANIC_VEHICLE_ID] ][gb_vehicle_COMPONENTS][slot]);
 							GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_MECHANIC_VEHICLE_ID] ][gb_vehicle_COMPONENTS][slot] = 0;
 							
-							PI[ PLAYER_TEMP[playerid][pt_MECHANIC_PID] ][pi_MECHANIC_PIECES] += PLAYER_TEMP[playerid][pt_MECHANIC_PIECES];
-							SendFormatNotification(PLAYER_TEMP[playerid][pt_MECHANIC_PID], "Componente eliminado, piezas ganadas: ~g~%d~w~, piezas totales: ~g~%d~w~.", PLAYER_TEMP[playerid][pt_MECHANIC_PIECES], PI[ PLAYER_TEMP[playerid][pt_MECHANIC_PID] ][pi_MECHANIC_PIECES]);
+							PI[ PLAYER_TEMP[playerid][pt_MECHANIC_PID] ][ac_MECHANIC_PIECES] += PLAYER_TEMP[playerid][pt_MECHANIC_PIECES];
+							SendFormatNotification(PLAYER_TEMP[playerid][pt_MECHANIC_PID], "Componente eliminado, piezas ganadas: ~g~%d~w~, piezas totales: ~g~%d~w~.", PLAYER_TEMP[playerid][pt_MECHANIC_PIECES], PI[ PLAYER_TEMP[playerid][pt_MECHANIC_PID] ][ac_MECHANIC_PIECES]);
 						}
 					}
 					
@@ -15457,7 +15385,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(gettime() > PLAYER_TEMP[playerid][pt_MECHANIC_TIME] + 30) return 1;
 				if(!IsPlayerConnected(PLAYER_TEMP[playerid][pt_MECHANIC_PID])) return 1;
-				if(PI[ PLAYER_TEMP[playerid][pt_MECHANIC_PID] ][pi_ID] != PLAYER_TEMP[playerid][pt_MECHANIC_AID]) return 1;
+				if(ACCOUNT_INFO[PLAYER_TEMP[playerid][pt_MECHANIC_PID]][ac_ID] != PLAYER_TEMP[playerid][pt_MECHANIC_AID]) return 1;
 
 				SendClientMessage(PLAYER_TEMP[playerid][pt_MECHANIC_PID], -1, "{"#SILVER_COLOR"}La persona no aceptó lo que le ofreciste.");
 			}
@@ -15491,11 +15419,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			
 			if(response)
 			{
-				if(PI[playerid][pi_MECHANIC_PIECES] < 5) return SendNotification(playerid, "No tienes suficientes piezas, puedes comprar más piezas en el taller.");
+				if(PI[playerid][ac_MECHANIC_PIECES] < 5) return SendNotification(playerid, "No tienes suficientes piezas, puedes comprar más piezas en el taller.");
 
-				if(PLAYER_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][player_vehicle_OWNER_ID] == PI[playerid][pi_ID])
+				if(PLAYER_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
 				{
-					PI[playerid][pi_MECHANIC_PIECES] -= 5;
+					PI[playerid][ac_MECHANIC_PIECES] -= 5;
 					switch(PLAYER_TEMP[playerid][pt_MECHANIC_COLOR_SLOT])
 					{
 						case 0: GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_COLOR_1] = listitem;
@@ -15533,13 +15461,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				if(PLAYER_TUNING_MENU[playerid][listitem][tuning_menu_ID] < 0) return ShowDialog(playerid, dialogid);
 
-				if(PLAYER_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][player_vehicle_OWNER_ID] == PI[playerid][pi_ID])
+				if(PLAYER_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
 				{
 					RemoveVehicleComponent(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID], GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_COMPONENTS][ PLAYER_TUNING_MENU[playerid][listitem][tuning_menu_ID] ]);
 					GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_COMPONENTS][ PLAYER_TUNING_MENU[playerid][listitem][tuning_menu_ID] ] = 0;
 					
-					PI[playerid][pi_MECHANIC_PIECES] += PLAYER_TUNING_MENU[playerid][listitem][tuning_menu_PIECES];
-					SendFormatNotification(playerid, "Componente eliminado, piezas ganadas: %d, piezas totales: %d.", PLAYER_TUNING_MENU[playerid][listitem][tuning_menu_PIECES], PI[playerid][pi_MECHANIC_PIECES]);
+					PI[playerid][ac_MECHANIC_PIECES] += PLAYER_TUNING_MENU[playerid][listitem][tuning_menu_PIECES];
+					SendFormatNotification(playerid, "Componente eliminado, piezas ganadas: %d, piezas totales: %d.", PLAYER_TUNING_MENU[playerid][listitem][tuning_menu_PIECES], PI[playerid][ac_MECHANIC_PIECES]);
 				}
 				else
 				{
@@ -15567,7 +15495,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					ShowDialog(playerid, dialogid);
 					return 1;
 				}
-				if(PI[playerid][pi_MECHANIC_PIECES] < 15) return SendNotification(playerid, "No tienes suficientes piezas, puedes comprar más piezas en el taller.");
+				if(PI[playerid][ac_MECHANIC_PIECES] < 15) return SendNotification(playerid, "No tienes suficientes piezas, puedes comprar más piezas en el taller.");
 				
 				if(listitem == 0)
 				{
@@ -15577,12 +15505,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						return 1;
 					}
 
-					if(PLAYER_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][player_vehicle_OWNER_ID] == PI[playerid][pi_ID])
+					if(PLAYER_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
 					{
 						GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_PAINTJOB] = 3;
 						ChangeVehiclePaintjob(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID], GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_PAINTJOB]);
-						PI[ PLAYER_TEMP[playerid][pt_MECHANIC_PID] ][pi_MECHANIC_PIECES] += 15;
-						SendFormatNotification(playerid, "Paintjob eliminado, piezas ganadas: 15, piezas totales: %d.", PI[playerid][pi_MECHANIC_PIECES]);
+						PI[ PLAYER_TEMP[playerid][pt_MECHANIC_PID] ][ac_MECHANIC_PIECES] += 15;
+						SendFormatNotification(playerid, "Paintjob eliminado, piezas ganadas: 15, piezas totales: %d.", PI[playerid][ac_MECHANIC_PIECES]);
 					}
 					else
 					{
@@ -15593,11 +15521,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					return 1;
 				}
 				
-				if(PLAYER_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][player_vehicle_OWNER_ID] == PI[playerid][pi_ID])
+				if(PLAYER_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
 				{
 					GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_PAINTJOB] = listitem - 1;
 					ChangeVehiclePaintjob(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID], GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_PAINTJOB]);
-					PI[playerid][pi_MECHANIC_PIECES] -= 15;
+					PI[playerid][ac_MECHANIC_PIECES] -= 15;
 					SendNotification(playerid, "Has necesitado 15 piezas para el paintjob de el vehículo.");
 				}
 				else
@@ -15653,14 +15581,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(inputtext[0] <= 0 || inputtext[0] > 100000) return SendNotification(playerid, "La cantidad de semillas no es correcta.");
 				
 				new price = seed_info[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_SEED_ID] ][seed_info_PRICE] * inputtext[0];
-				if(price > PI[playerid][pi_CASH]) return SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar las semillas.", number_format_thousand(price - PI[playerid][pi_CASH]));
+				if(price > PI[playerid][ac_CASH]) return SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar las semillas.", number_format_thousand(price - PI[playerid][ac_CASH]));
 				
 				if(GivePlayerCash(playerid, -price, true, true)) {
 					switch(seed_info[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_SEED_ID] ][seed_info_PLANT_TYPE])
 					{
-						case PLANT_TYPE_MEDICINE: PI[playerid][pi_SEED_MEDICINE] += inputtext[0];
-						case PLANT_TYPE_CANNABIS: PI[playerid][pi_SEED_CANNABIS] += inputtext[0];
-						case PLANT_TYPE_CRACK: PI[playerid][pi_SEED_CRACK] += inputtext[0];
+						case PLANT_TYPE_MEDICINE: PI[playerid][ac_SEED_MEDICINE] += inputtext[0];
+						case PLANT_TYPE_CANNABIS: PI[playerid][ac_SEED_CANNABIS] += inputtext[0];
+						case PLANT_TYPE_CRACK: PI[playerid][ac_SEED_CRACK] += inputtext[0];
 					}
 					
 					SendFormatNotification(playerid, "Has comprado %s semillas de %s por %s$.", number_format_thousand(inputtext[0]), seed_info[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_SEED_ID] ][seed_info_NAME], number_format_thousand(price));
@@ -15680,30 +15608,30 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					case PLANT_TYPE_MEDICINE:
 					{
-						if(plant_info[listitem][plant_info_SEEDS] > PI[playerid][pi_SEED_MEDICINE])
+						if(plant_info[listitem][plant_info_SEEDS] > PI[playerid][ac_SEED_MEDICINE])
 						{
 							SendNotification(playerid, "No tienes las semillas necesarias para plantar esta planta.");
 							return 1;
 						}
-						PI[playerid][pi_SEED_MEDICINE] -= plant_info[listitem][plant_info_SEEDS];
+						PI[playerid][ac_SEED_MEDICINE] -= plant_info[listitem][plant_info_SEEDS];
 					}
 					case PLANT_TYPE_CANNABIS:
 					{
-						if(plant_info[listitem][plant_info_SEEDS] > PI[playerid][pi_SEED_CANNABIS])
+						if(plant_info[listitem][plant_info_SEEDS] > PI[playerid][ac_SEED_CANNABIS])
 						{
 							SendNotification(playerid, "No tienes las semillas necesarias para plantar esta planta.");
 							return 1;
 						}
-						PI[playerid][pi_SEED_CANNABIS] -= plant_info[listitem][plant_info_SEEDS];
+						PI[playerid][ac_SEED_CANNABIS] -= plant_info[listitem][plant_info_SEEDS];
 					}
 					case PLANT_TYPE_CRACK:
 					{
-						if(plant_info[listitem][plant_info_SEEDS] > PI[playerid][pi_SEED_CRACK])
+						if(plant_info[listitem][plant_info_SEEDS] > PI[playerid][ac_SEED_CRACK])
 						{
 							SendNotification(playerid, "No tienes las semillas necesarias para plantar esta planta.");
 							return 1;
 						}
-						PI[playerid][pi_SEED_CRACK] -= plant_info[listitem][plant_info_SEEDS];
+						PI[playerid][ac_SEED_CRACK] -= plant_info[listitem][plant_info_SEEDS];
 					}
 				}
 				
@@ -15732,14 +15660,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					case 0:
 					{
-						if(PI[playerid][pi_LEVEL] < 3) return SendNotification(playerid, "Necesitas ser al menos nivel 3 para poder comprar armas.");
-						if(!PI[playerid][pi_CREW] && !PI[playerid][pi_VIP]) return SendNotification(playerid, "Solo puedes comprar armas aquí si perteneces a una banda o eres VIP (/ayuda).");
+						if(ACCOUNT_INFO[playerid][ac_LEVEL] < 3) return SendNotification(playerid, "Necesitas ser al menos nivel 3 para poder comprar armas.");
+						if(!PI[playerid][ac_CREW] && !ACCOUNT_INFO[playerid][ac_VIP]) return SendNotification(playerid, "Solo puedes comprar armas aquí si perteneces a una banda o eres VIP (/ayuda).");
 						
-						if(!PI[playerid][pi_VIP])
+						if(!ACCOUNT_INFO[playerid][ac_VIP])
 						{
-							if(PI[playerid][pi_CAN_BUY_BM] > gettime())
+							if(PI[playerid][ac_CAN_BUY_BM] > gettime())
 							{
-								SendFormatNotification(playerid, "Tienes que esperar %s minutos para volver a comprar aquí.", TimeConvert( PI[playerid][pi_CAN_BUY_BM] - gettime() ));
+								SendFormatNotification(playerid, "Tienes que esperar %s minutos para volver a comprar aquí.", TimeConvert( PI[playerid][ac_CAN_BUY_BM] - gettime() ));
 								return 1;
 							}
 						}
@@ -15755,14 +15683,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(response)
 			{
-				if(BLACK_MARKT_WEAPONS[listitem][black_market_EXP] > PI[playerid][pi_BLACK_MARKET_LEVEL])
+				if(BLACK_MARKT_WEAPONS[listitem][black_market_EXP] > PI[playerid][ac_BLACK_MARKET_LEVEL])
 				{
-					SendFormatNotification(playerid, "Necesitas ser un cliente más habitual para que te vendan esta arma (%d/%d).", PI[playerid][pi_BLACK_MARKET_LEVEL], BLACK_MARKT_WEAPONS[listitem][black_market_EXP]);
+					SendFormatNotification(playerid, "Necesitas ser un cliente más habitual para que te vendan esta arma (%d/%d).", PI[playerid][ac_BLACK_MARKET_LEVEL], BLACK_MARKT_WEAPONS[listitem][black_market_EXP]);
 					return 1;
 				}
 				
 				
-				if(PI[playerid][pi_CASH] >= BLACK_MARKT_WEAPONS[listitem][black_market_WEAPON_PRICE])
+				if(PI[playerid][ac_CASH] >= BLACK_MARKT_WEAPONS[listitem][black_market_WEAPON_PRICE])
 				{
 					new weapon_slot = WEAPON_INFO[ BLACK_MARKT_WEAPONS[listitem][black_market_WEAPON_ID] ][weapon_info_SLOT];
 					if(PLAYER_WEAPONS[playerid][weapon_slot][player_weapon_ID] != 0)
@@ -15771,10 +15699,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						return 1;
 					}
 					
-					PI[playerid][pi_CAN_BUY_BM] = gettime() + 300;
+					PI[playerid][ac_CAN_BUY_BM] = gettime() + 300;
 					
 					if(GivePlayerCash(playerid, -BLACK_MARKT_WEAPONS[listitem][black_market_WEAPON_PRICE], true, true)) {
-						PI[playerid][pi_BLACK_MARKET_LEVEL] ++;
+						PI[playerid][ac_BLACK_MARKET_LEVEL] ++;
 						
 						if(WEAPON_INFO[ BLACK_MARKT_WEAPONS[listitem][black_market_WEAPON_ID] ][weapon_info_AMMO]) GivePlayerWeaponEx(playerid, BLACK_MARKT_WEAPONS[listitem][black_market_WEAPON_ID], 50);
 						else GivePlayerWeaponEx(playerid, BLACK_MARKT_WEAPONS[listitem][black_market_WEAPON_ID], 1);
@@ -15786,7 +15714,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				else
 				{
 					PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
-					SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar esta arma.", number_format_thousand(BLACK_MARKT_WEAPONS[listitem][black_market_WEAPON_PRICE] - PI[playerid][pi_CASH]));
+					SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar esta arma.", number_format_thousand(BLACK_MARKT_WEAPONS[listitem][black_market_WEAPON_PRICE] - PI[playerid][ac_CASH]));
 				}
 			}
 			return 1;
@@ -15817,7 +15745,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(inputtext[0] <= 0 || inputtext[0] > 9999) return SendNotification(playerid, "La cantidad de munición no es correcta.");
 				
 				new price = 3 * inputtext[0];
-				if(price > PI[playerid][pi_CASH]) return SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$ ~w~para poder comprar la munición.", number_format_thousand(price - PI[playerid][pi_CASH]));
+				if(price > PI[playerid][ac_CASH]) return SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$ ~w~para poder comprar la munición.", number_format_thousand(price - PI[playerid][ac_CASH]));
 				
 				if(PLAYER_WEAPONS[playerid][ PLAYER_TEMP[playerid][pt_SELECTED_DIALOG_WEAPON_SLOT] ][player_weapon_AMMO] + inputtext[0] > 9999)
 				{
@@ -15854,7 +15782,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(response)
 			{
-				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "DELETE FROM pweapons WHERE id_player = %d;", PI[playerid][pi_ID]);
+				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "DELETE FROM pweapons WHERE id_player = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 				mysql_tquery(srp_db, QUERY_BUFFER);
 				
 				ResetPlayerWeaponsEx(playerid);
@@ -15931,7 +15859,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(gettime() > PLAYER_TEMP[playerid][pt_TRICK_TIME] + 20) return SendNotification(playerid, "Has tardado mucho en aceptarlo.");
 				if(!IsPlayerConnected(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID])) return SendNotification(playerid, "El vendedor ya no está en el servidor.");
-				if(PI[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pi_ID] != PLAYER_TEMP[playerid][pt_TRICK_SELLER_AID]) return SendNotification(playerid, "El vendedor ya no está en el servidor.");
+				if(ACCOUNT_INFO[PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][ac_ID] != PLAYER_TEMP[playerid][pt_TRICK_SELLER_AID]) return SendNotification(playerid, "El vendedor ya no está en el servidor.");
 
 				new Float:pos[3]; GetPlayerPos(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID], pos[0], pos[1], pos[2]);
 				if(!IsPlayerInRangeOfPoint(playerid, 2.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "El vendedor está demasiado lejos.");
@@ -15960,7 +15888,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(gettime() > PLAYER_TEMP[playerid][pt_TRICK_TIME] + 20) return 1;
 				if(!IsPlayerConnected(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID])) return 1;
-				if(PI[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pi_ID] != PLAYER_TEMP[playerid][pt_TRICK_SELLER_AID]) return 1;
+				if(ACCOUNT_INFO[PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID]][ac_ID] != PLAYER_TEMP[playerid][pt_TRICK_SELLER_AID]) return 1;
 
 				SendNotification(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID], "El comprador no ha aceptado tu trato.");
 			}
@@ -15972,7 +15900,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(gettime() > PLAYER_TEMP[playerid][pt_TRICK_TIME] + 20) return SendNotification(playerid, "Has tardardo mucho en aceptarlo.");
 				if(!IsPlayerConnected(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID])) return SendNotification(playerid, "El vendedor ya no está en el servidor.");
-				if(PI[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pi_ID] != PLAYER_TEMP[playerid][pt_TRICK_SELLER_AID]) return SendNotification(playerid, "El vendedor ya no está en el servidor.");
+				if(ACCOUNT_INFO[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][ac_ID] != PLAYER_TEMP[playerid][pt_TRICK_SELLER_AID]) return SendNotification(playerid, "El vendedor ya no está en el servidor.");
 
 				new Float:pos[3]; GetPlayerPos(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID], pos[0], pos[1], pos[2]);
 				if(!IsPlayerInRangeOfPoint(playerid, 2.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "El vendedor está demasiado lejos.");
@@ -15980,8 +15908,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 				
 				if(GivePlayerCash(playerid, -PLAYER_TEMP[playerid][pt_TRICK_PRICE], true, true) && GivePlayerCash(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID], PLAYER_TEMP[playerid][pt_TRICK_PRICE], true, false)) {
-					PI[playerid][pi_MEDICINE] += PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA];
-					PI[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pi_MEDICINE] -= PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA];
+					PI[playerid][ac_MEDICINE] += PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA];
+					PI[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][ac_MEDICINE] -= PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA];
 				
 					SendFormatNotification(playerid, "Has gastado ~g~%s$~w~ con esta compra.", number_format_thousand(PLAYER_TEMP[playerid][pt_TRICK_PRICE]));
 					SendFormatNotification(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID], "Has ganado ~g~%s$~w~ con esta venta.", number_format_thousand(PLAYER_TEMP[playerid][pt_TRICK_PRICE]));
@@ -15995,7 +15923,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(gettime() > PLAYER_TEMP[playerid][pt_TRICK_TIME] + 20) return 1;
 				if(!IsPlayerConnected(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID])) return 1;
-				if(PI[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pi_ID] != PLAYER_TEMP[playerid][pt_TRICK_SELLER_AID]) return 1;
+				if(ACCOUNT_INFO[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][ac_ID] != PLAYER_TEMP[playerid][pt_TRICK_SELLER_AID]) return 1;
 
 				SendNotification(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID], "El comprador no ha aceptado tu trato.");
 			}
@@ -16007,15 +15935,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(gettime() > PLAYER_TEMP[playerid][pt_TRICK_TIME] + 20) return SendNotification(playerid, "Has tardardo mucho en aceptarlo.");
 				if(!IsPlayerConnected(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID])) return SendNotification(playerid, "El vendedor ya no está en el servidor.");
-				if(PI[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pi_ID] != PLAYER_TEMP[playerid][pt_TRICK_SELLER_AID]) return SendNotification(playerid, "El vendedor ya no está en el servidor.");
+				if(ACCOUNT_INFO[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][ac_ID] != PLAYER_TEMP[playerid][pt_TRICK_SELLER_AID]) return SendNotification(playerid, "El vendedor ya no está en el servidor.");
 
 				new Float:pos[3]; GetPlayerPos(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID], pos[0], pos[1], pos[2]);
 				if(!IsPlayerInRangeOfPoint(playerid, 2.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "El vendedor está demasiado lejos.");
 				if(PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pt_GAME_STATE] != GAME_STATE_NORMAL) return SendNotification(playerid, "El vendedor no está disponible.");				
 				
 				if(GivePlayerCash(playerid, -PLAYER_TEMP[playerid][pt_TRICK_PRICE], true, true) && GivePlayerCash(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID], PLAYER_TEMP[playerid][pt_TRICK_PRICE], true, false)) {
-					PI[playerid][pi_CANNABIS] += PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA];
-					PI[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pi_CANNABIS] -= PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA];
+					PI[playerid][ac_CANNABIS] += PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA];
+					PI[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][ac_CANNABIS] -= PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA];
 				
 					SendFormatNotification(playerid, "Has gastado ~g~%s$~w~ con esta compra.", number_format_thousand(PLAYER_TEMP[playerid][pt_TRICK_PRICE]));
 					SendFormatNotification(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID], "Has ganado ~g~%s$~w~ con esta venta.", number_format_thousand(PLAYER_TEMP[playerid][pt_TRICK_PRICE]));
@@ -16029,7 +15957,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(gettime() > PLAYER_TEMP[playerid][pt_TRICK_TIME] + 20) return 1;
 				if(!IsPlayerConnected(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID])) return 1;
-				if(PI[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pi_ID] != PLAYER_TEMP[playerid][pt_TRICK_SELLER_AID]) return 1;
+				if(ACCOUNT_INFO[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][ac_ID] != PLAYER_TEMP[playerid][pt_TRICK_SELLER_AID]) return 1;
 
 				SendNotification(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID], "El comprador no ha aceptado tu trato.");
 			}
@@ -16041,15 +15969,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(gettime() > PLAYER_TEMP[playerid][pt_TRICK_TIME] + 20) return SendNotification(playerid, "Has tardardo mucho en aceptarlo.");
 				if(!IsPlayerConnected(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID])) return SendNotification(playerid, "El vendedor ya no está en el servidor.");
-				if(PI[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pi_ID] != PLAYER_TEMP[playerid][pt_TRICK_SELLER_AID]) return SendNotification(playerid, "El vendedor ya no está en el servidor.");
+				if(ACCOUNT_INFO[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][ac_ID] != PLAYER_TEMP[playerid][pt_TRICK_SELLER_AID]) return SendNotification(playerid, "El vendedor ya no está en el servidor.");
 
 				new Float:pos[3]; GetPlayerPos(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID], pos[0], pos[1], pos[2]);
 				if(!IsPlayerInRangeOfPoint(playerid, 2.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "El vendedor está demasiado lejos.");
 				if(PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pt_GAME_STATE] != GAME_STATE_NORMAL) return SendNotification(playerid, "El vendedor no está disponible.");
 				
 				if(GivePlayerCash(playerid, -PLAYER_TEMP[playerid][pt_TRICK_PRICE], true, true) && GivePlayerCash(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID], PLAYER_TEMP[playerid][pt_TRICK_PRICE], true, false)) {
-					PI[playerid][pi_CRACK] += PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA];
-					PI[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pi_CRACK] -= PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA];
+					PI[playerid][ac_CRACK] += PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA];
+					PI[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][ac_CRACK] -= PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA];
 				
 					SendFormatNotification(playerid, "Has gastado ~g~%s$~w~ con esta compra.", number_format_thousand(PLAYER_TEMP[playerid][pt_TRICK_PRICE]));
 					SendFormatNotification(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID], "Has ganado ~g~%s$~w~ con esta venta.", number_format_thousand(PLAYER_TEMP[playerid][pt_TRICK_PRICE]));
@@ -16063,7 +15991,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(gettime() > PLAYER_TEMP[playerid][pt_TRICK_TIME] + 20) return 1;
 				if(!IsPlayerConnected(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID])) return 1;
-				if(PI[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pi_ID] != PLAYER_TEMP[playerid][pt_TRICK_SELLER_AID]) return 1;
+				if(ACCOUNT_INFO[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][ac_ID] != PLAYER_TEMP[playerid][pt_TRICK_SELLER_AID]) return 1;
 
 				SendNotification(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID], "El comprador no ha aceptado tu trato.");
 			}
@@ -16075,21 +16003,21 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(gettime() > PLAYER_TEMP[playerid][pt_TRICK_TIME] + 20) return SendNotification(playerid, "Has tardardo mucho en aceptarlo.");
 				if(!IsPlayerConnected(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID])) return SendNotification(playerid, "El vendedor ya no está en el servidor.");
-				if(PI[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pi_ID] != PLAYER_TEMP[playerid][pt_TRICK_SELLER_AID]) return SendNotification(playerid, "El vendedor ya no está en el servidor.");
+				if(ACCOUNT_INFO[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][ac_ID] != PLAYER_TEMP[playerid][pt_TRICK_SELLER_AID]) return SendNotification(playerid, "El vendedor ya no está en el servidor.");
 
 				new Float:pos[3]; GetPlayerPos(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID], pos[0], pos[1], pos[2]);
 				if(!IsPlayerInRangeOfPoint(playerid, 2.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "El vendedor está demasiado lejos.");
 				if(PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pt_GAME_STATE] != GAME_STATE_NORMAL) return SendNotification(playerid, "El vendedor no está disponible.");
 
 				
-				PI[playerid][pi_COINS] += PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA];
-				PI[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pi_COINS] -= PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA];
+				PI[playerid][ac_COINS] += PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA];
+				PI[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][ac_COINS] -= PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA];
 
 				if(GivePlayerCash(playerid, -PLAYER_TEMP[playerid][pt_TRICK_PRICE], true, true) && GivePlayerCash(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID], PLAYER_TEMP[playerid][pt_TRICK_PRICE], true, false)) {
-					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET coins = %d WHERE id = %d;", PI[playerid][pi_COINS], PI[playerid][pi_ID]);
+					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET coins = %d WHERE id = %d;", PI[playerid][ac_COINS], ACCOUNT_INFO[playerid][ac_ID]);
 					mysql_tquery(srp_db, QUERY_BUFFER);
 
-					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET coins = %d WHERE id = %d;", PI[PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID]][pi_COINS], PI[PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID]][pi_ID]);
+					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET coins = %d WHERE id = %d;", PI[PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID]][ac_COINS], ACCOUNT_INFO[PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID]][ac_ID]);
 					mysql_tquery(srp_db, QUERY_BUFFER);
 
 					SendFormatNotification(playerid, "Has gastado ~g~%s$~w~ con esta compra.", number_format_thousand(PLAYER_TEMP[playerid][pt_TRICK_PRICE]));
@@ -16104,7 +16032,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(gettime() > PLAYER_TEMP[playerid][pt_TRICK_TIME] + 20) return 1;
 				if(!IsPlayerConnected(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID])) return 1;
-				if(PI[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pi_ID] != PLAYER_TEMP[playerid][pt_TRICK_SELLER_AID]) return 1;
+				if(ACCOUNT_INFO[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][ac_ID] != PLAYER_TEMP[playerid][pt_TRICK_SELLER_AID]) return 1;
 
 				SendNotification(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID], "El comprador no ha aceptado tu trato.");
 			}
@@ -16116,7 +16044,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(gettime() > PLAYER_TEMP[playerid][pt_TRICK_TIME] + 20) return SendNotification(playerid, "Has tardardo mucho en aceptarlo.");
 				if(!IsPlayerConnected(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID])) return SendNotification(playerid, "El vendedor ya no está en el servidor.");
-				if(PI[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pi_ID] != PLAYER_TEMP[playerid][pt_TRICK_SELLER_AID]) return SendNotification(playerid, "El vendedor ya no está en el servidor.");
+				if(ACCOUNT_INFO[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][ac_ID] != PLAYER_TEMP[playerid][pt_TRICK_SELLER_AID]) return SendNotification(playerid, "El vendedor ya no está en el servidor.");
 
 				new Float:pos[3]; GetPlayerPos(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID], pos[0], pos[1], pos[2]);
 				if(!IsPlayerInRangeOfPoint(playerid, 2.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "El vendedor está demasiado lejos.");
@@ -16145,7 +16073,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(gettime() > PLAYER_TEMP[playerid][pt_TRICK_TIME] + 20) return 1;
 				if(!IsPlayerConnected(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID])) return 1;
-				if(PI[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pi_ID] != PLAYER_TEMP[playerid][pt_TRICK_SELLER_AID]) return 1;
+				if(ACCOUNT_INFO[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][ac_ID] != PLAYER_TEMP[playerid][pt_TRICK_SELLER_AID]) return 1;
 
 				SendNotification(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID], "El comprador no ha aceptado tu trato.");
 			}
@@ -16207,15 +16135,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								format(string, sizeof string, "saca un(a) %s del maletero de su vehículo.", WEAPON_INFO[ VEHICLE_BOOT[ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE] ][ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE_BOOT_SLOT] ][vehicle_boot_INT] ][weapon_info_NAME]);
 							}
 							case BOOT_TYPE_MEDICINES: {
-								PI[playerid][pi_MEDICINE] += VEHICLE_BOOT[ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE] ][ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE_BOOT_SLOT] ][vehicle_boot_INT];
+								PI[playerid][ac_MEDICINE] += VEHICLE_BOOT[ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE] ][ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE_BOOT_SLOT] ][vehicle_boot_INT];
 								format(string, sizeof string, "saca medicamentos del maletero de su vehículo.");
 							}
 							case BOOT_TYPE_CANNABIS: {
-								PI[playerid][pi_CANNABIS] += VEHICLE_BOOT[ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE] ][ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE_BOOT_SLOT] ][vehicle_boot_INT];
+								PI[playerid][ac_CANNABIS] += VEHICLE_BOOT[ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE] ][ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE_BOOT_SLOT] ][vehicle_boot_INT];
 								format(string, sizeof string, "saca marihuana del maletero de su vehículo.");
 							}
 							case BOOT_TYPE_CRACK: {
-								PI[playerid][pi_CRACK] += VEHICLE_BOOT[ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE] ][ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE_BOOT_SLOT] ][vehicle_boot_INT];
+								PI[playerid][ac_CRACK] += VEHICLE_BOOT[ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE] ][ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE_BOOT_SLOT] ][vehicle_boot_INT];
 								format(string, sizeof string, "saca crack del maletero de su vehículo.");
 							}
 						}
@@ -16254,7 +16182,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] == -1) return 1;
 				if(POLICE_SKINS[ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][police_skin_RANK] > PLAYER_WORKS[playerid][WORK_POLICE][pwork_LEVEL]) return ShowDialog(playerid, dialogid);
 
-				PI[playerid][pi_POLICE_DUTY] = POLICE_SKINS[ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][police_skin_SKIN];
+				PI[playerid][ac_POLICE_DUTY] = POLICE_SKINS[ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][police_skin_SKIN];
 				CallLocalFunction("StartPlayerJob", "iii", playerid, WORK_POLICE, INVALID_VEHICLE_ID);
 			}
 			return 1;
@@ -16370,8 +16298,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 										PLAYER_WORKS[pid][WORK_POLICE][pwork_SET] = 0;
 										PLAYER_WORKS[pid][WORK_POLICE][pwork_LEVEL] = 0;
-										PI[pid][pi_POLICE_DUTY] = 0;
-										PI[pid][pi_PLACA_PD] = 0;
+										PI[pid][ac_POLICE_DUTY] = 0;
+										PI[pid][ac_PLACA_PD] = 0;
 									}
 								}
 								else
@@ -16434,7 +16362,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(inputtext[0] <= 0 || inputtext[0] > 9999) return SendNotification(playerid, "La cantidad de munición no es correcta.");
 				
 				new price = 2 * inputtext[0];
-				if(price > PI[playerid][pi_CASH]) return SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar la munición.", number_format_thousand(price - PI[playerid][pi_CASH]));
+				if(price > PI[playerid][ac_CASH]) return SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar la munición.", number_format_thousand(price - PI[playerid][ac_CASH]));
 				
 				if(PLAYER_WEAPONS[playerid][ PLAYER_TEMP[playerid][pt_SELECTED_DIALOG_WEAPON_SLOT] ][player_weapon_AMMO] + inputtext[0] > 9999)
 				{
@@ -16454,10 +16382,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(response)
 			{
-				if(300 > PI[playerid][pi_CASH]) return SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar la munición.", number_format_thousand(300 - PI[playerid][pi_CASH]));
+				if(300 > PI[playerid][ac_CASH]) return SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar la munición.", number_format_thousand(300 - PI[playerid][ac_CASH]));
 				
-				GetPlayerArmour(playerid, PI[playerid][pi_ARMOUR]);
-				if(PI[playerid][pi_ARMOUR] > 99.5) return SendNotification(playerid, "Ya tienes un chaleco antibalas");
+				GetPlayerArmour(playerid, PI[playerid][ac_ARMOUR]);
+				if(PI[playerid][ac_ARMOUR] > 99.5) return SendNotification(playerid, "Ya tienes un chaleco antibalas");
 				
 				if(GivePlayerCash(playerid, -300, true, true)) {
 					SetPlayerArmourEx(playerid, 100.0);
@@ -16477,7 +16405,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				
 				
-				if(PI[playerid][pi_CASH] >= POLICE_SHOP_WEAPONS[listitem][police_shop_WEAPON_PRICE])
+				if(PI[playerid][ac_CASH] >= POLICE_SHOP_WEAPONS[listitem][police_shop_WEAPON_PRICE])
 				{
 					new weapon_slot = WEAPON_INFO[ POLICE_SHOP_WEAPONS[listitem][police_shop_WEAPON_ID] ][weapon_info_SLOT];
 					if(PLAYER_WEAPONS[playerid][weapon_slot][player_weapon_ID] != 0)
@@ -16497,7 +16425,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				else
 				{
 					PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
-					SendFormatNotification(playerid, "No tienes suficiente dinero, te faltan ~r~\"%s\"~w~ para comprar esta arma.", number_format_thousand(POLICE_SHOP_WEAPONS[listitem][police_shop_WEAPON_PRICE] - PI[playerid][pi_CASH]));
+					SendFormatNotification(playerid, "No tienes suficiente dinero, te faltan ~r~\"%s\"~w~ para comprar esta arma.", number_format_thousand(POLICE_SHOP_WEAPONS[listitem][police_shop_WEAPON_PRICE] - PI[playerid][ac_CASH]));
 				}
 			}
 			return 1;
@@ -16875,7 +16803,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				else
 				{
-					if(PI[playerid][pi_ADMIN_LEVEL] >= 4)
+					if(ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] >= 4)
 					{
 						PLAYER_TEMP[playerid][pt_SELECTED_DB_AC_ID] = PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem];
 						ShowDialog(playerid, DIALOG_ADMIN_MODIFY);
@@ -16888,7 +16816,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(response)
 			{
-				if(listitem > PI[playerid][pi_ADMIN_LEVEL])
+				if(listitem > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL])
 				{
 					SendNotification(playerid, "El rango que has seleccionado es superior al tuyo.");
 					return 1;
@@ -16907,7 +16835,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							cache_get_value_name_int(0, "playerid", pid);
 							cache_get_value_name_int(0, "admin_level", admin_level);
 
-							if(admin_level > PI[playerid][pi_ADMIN_LEVEL]) SendNotification(playerid, "No puedes modificar el rango de este admin porque es un rango superior al tuyo.");
+							if(admin_level > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) SendNotification(playerid, "No puedes modificar el rango de este admin porque es un rango superior al tuyo.");
 							else
 							{
 								mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET admin_level = %d WHERE id = %d;", listitem, PLAYER_TEMP[playerid][pt_SELECTED_DB_AC_ID]);
@@ -16915,8 +16843,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								SendFormatNotification(playerid, "El nuevo rango de %s es: '%s'.", name, ADMIN_LEVELS[listitem]);
 								if(connected)
 								{
-									PI[pid][pi_ADMIN_LEVEL] = listitem;
-									SendFormatNotification(pid, "%s cambió tu rango administrativo a: %s.", PI[playerid][pi_NAME], ADMIN_LEVELS[listitem]);
+									ACCOUNT_INFO[pid][ac_ADMIN_LEVEL] = listitem;
+									SendFormatNotification(pid, "%s cambió tu rango administrativo a: %s.", ACCOUNT_INFO[playerid][ac_NAME], ADMIN_LEVELS[listitem]);
 								}
 							}
 						}
@@ -16935,9 +16863,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(!strlen(inputtext)) return ShowDialog(playerid, dialogid);
 				
 				new password[64 + 1];
-				SHA256_PassHash(inputtext, PI[playerid][pi_SALT], password, sizeof password);
+				SHA256_PassHash(inputtext, ACCOUNT_INFO[playerid][ac_SALT], password, sizeof password);
 			
-				if(!strcmp(password, PI[playerid][pi_PASS], false))
+				if(!strcmp(password, ACCOUNT_INFO[playerid][ac_PASS], false))
 				{
 					ShowDialog(playerid, DIALOG_CHANGE_PASSWORD_PASS);
 					PLAYER_TEMP[playerid][pt_BAD_LOGIN_ATTEMP] = 0;
@@ -16959,10 +16887,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				
 				new salt[16];
 				getRandomSalt(salt);
-				format(PI[playerid][pi_SALT], 16, "%s", salt);
-				SHA256_PassHash(inputtext, PI[playerid][pi_SALT], PI[playerid][pi_PASS], 64 + 1);
+				format(ACCOUNT_INFO[playerid][ac_SALT], 16, "%s", salt);
+				SHA256_PassHash(inputtext, ACCOUNT_INFO[playerid][ac_SALT], ACCOUNT_INFO[playerid][ac_PASS], 64 + 1);
 	
-				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET salt = '%e', pass = '%e' WHERE id = %d;", PI[playerid][pi_SALT], PI[playerid][pi_PASS], PI[playerid][pi_ID]);
+				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET salt = '%e', pass = '%e' WHERE id = %d;", ACCOUNT_INFO[playerid][ac_SALT], ACCOUNT_INFO[playerid][ac_PASS], ACCOUNT_INFO[playerid][ac_ID]);
 				mysql_tquery(srp_db, QUERY_BUFFER);
 				
 				SendNotification(playerid, "Tu contraseña ha sido cambiada correctamente.");
@@ -16971,7 +16899,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_ANTI_CHEAT:
 		{
-			if(PI[playerid][pi_ADMIN_LEVEL] < 4) return 1;
+			if(ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] < 4) return 1;
 			
 			if(response)
 			{
@@ -16982,7 +16910,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_ANTI_CHEAT_MODIFY:
 		{
-			if(PI[playerid][pi_ADMIN_LEVEL] < 4) return 1;
+			if(ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] < 4) return 1;
 			
 			if(response)
 			{
@@ -17008,7 +16936,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_ANTI_CHEAT_MODIFY_DETECT:
 		{
-			if(PI[playerid][pi_ADMIN_LEVEL] < 4) return 1;
+			if(ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] < 4) return 1;
 			
 			if(response)
 			{
@@ -17162,7 +17090,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					return 1;
 				}
 				
-				if(500 > PI[playerid][pi_CASH]) return SendNotification(playerid, "Necesitas 500$ para poner el anuncio.");
+				if(500 > PI[playerid][ac_CASH]) return SendNotification(playerid, "Necesitas 500$ para poner el anuncio.");
 				
 				if(GivePlayerCash(playerid, -500, true, true)) {
 					AddNewAd(playerid, PLAYER_TEMP[playerid][pt_SHOP_ADD_TYPE], inputtext[0], PLAYER_TEMP[playerid][pt_SHOP_ADD_TEXT], PLAYER_TEMP[playerid][pt_SHOP_ADD_MODELID], PLAYER_TEMP[playerid][pt_SHOP_ADD_VCOL1], PLAYER_TEMP[playerid][pt_SHOP_ADD_VCOL2]);
@@ -17180,7 +17108,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(vehicleid == -1) return 1;
 
 				new veh_money = (VEHICLE_INFO[GLOBAL_VEHICLES[vehicleid][gb_vehicle_MODELID] - 400][vehicle_info_PRICE] / 100) + 350;
-				if(veh_money > PI[playerid][pi_CASH])
+				if(veh_money > PI[playerid][ac_CASH])
 				{
 					SendFormatNotification(playerid, "Necesitas %s$ para remolcar este vehículo al depósito municipal.", veh_money);
 					return 1;
@@ -17216,7 +17144,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(response)
 			{
-				if(PI[playerid][pi_LEVEL] < 5) return SendNotification(playerid, "Necesitas ser nivel 5 para poder crear una banda.");
+				if(ACCOUNT_INFO[playerid][ac_LEVEL] < 5) return SendNotification(playerid, "Necesitas ser nivel 5 para poder crear una banda.");
 				ShowDialog(playerid, DIALOG_CREATE_CREW_NAME);
 			}
 			return 1;
@@ -17266,7 +17194,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					return 1;
 				}
 				
-				if(600000 > PI[playerid][pi_CASH])
+				if(600000 > PI[playerid][ac_CASH])
 				{
 					SendNotification(playerid, "Necesitas 600.000$ para crear la banda.");
 					return 1;
@@ -17301,7 +17229,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_CREW_MENU:
 		{
-			if(!PI[playerid][pi_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
+			if(!PI[playerid][ac_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
 			if(!CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_VALID]) return SendNotification(playerid, "La banda ya no existe.");
 			
 			if(response)
@@ -17318,13 +17246,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					case CREW_RANK_CHANGE_NAME:
 					{
-						if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_CHANGE_NAME]) return SendNotification(playerid, "No tienes permiso.");
+						if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_CHANGE_NAME]) return SendNotification(playerid, "No tienes permiso.");
 						if(CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_FIGHTING]) return SendNotification(playerid, "No se puede cambiar el nombre de la banda cuando la banda está en combate.");
 						ShowDialog(playerid, DIALOG_CREW_CHANGE_NAME);
 					}
 					case CREW_RANK_CAST_MEMBERS:
 					{
-						if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_CAST_MEMBERS]) return SendNotification(playerid, "No tienes permiso.");
+						if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_CAST_MEMBERS]) return SendNotification(playerid, "No tienes permiso.");
 						
 						PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT] = 10;
 						PLAYER_TEMP[playerid][pt_DIALOG_DB_PAGE] = 0;
@@ -17333,26 +17261,26 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					
 					case CREW_RANK_MODIFY_RANKS:
 					{
-						if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_MODIFY_RANKS]) return SendNotification(playerid, "No tienes permiso.");
+						if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_MODIFY_RANKS]) return SendNotification(playerid, "No tienes permiso.");
 						
 						ShowDialog(playerid, DIALOG_CREW_RANKS);
 					}
 					case CREW_RANK_CHANGE_COLOR:
 					{
-						if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_CHANGE_COLOR]) return SendNotification(playerid, "No tienes permiso.");
+						if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_CHANGE_COLOR]) return SendNotification(playerid, "No tienes permiso.");
 						
 						if(CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_FIGHTING]) return SendNotification(playerid, "No se puede cambiar el color cuando la banda está en combate.");
 						ShowDialog(playerid, DIALOG_CREW_MODIFY_COLOR);
 					}
 					case CREW_RANK_DELETE:
 					{
-						if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_DELETE]) return SendNotification(playerid, "No tienes permiso.");
+						if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_DELETE]) return SendNotification(playerid, "No tienes permiso.");
 						
 						ShowDialog(playerid, DIALOG_CREW_DELETE);
 					}
 					case CREW_RANK_MODIFY_MEMBERS:
 					{
-						if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_MODIFY_MEMBERS]) return SendNotification(playerid, "No tienes permiso.");
+						if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_MODIFY_MEMBERS]) return SendNotification(playerid, "No tienes permiso.");
 						
 						PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT] = 10;
 						PLAYER_TEMP[playerid][pt_DIALOG_DB_PAGE] = 0;
@@ -17360,7 +17288,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					case CREW_RANK_SIZE + 1: //Abandonar banda
 					{
-						if(PI[playerid][pi_CREW_RANK] == 0)
+						if(PI[playerid][ac_CREW_RANK] == 0)
 						{
 							inline OnCrewInfoLoad()
 							{
@@ -17373,7 +17301,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 									else ShowDialog(playerid, DIALOG_CREW_LEAVE);
 								}
 							}
-							mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d AND crew_rank = 0;", PI[playerid][pi_CREW]);
+							mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d AND crew_rank = 0;", PI[playerid][ac_CREW]);
 							MySQL_TQueryInline(srp_db, using inline OnCrewInfoLoad, QUERY_BUFFER);
 						}
 						else ShowDialog(playerid, DIALOG_CREW_LEAVE);
@@ -17384,7 +17312,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_CREW_MEMBER_LIST:
 		{
-			if(!PI[playerid][pi_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
+			if(!PI[playerid][ac_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
 			if(!CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_VALID]) return SendNotification(playerid, "La banda ya no existe.");
 			
 			if(response)
@@ -17409,7 +17337,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							}
 						}
 					}
-					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d", PI[playerid][pi_CREW]);
+					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d", PI[playerid][ac_CREW]);
 					MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 				}
 				else if(PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] == -3) //Anterior
@@ -17431,7 +17359,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							}
 						}
 					}
-					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d", PI[playerid][pi_CREW]);
+					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d", PI[playerid][ac_CREW]);
 					MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 				}
 			}
@@ -17440,9 +17368,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_CREW_CHANGE_NAME:
 		{
-			if(!PI[playerid][pi_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
+			if(!PI[playerid][ac_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
 			if(!CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_VALID]) return SendNotification(playerid, "La banda ya no existe.");
-			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_CHANGE_NAME]) return SendNotification(playerid, "No tienes permiso.");
+			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_CHANGE_NAME]) return SendNotification(playerid, "No tienes permiso.");
 			
 			if(response)
 			{
@@ -17470,15 +17398,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				
 				
 				new message[145], label_str[256];
-				format(message, sizeof message, "{%06x}[Banda] {FFFFFF}%s (%s) cambió el nombre de la banda a '%s'.", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_COLOR] >>> 8, PLAYER_TEMP[playerid][pt_RP_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_NAME], CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_NAME]);
-				SendMessageToCrewMembers(PI[playerid][pi_CREW], -1, message);
+				format(message, sizeof message, "{%06x}[Banda] {FFFFFF}%s (%s) cambió el nombre de la banda a '%s'.", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_COLOR] >>> 8, PLAYER_TEMP[playerid][pt_RP_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_NAME], CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_NAME]);
+				SendMessageToCrewMembers(PI[playerid][ac_CREW], -1, message);
 				
 				
 				for(new i = 0; i != MAX_PROPERTIES; i ++)
 				{
 					if(!PROPERTY_INFO[i][property_VALID]) continue;
 					if(!PROPERTY_INFO[i][property_CREW]) continue;
-					if(PROPERTY_INFO[i][property_CREW_ID] != PI[playerid][pi_CREW]) continue;
+					if(PROPERTY_INFO[i][property_CREW_ID] != PI[playerid][ac_CREW]) continue;
 		
 					format
 					(
@@ -17501,9 +17429,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_CREW_MEMBER_LIST_DELETE:
 		{
-			if(!PI[playerid][pi_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
+			if(!PI[playerid][ac_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
 			if(!CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_VALID]) return SendNotification(playerid, "La banda ya no existe.");
-			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_CAST_MEMBERS]) return SendNotification(playerid, "No tienes permiso.");
+			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_CAST_MEMBERS]) return SendNotification(playerid, "No tienes permiso.");
 			
 			if(response)
 			{
@@ -17527,7 +17455,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							}
 						}
 					}
-					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d", PI[playerid][pi_CREW]);
+					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d", PI[playerid][ac_CREW]);
 					MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 				}
 				else if(PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] == -3) //Anterior
@@ -17549,7 +17477,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							}
 						}
 					}
-					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d", PI[playerid][pi_CREW]);
+					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d", PI[playerid][ac_CREW]);
 					MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 				}
 				else
@@ -17567,7 +17495,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								cache_get_value_index(0, 0, name);
 								cache_get_value_index_int(0, 1, crew_rank);
 
-								if(crew_rank < PI[playerid][pi_CREW_RANK]) SendNotification(playerid, "No puedes echar a este miembro porque es un rango superior al tuyo.");
+								if(crew_rank < PI[playerid][ac_CREW_RANK]) SendNotification(playerid, "No puedes echar a este miembro porque es un rango superior al tuyo.");
 								else
 								{
 									if(crew_rank == 0)
@@ -17585,7 +17513,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 												}
 											}
 										}
-										mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d AND crew_rank = 0;", PI[playerid][pi_CREW]);
+										mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d AND crew_rank = 0;", PI[playerid][ac_CREW]);
 										MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 									}
 									else ShowDialog(playerid, DIALOG_CREW_CAST_MEMBER_CONFIRM);
@@ -17602,9 +17530,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_CREW_CAST_MEMBER_CONFIRM:
 		{
-			if(!PI[playerid][pi_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
+			if(!PI[playerid][ac_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
 			if(!CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_VALID]) return SendNotification(playerid, "La banda ya no existe.");
-			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_CAST_MEMBERS]) return SendNotification(playerid, "No tienes permiso.");
+			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_CAST_MEMBERS]) return SendNotification(playerid, "No tienes permiso.");
 			
 			if(response)
 			{
@@ -17618,7 +17546,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						cache_get_value_name_int(0, "connected", connected);
 						cache_get_value_name_int(0, "playerid", pid);
 						cache_get_value_name_int(0, "crew_rank", crew_rank);
-						if(crew_rank < PI[playerid][pi_CREW_RANK]) SendNotification(playerid, "No puedes echar a este miembro porque es un rango superior al tuyo.");
+						if(crew_rank < PI[playerid][ac_CREW_RANK]) SendNotification(playerid, "No puedes echar a este miembro porque es un rango superior al tuyo.");
 						else
 						{
 							if(crew_rank == 0)
@@ -17635,8 +17563,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 											else
 											{
 												new message[145];
-												format(message, sizeof message, "{%06x}[Banda] {FFFFFF}%s (%s) ha echado a %s de la banda.", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_COLOR] >>> 8, PLAYER_TEMP[playerid][pt_RP_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_NAME], name);
-												SendMessageToCrewMembers(PI[playerid][pi_CREW], -1, message);
+												format(message, sizeof message, "{%06x}[Banda] {FFFFFF}%s (%s) ha echado a %s de la banda.", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_COLOR] >>> 8, PLAYER_TEMP[playerid][pt_RP_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_NAME], name);
+												SendMessageToCrewMembers(PI[playerid][ac_CREW], -1, message);
 											
 												mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET crew = NULL, crew_rank = 0 WHERE id = %d;", PLAYER_TEMP[playerid][pt_SELECTED_DB_AC_ID]);
 												mysql_tquery(srp_db, QUERY_BUFFER);
@@ -17652,8 +17580,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 														TextDrawHideForPlayer(pid, TERRITORIES[ PLAYER_TEMP[playerid][pt_LAST_TERRITORY] ][territory_TEXTDRAW]);
 													}
 
-													PI[pid][pi_CREW] = 0;
-													PI[pid][pi_CREW_RANK] = 0;
+													PI[pid][ac_CREW] = 0;
+													PI[pid][ac_CREW_RANK] = 0;
 													PLAYER_TEMP[pid][pt_CREW_INDEX] = 0;
 													HidePlayerGangZones(pid);
 												}
@@ -17661,14 +17589,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 										}
 									}
 								}
-								mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d AND crew_rank = 0;", PI[playerid][pi_CREW]);
+								mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d AND crew_rank = 0;", PI[playerid][ac_CREW]);
 								MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 							}
 							else
 							{
 								new message[145];
-								format(message, sizeof message, "{%06x}[Banda] {FFFFFF}%s (%s) ha echado a %s de la banda.", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_COLOR] >>> 8, PLAYER_TEMP[playerid][pt_RP_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_NAME], name);
-								SendMessageToCrewMembers(PI[playerid][pi_CREW], -1, message);
+								format(message, sizeof message, "{%06x}[Banda] {FFFFFF}%s (%s) ha echado a %s de la banda.", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_COLOR] >>> 8, PLAYER_TEMP[playerid][pt_RP_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_NAME], name);
+								SendMessageToCrewMembers(PI[playerid][ac_CREW], -1, message);
 							
 								mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET crew = NULL, crew_rank = 0 WHERE id = %d;", PLAYER_TEMP[playerid][pt_SELECTED_DB_AC_ID]);
 								mysql_tquery(srp_db, QUERY_BUFFER);
@@ -17684,8 +17612,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 										TextDrawHideForPlayer(pid, TERRITORIES[ PLAYER_TEMP[playerid][pt_LAST_TERRITORY] ][territory_TEXTDRAW]);
 									}
 
-									PI[pid][pi_CREW] = 0;
-									PI[pid][pi_CREW_RANK] = 0;
+									PI[pid][ac_CREW] = 0;
+									PI[pid][ac_CREW_RANK] = 0;
 									PLAYER_TEMP[pid][pt_CREW_INDEX] = 0;
 									HidePlayerGangZones(pid);
 								}
@@ -17701,14 +17629,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_CREW_INVITE_RANK:
 		{
-			if(!PI[playerid][pi_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
+			if(!PI[playerid][ac_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
 			if(!CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_VALID]) return SendNotification(playerid, "La banda ya no existe.");
-			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_INVITE]) return SendNotification(playerid, "No tienes permiso.");
+			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_INVITE]) return SendNotification(playerid, "No tienes permiso.");
 			
 			if(response)
 			{
 				if(PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] == -1) return 1;
-				if(PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] < PI[playerid][pi_CREW_RANK])
+				if(PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] < PI[playerid][ac_CREW_RANK])
 				{
 					SendNotification(playerid, "No puedes invitar con este rango porque es superior al tuyo.");
 					ShowDialog(playerid, dialogid);
@@ -17720,13 +17648,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				new Float:pos[3]; GetPlayerPos(PLAYER_TEMP[playerid][pt_CREW_INVITE_PID], pos[0], pos[1], pos[2]);
 				if(!IsPlayerInRangeOfPoint(playerid, 2.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "Este jugador no está cerca tuya.");
 				if(PLAYER_WORKS[ PLAYER_TEMP[playerid][pt_CREW_INVITE_PID] ][WORK_POLICE][pwork_SET]) return SendNotification(playerid, "Esta persona es policía y no puede tener banda.");
-				if(PI[ PLAYER_TEMP[playerid][pt_CREW_INVITE_PID] ][pi_CREW]) return SendNotification(playerid, "Esta persona pertenece a otra banda.");
+				if(PI[ PLAYER_TEMP[playerid][pt_CREW_INVITE_PID] ][ac_CREW]) return SendNotification(playerid, "Esta persona pertenece a otra banda.");
 				if(PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_CREW_INVITE_PID] ][pt_GAME_STATE] != GAME_STATE_NORMAL) return SendNotification(playerid, "No puedes invitar a este jugador ahora.");
-				if(PI[ PLAYER_TEMP[playerid][pt_CREW_INVITE_PID] ][pi_ID] != PLAYER_TEMP[playerid][pt_CREW_INVITE_AID]) return SendNotification(playerid, "El jugador está desconectado.");
+				if(ACCOUNT_INFO[ PLAYER_TEMP[playerid][pt_CREW_INVITE_PID] ][ac_ID] != PLAYER_TEMP[playerid][pt_CREW_INVITE_AID]) return SendNotification(playerid, "El jugador está desconectado.");
 				
 				SendFormatNotification(playerid, "Has ofrecido a ~g~%s~w~ unirse a la banda con el rango ~g~%s~w~.", PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_CREW_INVITE_PID] ][pt_RP_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][crew_rank_NAME]);
 				
-				PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_CREW_INVITE_PID] ][pt_CREW_INVITE_INFO][0] = PI[playerid][pi_CREW];
+				PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_CREW_INVITE_PID] ][pt_CREW_INVITE_INFO][0] = PI[playerid][ac_CREW];
 				PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_CREW_INVITE_PID] ][pt_CREW_INVITE_INFO][1] = PLAYER_TEMP[playerid][pt_CREW_INDEX];
 				PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_CREW_INVITE_PID] ][pt_CREW_INVITE_INFO][2] = PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem];
 				PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_CREW_INVITE_PID] ][pt_CREW_INVITE_INFO][3] = gettime();
@@ -17743,32 +17671,32 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(gettime() > PLAYER_TEMP[playerid][pt_CREW_INVITE_INFO][3] + 20) return SendNotification(playerid, "Has tardado mucho en aceptar.");
 				if(CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INVITE_INFO][1] ][crew_FIGHTING]) return SendNotification(playerid, "No puedes unirte a la banda cuando la banda está en combate.");
 				
-				PI[playerid][pi_CREW] = PLAYER_TEMP[playerid][pt_CREW_INVITE_INFO][0];
-				PI[playerid][pi_CREW_RANK] = PLAYER_TEMP[playerid][pt_CREW_INVITE_INFO][2];
+				PI[playerid][ac_CREW] = PLAYER_TEMP[playerid][pt_CREW_INVITE_INFO][0];
+				PI[playerid][ac_CREW_RANK] = PLAYER_TEMP[playerid][pt_CREW_INVITE_INFO][2];
 				PLAYER_TEMP[playerid][pt_CREW_INDEX] = PLAYER_TEMP[playerid][pt_CREW_INVITE_INFO][1];
 				CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_MEMBERS] ++;
 				CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_ONLINE_MEMBERS] ++;
 				PLAYER_TEMP[playerid][pt_LAST_GOT_CREW] = gettime();
 				SetPlayerGangZones(playerid);
 				
-				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET crew = %d, crew_rank = %d WHERE id = %d;", PI[playerid][pi_CREW], PI[playerid][pi_CREW_RANK], PI[playerid][pi_ID]);
+				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET crew = %d, crew_rank = %d WHERE id = %d;", PI[playerid][ac_CREW], PI[playerid][ac_CREW_RANK], ACCOUNT_INFO[playerid][ac_ID]);
 				mysql_tquery(srp_db, QUERY_BUFFER);
 				
 				new message[145];
-				format(message, sizeof message, "{%06x}[Banda] {FFFFFF}%s se ha unido a la banda con el rango %s.", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_COLOR] >>> 8, PLAYER_TEMP[playerid][pt_RP_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_NAME]);
-				SendMessageToCrewMembers(PI[playerid][pi_CREW], -1, message);
+				format(message, sizeof message, "{%06x}[Banda] {FFFFFF}%s se ha unido a la banda con el rango %s.", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_COLOR] >>> 8, PLAYER_TEMP[playerid][pt_RP_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_NAME]);
+				SendMessageToCrewMembers(PI[playerid][ac_CREW], -1, message);
 			}
 			return 1;
 		}
 		case DIALOG_CREW_RANKS:
 		{
-			if(!PI[playerid][pi_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
+			if(!PI[playerid][ac_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
 			if(!CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_VALID]) return SendNotification(playerid, "La banda ya no existe.");
-			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_MODIFY_RANKS]) return SendNotification(playerid, "No tienes permiso.");
+			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_MODIFY_RANKS]) return SendNotification(playerid, "No tienes permiso.");
 			
 			if(response)
 			{
-				if(listitem < PI[playerid][pi_CREW_RANK])
+				if(listitem < PI[playerid][ac_CREW_RANK])
 				{
 					if(CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][listitem][crew_rank_VALID]) SendNotification(playerid, "No puedes modificar este rango porque es un rango superior al tuyo.");
 					else SendNotification(playerid, "No puedes crear un rango en este puesto porque es superior al tuyo.");
@@ -17784,9 +17712,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_CREW_RANK_MODIFY:
 		{
-			if(!PI[playerid][pi_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
+			if(!PI[playerid][ac_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
 			if(!CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_VALID]) return SendNotification(playerid, "La banda ya no existe.");
-			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_MODIFY_RANKS]) return SendNotification(playerid, "No tienes permiso.");
+			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_MODIFY_RANKS]) return SendNotification(playerid, "No tienes permiso.");
 			
 			if(response)
 			{
@@ -17821,9 +17749,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_CREW_RANK_MODIFY_NAME:
 		{
-			if(!PI[playerid][pi_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
+			if(!PI[playerid][ac_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
 			if(!CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_VALID]) return SendNotification(playerid, "La banda ya no existe.");
-			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_MODIFY_RANKS]) return SendNotification(playerid, "No tienes permiso.");
+			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_MODIFY_RANKS]) return SendNotification(playerid, "No tienes permiso.");
 			
 			if(response)
 			{
@@ -17853,9 +17781,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_CREW_RANK_CREATE:
 		{
-			if(!PI[playerid][pi_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
+			if(!PI[playerid][ac_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
 			if(!CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_VALID]) return SendNotification(playerid, "La banda ya no existe.");
-			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_MODIFY_RANKS]) return SendNotification(playerid, "No tienes permiso.");
+			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_MODIFY_RANKS]) return SendNotification(playerid, "No tienes permiso.");
 			
 			if(response)
 			{
@@ -17904,13 +17832,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_CREW_RANK_MODIFY_PERMISS:
 		{
-			if(!PI[playerid][pi_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
+			if(!PI[playerid][ac_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
 			if(!CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_VALID]) return SendNotification(playerid, "La banda ya no existe.");
-			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_MODIFY_RANKS]) return SendNotification(playerid, "No tienes permiso.");
+			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_MODIFY_RANKS]) return SendNotification(playerid, "No tienes permiso.");
 			
 			if(response)
 			{
-				if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][listitem])
+				if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][listitem])
 				{
 					SendNotification(playerid, "No puedes cambiar este permiso porque tu no tienes este permiso.");
 					ShowDialog(playerid, dialogid);
@@ -17929,14 +17857,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_CREW_RANK_DELETE:
 		{
-			if(!PI[playerid][pi_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
+			if(!PI[playerid][ac_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
 			if(!CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_VALID]) return SendNotification(playerid, "La banda ya no existe.");
-			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_MODIFY_RANKS]) return SendNotification(playerid, "No tienes permiso.");
+			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_MODIFY_RANKS]) return SendNotification(playerid, "No tienes permiso.");
 			
 			if(response)
 			{
 				if(PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] == -1) return 1;
-				if(PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] < PI[playerid][pi_CREW_RANK])
+				if(PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] < PI[playerid][ac_CREW_RANK])
 				{
 					SendNotification(playerid, "No puedes seleccionar este rango porque es superior al tuyo.");
 					ShowDialog(playerid, dialogid);
@@ -17950,13 +17878,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_CREW_RANK_DELETE_CONFIRM:
 		{
-			if(!PI[playerid][pi_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
+			if(!PI[playerid][ac_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
 			if(!CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_VALID]) return SendNotification(playerid, "La banda ya no existe.");
-			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_MODIFY_RANKS]) return SendNotification(playerid, "No tienes permiso.");
+			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_MODIFY_RANKS]) return SendNotification(playerid, "No tienes permiso.");
 			
 			if(response)
 			{
-				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET crew_rank = %d WHERE crew = %d AND crew_rank = %d;", PLAYER_TEMP[playerid][pt_CREW_SELECTED_NEW_RANK], PI[playerid][pi_CREW], PLAYER_TEMP[playerid][pt_CREW_SELECTED_RANK]);
+				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET crew_rank = %d WHERE crew = %d AND crew_rank = %d;", PLAYER_TEMP[playerid][pt_CREW_SELECTED_NEW_RANK], PI[playerid][ac_CREW], PLAYER_TEMP[playerid][pt_CREW_SELECTED_RANK]);
 				mysql_tquery(srp_db, QUERY_BUFFER);
 
 				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "DELETE FROM crew_ranks WHERE id = %d;", CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PLAYER_TEMP[playerid][pt_CREW_SELECTED_RANK] ][crew_rank_ID]);
@@ -17965,18 +17893,18 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SendFormatNotification(playerid, "Has eliminado el rango '%s'.", CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PLAYER_TEMP[playerid][pt_CREW_SELECTED_RANK] ][crew_rank_NAME]);
 			
 				new message[145];
-				format(message, sizeof message, "{%06x}[Banda] {FFFFFF}%s (%s) cambió tu rango al rango '%s'.", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_COLOR] >>> 8, PLAYER_TEMP[playerid][pt_RP_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PLAYER_TEMP[playerid][pt_CREW_SELECTED_NEW_RANK] ][crew_rank_NAME]);
+				format(message, sizeof message, "{%06x}[Banda] {FFFFFF}%s (%s) cambió tu rango al rango '%s'.", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_COLOR] >>> 8, PLAYER_TEMP[playerid][pt_RP_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PLAYER_TEMP[playerid][pt_CREW_SELECTED_NEW_RANK] ][crew_rank_NAME]);
 				for(new i = 0, j = GetPlayerPoolSize(); i <= j; i++)
 				{
 					if(IsPlayerConnected(i))
 					{
-						if(PI[i][pi_CREW])
+						if(PI[i][ac_CREW])
 						{
-							if(PI[i][pi_CREW] == PI[playerid][pi_CREW])
+							if(PI[i][ac_CREW] == PI[playerid][ac_CREW])
 							{
-								if(PI[i][pi_CREW_RANK] == PLAYER_TEMP[playerid][pt_CREW_SELECTED_RANK])
+								if(PI[i][ac_CREW_RANK] == PLAYER_TEMP[playerid][pt_CREW_SELECTED_RANK])
 								{
-									PI[i][pi_CREW_RANK] = PLAYER_TEMP[playerid][pt_CREW_SELECTED_NEW_RANK];
+									PI[i][ac_CREW_RANK] = PLAYER_TEMP[playerid][pt_CREW_SELECTED_NEW_RANK];
 									SendClientMessage(i, -1, message);
 								}
 							}
@@ -17995,9 +17923,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_CREW_MODIFY_COLOR:
 		{
-			if(!PI[playerid][pi_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
+			if(!PI[playerid][ac_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
 			if(!CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_VALID]) return SendNotification(playerid, "La banda ya no existe.");
-			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_CHANGE_COLOR]) return SendNotification(playerid, "No tienes permiso.");
+			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_CHANGE_COLOR]) return SendNotification(playerid, "No tienes permiso.");
 			
 			if(response)
 			{
@@ -18014,7 +17942,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					if(!TERRITORIES[i][territory_VALID]) continue;
 					if(!TERRITORIES[i][territory_OCCUPIED]) continue;
 					
-					if(TERRITORIES[i][territory_CREW_ID] == PI[playerid][pi_CREW])
+					if(TERRITORIES[i][territory_CREW_ID] == PI[playerid][ac_CREW])
 					{
 						TERRITORIES[i][territory_COLOR] = new_territory_color;
 						UpdateGangZoneColor(i);
@@ -18032,19 +17960,19 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_CREW_DELETE:
 		{
-			if(!PI[playerid][pi_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
+			if(!PI[playerid][ac_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
 			if(!CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_VALID]) return SendNotification(playerid, "La banda ya no existe.");
-			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_DELETE]) return SendNotification(playerid, "No tienes permiso.");
+			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_DELETE]) return SendNotification(playerid, "No tienes permiso.");
 			
 			if(response)
 			{
 				if(CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_FIGHTING]) return SendNotification(playerid, "No se puede borrar la banda cuando está en combate.");
 				
 				new message[145];
-				format(message, sizeof message, "{%06x}[Banda] {FFFFFF}%s (%s) ha eliminado la banda.", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_COLOR] >>> 8, PLAYER_TEMP[playerid][pt_RP_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_NAME]);
+				format(message, sizeof message, "{%06x}[Banda] {FFFFFF}%s (%s) ha eliminado la banda.", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_COLOR] >>> 8, PLAYER_TEMP[playerid][pt_RP_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_NAME]);
 
-				new tmp_crew_id = PI[playerid][pi_CREW];
-				new tmp_CREW_INFO[enum_CREW_INFO], old_crew_id = PI[playerid][pi_CREW];
+				new tmp_crew_id = PI[playerid][ac_CREW];
+				new tmp_CREW_INFO[enum_CREW_INFO], old_crew_id = PI[playerid][ac_CREW];
 				CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ] = tmp_CREW_INFO;
 				
 				new tmp_CREW_RANK_INFO[enum_CREW_RANK_INFO];
@@ -18054,9 +17982,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					if(IsPlayerConnected(i))
 					{
-						if(PI[i][pi_CREW])
+						if(PI[i][ac_CREW])
 						{
-							if(PI[i][pi_CREW] == PI[playerid][pi_CREW])
+							if(PI[i][ac_CREW] == PI[playerid][ac_CREW])
 							{
 								SetPlayerNormalColor(i);
 								HidePlayerGangZones(i);
@@ -18065,8 +17993,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 									TextDrawHideForPlayer(i, Textdraws[textdraw_TERRITORY_BOX]);
 									TextDrawHideForPlayer(i, TERRITORIES[ PLAYER_TEMP[i][pt_LAST_TERRITORY] ][territory_TEXTDRAW]);
 								}
-								PI[i][pi_CREW] = 0;
-								PI[i][pi_CREW_RANK] = 0;
+								PI[i][ac_CREW] = 0;
+								PI[i][ac_CREW_RANK] = 0;
 								PLAYER_TEMP[i][pt_CREW_INDEX] = 0;
 								SendClientMessage(i, -1, message);
 							}
@@ -18125,12 +18053,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_CREW_LEAVE:
 		{
-			if(!PI[playerid][pi_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
+			if(!PI[playerid][ac_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
 			if(!CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_VALID]) return SendNotification(playerid, "La banda ya no existe.");
 			
 			if(response)
 			{
-				if(PI[playerid][pi_CREW_RANK] == 0)
+				if(PI[playerid][ac_CREW_RANK] == 0)
 				{
 					inline OnCountQueryLoad()
 					{
@@ -18145,10 +18073,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								else
 								{
 									new message[145];
-									format(message, sizeof message, "{%06x}[Banda] {FFFFFF}%s (%s) ha abandonado la banda.", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_COLOR] >>> 8, PLAYER_TEMP[playerid][pt_RP_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_NAME]);
-									SendMessageToCrewMembers(PI[playerid][pi_CREW], -1, message);
+									format(message, sizeof message, "{%06x}[Banda] {FFFFFF}%s (%s) ha abandonado la banda.", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_COLOR] >>> 8, PLAYER_TEMP[playerid][pt_RP_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_NAME]);
+									SendMessageToCrewMembers(PI[playerid][ac_CREW], -1, message);
 									
-									mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET crew = NULL, crew_rank = 0 WHERE id = %d;", PI[playerid][pi_ID]);
+									mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET crew = NULL, crew_rank = 0 WHERE id = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 									mysql_tquery(srp_db, QUERY_BUFFER);
 									
 									SetPlayerNormalColor(playerid);
@@ -18156,23 +18084,23 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 									CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_ONLINE_MEMBERS] --;
 									HidePlayerGangZones(playerid);
 									
-									PI[playerid][pi_CREW] = 0;
-									PI[playerid][pi_CREW_RANK] = 0;
+									PI[playerid][ac_CREW] = 0;
+									PI[playerid][ac_CREW_RANK] = 0;
 									PLAYER_TEMP[playerid][pt_CREW_INDEX] = 0;
 								}
 							}
 						}
 					}
-					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d AND crew_rank = 0;", PI[playerid][pi_CREW]);
+					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d AND crew_rank = 0;", PI[playerid][ac_CREW]);
 					MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 				}
 				else
 				{
 					new message[145];
-					format(message, sizeof message, "{%06x}[Banda] {FFFFFF}%s (%s) ha abandonado la banda.", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_COLOR] >>> 8, PLAYER_TEMP[playerid][pt_RP_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_NAME]);
-					SendMessageToCrewMembers(PI[playerid][pi_CREW], -1, message);
+					format(message, sizeof message, "{%06x}[Banda] {FFFFFF}%s (%s) ha abandonado la banda.", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_COLOR] >>> 8, PLAYER_TEMP[playerid][pt_RP_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_NAME]);
+					SendMessageToCrewMembers(PI[playerid][ac_CREW], -1, message);
 					
-					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET crew = NULL, crew_rank = 0 WHERE id = %d;", PI[playerid][pi_ID]);
+					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET crew = NULL, crew_rank = 0 WHERE id = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 					mysql_tquery(srp_db, QUERY_BUFFER);
 					
 					SetPlayerNormalColor(playerid);
@@ -18180,8 +18108,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_ONLINE_MEMBERS] --;
 					HidePlayerGangZones(playerid);
 					
-					PI[playerid][pi_CREW] = 0;
-					PI[playerid][pi_CREW_RANK] = 0;
+					PI[playerid][ac_CREW] = 0;
+					PI[playerid][ac_CREW_RANK] = 0;
 					PLAYER_TEMP[playerid][pt_CREW_INDEX] = 0;
 				}
 			}
@@ -18190,9 +18118,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_CREW_MODIFY_MEMBERS:
 		{
-			if(!PI[playerid][pi_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
+			if(!PI[playerid][ac_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
 			if(!CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_VALID]) return SendNotification(playerid, "La banda ya no existe.");
-			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_MODIFY_MEMBERS]) return SendNotification(playerid, "No tienes permiso.");
+			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_MODIFY_MEMBERS]) return SendNotification(playerid, "No tienes permiso.");
 			
 			if(response)
 			{
@@ -18216,7 +18144,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							}
 						}
 					}
-					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d", PI[playerid][pi_CREW]);
+					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d", PI[playerid][ac_CREW]);
 					MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 				}
 				else if(PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] == -3) //Anterior
@@ -18238,7 +18166,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							}
 						}
 					}
-					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d", PI[playerid][pi_CREW]);
+					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d", PI[playerid][ac_CREW]);
 					MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 				}
 				else
@@ -18252,15 +18180,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_CREW_MODIFY_MEMBER:
 		{
-			if(!PI[playerid][pi_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
+			if(!PI[playerid][ac_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
 			if(!CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_VALID]) return SendNotification(playerid, "La banda ya no existe.");
-			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_MODIFY_MEMBERS]) return SendNotification(playerid, "No tienes permiso.");
+			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_MODIFY_MEMBERS]) return SendNotification(playerid, "No tienes permiso.");
 			
 			if(response)
 			{
 				if(PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] == -1) return 1;
 				
-				if(PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] < PI[playerid][pi_CREW_RANK])
+				if(PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] < PI[playerid][ac_CREW_RANK])
 				{
 					SendNotification(playerid, "No puedes dar este rango porque es un rango superior al tuyo.");
 					return 1;
@@ -18279,7 +18207,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							cache_get_value_name_int(0, "playerid", pid);
 							cache_get_value_name_int(0, "crew_rank", crew_rank);
 
-							if(crew_rank < PI[playerid][pi_CREW_RANK]) SendNotification(playerid, "No puedes modificar el rango de este miembro porque es un rango superior al tuyo.");
+							if(crew_rank < PI[playerid][ac_CREW_RANK]) SendNotification(playerid, "No puedes modificar el rango de este miembro porque es un rango superior al tuyo.");
 							else
 							{
 								if(crew_rank == 0)
@@ -18301,8 +18229,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 													new message[145];
 													if(connected)
 													{
-														PI[pid][pi_CREW_RANK] = PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem];
-														format(message, sizeof message, "{%06x}[Banda] {FFFFFF}%s (%s) cambió tu rango al rango '%s'.", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_COLOR] >>> 8, PLAYER_TEMP[playerid][pt_RP_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][crew_rank_NAME]);
+														PI[pid][ac_CREW_RANK] = PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem];
+														format(message, sizeof message, "{%06x}[Banda] {FFFFFF}%s (%s) cambió tu rango al rango '%s'.", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_COLOR] >>> 8, PLAYER_TEMP[playerid][pt_RP_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][crew_rank_NAME]);
 														SendClientMessage(pid, -1, message);
 													}
 													format(message, sizeof message, "Has modificado el rango de '%s' al rango '%s'.", name, CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][crew_rank_NAME]);
@@ -18311,7 +18239,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 											}
 										}
 									}
-									mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d AND crew_rank = 0;", PI[playerid][pi_CREW]);
+									mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM player WHERE crew = %d AND crew_rank = 0;", PI[playerid][ac_CREW]);
 									MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 								}
 								else
@@ -18322,8 +18250,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 									new message[145];
 									if(connected)
 									{
-										PI[pid][pi_CREW_RANK] = PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem];
-										format(message, sizeof message, "{%06x}[Banda] {FFFFFF}%s (%s) cambió tu rango al rango '%s'.", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_COLOR] >>> 8, PLAYER_TEMP[playerid][pt_RP_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][crew_rank_NAME]);
+										PI[pid][ac_CREW_RANK] = PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem];
+										format(message, sizeof message, "{%06x}[Banda] {FFFFFF}%s (%s) cambió tu rango al rango '%s'.", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_COLOR] >>> 8, PLAYER_TEMP[playerid][pt_RP_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][crew_rank_NAME]);
 										SendClientMessage(pid, -1, message);
 									}
 									format(message, sizeof message, "Has modificado el rango de '%s' al rango '%s'.", name, CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][crew_rank_NAME]);
@@ -18341,23 +18269,23 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_CREW_PROPERTY_CONFIRM:
 		{
-			if(!PI[playerid][pi_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
+			if(!PI[playerid][ac_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
 			if(!CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_VALID]) return SendNotification(playerid, "La banda ya no existe.");
-			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_ADD_PROPERTIES]) return SendNotification(playerid, "No tienes permiso.");
+			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_ADD_PROPERTIES]) return SendNotification(playerid, "No tienes permiso.");
 			
 			if(response)
 			{
 				if(!TERRITORIES[ PLAYER_TEMP[playerid][pt_PLAYER_TERRITORY_PRO] ][territory_VALID]) return SendNotification(playerid, "La propiedad no está dentro de un territorio de tu banda.");
 				if(!TERRITORIES[ PLAYER_TEMP[playerid][pt_PLAYER_TERRITORY_PRO] ][territory_OCCUPIED]) return SendNotification(playerid, "La propiedad no está dentro de un territorio de tu banda.");
-				if(TERRITORIES[ PLAYER_TEMP[playerid][pt_PLAYER_TERRITORY_PRO] ][territory_CREW_ID] != PI[playerid][pi_CREW]) return SendNotification(playerid, "La propiedad no está dentro de un territorio de tu banda.");
+				if(TERRITORIES[ PLAYER_TEMP[playerid][pt_PLAYER_TERRITORY_PRO] ][territory_CREW_ID] != PI[playerid][ac_CREW]) return SendNotification(playerid, "La propiedad no está dentro de un territorio de tu banda.");
 				if(!IsPointInDynamicArea(TERRITORIES[ PLAYER_TEMP[playerid][pt_PLAYER_TERRITORY_PRO] ][territory_AREA], PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_X], PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_Y], PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_Z])) return SendNotification(playerid, "La propiedad no está dentro de un territorio de tu banda.");
-				if(PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_OWNER_ID] != PI[playerid][pi_ID]) return SendNotification(playerid, "Esta no es tu propiedad.");
+				if(PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_OWNER_ID] != ACCOUNT_INFO[playerid][ac_ID]) return SendNotification(playerid, "Esta no es tu propiedad.");
 				
 				
 				new index = PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED];
 				PROPERTY_INFO[ index ][property_CREW] = true;
 				PROPERTY_INFO[ index ][property_OWNER_ID] = 0;
-				PROPERTY_INFO[ index ][property_CREW_ID] = PI[playerid][pi_CREW];
+				PROPERTY_INFO[ index ][property_CREW_ID] = PI[playerid][ac_CREW];
 				format(PROPERTY_INFO[ index ][property_NAME], 24, "PROPIEDAD %d", PROPERTY_INFO[ index ][property_ID]);
 				
 				new label_str[256];
@@ -18377,21 +18305,21 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				mysql_tquery(srp_db, QUERY_BUFFER);
 				
 				new message[145];
-				format(message, sizeof message, "{%06x}[Banda] {FFFFFF}%s (%s) ha añadido una nueva propiedad en %s.", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_COLOR] >>> 8, PLAYER_TEMP[playerid][pt_RP_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_NAME], TERRITORIES[ PLAYER_TEMP[playerid][pt_PLAYER_TERRITORY_PRO] ][territory_NAME]);
-				SendMessageToCrewMembers(PI[playerid][pi_CREW], -1, message);
+				format(message, sizeof message, "{%06x}[Banda] {FFFFFF}%s (%s) ha añadido una nueva propiedad en %s.", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_COLOR] >>> 8, PLAYER_TEMP[playerid][pt_RP_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_NAME], TERRITORIES[ PLAYER_TEMP[playerid][pt_PLAYER_TERRITORY_PRO] ][territory_NAME]);
+				SendMessageToCrewMembers(PI[playerid][ac_CREW], -1, message);
 			}
 			return 1;
 		}
 		case DIALOG_CREW_LEAVE_TERRITORY:
 		{
-			if(!PI[playerid][pi_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
+			if(!PI[playerid][ac_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
 			if(!CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_VALID]) return SendNotification(playerid, "La banda ya no existe.");
-			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_LEAVE_TERRITORY]) return SendNotification(playerid, "No tienes permiso.");
+			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_LEAVE_TERRITORY]) return SendNotification(playerid, "No tienes permiso.");
 			
 			if(response)
 			{
 				if(!IsPlayerInDynamicArea(playerid, TERRITORIES[ PLAYER_TEMP[playerid][pt_PLAYER_TERRITORY_PRO] ][territory_AREA])) return SendNotification(playerid, "No estás en un territorio de tu banda.");
-				if(TERRITORIES[ PLAYER_TEMP[playerid][pt_PLAYER_TERRITORY_PRO] ][territory_CREW_ID] != PI[playerid][pi_CREW]) return SendNotification(playerid, "No estás en un territorio de tu banda.");			
+				if(TERRITORIES[ PLAYER_TEMP[playerid][pt_PLAYER_TERRITORY_PRO] ][territory_CREW_ID] != PI[playerid][ac_CREW]) return SendNotification(playerid, "No estás en un territorio de tu banda.");			
 				if(CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_FIGHTING]) return SendNotification(playerid, "No puedes abandonar territorios mientras tu banda está en combate.");
 				if(TERRITORIES[ PLAYER_TEMP[playerid][pt_PLAYER_TERRITORY_PRO] ][territory_WAR]) return SendNotification(playerid, "No se puede abandonar este territorio cuando está siendo conquistado.");
 
@@ -18403,13 +18331,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				
 				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE territories SET id_crew = NULL WHERE id = %d;", TERRITORIES[ PLAYER_TEMP[playerid][pt_PLAYER_TERRITORY_PRO] ][territory_ID]);
 				mysql_tquery(srp_db, QUERY_BUFFER);
-				CallLocalFunction("OnCrewLeftTerritory", "iiii", PI[playerid][pi_CREW], PLAYER_TEMP[playerid][pt_CREW_INDEX], TERRITORIES[ PLAYER_TEMP[playerid][pt_PLAYER_TERRITORY_PRO] ][territory_ID], PLAYER_TEMP[playerid][pt_PLAYER_TERRITORY_PRO]);
+				CallLocalFunction("OnCrewLeftTerritory", "iiii", PI[playerid][ac_CREW], PLAYER_TEMP[playerid][pt_CREW_INDEX], TERRITORIES[ PLAYER_TEMP[playerid][pt_PLAYER_TERRITORY_PRO] ][territory_ID], PLAYER_TEMP[playerid][pt_PLAYER_TERRITORY_PRO]);
 				
 				for(new i = 0; i != MAX_PROPERTIES; i ++)
 				{
 					if(!PROPERTY_INFO[i][property_VALID]) continue;
 					if(!PROPERTY_INFO[i][property_CREW]) continue;
-					if(PROPERTY_INFO[i][property_CREW_ID] != PI[playerid][pi_CREW]) continue;
+					if(PROPERTY_INFO[i][property_CREW_ID] != PI[playerid][ac_CREW]) continue;
 					
 					if(IsPointInDynamicArea(TERRITORIES[ PLAYER_TEMP[playerid][pt_PLAYER_TERRITORY_PRO] ][territory_AREA], PROPERTY_INFO[i][property_EXT_X], PROPERTY_INFO[i][property_EXT_Y], PROPERTY_INFO[i][property_EXT_Z]))
 					{
@@ -18442,7 +18370,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					if(IsPlayerConnected(i))
 					{
-						if(PI[i][pi_CREW])
+						if(PI[i][ac_CREW])
 						{
 							SendClientMessage(i, -1, message);
 						}
@@ -18453,14 +18381,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_CREW_LEAVE_PROPERTY:
 		{
-			if(!PI[playerid][pi_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
+			if(!PI[playerid][ac_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
 			if(!CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_VALID]) return SendNotification(playerid, "La banda ya no existe.");
-			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_DELETE_PROPERTIES]) return SendNotification(playerid, "No tienes permiso.");
+			if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_DELETE_PROPERTIES]) return SendNotification(playerid, "No tienes permiso.");
 			
 			if(response)
 			{
 				if(!PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_CREW]) return SendNotification(playerid, "Esta no es una propiedad de tu banda.");
-				if(PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_CREW_ID] != PI[playerid][pi_CREW]) return SendNotification(playerid, "Esta no es una propiedad de tu banda.");
+				if(PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_CREW_ID] != PI[playerid][ac_CREW]) return SendNotification(playerid, "Esta no es una propiedad de tu banda.");
 				if(CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_FIGHTING]) return SendNotification(playerid, "No puedes liberar una propiedad cuando tu banda está en combate.");
 			
 				PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_SOLD] = false;
@@ -18494,12 +18422,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(gettime() > PLAYER_TEMP[playerid][pt_POLICE_PEN_TIME] + 20) return SendNotification(playerid, "Has tardardo mucho en aceptarlo.");
 				if(!IsPlayerConnected(PLAYER_TEMP[playerid][pt_POLICE_PEN_PID])) return SendNotification(playerid, "El policía ya no está en el servidor.");
-				if(PI[ PLAYER_TEMP[playerid][pt_POLICE_PEN_PID] ][pi_ID] != PLAYER_TEMP[playerid][pt_POLICE_PEN_AID]) return SendNotification(playerid, "El policía ya no está en el servidor.");
+				if(ACCOUNT_INFO[ PLAYER_TEMP[playerid][pt_POLICE_PEN_PID] ][ac_ID] != PLAYER_TEMP[playerid][pt_POLICE_PEN_AID]) return SendNotification(playerid, "El policía ya no está en el servidor.");
 
 				new Float:pos[3]; GetPlayerPos(PLAYER_TEMP[playerid][pt_POLICE_PEN_PID], pos[0], pos[1], pos[2]);
 				if(!IsPlayerInRangeOfPoint(playerid, 5.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "El policía no está cerca tuya.");
 				
-				if(PLAYER_TEMP[playerid][pt_POLICE_PEN_IM] > PI[playerid][pi_CASH])
+				if(PLAYER_TEMP[playerid][pt_POLICE_PEN_IM] > PI[playerid][ac_CASH])
 				{
 					SendNotification(playerid, "No tienes dinero para pagar la multa.");
 					SendClientMessage(PLAYER_TEMP[playerid][pt_POLICE_PEN_PID], -1, "{"#SILVER_COLOR"}La persona ha aceptado la multa pero no tiene dinero para pagarla.");
@@ -18518,16 +18446,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(gettime() > PLAYER_TEMP[playerid][pt_POLICE_PEN_TIME] + 20) return 1;
 				if(!IsPlayerConnected(PLAYER_TEMP[playerid][pt_POLICE_PEN_PID])) return 1;
-				if(PI[ PLAYER_TEMP[playerid][pt_POLICE_PEN_PID] ][pi_ID] != PLAYER_TEMP[playerid][pt_POLICE_PEN_AID]) return 1;
+				if(ACCOUNT_INFO[ PLAYER_TEMP[playerid][pt_POLICE_PEN_PID] ][ac_ID] != PLAYER_TEMP[playerid][pt_POLICE_PEN_AID]) return 1;
 				
 				SendClientMessage(PLAYER_TEMP[playerid][pt_POLICE_PEN_PID], -1, "{"#SILVER_COLOR"}La persona se ha negado a pagar la multa.");
-				if(PI[playerid][pi_WANTED_LEVEL] < 6) SetPlayerWantedLevelEx(playerid, PI[playerid][pi_WANTED_LEVEL] + 1);
+				if(PI[playerid][ac_WANTED_LEVEL] < 6) SetPlayerWantedLevelEx(playerid, PI[playerid][ac_WANTED_LEVEL] + 1);
 			}
 			return 1;
 		}
 		case DIALOG_SERVER_ECO:
 		{
-			if(PI[playerid][pi_ADMIN_LEVEL] < 5) return 1;
+			if(ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] < 5) return 1;
 			
 			if(response)
 			{
@@ -18538,7 +18466,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_SERVER_ECO_MODIFY:
 		{
-			if(PI[playerid][pi_ADMIN_LEVEL] < 5) return 1;
+			if(ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] < 5) return 1;
 			
 			if(response)
 			{
@@ -18573,9 +18501,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(response)
 			{
-				if(SU_SD_PRICE > PI[playerid][pi_COINS])
+				if(SU_SD_PRICE > PI[playerid][ac_COINS])
 				{
-					SendFormatNotification(playerid, "Te faltan %d "SERVER_COIN" para poder comprar VIP.", SU_SD_PRICE - PI[playerid][pi_COINS]);
+					SendFormatNotification(playerid, "Te faltan %d "SERVER_COIN" para poder comprar VIP.", SU_SD_PRICE - PI[playerid][ac_COINS]);
 					return 1;
 				}
 				
@@ -18587,13 +18515,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(!response)
 			{
-				if(SU_SD_PRICE > PI[playerid][pi_COINS])
+				if(SU_SD_PRICE > PI[playerid][ac_COINS])
 				{
-					SendFormatNotification(playerid, "Te faltan %d "SERVER_COIN" para poder comprar VIP.", SU_SD_PRICE - PI[playerid][pi_COINS]);
+					SendFormatNotification(playerid, "Te faltan %d "SERVER_COIN" para poder comprar VIP.", SU_SD_PRICE - PI[playerid][ac_COINS]);
 					return 1;
 				}
 				
-				PI[playerid][pi_COINS] -= SU_SD_PRICE;
+				PI[playerid][ac_COINS] -= SU_SD_PRICE;
 				inline OnInfoQueryLoad()
 				{
 					inline OnCountQueryLoad()
@@ -18603,16 +18531,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						{
 							if(rows)
 							{
-								cache_get_value_index(0, 0, PI[playerid][pi_VIP_EXPIRE_DATE]);
-								SendClientMessageEx(playerid, -1, "{"#PRIMARY_COLOR"}¡Felicidades! {FFFFFF}Has renovado tu VIP (%d) por 30 días, fecha de caducidad: %s.", PI[playerid][pi_VIP], PI[playerid][pi_VIP_EXPIRE_DATE]);
+								cache_get_value_index(0, 0, ACCOUNT_INFO[playerid][ac_VIP_EXPIRE_DATE]);
+								SendClientMessageEx(playerid, -1, "{"#PRIMARY_COLOR"}¡Felicidades! {FFFFFF}Has renovado tu VIP (%d) por 30 días, fecha de caducidad: %s.", ACCOUNT_INFO[playerid][ac_VIP], ACCOUNT_INFO[playerid][ac_VIP_EXPIRE_DATE]);
 								SendClientMessage(playerid, -1, "Puedes utilizar {"#PRIMARY_COLOR"}/vip {FFFFFF}para ver el tiempo restante o renovar.");
 							}
 						}
 					}
-					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT vip_expire_date FROM player WHERE id = %d;", PI[playerid][pi_ID]);
+					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT vip_expire_date FROM player WHERE id = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 					MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 				}
-				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET coins = %d, vip = %d, vip_expire_date = DATE_ADD(NOW(), INTERVAL 30 DAY) WHERE id = %d;", PI[playerid][pi_COINS], PI[playerid][pi_VIP], PI[playerid][pi_ID]);
+				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET coins = %d, vip = %d, vip_expire_date = DATE_ADD(NOW(), INTERVAL 30 DAY) WHERE id = %d;", PI[playerid][ac_COINS], ACCOUNT_INFO[playerid][ac_VIP], ACCOUNT_INFO[playerid][ac_ID]);
 				MySQL_TQueryInline(srp_db, using inline OnInfoQueryLoad, QUERY_BUFFER);
 			}
 			return 1;
@@ -18627,7 +18555,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					case 1: //Comprar
 					{
 						new slot = GetVehicleFreeObjectSlot(PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID]);
-						if(!PI[playerid][pi_VIP] && slot >= MAX_NU_VOBJECTS)
+						if(!ACCOUNT_INFO[playerid][ac_VIP] && slot >= MAX_NU_VOBJECTS)
 						{
 							PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
 							SendFormatNotification(playerid, "¡Los jugadores ~y~VIP ~w~pueden tener hasta %d objetos en vehículos! Usa ~y~/ayuda ~w~si quieres ser ~y~VIP.", MAX_SU_VOBJECTS);
@@ -18665,7 +18593,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					case 2:
 					{
 						new slot = GetVehicleFreeObjectSlot(PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID]);
-						if(!PI[playerid][pi_VIP] && slot >= MAX_NU_VOBJECTS)
+						if(!ACCOUNT_INFO[playerid][ac_VIP] && slot >= MAX_NU_VOBJECTS)
 						{
 							PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
 							SendFormatNotification(playerid, "¡Los jugadores ~y~VIP ~w~pueden tener hasta %d objetos en vehículos! Usa ~y~/ayuda ~w~si quieres ser ~y~VIP.", MAX_SU_VOBJECTS);
@@ -18679,10 +18607,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							return 1;
 						}
 						
-						if(500 > PI[playerid][pi_CASH])
+						if(500 > PI[playerid][ac_CASH])
 						{
 							PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
-							SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar este objeto.", number_format_thousand(500 - PI[playerid][pi_CASH]));
+							SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar este objeto.", number_format_thousand(500 - PI[playerid][ac_CASH]));
 							ShowDialog(playerid, dialogid);
 							return 1;
 						}
@@ -18713,7 +18641,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					case 3:
 					{
 						new slot = GetVehicleFreeObjectSlot(PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID]);
-						if(!PI[playerid][pi_VIP] && slot >= MAX_NU_VOBJECTS)
+						if(!ACCOUNT_INFO[playerid][ac_VIP] && slot >= MAX_NU_VOBJECTS)
 						{
 							PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
 							SendFormatNotification(playerid, "¡Los jugadores ~y~VIP ~w~pueden tener hasta %d objetos en vehículos! Usa ~y~/ayuda ~w~si quieres ser ~y~VIP.", MAX_SU_VOBJECTS);
@@ -18727,10 +18655,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							return 1;
 						}
 						
-						if(2000 > PI[playerid][pi_CASH])
+						if(2000 > PI[playerid][ac_CASH])
 						{
 							PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
-							SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar este objeto.", number_format_thousand(2000 - PI[playerid][pi_CASH]));
+							SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar este objeto.", number_format_thousand(2000 - PI[playerid][ac_CASH]));
 							ShowDialog(playerid, dialogid);
 							return 1;
 						}
@@ -18741,7 +18669,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					case 4:
 					{
 						new slot = GetVehicleFreeObjectSlot(PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID]);
-						if(!PI[playerid][pi_VIP] && slot >= MAX_NU_VOBJECTS)
+						if(!ACCOUNT_INFO[playerid][ac_VIP] && slot >= MAX_NU_VOBJECTS)
 						{
 							PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
 							SendFormatNotification(playerid, "¡Los jugadores ~y~VIP ~w~pueden tener hasta %d objetos en vehículos! Usa ~y~/ayuda ~w~si quieres ser ~y~VIP.", MAX_SU_VOBJECTS);
@@ -18755,10 +18683,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							return 1;
 						}
 						
-						if(2000 > PI[playerid][pi_CASH])
+						if(2000 > PI[playerid][ac_CASH])
 						{
 							PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
-							SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar este objeto.", number_format_thousand(2000 - PI[playerid][pi_CASH]));
+							SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar este objeto.", number_format_thousand(2000 - PI[playerid][ac_CASH]));
 							ShowDialog(playerid, dialogid);
 							return 1;
 						}
@@ -18791,7 +18719,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(response)
 			{
 				new slot = GetVehicleFreeObjectSlot(PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID]);
-				if(!PI[playerid][pi_VIP] && slot >= MAX_NU_VOBJECTS)
+				if(!ACCOUNT_INFO[playerid][ac_VIP] && slot >= MAX_NU_VOBJECTS)
 				{
 					PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
 					SendFormatNotification(playerid, "¡Los jugadores ~y~VIP ~w~pueden tener hasta %d objetos en vehículos! Usa ~y~/ayuda ~w~si quieres ser ~y~VIP.", MAX_SU_VOBJECTS);
@@ -18805,10 +18733,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					return 1;
 				}
 				
-				if(2000 > PI[playerid][pi_CASH])
+				if(2000 > PI[playerid][ac_CASH])
 				{
 					PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
-					SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar este objeto.", number_format_thousand(2000 - PI[playerid][pi_CASH]));
+					SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar este objeto.", number_format_thousand(2000 - PI[playerid][ac_CASH]));
 					ShowDialog(playerid, DIALOG_VOBJECT_MENU);
 					return 1;
 				}
@@ -19181,17 +19109,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(response)
 			{
 				
-				if(PI[playerid][pi_CASH] < 300) return SendNotification(playerid, "No tienes suficiente dinero.");
+				if(PI[playerid][ac_CASH] < 300) return SendNotification(playerid, "No tienes suficiente dinero.");
 				{
 								
-					if(PI[playerid][pi_Maso])
+					if(PI[playerid][ac_Maso])
 					{
 										
 						SendNotification(playerid, "Ya tienes un maso.");
 						PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
 						return 1;
 					}		
-					PI[playerid][pi_Maso] = 1;
+					PI[playerid][ac_Maso] = 1;
 					SendNotification(playerid, "Compraste un maso por $300.");
 					PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);			
 					GivePlayerCash(playerid, -300, true, true);	
@@ -19210,18 +19138,18 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					case 0:
 					{
-						if(PI[playerid][pi_CONFIG_AUDIO])
+						if(PI[playerid][ac_CONFIG_AUDIO])
 						{
-							PI[playerid][pi_CONFIG_AUDIO] = false;
+							PI[playerid][ac_CONFIG_AUDIO] = false;
 							StopAudioStreamForPlayer(playerid);
 						}
-						else PI[playerid][pi_CONFIG_AUDIO] = true;
+						else PI[playerid][ac_CONFIG_AUDIO] = true;
 					}
 					case 1:
 					{
-						if(PI[playerid][pi_CONFIG_HUD])
+						if(PI[playerid][ac_CONFIG_HUD])
 						{
-							PI[playerid][pi_CONFIG_HUD] = false;
+							PI[playerid][ac_CONFIG_HUD] = false;
 							for(new i = 0; i < HUD_TEXTDRAWS_SIZE; i ++) {
 								TextDrawHideForPlayer(playerid, Textdraws[textdraw_HUD][i]);
 							}
@@ -19232,7 +19160,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 						else
 						{
-							PI[playerid][pi_CONFIG_HUD] = true;
+							PI[playerid][ac_CONFIG_HUD] = true;
 							for(new i = 0; i < HUD_TEXTDRAWS_SIZE; i ++) {
 								TextDrawShowForPlayer(playerid, Textdraws[textdraw_HUD][i]);	
 							}
@@ -19244,39 +19172,39 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					case 2:
 					{
-						if(PI[playerid][pi_CONFIG_ADMIN]) PI[playerid][pi_CONFIG_ADMIN] = false;
-						else PI[playerid][pi_CONFIG_ADMIN] = true;
+						if(PI[playerid][ac_CONFIG_ADMIN]) PI[playerid][ac_CONFIG_ADMIN] = false;
+						else PI[playerid][ac_CONFIG_ADMIN] = true;
 					}
 					case 3:
 					{
-						if(PI[playerid][pi_PHONE_VISIBLE_NUMBER]) PI[playerid][pi_PHONE_VISIBLE_NUMBER] = false;
-						else PI[playerid][pi_PHONE_VISIBLE_NUMBER] = true;
+						if(PI[playerid][ac_PHONE_VISIBLE_NUMBER]) PI[playerid][ac_PHONE_VISIBLE_NUMBER] = false;
+						else PI[playerid][ac_PHONE_VISIBLE_NUMBER] = true;
 					}
 					case 4:
 					{
-						if(PI[playerid][pi_CONFIG_SOUNDS]) PI[playerid][pi_CONFIG_SOUNDS] = false;
-						else PI[playerid][pi_CONFIG_SOUNDS] = true;
+						if(PI[playerid][ac_CONFIG_SOUNDS]) PI[playerid][ac_CONFIG_SOUNDS] = false;
+						else PI[playerid][ac_CONFIG_SOUNDS] = true;
 					}
 					case 5:
 					{
-						if(PI[playerid][pi_CONFIG_TIME])
+						if(PI[playerid][ac_CONFIG_TIME])
 						{
-							PI[playerid][pi_CONFIG_TIME] = false;
+							PI[playerid][ac_CONFIG_TIME] = false;
 							TextDrawHideForPlayer(playerid, Textdraws[textdraw_SERVER_TIME]);
 						}
 						else
 						{
-							PI[playerid][pi_CONFIG_TIME] = true;
+							PI[playerid][ac_CONFIG_TIME] = true;
 							TextDrawShowForPlayer(playerid, Textdraws[textdraw_SERVER_TIME]);
 						}
 					}
 					case 6:
 					{
-						if(PI[playerid][pi_DOUBT_CHANNEL]) PI[playerid][pi_DOUBT_CHANNEL] = false;
-						else PI[playerid][pi_DOUBT_CHANNEL] = true;
+						if(ACCOUNT_INFO[playerid][ac_DOUBT_CHANNEL]) ACCOUNT_INFO[playerid][ac_DOUBT_CHANNEL] = false;
+						else ACCOUNT_INFO[playerid][ac_DOUBT_CHANNEL] = true;
 					}
 					case 7: {
-						PI[playerid][pi_CONFIG_SECURE_LOGIN] = !PI[playerid][pi_CONFIG_SECURE_LOGIN];
+						PI[playerid][ac_CONFIG_SECURE_LOGIN] = !PI[playerid][ac_CONFIG_SECURE_LOGIN];
 					}
 				}
 				ShowDialog(playerid, dialogid);
@@ -19456,9 +19384,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(!strlen(inputtext)) return ShowDialog(playerid, dialogid);
 				
 				new password[64 + 1];
-				SHA256_PassHash(inputtext, PI[playerid][pi_SALT], password, sizeof password);
+				SHA256_PassHash(inputtext, ACCOUNT_INFO[playerid][ac_SALT], password, sizeof password);
 			
-				if(!strcmp(password, PI[playerid][pi_PASS], false))
+				if(!strcmp(password, ACCOUNT_INFO[playerid][ac_PASS], false))
 				{
 					ShowDialog(playerid, DIALOG_CHANGE_NAME_NAME);
 					PLAYER_TEMP[playerid][pt_BAD_LOGIN_ATTEMP] = 0;
@@ -19491,16 +19419,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(rows) SendFormatNotification(playerid, "El nombre '%s' está en uso.", name);
 						else
 						{
-							printf("/cname: %d, '%s'", PI[playerid][pi_ID], name);
+							printf("/cname: %d, '%s'", ACCOUNT_INFO[playerid][ac_ID], name);
 							if(SetPlayerName(playerid, name) == 1) {
 								format(PLAYER_TEMP[playerid][pt_NAME], 24, "%s", name);
-								format(PI[playerid][pi_NAME], 24, "%s", name);
+								format(ACCOUNT_INFO[playerid][ac_NAME], 24, "%s", name);
 								PLAYER_TEMP[playerid][pt_RP_NAME] = RP_GetPlayerName(playerid);
 								
 								for(new i = 0; i != MAX_PROPERTIES; i ++)
 								{
 									if(!PROPERTY_INFO[i][property_VALID]) continue;
-									if(PROPERTY_INFO[i][property_OWNER_ID] != PI[playerid][pi_ID]) continue;
+									if(PROPERTY_INFO[i][property_OWNER_ID] != ACCOUNT_INFO[playerid][ac_ID]) continue;
 									
 									new label_str[256];
 									format
@@ -19511,14 +19439,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 											Propiedad {"#PRIMARY_COLOR"}#%d\n\n\
 											{FFFFFF}Propietario: {"#PRIMARY_COLOR"}%s\n\
 											{FFFFFF}Presiona {"#PRIMARY_COLOR"}~k~~CONVERSATION_YES~ {FFFFFF}para entrar.\
-										", PROPERTY_INFO[i][property_ID], PI[playerid][pi_NAME]
+										", PROPERTY_INFO[i][property_ID], ACCOUNT_INFO[playerid][ac_NAME]
 									);
 									UpdateDynamic3DTextLabelText(PROPERTY_INFO[i][property_EXT_LABEL_ID], 0xFFFFFFFF, label_str);
 								}
 
-								PI[playerid][pi_COINS] -= CHANGE_NAME_SD_PRICE;
+								PI[playerid][ac_COINS] -= CHANGE_NAME_SD_PRICE;
 
-								mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET name = '%e', coins = %d WHERE id = %d;", PI[playerid][pi_NAME], PI[playerid][pi_COINS], PI[playerid][pi_ID]);
+								mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET name = '%e', coins = %d WHERE id = %d;", ACCOUNT_INFO[playerid][ac_NAME], PI[playerid][ac_COINS], ACCOUNT_INFO[playerid][ac_ID]);
 								printf(QUERY_BUFFER);
 								mysql_tquery(srp_db, QUERY_BUFFER);
 								SendFormatNotification(playerid, "Tu nombre ha sido cambiado a '%s' por %d "SERVER_COIN"", name, CHANGE_NAME_SD_PRICE);
@@ -19540,9 +19468,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(!strlen(inputtext)) return ShowDialog(playerid, dialogid);
 				
 				new password[64 + 1];
-				SHA256_PassHash(inputtext, PI[playerid][pi_SALT], password, sizeof password);
+				SHA256_PassHash(inputtext, ACCOUNT_INFO[playerid][ac_SALT], password, sizeof password);
 			
-				if(!strcmp(password, PI[playerid][pi_PASS], false))
+				if(!strcmp(password, ACCOUNT_INFO[playerid][ac_PASS], false))
 				{
 					ShowDialog(playerid, DIALOG_CHANGE_EMAIL_EMAIL);
 					PLAYER_TEMP[playerid][pt_BAD_LOGIN_ATTEMP] = 0;
@@ -19575,9 +19503,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(rows) SendNotification(playerid, "El correo electrónico introducido está en uso.");
 						else
 						{
-							format(PI[playerid][pi_EMAIL], 32, "%s", email);
+							format(ACCOUNT_INFO[playerid][ac_EMAIL], 32, "%s", email);
 							
-							mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET email = '%e' WHERE id = %d;", PI[playerid][pi_EMAIL], PI[playerid][pi_ID]);
+							mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET email = '%e' WHERE id = %d;", ACCOUNT_INFO[playerid][ac_EMAIL], ACCOUNT_INFO[playerid][ac_ID]);
 							mysql_tquery(srp_db, QUERY_BUFFER);
 							SendNotification(playerid, "Tu correo electrónico ha sido cambiado correctamente.");
 						}
@@ -19644,15 +19572,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								format(string, sizeof string, "saca un(a) %s del armario.", WEAPON_INFO[ PROPERTY_CLOSET[ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY] ][ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY_SLOT] ][property_closet_INT] ][weapon_info_NAME]);
 							}
 							case BOOT_TYPE_MEDICINES: {
-								PI[playerid][pi_MEDICINE] += PROPERTY_CLOSET[ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY] ][ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY_SLOT] ][property_closet_INT];
+								PI[playerid][ac_MEDICINE] += PROPERTY_CLOSET[ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY] ][ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY_SLOT] ][property_closet_INT];
 								format(string, sizeof string, "saca medicamentos del armario.");
 							}
 							case BOOT_TYPE_CANNABIS: {
-								PI[playerid][pi_CANNABIS] += PROPERTY_CLOSET[ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY] ][ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY_SLOT] ][property_closet_INT];
+								PI[playerid][ac_CANNABIS] += PROPERTY_CLOSET[ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY] ][ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY_SLOT] ][property_closet_INT];
 								format(string, sizeof string, "saca marihuana del armario.");
 							}
 							case BOOT_TYPE_CRACK: {
-								PI[playerid][pi_CRACK] += PROPERTY_CLOSET[ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY] ][ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY_SLOT] ][property_closet_INT];
+								PI[playerid][ac_CRACK] += PROPERTY_CLOSET[ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY] ][ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY_SLOT] ][property_closet_INT];
 								format(string, sizeof string, "saca crack del armario.");
 							}
 						}
@@ -19712,7 +19640,7 @@ AddNewAd(playerid, type, price, text[], modelid, vcol1 = 0, vcol2 = 0)
 			INSERT INTO shop (id_player, type, price, text, modelid, rx, ry, rz, zoom, vcol1, vcol2, date)\
 			VALUES (%d, %d, %d, '%e', %d, %f, %f, %f, %f, %d, %d, '%e');\
 		",
-			PI[playerid][pi_ID], type, price, text, modelid, rots[0], rots[1], rots[2], rots[3], vcol1, vcol2, date
+			ACCOUNT_INFO[playerid][ac_ID], type, price, text, modelid, rots[0], rots[1], rots[2], rots[3], vcol1, vcol2, date
 	);
 	mysql_tquery(srp_db, QUERY_BUFFER);
 	return 1;
@@ -19843,7 +19771,7 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
 			if(TERRITORIES[index][territory_VALID])
 			{
 				PLAYER_TEMP[playerid][pt_LAST_TERRITORY] = index;
-				if(PI[playerid][pi_CREW])
+				if(PI[playerid][ac_CREW])
 				{
 					if(TERRITORIES[index][territory_WAR])
 					{
@@ -19897,11 +19825,11 @@ public OnPlayerLeaveDynamicArea(playerid, areaid)
 				}
 			}
 			
-			if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL)
+			if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL)
 			{
 				if(areaid == Jail_Areas[0] || areaid == Jail_Areas[1] || areaid == Jail_Areas[2] || areaid == Jail_Areas[3] )
 				{
-					SetPlayerPosEx(playerid, JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID] ][jail_X], JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID]  ][jail_Y], JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID]  ][jail_Z], JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID]  ][jail_ANGLE], JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID]  ][jail_INTERIOR], 0, true);
+					SetPlayerPosEx(playerid, JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID] ][jail_X], JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_Y], JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_Z], JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_ANGLE], JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_INTERIOR], 0, true);
 				}
 			}
 		}
@@ -19911,7 +19839,7 @@ public OnPlayerLeaveDynamicArea(playerid, areaid)
 			
 			if(TERRITORIES[index][territory_VALID])
 			{
-				if(PI[playerid][pi_CREW])
+				if(PI[playerid][ac_CREW])
 				{
 					SetPlayerNormalColor(playerid);
 					TextDrawHideForPlayer(playerid, Textdraws[textdraw_TERRITORY_BOX]);
@@ -19946,7 +19874,7 @@ public OnPlayerEnterDynamicCP(playerid, checkpointid)
 			if(WORK_VEHICLES[vehicleid][work_vehicle_WORK] != WORK_TRUCK) return 1;
 			if(TRUCK_VEHICLE[vehicleid][truck_vehicle_DELIVERED]) return 1;
 			if(TRUCK_VEHICLE[vehicleid][truck_vehicle_UNLOADING]) return 1;
-			if(TRUCK_VEHICLE[vehicleid][truck_vehicle_DRIVER_USER_ID] != PI[playerid][pi_ID]) return SendNotification(playerid, "Solo aceptaremos la carga del conductor de este camión.");
+			if(TRUCK_VEHICLE[vehicleid][truck_vehicle_DRIVER_USER_ID] != ACCOUNT_INFO[playerid][ac_ID]) return SendNotification(playerid, "Solo aceptaremos la carga del conductor de este camión.");
 			
 			DestroyDynamicCP(PLAYER_TEMP[playerid][pt_TRUCK_CHECKPOINT]);
 			PLAYER_TEMP[playerid][pt_TRUCK_CHECKPOINT] = INVALID_STREAMER_ID;
@@ -19980,7 +19908,7 @@ public OnPlayerEnterDynamicCP(playerid, checkpointid)
 			if(WORK_VEHICLES[vehicleid][work_vehicle_WORK] != WORK_TRUCK) return 1;
 			if(!TRUCK_VEHICLE[vehicleid][truck_vehicle_DELIVERED]) return 1;
 			if(TRUCK_VEHICLE[vehicleid][truck_vehicle_UNLOADING]) return 1;
-			if(TRUCK_VEHICLE[vehicleid][truck_vehicle_DRIVER_USER_ID] != PI[playerid][pi_ID]) return SendNotification(playerid, "Solo le pagaremos al conductor que entregó la mercancía.");
+			if(TRUCK_VEHICLE[vehicleid][truck_vehicle_DRIVER_USER_ID] != ACCOUNT_INFO[playerid][ac_ID]) return SendNotification(playerid, "Solo le pagaremos al conductor que entregó la mercancía.");
 			
 			DestroyDynamicCP(PLAYER_TEMP[playerid][pt_TRUCK_CHECKPOINT]);
 			PLAYER_TEMP[playerid][pt_TRUCK_CHECKPOINT] = INVALID_STREAMER_ID;
@@ -19993,7 +19921,7 @@ public OnPlayerEnterDynamicCP(playerid, checkpointid)
 				work_extra_payment = (work_info[WORK_TRUCK][work_info_EXTRA_PAY] * floatround(floatdiv(PLAYER_WORKS[playerid][WORK_TRUCK][pwork_LEVEL], work_info[WORK_TRUCK][work_info_EXTRA_PAY_EXP])));
 				if(work_info[WORK_TRUCK][work_info_EXTRA_PAY_LIMIT] != 0) if(work_extra_payment > work_info[WORK_TRUCK][work_info_EXTRA_PAY_LIMIT]) work_extra_payment = work_info[WORK_TRUCK][work_info_EXTRA_PAY_LIMIT];
 			
-				if(PI[playerid][pi_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
+				if(ACCOUNT_INFO[playerid][ac_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
 			}
 			
 			if(GivePlayerCash(playerid, Truck_Contents[ TRUCK_VEHICLE[vehicleid][truck_vehicle_POINT] ][truck_content_MONEY] + work_extra_payment, true, false)) {
@@ -20047,11 +19975,11 @@ public OnPlayerEnterDynamicCP(playerid, checkpointid)
 			{
 				driver_work_extra_payment = (work_info[WORK_TRASH][work_info_EXTRA_PAY] * floatround(floatdiv(PLAYER_WORKS[playerid][WORK_TRASH][pwork_LEVEL], work_info[WORK_TRASH][work_info_EXTRA_PAY_EXP])));
 				if(work_info[WORK_TRASH][work_info_EXTRA_PAY_LIMIT] != 0) if(driver_work_extra_payment > work_info[WORK_TRASH][work_info_EXTRA_PAY_LIMIT]) driver_work_extra_payment = work_info[WORK_TRASH][work_info_EXTRA_PAY_LIMIT];
-				if(PI[playerid][pi_VIP]) driver_work_extra_payment += SU_WORK_EXTRA_PAY;
+				if(ACCOUNT_INFO[playerid][ac_VIP]) driver_work_extra_payment += SU_WORK_EXTRA_PAY;
 				
 				passenger_work_extra_payment = (work_info[WORK_TRASH][work_info_EXTRA_PAY] * floatround(floatdiv(PLAYER_WORKS[ TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_PASSENGER_ID] ][WORK_TRASH][pwork_LEVEL], work_info[WORK_TRASH][work_info_EXTRA_PAY_EXP])));
 				if(work_info[WORK_TRASH][work_info_EXTRA_PAY_LIMIT] != 0) if(passenger_work_extra_payment > work_info[WORK_TRASH][work_info_EXTRA_PAY_LIMIT]) passenger_work_extra_payment = work_info[WORK_TRASH][work_info_EXTRA_PAY_LIMIT];
-				if(PI[ TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_PASSENGER_ID] ][pi_VIP]) passenger_work_extra_payment += SU_WORK_EXTRA_PAY;
+				if(ACCOUNT_INFO[ TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_PASSENGER_ID] ][ac_VIP]) passenger_work_extra_payment += SU_WORK_EXTRA_PAY;
 			}
 			
 			GivePlayerCash(playerid, money + driver_work_extra_payment, true, false);
@@ -20084,7 +20012,7 @@ public OnPlayerEnterDynamicCP(playerid, checkpointid)
 					work_extra_payment = (work_info[WORK_LUMBERJACK][work_info_EXTRA_PAY] * floatround(floatdiv(PLAYER_WORKS[playerid][WORK_LUMBERJACK][pwork_LEVEL], work_info[WORK_LUMBERJACK][work_info_EXTRA_PAY_EXP])));
 					if(work_info[WORK_LUMBERJACK][work_info_EXTRA_PAY_LIMIT] != 0) if(work_extra_payment > work_info[WORK_LUMBERJACK][work_info_EXTRA_PAY_LIMIT]) work_extra_payment = work_info[WORK_LUMBERJACK][work_info_EXTRA_PAY_LIMIT];
 					
-					if(PI[playerid][pi_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
+					if(ACCOUNT_INFO[playerid][ac_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
 				}
 				PLAYER_WORKS[playerid][WORK_LUMBERJACK][pwork_LEVEL] ++;
 				AddPlayerJobPoints(playerid, WORK_LUMBERJACK);
@@ -20123,7 +20051,7 @@ public OnPlayerEnterDynamicCP(playerid, checkpointid)
 			
 			new vehicleid = GetPlayerVehicleID(playerid);
 			if(!PIZZA_VEHICLE[vehicleid][pizza_vehicle_STARTED]) return 1;
-			if(PIZZA_VEHICLE[vehicleid][pizza_vehicle_DRIVER_AID] != PI[playerid][pi_ID]) return SendNotification(playerid, "Solo le pagaremos al conductor que realizó el trabajo.");
+			if(PIZZA_VEHICLE[vehicleid][pizza_vehicle_DRIVER_AID] != ACCOUNT_INFO[playerid][ac_ID]) return SendNotification(playerid, "Solo le pagaremos al conductor que realizó el trabajo.");
 		
 			new work_extra_payment;
 			if(work_info[WORK_PIZZA][work_info_EXTRA_PAY] > 0 && work_info[WORK_PIZZA][work_info_EXTRA_PAY_EXP] > 0)
@@ -20131,7 +20059,7 @@ public OnPlayerEnterDynamicCP(playerid, checkpointid)
 				work_extra_payment = (work_info[WORK_PIZZA][work_info_EXTRA_PAY] * floatround(floatdiv(PLAYER_WORKS[playerid][WORK_PIZZA][pwork_LEVEL], work_info[WORK_PIZZA][work_info_EXTRA_PAY_EXP])));
 				if(work_info[WORK_PIZZA][work_info_EXTRA_PAY_LIMIT] != 0) if(work_extra_payment > work_info[WORK_PIZZA][work_info_EXTRA_PAY_LIMIT]) work_extra_payment = work_info[WORK_PIZZA][work_info_EXTRA_PAY_LIMIT];
 			
-				if(PI[playerid][pi_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
+				if(ACCOUNT_INFO[playerid][ac_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
 			}
 			
 			PLAYER_WORKS[playerid][WORK_PIZZA][pwork_LEVEL] ++;
@@ -20152,7 +20080,7 @@ RegisterNewPlayer_GPS_Site(playerid, slot)
 	{
 		PLAYER_GPS[playerid][slot][player_gps_ID] = cache_insert_id();
 	}
-	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO pgps (id_player, name, x, y, z, world, interior) VALUES(%d, '%e', %f, %f, %f, %d, %d);", PI[playerid][pi_ID], PLAYER_GPS[playerid][slot][player_gps_NAME], PLAYER_GPS[playerid][slot][player_gps_X], PLAYER_GPS[playerid][slot][player_gps_Y], PLAYER_GPS[playerid][slot][player_gps_Z], PLAYER_GPS[playerid][slot][player_gps_WORLD], PLAYER_GPS[playerid][slot][player_gps_INTERIOR]);
+	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO pgps (id_player, name, x, y, z, world, interior) VALUES(%d, '%e', %f, %f, %f, %d, %d);", ACCOUNT_INFO[playerid][ac_ID], PLAYER_GPS[playerid][slot][player_gps_NAME], PLAYER_GPS[playerid][slot][player_gps_X], PLAYER_GPS[playerid][slot][player_gps_Y], PLAYER_GPS[playerid][slot][player_gps_Z], PLAYER_GPS[playerid][slot][player_gps_WORLD], PLAYER_GPS[playerid][slot][player_gps_INTERIOR]);
 	MySQL_TQueryInline(srp_db, using inline OnPgpsInserted,QUERY_BUFFER );
 	return 1;
 }
@@ -20163,7 +20091,7 @@ SetPlayerToys(playerid)
 		
 	for(new i = 0; i != MAX_SU_TOYS; i ++)
 	{
-		if(i >= MAX_NU_TOYS && !PI[playerid][pi_VIP]) break;
+		if(i >= MAX_NU_TOYS && !ACCOUNT_INFO[playerid][ac_VIP]) break;
 
 		if(PLAYER_TOYS[playerid][i][player_toy_VALID])
 		{
@@ -20776,12 +20704,12 @@ RegisterNewPlayer(playerid)
 	
 	inline OnPlayerInserted()
 	{
-		PI[playerid][pi_ID] = cache_insert_id();
-		if(PI[playerid][pi_ID])
+		ACCOUNT_INFO[playerid][ac_ID] = cache_insert_id();
+		if(ACCOUNT_INFO[playerid][ac_ID])
 		{
 			PLAYER_TEMP[playerid][pt_USER_EXIST] = true;
-			PI[playerid][pi_PHONE_NUMBER] = getPhoneNumber(PI[playerid][pi_ID]);
-			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET phone_number = %d WHERE id = %d;", PI[playerid][pi_PHONE_NUMBER], PI[playerid][pi_ID]);
+			PI[playerid][ac_PHONE_NUMBER] = getPhoneNumber(ACCOUNT_INFO[playerid][ac_ID]);
+			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET phone_number = %d WHERE id = %d;", PI[playerid][ac_PHONE_NUMBER], ACCOUNT_INFO[playerid][ac_ID]);
 			mysql_tquery(srp_db, QUERY_BUFFER);
 			CreateDefaultContacts(playerid);
 			CallLocalFunction("OnPlayerRegister", "i", playerid);
@@ -20834,14 +20762,38 @@ RegisterNewPlayer(playerid)
 				'%e', '%e', '%e', '%e', '%e', '%e', '%e', %d, %d, %d, %d, %d, %d, %d, %d, %f, %f, %f, %f, %d, %d, %f, %f, %f, %d, %d, %d, %d, %d, %d, %d, %d\
 			);\
 		",
-			PI[playerid][pi_NAME], PI[playerid][pi_IP], PI[playerid][pi_EMAIL], PI[playerid][pi_SALT],
-			PI[playerid][pi_PASS], PI[playerid][pi_REG_DATE], PI[playerid][pi_LAST_CONNECTION], PI[playerid][pi_LAST_CONNECTION_TIMESTAMP],
-			PI[playerid][pi_LEVEL], PI[playerid][pi_REP], PI[playerid][pi_CONNECTED], PI[playerid][pi_PLAYERID],
-			PI[playerid][pi_TIME_FOR_REP], PI[playerid][pi_SKIN], PI[playerid][pi_CASH], PI[playerid][pi_POS_X],
-			PI[playerid][pi_POS_Y], PI[playerid][pi_POS_Z], PI[playerid][pi_ANGLE], PI[playerid][pi_STATE],
-			PI[playerid][pi_FIGHT_STYLE], PI[playerid][pi_HEALTH], PI[playerid][pi_HUNGRY], PI[playerid][pi_THIRST],
-			PI[playerid][pi_CONFIG_SOUNDS], PI[playerid][pi_CONFIG_AUDIO], PI[playerid][pi_CONFIG_TIME],
-			PI[playerid][pi_CONFIG_HUD], PI[playerid][pi_CONFIG_ADMIN], PI[playerid][pi_CONFIG_SECURE_LOGIN], PI[playerid][pi_PHONE_VISIBLE_NUMBER], PI[playerid][pi_DOUBT_CHANNEL]
+			ACCOUNT_INFO[playerid][ac_NAME],
+			ACCOUNT_INFO[playerid][ac_IP],
+			ACCOUNT_INFO[playerid][ac_EMAIL],
+			ACCOUNT_INFO[playerid][ac_SALT],
+			ACCOUNT_INFO[playerid][ac_PASS],
+			PI[playerid][ac_REG_DATE],
+			ACCOUNT_INFO[playerid][ac_LAST_CONNECTION],
+			ACCOUNT_INFO[playerid][ac_LAST_CONNECTION_TIMESTAMP],
+			ACCOUNT_INFO[playerid][ac_LEVEL],
+			ACCOUNT_INFO[playerid][ac_REP],
+			PI[playerid][ac_CONNECTED],
+			PI[playerid][ac_PLAYERID],
+			ACCOUNT_INFO[playerid][ac_TIME_FOR_REP],
+			PI[playerid][ac_SKIN],
+			PI[playerid][ac_CASH],
+			PI[playerid][ac_POS_X],
+			PI[playerid][ac_POS_Y],
+			PI[playerid][ac_POS_Z],
+			PI[playerid][ac_ANGLE],
+			PI[playerid][ac_STATE],
+			PI[playerid][ac_FIGHT_STYLE],
+			PI[playerid][ac_HEALTH],
+			PI[playerid][ac_HUNGRY],
+			PI[playerid][ac_THIRST],
+			PI[playerid][ac_CONFIG_SOUNDS],
+			PI[playerid][ac_CONFIG_AUDIO],
+			PI[playerid][ac_CONFIG_TIME],
+			PI[playerid][ac_CONFIG_HUD],
+			PI[playerid][ac_CONFIG_ADMIN],
+			PI[playerid][ac_CONFIG_SECURE_LOGIN],
+			PI[playerid][ac_PHONE_VISIBLE_NUMBER],
+			ACCOUNT_INFO[playerid][ac_DOUBT_CHANNEL]
 	);
 	MySQL_TQueryInline(srp_db, using inline OnPlayerInserted, QUERY_BUFFER );
 	return 1;
@@ -21121,7 +21073,7 @@ RP_GetPlayerName(playerid)
 
 LoadPlayerPhoneBook(playerid)
 {
-	if(PI[playerid][pi_ID] == 0) return 0;
+	if(ACCOUNT_INFO[playerid][ac_ID] == 0) return 0;
 	
 	inline OnPhoneBookLoad()
 	{
@@ -21142,7 +21094,7 @@ LoadPlayerPhoneBook(playerid)
 			}
 		}
 	}
-	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM pbook WHERE id_player = %d LIMIT %d;", PI[playerid][pi_ID], MAX_PHONE_CONTACTS);
+	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM pbook WHERE id_player = %d LIMIT %d;", ACCOUNT_INFO[playerid][ac_ID], MAX_PHONE_CONTACTS);
 	MySQL_TQueryInline(srp_db,  using inline OnPhoneBookLoad, QUERY_BUFFER);
 	return 1;
 }
@@ -21153,7 +21105,7 @@ RegisterNewPlayerPhoneBook(playerid, slot)
 	{
 		PLAYER_PHONE_BOOK[playerid][slot][phone_book_contact_ID] = cache_insert_id();
 	}
-	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO pbook (id_player, name, number) VALUES (%d, '%e', %d);", PI[playerid][pi_ID], PLAYER_PHONE_BOOK[playerid][slot][phone_book_contact_NAME], PLAYER_PHONE_BOOK[playerid][slot][phone_book_contact_PHONE_NUMBER]);
+	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO pbook (id_player, name, number) VALUES (%d, '%e', %d);", ACCOUNT_INFO[playerid][ac_ID], PLAYER_PHONE_BOOK[playerid][slot][phone_book_contact_NAME], PLAYER_PHONE_BOOK[playerid][slot][phone_book_contact_PHONE_NUMBER]);
 	MySQL_TQueryInline(srp_db,  using inline OnContactInserted, QUERY_BUFFER);
 	return 1;
 }
@@ -21268,14 +21220,14 @@ RegisterNewPlayerPocketObject(playerid, slot)
 	{
 		PLAYER_POCKET[playerid][slot][player_pocket_object_ID] = cache_insert_id();
 	}
-	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO pfoods (id_player, name, hungry, thirst, drunk) VALUES (%d, '%e', %f, %f, %d);", PI[playerid][pi_ID], PLAYER_POCKET[playerid][slot][player_pocket_object_NAME], PLAYER_POCKET[playerid][slot][player_pocket_object_HUNGRY], PLAYER_POCKET[playerid][slot][player_pocket_object_THIRST], PLAYER_POCKET[playerid][slot][player_pocket_object_DRUNK]);
+	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO pfoods (id_player, name, hungry, thirst, drunk) VALUES (%d, '%e', %f, %f, %d);", ACCOUNT_INFO[playerid][ac_ID], PLAYER_POCKET[playerid][slot][player_pocket_object_NAME], PLAYER_POCKET[playerid][slot][player_pocket_object_HUNGRY], PLAYER_POCKET[playerid][slot][player_pocket_object_THIRST], PLAYER_POCKET[playerid][slot][player_pocket_object_DRUNK]);
 	MySQL_TQueryInline(srp_db,  using inline OnPfoodInserted, QUERY_BUFFER);
 	return 1;
 }
 
 LoadPlayerPocketData(playerid)
 {
-	if(PI[playerid][pi_ID] == 0) return 0;
+	if(ACCOUNT_INFO[playerid][ac_ID] == 0) return 0;
 	
 	inline OnPfoodsLoad()
 	{
@@ -21293,14 +21245,14 @@ LoadPlayerPocketData(playerid)
 			}
 		}
 	}
-	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM pfoods WHERE id_player = %d;", PI[playerid][pi_ID]);
+	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM pfoods WHERE id_player = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 	MySQL_TQueryInline(srp_db,  using inline OnPfoodsLoad, QUERY_BUFFER);
 	return 1;
 }
 
 TransferPlayerPocketObject(from_playerid, from_slot, to_playerid, to_slot)
 {
-	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pfoods SET id_player = %d WHERE id = %d;", PI[to_playerid][pi_ID], PLAYER_POCKET[from_playerid][from_slot][player_pocket_object_ID]);
+	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pfoods SET id_player = %d WHERE id = %d;", ACCOUNT_INFO[to_playerid][ac_ID], PLAYER_POCKET[from_playerid][from_slot][player_pocket_object_ID]);
 	mysql_tquery(srp_db, QUERY_BUFFER);
 	
 	PLAYER_POCKET[to_playerid][to_slot][player_pocket_VALID] = true;
@@ -21344,7 +21296,7 @@ GetEmptyPlayerPocketSlot(playerid)
 
 LoadPlayerGPSData(playerid)
 {
-	if(PI[playerid][pi_ID] == 0) return 0;
+	if(ACCOUNT_INFO[playerid][ac_ID] == 0) return 0;
 	
 	inline OnPgpsLoad()
 	{
@@ -21365,14 +21317,14 @@ LoadPlayerGPSData(playerid)
 			}
 		}
 	}
-	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM pgps WHERE id_player = %d;", PI[playerid][pi_ID]);
+	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM pgps WHERE id_player = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 	MySQL_TQueryInline(srp_db,  using inline OnPgpsLoad, QUERY_BUFFER);
 	return 1;
 }
 
 LoadPlayerToys(playerid)
 {
-	if(PI[playerid][pi_ID] == 0) return 0;
+	if(ACCOUNT_INFO[playerid][ac_ID] == 0) return 0;
 	
 	inline OnPlayerToysLoad()
 	{
@@ -21401,14 +21353,14 @@ LoadPlayerToys(playerid)
 			}
 		}
 	}
-	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM ptoys WHERE id_player = %d;", PI[playerid][pi_ID]);
+	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM ptoys WHERE id_player = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 	MySQL_TQueryInline(srp_db,  using inline OnPlayerToysLoad, QUERY_BUFFER);
 	return 1;
 }
 
 SavePlayerToys(playerid)
 {
-	if(!PI[playerid][pi_ID]) return 0;
+	if(!ACCOUNT_INFO[playerid][ac_ID]) return 0;
 	
 	for(new i = 0; i != MAX_SU_TOYS; i ++)
 	{
@@ -22356,7 +22308,7 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid)
 		if(clickedid == Textdraws[textdraw_SHOP_TUNING][2]) //Comprar
 		{
 			new slot = GetVehicleFreeObjectSlot(PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID]);
-			if(!PI[playerid][pi_VIP] && slot >= MAX_NU_VOBJECTS)
+			if(!ACCOUNT_INFO[playerid][ac_VIP] && slot >= MAX_NU_VOBJECTS)
 			{
 				PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
 				SendFormatNotification(playerid, "¡Los jugadores ~y~VIP ~w~pueden tener hasta %d objetos en vehículos! Usa ~y~/ayuda ~w~si quieres ser ~y~VIP.", MAX_SU_VOBJECTS);
@@ -22368,10 +22320,10 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid)
 				return 1;
 			}
 			
-			if(Tuning_Shop_Objects[ PLAYER_TEMP[playerid][pt_SELECT_TUNING_OBJECT] ][tuning_object_PRICE] > PI[playerid][pi_CASH])
+			if(Tuning_Shop_Objects[ PLAYER_TEMP[playerid][pt_SELECT_TUNING_OBJECT] ][tuning_object_PRICE] > PI[playerid][ac_CASH])
 			{
 				PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
-				SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar este objeto.", number_format_thousand(Tuning_Shop_Objects[ PLAYER_TEMP[playerid][pt_SELECT_TUNING_OBJECT] ][tuning_object_PRICE] - PI[playerid][pi_CASH]));
+				SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar este objeto.", number_format_thousand(Tuning_Shop_Objects[ PLAYER_TEMP[playerid][pt_SELECT_TUNING_OBJECT] ][tuning_object_PRICE] - PI[playerid][ac_CASH]));
 				return 1;
 			}
 			
@@ -22470,7 +22422,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_REGISTER_SKIN][8]);
 				PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_REGISTER_SKIN][9]);
 				
-				PI[playerid][pi_GENDER] = -1;
+				PI[playerid][ac_GENDER] = -1;
 				PLAYER_TEMP[playerid][pt_REGISTER_SELECTING_SKIN] = true;
 				PLAYER_TEMP[playerid][pt_REGISTER_SELECTED_SKIN] = 0;
 			
@@ -22501,33 +22453,33 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 	{
 		if(playertextid == PlayerTextdraws[playerid][ptextdraw_REGISTER_SKIN][3]) // Hombre
 		{
-			PI[playerid][pi_GENDER] = 0;
+			PI[playerid][ac_GENDER] = 0;
 			
 			PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_REGISTER_SKIN][2], -94);
 			PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_REGISTER_SKIN][2]);
 			PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_REGISTER_SKIN][4], -256);
 			PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_REGISTER_SKIN][4]);
 			
-			SetActorSkin(PLAYER_TEMP[playerid][pt_REGISTER_ACTOR], Intro_Skins[PI[playerid][pi_GENDER]][PLAYER_TEMP[playerid][pt_REGISTER_SELECTED_SKIN]], PLAYER_TEMP[playerid][pt_REGISTER_ACTOR]);
+			SetActorSkin(PLAYER_TEMP[playerid][pt_REGISTER_ACTOR], Intro_Skins[PI[playerid][ac_GENDER]][PLAYER_TEMP[playerid][pt_REGISTER_SELECTED_SKIN]], PLAYER_TEMP[playerid][pt_REGISTER_ACTOR]);
 			ApplyActorAnimation(PLAYER_TEMP[playerid][pt_REGISTER_ACTOR], "INT_SHOP", "shop_loop", 4.1, 1, 1, 1, 0, 0);
 			return 1;
 		}
 		else if(playertextid == PlayerTextdraws[playerid][ptextdraw_REGISTER_SKIN][5]) // Mujer
 		{
-			PI[playerid][pi_GENDER] = 1;
+			PI[playerid][ac_GENDER] = 1;
 			
 			PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_REGISTER_SKIN][2], -256);
 			PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_REGISTER_SKIN][2]);
 			PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_REGISTER_SKIN][4], -94);
 			PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_REGISTER_SKIN][4]);
 			
-			SetActorSkin(PLAYER_TEMP[playerid][pt_REGISTER_ACTOR], Intro_Skins[PI[playerid][pi_GENDER]][PLAYER_TEMP[playerid][pt_REGISTER_SELECTED_SKIN]], PLAYER_TEMP[playerid][pt_REGISTER_ACTOR]);
+			SetActorSkin(PLAYER_TEMP[playerid][pt_REGISTER_ACTOR], Intro_Skins[PI[playerid][ac_GENDER]][PLAYER_TEMP[playerid][pt_REGISTER_SELECTED_SKIN]], PLAYER_TEMP[playerid][pt_REGISTER_ACTOR]);
 			ApplyActorAnimation(PLAYER_TEMP[playerid][pt_REGISTER_ACTOR], "INT_SHOP", "shop_loop", 4.1, 1, 1, 1, 0, 0);
 			return 1;
 		}
 		else if(playertextid == PlayerTextdraws[playerid][ptextdraw_REGISTER_SKIN][6]) // Continuar
 		{
-			if(PI[playerid][pi_GENDER] == -1)
+			if(PI[playerid][ac_GENDER] == -1)
 			{
 				SendNotification(playerid, "Antes de continuar debes optar por un género para tu personaje.");
 				SelectTextDrawEx(playerid, 0xe8d08fFF);
@@ -22535,7 +22487,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			}
 			
 			TextDrawShowForPlayer(playerid, Textdraws[textdraw_LOAD_SCREEN][0]);
-			PI[playerid][pi_SKIN] = Intro_Skins[PI[playerid][pi_GENDER]][PLAYER_TEMP[playerid][pt_REGISTER_SELECTED_SKIN]];
+			PI[playerid][ac_SKIN] = Intro_Skins[PI[playerid][ac_GENDER]][PLAYER_TEMP[playerid][pt_REGISTER_SELECTED_SKIN]];
 			
 			PlayerTextDrawHide(playerid, PlayerTextdraws[playerid][ptextdraw_REGISTER_SKIN][0]);
 			PlayerTextDrawHide(playerid, PlayerTextdraws[playerid][ptextdraw_REGISTER_SKIN][1]);
@@ -22556,17 +22508,17 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			PLAYER_TEMP[playerid][pt_REGISTER_ACTOR] = INVALID_ACTOR_ID;			
 
 			// Spawn 
-			SetPlayerScore(playerid, PI[playerid][pi_LEVEL]);
+			SetPlayerScore(playerid, ACCOUNT_INFO[playerid][ac_LEVEL]);
 			PLAYER_TEMP[playerid][pt_DOUBT_CHANNEL_TIME] = gettime();
 			ResetPlayerWeapons(playerid);
 			ResetPlayerMoney(playerid);
-			GivePlayerMoney(playerid, PI[playerid][pi_CASH]);
-			SetPlayerFightingStyle(playerid, PI[playerid][pi_FIGHT_STYLE]);
-			SetPlayerHealthEx(playerid, PI[playerid][pi_HEALTH]);
-			SetPlayerArmourEx(playerid, PI[playerid][pi_ARMOUR]);
+			GivePlayerMoney(playerid, PI[playerid][ac_CASH]);
+			SetPlayerFightingStyle(playerid, PI[playerid][ac_FIGHT_STYLE]);
+			SetPlayerHealthEx(playerid, PI[playerid][ac_HEALTH]);
+			SetPlayerArmourEx(playerid, PI[playerid][ac_ARMOUR]);
 			SetPlayerVirtualWorld(playerid, 0);
-			SetSpawnInfo(playerid, NO_TEAM, PI[playerid][pi_SKIN], PI[playerid][pi_POS_X], PI[playerid][pi_POS_Y], PI[playerid][pi_POS_Z], PI[playerid][pi_ANGLE], 0, 0, 0, 0, 0, 0);
-			SetPlayerInterior(playerid, PI[playerid][pi_INTERIOR]);
+			SetSpawnInfo(playerid, NO_TEAM, PI[playerid][ac_SKIN], PI[playerid][ac_POS_X], PI[playerid][ac_POS_Y], PI[playerid][ac_POS_Z], PI[playerid][ac_ANGLE], 0, 0, 0, 0, 0, 0);
+			SetPlayerInterior(playerid, PI[playerid][ac_INTERIOR]);
 			
 			//
 			RegisterNewPlayer(playerid);
@@ -22574,7 +22526,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 		}
 		else if(playertextid == PlayerTextdraws[playerid][ptextdraw_REGISTER_SKIN][7]) // Siguiente ropa
 		{
-			if(PI[playerid][pi_GENDER] == -1) return SendNotification(playerid, "Debes optar por un género antes de cambiar de ropa.");
+			if(PI[playerid][ac_GENDER] == -1) return SendNotification(playerid, "Debes optar por un género antes de cambiar de ropa.");
 			
 			if(PLAYER_TEMP[playerid][pt_REGISTER_SELECTED_SKIN] == (sizeof(Intro_Skins[]) - 1)) PLAYER_TEMP[playerid][pt_REGISTER_SELECTED_SKIN] = 0;			
 			else PLAYER_TEMP[playerid][pt_REGISTER_SELECTED_SKIN] ++;
@@ -22583,13 +22535,13 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			format(td_str, sizeof td_str, "%d/%d", PLAYER_TEMP[playerid][pt_REGISTER_SELECTED_SKIN] + 1, sizeof(Intro_Skins[]));
 			PlayerTextDrawSetString(playerid, PlayerTextdraws[playerid][ptextdraw_REGISTER_SKIN][9], td_str);
 			
-			SetActorSkin(PLAYER_TEMP[playerid][pt_REGISTER_ACTOR], Intro_Skins[PI[playerid][pi_GENDER]][PLAYER_TEMP[playerid][pt_REGISTER_SELECTED_SKIN]], PLAYER_TEMP[playerid][pt_REGISTER_ACTOR]);
+			SetActorSkin(PLAYER_TEMP[playerid][pt_REGISTER_ACTOR], Intro_Skins[PI[playerid][ac_GENDER]][PLAYER_TEMP[playerid][pt_REGISTER_SELECTED_SKIN]], PLAYER_TEMP[playerid][pt_REGISTER_ACTOR]);
 			ApplyActorAnimation(PLAYER_TEMP[playerid][pt_REGISTER_ACTOR], "INT_SHOP", "shop_loop", 4.1, 1, 1, 1, 0, 0);
 			return 1;
 		}
 		else if(playertextid == PlayerTextdraws[playerid][ptextdraw_REGISTER_SKIN][8]) // Anterior ropa
 		{
-			if(PI[playerid][pi_GENDER] == -1) return SendNotification(playerid, "Debes optar por un género antes de cambiar de ropa.");
+			if(PI[playerid][ac_GENDER] == -1) return SendNotification(playerid, "Debes optar por un género antes de cambiar de ropa.");
 			
 			if(PLAYER_TEMP[playerid][pt_REGISTER_SELECTED_SKIN] == 0) PLAYER_TEMP[playerid][pt_REGISTER_SELECTED_SKIN] = sizeof(Intro_Skins[]) - 1;
 			else PLAYER_TEMP[playerid][pt_REGISTER_SELECTED_SKIN] --;
@@ -22598,7 +22550,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			format(td_str, sizeof td_str, "%d/%d", PLAYER_TEMP[playerid][pt_REGISTER_SELECTED_SKIN] + 1, sizeof(Intro_Skins[]));
 			PlayerTextDrawSetString(playerid, PlayerTextdraws[playerid][ptextdraw_REGISTER_SKIN][9], td_str);
 			
-			SetActorSkin(PLAYER_TEMP[playerid][pt_REGISTER_ACTOR], Intro_Skins[PI[playerid][pi_GENDER]][PLAYER_TEMP[playerid][pt_REGISTER_SELECTED_SKIN]], PLAYER_TEMP[playerid][pt_REGISTER_ACTOR]);
+			SetActorSkin(PLAYER_TEMP[playerid][pt_REGISTER_ACTOR], Intro_Skins[PI[playerid][ac_GENDER]][PLAYER_TEMP[playerid][pt_REGISTER_SELECTED_SKIN]], PLAYER_TEMP[playerid][pt_REGISTER_ACTOR]);
 			ApplyActorAnimation(PLAYER_TEMP[playerid][pt_REGISTER_ACTOR], "INT_SHOP", "shop_loop", 4.1, 1, 1, 1, 0, 0);
 			return 1;
 		}
@@ -22616,7 +22568,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			{
 				case INTERIOR_BINCO:
 				{
-					switch(PI[playerid][pi_GENDER])
+					switch(PI[playerid][ac_GENDER])
 					{
 						case SEX_MALE: clothe_info = Binco_Shop_Male_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]];
 						case SEX_FEMALE: clothe_info = Binco_Shop_Female_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]];
@@ -22624,7 +22576,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				}
 				case INTERIOR_SUBURBAN:
 				{
-					switch(PI[playerid][pi_GENDER])
+					switch(PI[playerid][ac_GENDER])
 					{
 						case SEX_MALE: clothe_info = Suburban_Shop_Male_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]];
 						case SEX_FEMALE: clothe_info = Suburban_Shop_Female_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]];
@@ -22632,7 +22584,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				}
 				case INTERIOR_PROLAPS:
 				{
-					switch(PI[playerid][pi_GENDER])
+					switch(PI[playerid][ac_GENDER])
 					{
 						case SEX_MALE: clothe_info = Prolaps_Shop_Male_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]];
 						case SEX_FEMALE: clothe_info = Prolaps_Shop_Female_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]];
@@ -22640,7 +22592,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				}
 				case INTERIOR_DIDIER_SACHS:
 				{
-					switch(PI[playerid][pi_GENDER])
+					switch(PI[playerid][ac_GENDER])
 					{
 						case SEX_MALE: clothe_info = Didier_Shop_Male_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]];
 						case SEX_FEMALE: clothe_info = Didier_Shop_Female_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]];
@@ -22648,7 +22600,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				}
 				case INTERIOR_VICTIM:
 				{
-					switch(PI[playerid][pi_GENDER])
+					switch(PI[playerid][ac_GENDER])
 					{
 						case SEX_MALE: clothe_info = Victim_Shop_Male_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]];
 						case SEX_FEMALE: clothe_info = Victim_Shop_Female_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]];
@@ -22656,7 +22608,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				}
 				case INTERIOR_ZIP:
 				{
-					switch(PI[playerid][pi_GENDER])
+					switch(PI[playerid][ac_GENDER])
 					{
 						case SEX_MALE: clothe_info = Zip_Shop_Male_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]];
 						case SEX_FEMALE: clothe_info = Zip_Shop_Female_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]];
@@ -22664,10 +22616,10 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				}
 			}
 			
-			if(PI[playerid][pi_CASH] >= clothe_info[2])
+			if(PI[playerid][ac_CASH] >= clothe_info[2])
 			{
 				if(GivePlayerCash(playerid, -clothe_info[2], true, true)) {
-					PI[playerid][pi_SKIN] = clothe_info[0];
+					PI[playerid][ac_SKIN] = clothe_info[0];
 					
 					PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);
 					SendFormatNotification(playerid, "Gracias por comprar ropa en ~g~%s~w~, vuelva pronto.", Clothing_Shop_Positions[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP]][clothing_shop_NAME]);
@@ -22679,7 +22631,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			else
 			{
 				PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
-				SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar esta ropa.", number_format_thousand(clothe_info[2] - PI[playerid][pi_CASH]));
+				SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar esta ropa.", number_format_thousand(clothe_info[2] - PI[playerid][ac_CASH]));
 			}
 			return 1;
 		}
@@ -22691,7 +22643,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			{
 				case INTERIOR_BINCO:
 				{
-					switch(PI[playerid][pi_GENDER])
+					switch(PI[playerid][ac_GENDER])
 					{
 						case SEX_MALE:
 						{
@@ -22707,7 +22659,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				}
 				case INTERIOR_SUBURBAN:
 				{
-					switch(PI[playerid][pi_GENDER])
+					switch(PI[playerid][ac_GENDER])
 					{
 						case SEX_MALE:
 						{
@@ -22723,7 +22675,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				}
 				case INTERIOR_PROLAPS:
 				{
-					switch(PI[playerid][pi_GENDER])
+					switch(PI[playerid][ac_GENDER])
 					{
 						case SEX_MALE:
 						{
@@ -22739,7 +22691,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				}
 				case INTERIOR_DIDIER_SACHS:
 				{
-					switch(PI[playerid][pi_GENDER])
+					switch(PI[playerid][ac_GENDER])
 					{
 						case SEX_MALE:
 						{
@@ -22755,7 +22707,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				}
 				case INTERIOR_VICTIM:
 				{
-					switch(PI[playerid][pi_GENDER])
+					switch(PI[playerid][ac_GENDER])
 					{
 						case SEX_MALE:
 						{
@@ -22771,7 +22723,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				}
 				case INTERIOR_ZIP:
 				{
-					switch(PI[playerid][pi_GENDER])
+					switch(PI[playerid][ac_GENDER])
 					{
 						case SEX_MALE:
 						{
@@ -22798,7 +22750,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			{
 				case INTERIOR_BINCO:
 				{
-					switch(PI[playerid][pi_GENDER])
+					switch(PI[playerid][ac_GENDER])
 					{
 						case SEX_MALE:
 						{
@@ -22814,7 +22766,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				}
 				case INTERIOR_SUBURBAN:
 				{
-					switch(PI[playerid][pi_GENDER])
+					switch(PI[playerid][ac_GENDER])
 					{
 						case SEX_MALE:
 						{
@@ -22830,7 +22782,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				}
 				case INTERIOR_PROLAPS:
 				{
-					switch(PI[playerid][pi_GENDER])
+					switch(PI[playerid][ac_GENDER])
 					{
 						case SEX_MALE:
 						{
@@ -22846,7 +22798,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				}
 				case INTERIOR_DIDIER_SACHS:
 				{
-					switch(PI[playerid][pi_GENDER])
+					switch(PI[playerid][ac_GENDER])
 					{
 						case SEX_MALE:
 						{
@@ -22862,7 +22814,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				}
 				case INTERIOR_VICTIM:
 				{
-					switch(PI[playerid][pi_GENDER])
+					switch(PI[playerid][ac_GENDER])
 					{
 						case SEX_MALE:
 						{
@@ -22878,7 +22830,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				}
 				case INTERIOR_ZIP:
 				{
-					switch(PI[playerid][pi_GENDER])
+					switch(PI[playerid][ac_GENDER])
 					{
 						case SEX_MALE:
 						{
@@ -22903,10 +22855,10 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 	{
 		if(playertextid == PlayerTextdraws[playerid][ptextdraw_TOYS_SHOP][5]) //Comprar
 		{		
-			if(PI[playerid][pi_CASH] >= Toys_Shop[ PLAYER_TEMP[playerid][pt_TOYS_SHOP_TOY_SELECTED] ][shop_toy_price])
+			if(PI[playerid][ac_CASH] >= Toys_Shop[ PLAYER_TEMP[playerid][pt_TOYS_SHOP_TOY_SELECTED] ][shop_toy_price])
 			{
 				new slot = GetEmptyPlayerToySlot(playerid);
-				if(!PI[playerid][pi_VIP] && slot >= MAX_NU_TOYS)
+				if(!ACCOUNT_INFO[playerid][ac_VIP] && slot >= MAX_NU_TOYS)
 				{
 					PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
 					SendFormatNotification(playerid, "¡Los jugadores ~y~VIP ~w~pueden tener hasta %d accesorios! Usa ~y~/ayuda ~w~si quieres ser ~y~VIP~w~.", MAX_SU_TOYS);
@@ -22948,7 +22900,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			else
 			{
 				PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
-				SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar esta ropa.", number_format_thousand(Toys_Shop[ PLAYER_TEMP[playerid][pt_TOYS_SHOP_TOY_SELECTED] ][shop_toy_price] - PI[playerid][pi_CASH]));
+				SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar esta ropa.", number_format_thousand(Toys_Shop[ PLAYER_TEMP[playerid][pt_TOYS_SHOP_TOY_SELECTED] ][shop_toy_price] - PI[playerid][ac_CASH]));
 			}
 			
 		}
@@ -22982,7 +22934,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			{
 				case PLAYER_SHOP_STATE_ALL:
 				{
-					if(PI[playerid][pi_LEVEL] < 2) return SendNotification(playerid, "Debes ser al menos nivel 2 para publicar anuncios.");
+					if(ACCOUNT_INFO[playerid][ac_LEVEL] < 2) return SendNotification(playerid, "Debes ser al menos nivel 2 para publicar anuncios.");
 					
 					new interval = GetTickDiff(GetTickCount(), PLAYER_TEMP[playerid][pt_ANTIFLOOD_SHOP]);
 					if(interval < 500) return SendNotification(playerid, "Cálmate.");
@@ -23007,7 +22959,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 							}
 						}
 					}
-					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM shop WHERE id_player = %d;", PI[playerid][pi_ID]);
+					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM shop WHERE id_player = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 					MySQL_TQueryInline(srp_db,  using inline OnShopChecked, QUERY_BUFFER);
 				}
 			}
@@ -23096,7 +23048,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 							}
 						}
 					}
-					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM shop WHERE id_player = %d;", PI[playerid][pi_ID]);
+					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM shop WHERE id_player = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 					MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 				}
 				case PLAYER_SHOP_STATE_AD: ShowDialog(playerid, DIALOG_SHOP_ARTICLE_REMOVE);
@@ -23154,7 +23106,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 							}
 						}
 					}
-					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM shop WHERE id_player = %d;", PI[playerid][pi_ID]);
+					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM shop WHERE id_player = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 					MySQL_TQueryInline(srp_db,  using inline OnCountQueryLoad, QUERY_BUFFER);
 				}
 				case PLAYER_SHOP_STATE_AD: // Atrás
@@ -23178,20 +23130,20 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 
 UpdateReputationTextDraws(playerid)
 {
-	new neccessary_rep = PI[playerid][pi_LEVEL] * REP_MULTIPLIER, str[64];
-	if(PI[playerid][pi_REP] >= neccessary_rep)
+	new neccessary_rep = ACCOUNT_INFO[playerid][ac_LEVEL] * REP_MULTIPLIER, str[64];
+	if(ACCOUNT_INFO[playerid][ac_REP] >= neccessary_rep)
 	{
 		PlayerTextDrawTextSize(playerid, PlayerTextdraws[playerid][ptextdraw_HUD][0], 640.0, 0.0);
-		if(PI[playerid][pi_CONFIG_HUD]) PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_HUD][0]);
-		format(str, sizeof str, "Nivel_%d__(/comprarnivel)", PI[playerid][pi_LEVEL]);
+		if(PI[playerid][ac_CONFIG_HUD]) PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_HUD][0]);
+		format(str, sizeof str, "Nivel_%d__(/comprarnivel)", ACCOUNT_INFO[playerid][ac_LEVEL]);
 		PlayerTextDrawSetString(playerid, PlayerTextdraws[playerid][ptextdraw_HUD][3], str);
 	}
 	else
 	{
-		new Float:sizeX = floatmul(floatdiv(PI[playerid][pi_REP], neccessary_rep), 640.0);
+		new Float:sizeX = floatmul(floatdiv(ACCOUNT_INFO[playerid][ac_REP], neccessary_rep), 640.0);
 		PlayerTextDrawTextSize(playerid, PlayerTextdraws[playerid][ptextdraw_HUD][0], sizeX, 0.0);
-		if(PI[playerid][pi_CONFIG_HUD]) PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_HUD][0]);
-		format(str, sizeof str, "Nivel_%d__(%d/%d)", PI[playerid][pi_LEVEL], PI[playerid][pi_REP], neccessary_rep);
+		if(PI[playerid][ac_CONFIG_HUD]) PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_HUD][0]);
+		format(str, sizeof str, "Nivel_%d__(%d/%d)", ACCOUNT_INFO[playerid][ac_LEVEL], ACCOUNT_INFO[playerid][ac_REP], neccessary_rep);
 		PlayerTextDrawSetString(playerid, PlayerTextdraws[playerid][ptextdraw_HUD][3], str);
 	}
 	return 1;
@@ -23200,29 +23152,29 @@ UpdateReputationTextDraws(playerid)
 forward AddPlayerReputation(playerid);
 public AddPlayerReputation(playerid)
 {
-	new neccessary_rep = PI[playerid][pi_LEVEL] * REP_MULTIPLIER;
-	if(PI[playerid][pi_REP] < neccessary_rep)
+	new neccessary_rep = ACCOUNT_INFO[playerid][ac_LEVEL] * REP_MULTIPLIER;
+	if(ACCOUNT_INFO[playerid][ac_REP] < neccessary_rep)
 	{
-		PI[playerid][pi_REP] ++;
+		ACCOUNT_INFO[playerid][ac_REP] ++;
 		UpdateReputationTextDraws(playerid);
 		
-		if(PI[playerid][pi_REP] >= neccessary_rep) SendNotification(playerid, "Escribe ~g~/comprarnivel ~w~para subir de nivel.");
+		if(ACCOUNT_INFO[playerid][ac_REP] >= neccessary_rep) SendNotification(playerid, "Escribe ~g~/comprarnivel ~w~para subir de nivel.");
 		
-		PI[playerid][pi_PAYDAY_REP] ++;
-		if(PI[playerid][pi_PAYDAY_REP] >= REP_FOR_PAYDAY)
+		ACCOUNT_INFO[playerid][ac_PAYDAY_REP] ++;
+		if(ACCOUNT_INFO[playerid][ac_PAYDAY_REP] >= REP_FOR_PAYDAY)
 		{
 			PlayerPayday(playerid);
-			PI[playerid][pi_PAYDAY_REP] = 0;
+			ACCOUNT_INFO[playerid][ac_PAYDAY_REP] = 0;
 		}
 		
-		PI[playerid][pi_TIME_FOR_REP] = TIME_FOR_REP;
+		ACCOUNT_INFO[playerid][ac_TIME_FOR_REP] = TIME_FOR_REP;
 		PLAYER_TEMP[playerid][pt_TIME_PASSED_LAST_REP] = gettime() * 1000;
 
-		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET time_playing = %d, level = %d, rep = %d, time_for_rep = %d, payday_rep = %d WHERE id = %d;", PI[playerid][pi_TIME_PLAYING], PI[playerid][pi_LEVEL], PI[playerid][pi_REP], TIME_FOR_REP, PI[playerid][pi_PAYDAY_REP], PI[playerid][pi_ID]);
+		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET time_playing = %d, level = %d, rep = %d, time_for_rep = %d, payday_rep = %d WHERE id = %d;", ACCOUNT_INFO[playerid][ac_TIME_PLAYING], ACCOUNT_INFO[playerid][ac_LEVEL], ACCOUNT_INFO[playerid][ac_REP], TIME_FOR_REP, ACCOUNT_INFO[playerid][ac_PAYDAY_REP], ACCOUNT_INFO[playerid][ac_ID]);
 		mysql_tquery(srp_db, QUERY_BUFFER);
 
 		KillTimer(PLAYER_TEMP[playerid][pt_TIMERS][2]);
-		PLAYER_TEMP[playerid][pt_TIMERS][2] = SetTimerEx("AddPlayerReputation", PI[playerid][pi_TIME_FOR_REP], false, "i", playerid);
+		PLAYER_TEMP[playerid][pt_TIMERS][2] = SetTimerEx("AddPlayerReputation", ACCOUNT_INFO[playerid][ac_TIME_FOR_REP], false, "i", playerid);
 		return 1;
 	}
 	KillTimer(PLAYER_TEMP[playerid][pt_TIMERS][2]);
@@ -23231,41 +23183,41 @@ public AddPlayerReputation(playerid)
 
 CMD:comprarnivel(playerid, params[])
 {
-	new neccessary_rep = PI[playerid][pi_LEVEL] * REP_MULTIPLIER;
-	if(PI[playerid][pi_REP] < neccessary_rep) return SendNotification(playerid, "Aún no tienes la suficiente reputación para subir de nivel.");
-	if(PI[playerid][pi_LEVEL] * 150 > PI[playerid][pi_CASH]) return SendFormatNotification(playerid, "No tienes suficiente dinero para subir de nivel, te faltan ~g~%s dólares~w~ para poder comprarlo.", number_format_thousand((PI[playerid][pi_LEVEL] * 150) - PI[playerid][pi_CASH]));
+	new neccessary_rep = ACCOUNT_INFO[playerid][ac_LEVEL] * REP_MULTIPLIER;
+	if(ACCOUNT_INFO[playerid][ac_REP] < neccessary_rep) return SendNotification(playerid, "Aún no tienes la suficiente reputación para subir de nivel.");
+	if(ACCOUNT_INFO[playerid][ac_LEVEL] * 150 > PI[playerid][ac_CASH]) return SendFormatNotification(playerid, "No tienes suficiente dinero para subir de nivel, te faltan ~g~%s dólares~w~ para poder comprarlo.", number_format_thousand((ACCOUNT_INFO[playerid][ac_LEVEL] * 150) - PI[playerid][ac_CASH]));
 	
-	if(GivePlayerCash(playerid, -(PI[playerid][pi_LEVEL] * 150), true, true)) {
-		PI[playerid][pi_REP] = 1;
-		PI[playerid][pi_LEVEL] ++;
+	if(GivePlayerCash(playerid, -(ACCOUNT_INFO[playerid][ac_LEVEL] * 150), true, true)) {
+		ACCOUNT_INFO[playerid][ac_REP] = 1;
+		ACCOUNT_INFO[playerid][ac_LEVEL] ++;
 		UpdateReputationTextDraws(playerid);
 		SetPlayerSkillLevels(playerid);
 		
-		SendFormatNotification(playerid, "~g~¡Felicidades! ~w~Has subido al nivel %d. Pagaste ~g~%d dólares~w~ por él.", PI[playerid][pi_LEVEL], PI[playerid][pi_LEVEL] * 150);
-		SetPlayerScore(playerid, PI[playerid][pi_LEVEL]);
+		SendFormatNotification(playerid, "~g~¡Felicidades! ~w~Has subido al nivel %d. Pagaste ~g~%d dólares~w~ por él.", ACCOUNT_INFO[playerid][ac_LEVEL], ACCOUNT_INFO[playerid][ac_LEVEL] * 150);
+		SetPlayerScore(playerid, ACCOUNT_INFO[playerid][ac_LEVEL]);
 		PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);
 		
-		PI[playerid][pi_TIME_FOR_REP] = TIME_FOR_REP;
+		ACCOUNT_INFO[playerid][ac_TIME_FOR_REP] = TIME_FOR_REP;
 		PLAYER_TEMP[playerid][pt_TIME_PASSED_LAST_REP] = gettime() * 1000;
 		
-		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET time_playing = %d, level = %d, rep = %d, time_for_rep = %d, payday_rep = %d WHERE id = %d;", PI[playerid][pi_TIME_PLAYING], PI[playerid][pi_LEVEL], PI[playerid][pi_REP], TIME_FOR_REP, PI[playerid][pi_PAYDAY_REP], PI[playerid][pi_ID]);
+		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET time_playing = %d, level = %d, rep = %d, time_for_rep = %d, payday_rep = %d WHERE id = %d;", ACCOUNT_INFO[playerid][ac_TIME_PLAYING], ACCOUNT_INFO[playerid][ac_LEVEL], ACCOUNT_INFO[playerid][ac_REP], TIME_FOR_REP, ACCOUNT_INFO[playerid][ac_PAYDAY_REP], ACCOUNT_INFO[playerid][ac_ID]);
 		mysql_tquery(srp_db, QUERY_BUFFER);
 		
 		KillTimer(PLAYER_TEMP[playerid][pt_TIMERS][2]);
-		PLAYER_TEMP[playerid][pt_TIMERS][2] = SetTimerEx("AddPlayerReputation", PI[playerid][pi_TIME_FOR_REP], false, "i", playerid);
+		PLAYER_TEMP[playerid][pt_TIMERS][2] = SetTimerEx("AddPlayerReputation", ACCOUNT_INFO[playerid][ac_TIME_FOR_REP], false, "i", playerid);
 	}
 	return 1;
 }
 
 stock SetPlayerCash(playerid, amount, bool:update = true)
 {
-	PI[playerid][pi_CASH] = amount;
+	PI[playerid][ac_CASH] = amount;
 	ResetPlayerMoney(playerid);
-	GivePlayerMoney(playerid, PI[playerid][pi_CASH]);
+	GivePlayerMoney(playerid, PI[playerid][ac_CASH]);
 	
 	if(update)
 	{
-		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET cash = %d WHERE id = %d;", PI[playerid][pi_CASH], PI[playerid][pi_ID]);
+		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET cash = %d WHERE id = %d;", PI[playerid][ac_CASH], ACCOUNT_INFO[playerid][ac_ID]);
 		mysql_tquery(srp_db, QUERY_BUFFER);
 	}
 	return 1;
@@ -23276,15 +23228,15 @@ GivePlayerCash(playerid, amount, bool:update = true, bool:negative = false)
 	if(amount == 0) return 1;
 	if(!negative && amount < 0) return 0;
 	if(negative && amount > 0) return 0;
-	if(negative && (PI[playerid][pi_CASH] + amount) < 0) return 0;
+	if(negative && (PI[playerid][ac_CASH] + amount) < 0) return 0;
 
-	PI[playerid][pi_CASH] += amount;
+	PI[playerid][ac_CASH] += amount;
 	ResetPlayerMoney(playerid);
-	GivePlayerMoney(playerid, PI[playerid][pi_CASH]);
+	GivePlayerMoney(playerid, PI[playerid][ac_CASH]);
 	
 	if(update)
 	{
-		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET cash = %d WHERE id = %d;", PI[playerid][pi_CASH], PI[playerid][pi_ID]);
+		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET cash = %d WHERE id = %d;", PI[playerid][ac_CASH], ACCOUNT_INFO[playerid][ac_ID]);
 		mysql_tquery(srp_db, QUERY_BUFFER);
 	}
 	return 1;
@@ -23528,9 +23480,9 @@ GetOwnerIntProperty(id_house)
 	{
 		if(IsPlayerConnected(i))
 		{
-			if(PI[i][pi_STATE] == ROLEPLAY_STATE_OWN_PROPERTY)
+			if(PI[i][ac_STATE] == ROLEPLAY_STATE_OWN_PROPERTY)
 			{
-				if(PI[i][pi_LOCAL_INTERIOR] == id_house)
+				if(PI[i][ac_LOCAL_INTERIOR] == id_house)
 				{
 					return i;
 				}
@@ -23850,11 +23802,11 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	}
 	else if(newkeys & KEY_FIRE)
 	{
-		if(PI[playerid][pi_LEVEL] == 1 && GetPlayerState(playerid) == PLAYER_STATE_ONFOOT && GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_NONE) ApplyAnimation(playerid, "PED", "IDLE_tired", 4.1, false, false, false, false, 0);
+		if(ACCOUNT_INFO[playerid][ac_LEVEL] == 1 && GetPlayerState(playerid) == PLAYER_STATE_ONFOOT && GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_NONE) ApplyAnimation(playerid, "PED", "IDLE_tired", 4.1, false, false, false, false, 0);
 		return 1;
 	}
 	else if(newkeys == KEY_F && GetPlayerState(playerid) == PLAYER_STATE_ONFOOT && TieneRoca[playerid] == 0 )
-	//else if(newkeys == KEY_F && GetPlayerState(playerid) == PLAYER_STATE_ONFOOT && TieneRoca[playerid] == 0 && PI[playerid][pi_GPS] == 1 && PLAYER_TEMP[playerid][pt_WORKING_IN] == WORK_MINERO)
+	//else if(newkeys == KEY_F && GetPlayerState(playerid) == PLAYER_STATE_ONFOOT && TieneRoca[playerid] == 0 && PI[playerid][ac_GPS] == 1 && PLAYER_TEMP[playerid][pt_WORKING_IN] == WORK_MINERO)
 		{
 			for( new i; i < sizeof MinaInfo; i++ )
 			{
@@ -23862,7 +23814,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				{
 					if(MinaInfo[i][w_use]) return 1;
 					if(ProcesoPicando[playerid] != 0) return 1;
-					if(PI[playerid][pi_Maso] == 0) return SendNotification(playerid, "No tienes un maso para minar, compralo afuera.");
+					if(PI[playerid][ac_Maso] == 0) return SendNotification(playerid, "No tienes un maso para minar, compralo afuera.");
 					if( MinaInfo[i][w_count] > 0 )
 					{
 						ProcesoPicando[playerid] = 0;		
@@ -23959,7 +23911,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				{
 					if(IsPlayerInRangeOfPoint(playerid, 1.5, 1208.744140, -34.261119, 1000.953125) || IsPlayerInRangeOfPoint(playerid, 1.5, 1213.738037, -33.667881, 1000.953125))
                     {
-                        if(PI[playerid][pi_CASH] <= 25) return SendNotification(playerid, "Digamos que no tienes mucho dinero como para estar gastándotelo en esto...");
+                        if(PI[playerid][ac_CASH] <= 25) return SendNotification(playerid, "Digamos que no tienes mucho dinero como para estar gastándotelo en esto...");
 						
 						if(GivePlayerCash(playerid, -random(25), false, true)) {
 							ApplyAnimation(playerid, "STRIP", RandomPayStripAnimations[random(sizeof(RandomPayStripAnimations))], 4.1, 0, 0, 0, 0, 0);
@@ -24086,7 +24038,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					GLOBAL_VEHICLES[vehicleid][gb_vehicle_PARAMS_ENGINE] = 0;
 					UpdateVehicleParams(vehicleid);
 					
-					if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == PI[playerid][pi_ID]) Auto_SendPlayerAction(playerid, "ha detenido su vehículo.");
+					if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID]) Auto_SendPlayerAction(playerid, "ha detenido su vehículo.");
 					else Auto_SendPlayerAction(playerid, "ha detenido el vehículo.");
 				}
 				else
@@ -24100,7 +24052,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				}
 			}
 			case PLAYER_STATE_ONFOOT: {
-				if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return 1;
+				if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return 1;
 				if(PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID] == 0) return 1;
 					
 				new info[3];
@@ -24122,8 +24074,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				
 						if(info[2] == 1) // Está en el Pickup Interior y quiere ir al exterior
 						{
-							PI[playerid][pi_STATE] = ROLEPLAY_STATE_NORMAL;
-							PI[playerid][pi_LOCAL_INTERIOR] = 0;
+							ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_NORMAL;
+							PI[playerid][ac_LOCAL_INTERIOR] = 0;
 							PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] = -1;
 							SetPlayerPosEx(playerid, ENTER_EXIT[info[1]][ee_EXT_X], ENTER_EXIT[info[1]][ee_EXT_Y], ENTER_EXIT[info[1]][ee_EXT_Z], ENTER_EXIT[info[1]][ee_EXT_ANGLE], ENTER_EXIT[info[1]][ee_EXT_INTERIOR], ENTER_EXIT[info[1]][ee_EXT_WORLD], false /*ENTER_EXIT[info[1]][ee_EXT_FREEZE]*/);
 							SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
@@ -24135,8 +24087,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 						{
 							if(ENTER_EXIT[info[1]][ee_TIME_OPEN] == 0 && ENTER_EXIT[info[1]][ee_TIME_CLOSE] == 0) // 24 horas
 							{
-								PI[playerid][pi_STATE] = ROLEPLAY_STATE_INTERIOR;
-								PI[playerid][pi_LOCAL_INTERIOR] = ENTER_EXIT[info[1]][ee_ID];
+								ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_INTERIOR;
+								PI[playerid][ac_LOCAL_INTERIOR] = ENTER_EXIT[info[1]][ee_ID];
 								PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] = info[1];
 								SetPlayerPosEx(playerid, ENTER_EXIT[info[1]][ee_INT_X], ENTER_EXIT[info[1]][ee_INT_Y], ENTER_EXIT[info[1]][ee_INT_Z], ENTER_EXIT[info[1]][ee_INT_ANGLE], ENTER_EXIT[info[1]][ee_INT_INTERIOR], ENTER_EXIT[info[1]][ee_INT_WORLD], false /*ENTER_EXIT[info[1]][ee_INT_FREEZE]*/, true);
 								FreezePlayer(playerid);
@@ -24146,8 +24098,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 							{
 								if(is_open(GetMyWorldHour(), ENTER_EXIT[info[1]][ee_TIME_OPEN], ENTER_EXIT[info[1]][ee_TIME_CLOSE]))
 								{
-									PI[playerid][pi_STATE] = ROLEPLAY_STATE_INTERIOR;
-									PI[playerid][pi_LOCAL_INTERIOR] = ENTER_EXIT[info[1]][ee_ID];
+									ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_INTERIOR;
+									PI[playerid][ac_LOCAL_INTERIOR] = ENTER_EXIT[info[1]][ee_ID];
 									PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] = info[1];
 									SetPlayerPosEx(playerid, ENTER_EXIT[info[1]][ee_INT_X], ENTER_EXIT[info[1]][ee_INT_Y], ENTER_EXIT[info[1]][ee_INT_Z], ENTER_EXIT[info[1]][ee_INT_ANGLE], ENTER_EXIT[info[1]][ee_INT_INTERIOR], ENTER_EXIT[info[1]][ee_INT_WORLD], false /*ENTER_EXIT[info[1]][ee_INT_FREEZE]*/, true);
 									FreezePlayer(playerid);
@@ -24169,8 +24121,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 						
 						if(info[2] == 1) // Está en el Pickup Interior y quiere ir al exterior
 						{
-							PI[playerid][pi_STATE] = ROLEPLAY_STATE_NORMAL;
-							PI[playerid][pi_LOCAL_INTERIOR] = 0;
+							ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_NORMAL;
+							PI[playerid][ac_LOCAL_INTERIOR] = 0;
 							PLAYER_TEMP[playerid][pt_PROPERTY_INDEX] = -1;
 							SetPlayerPosEx(playerid, PROPERTY_INFO[info[1]][property_EXT_X], PROPERTY_INFO[info[1]][property_EXT_Y], PROPERTY_INFO[info[1]][property_EXT_Z], PROPERTY_INFO[info[1]][property_EXT_ANGLE], PROPERTY_INFO[info[1]][property_EXT_INTERIOR], 0, false /*PROPERTY_INFO[info[1]][property_EXT_FREEZE]*/, false);
 							SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
@@ -24189,11 +24141,11 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 							if(!PROPERTY_INFO[info[1]][property_SOLD]) return SendNotification(playerid, "Esta propiedad está en venta.");
 							if(PROPERTY_INFO[info[1]][property_CREW])
 							{
-								if(!PI[playerid][pi_CREW]) return SendFormatNotification(playerid, "Solo miembros de la banda pueden entrar.");
-								if(PI[playerid][pi_CREW] != PROPERTY_INFO[info[1]][property_CREW_ID]) return SendFormatNotification(playerid, "Solo miembros de la banda pueden entrar.");
+								if(!PI[playerid][ac_CREW]) return SendFormatNotification(playerid, "Solo miembros de la banda pueden entrar.");
+								if(PI[playerid][ac_CREW] != PROPERTY_INFO[info[1]][property_CREW_ID]) return SendFormatNotification(playerid, "Solo miembros de la banda pueden entrar.");
 								
-								PI[playerid][pi_STATE] = ROLEPLAY_STATE_GUEST_PROPERTY;
-								PI[playerid][pi_LOCAL_INTERIOR] = PROPERTY_INFO[info[1]][property_ID];
+								ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_GUEST_PROPERTY;
+								PI[playerid][ac_LOCAL_INTERIOR] = PROPERTY_INFO[info[1]][property_ID];
 								PLAYER_TEMP[playerid][pt_PROPERTY_INDEX] = info[1];
 
 								new Float:z_pos = PROPERTY_INTERIORS[ PROPERTY_INFO[info[1]][property_ID_INTERIOR] ][property_INT_Z];
@@ -24203,10 +24155,10 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 							}
 							else
 							{
-								if(PROPERTY_INFO[info[1]][property_OWNER_ID] == PI[playerid][pi_ID])
+								if(PROPERTY_INFO[info[1]][property_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
 								{
-									PI[playerid][pi_STATE] = ROLEPLAY_STATE_OWN_PROPERTY;
-									PI[playerid][pi_LOCAL_INTERIOR] = PROPERTY_INFO[info[1]][property_ID];
+									ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_OWN_PROPERTY;
+									PI[playerid][ac_LOCAL_INTERIOR] = PROPERTY_INFO[info[1]][property_ID];
 									PLAYER_TEMP[playerid][pt_PROPERTY_INDEX] = info[1];
 
 									new Float:z_pos = PROPERTY_INTERIORS[ PROPERTY_INFO[info[1]][property_ID_INTERIOR] ][property_INT_Z];
@@ -24268,7 +24220,7 @@ public OnPlayerUpdate(playerid)
 
 	if(GetPlayerInterior(playerid) == 66 && GetPlayerVirtualWorld(playerid) == 66) SetPlayerMyTime(playerid, 0, 0);
 	else SetPlayerMyTime(playerid, GetMyWorldHour(), 0);
-	if(PLAYER_TEMP[playerid][pt_KICKED] || PLAYER_TEMP[playerid][pt_GAME_STATE] != GAME_STATE_NORMAL || PI[playerid][pi_ID] <= 0 || PI[playerid][pi_LEVEL] <= 0) return 0;
+	if(PLAYER_TEMP[playerid][pt_KICKED] || PLAYER_TEMP[playerid][pt_GAME_STATE] != GAME_STATE_NORMAL || ACCOUNT_INFO[playerid][ac_ID] <= 0 || ACCOUNT_INFO[playerid][ac_LEVEL] <= 0) return 0;
 	
 	new player_state = GetPlayerState(playerid);
 	if(player_state == PLAYER_STATE_SPAWNED || player_state == PLAYER_STATE_SPECTATING) return 1;
@@ -24280,7 +24232,7 @@ public OnPlayerUpdate(playerid)
 	
 	if(ac_Info[CHEAT_PLAYER_HEALTH][ac_Enabled])
 	{
-		if(player_health > PI[playerid][pi_HEALTH] + 5.0)
+		if(player_health > PI[playerid][ac_HEALTH] + 5.0)
 		{
 			if(current_gettime > PLAYER_AC_INFO[playerid][CHEAT_PLAYER_HEALTH][p_ac_info_IMMUNITY])
 			{
@@ -24299,7 +24251,7 @@ public OnPlayerUpdate(playerid)
 	
 	if(ac_Info[CHEAT_PLAYER_ARMOUR][ac_Enabled])
 	{
-		if(player_armour > PI[playerid][pi_ARMOUR] + 5.0)
+		if(player_armour > PI[playerid][ac_ARMOUR] + 5.0)
 		{
 			if(current_gettime > PLAYER_AC_INFO[playerid][CHEAT_PLAYER_ARMOUR][p_ac_info_IMMUNITY])
 			{
@@ -24336,7 +24288,7 @@ public OnPlayerUpdate(playerid)
 	}
 	
 	new Float:dis, Float:vehicle_health, vehicleid = GetPlayerVehicleID(playerid);
-	if(!vehicleid) dis = GetPlayerDistanceFromPoint(playerid, PI[playerid][pi_POS_X], PI[playerid][pi_POS_Y], PI[playerid][pi_POS_Z]);
+	if(!vehicleid) dis = GetPlayerDistanceFromPoint(playerid, PI[playerid][ac_POS_X], PI[playerid][ac_POS_Y], PI[playerid][ac_POS_Z]);
 	else
 	{
 		dis = GetVehicleDistanceFromPoint(vehicleid, GLOBAL_VEHICLES[vehicleid][gb_vehicle_POS][0], GLOBAL_VEHICLES[vehicleid][gb_vehicle_POS][1], GLOBAL_VEHICLES[vehicleid][gb_vehicle_POS][2]);
@@ -24358,7 +24310,7 @@ public OnPlayerUpdate(playerid)
 	{
 		if(current_gettime > PLAYER_AC_INFO[playerid][CHEAT_POS][p_ac_info_IMMUNITY])
 		{
-			if(floatabs(dis) > 80.0 && PI[playerid][pi_POS_Z] > -97.0)
+			if(floatabs(dis) > 80.0 && PI[playerid][ac_POS_Z] > -97.0)
 			{
 				if(player_state != PLAYER_STATE_PASSENGER)
 				{
@@ -24406,7 +24358,7 @@ public OnPlayerUpdate(playerid)
 				{
 					if(GetPlayerSurfingVehicleID(playerid) == INVALID_VEHICLE_ID && GetPlayerSurfingObjectID(playerid) == INVALID_OBJECT_ID && player_action != SPECIAL_ACTION_ENTER_VEHICLE && player_action != SPECIAL_ACTION_EXIT_VEHICLE)
 					{
-						if(floatabs(dis) > 6.0 && PI[playerid][pi_POS_Z] > -97.0)
+						if(floatabs(dis) > 6.0 && PI[playerid][ac_POS_Z] > -97.0)
 						{
 							if(!ac_Info[CHEAT_POS][ac_Interval]) OnPlayerCheatDetected(playerid, CHEAT_POS, dis);
 							else
@@ -24509,9 +24461,9 @@ public OnPlayerUpdate(playerid)
 		}
 	}
 	
-	PI[playerid][pi_HEALTH] = player_health;
-	PI[playerid][pi_ARMOUR] = player_armour;
-	GetPlayerPos(playerid, PI[playerid][pi_POS_X], PI[playerid][pi_POS_Y], PI[playerid][pi_POS_Z]);
+	PI[playerid][ac_HEALTH] = player_health;
+	PI[playerid][ac_ARMOUR] = player_armour;
+	GetPlayerPos(playerid, PI[playerid][ac_POS_X], PI[playerid][ac_POS_Y], PI[playerid][ac_POS_Z]);
 	if(vehicleid)
 	{
 		GetVehiclePos(vehicleid, GLOBAL_VEHICLES[vehicleid][gb_vehicle_POS][0], GLOBAL_VEHICLES[vehicleid][gb_vehicle_POS][1], GLOBAL_VEHICLES[vehicleid][gb_vehicle_POS][2]);
@@ -24532,10 +24484,10 @@ SetPlayerPosEx(playerid, Float:x, Float:y, Float:z, Float:angle, interior, world
 		y += (1.5 * floatcos(-angle, degrees));
 	}
 	
-	PI[playerid][pi_POS_X] = x;
-	PI[playerid][pi_POS_Y] = y;
-	PI[playerid][pi_POS_Z] = z;
-	PI[playerid][pi_ANGLE] = angle;
+	PI[playerid][ac_POS_X] = x;
+	PI[playerid][ac_POS_Y] = y;
+	PI[playerid][ac_POS_Z] = z;
+	PI[playerid][ac_ANGLE] = angle;
 	
 	SetPlayerPos(playerid, x, y, z);
 	SetPlayerFacingAngle(playerid, angle);
@@ -24601,11 +24553,11 @@ UpdateHospitalSizeTextdrawLife(playerid)
 forward HealthUp(playerid);
 public HealthUp(playerid)
 {
-	if(PI[playerid][pi_STATE] != ROLEPLAY_STATE_HOSPITAL) return 1;
+	if(ACCOUNT_INFO[playerid][ac_STATE] != ROLEPLAY_STATE_HOSPITAL) return 1;
 	
 	if(PLAYER_TEMP[playerid][pt_HOSPITAL_LIFE] < 100.0)
 	{
-		if(PI[playerid][pi_VIP]) PLAYER_TEMP[playerid][pt_HOSPITAL_LIFE] += 10.0;
+		if(ACCOUNT_INFO[playerid][ac_VIP]) PLAYER_TEMP[playerid][pt_HOSPITAL_LIFE] += 10.0;
 		else PLAYER_TEMP[playerid][pt_HOSPITAL_LIFE] += 5.0;
 		
 		if(PLAYER_TEMP[playerid][pt_HOSPITAL_LIFE] > 100.0) PLAYER_TEMP[playerid][pt_HOSPITAL_LIFE] = 100.0;
@@ -24615,20 +24567,20 @@ public HealthUp(playerid)
 	}
 	else
 	{
-		if(PI[playerid][pi_VIP]) PI[playerid][pi_HEALTH] = 100.0;
-		else PI[playerid][pi_HEALTH] = 50.0;
+		if(ACCOUNT_INFO[playerid][ac_VIP]) PI[playerid][ac_HEALTH] = 100.0;
+		else PI[playerid][ac_HEALTH] = 50.0;
 		
-		SetPlayerHealthEx(playerid, PI[playerid][pi_HEALTH]);
+		SetPlayerHealthEx(playerid, PI[playerid][ac_HEALTH]);
 		
 		ClearPlayerChat(playerid);
 		SendNotification(playerid, "Te has recuperado.");
-		new price = PI[playerid][pi_LEVEL] * 200;
+		new price = ACCOUNT_INFO[playerid][ac_LEVEL] * 200;
 		if(price > 1200) price = 1200;
 		price += minrand(100, 200);
 		
-		if(price > PI[playerid][pi_CASH])
+		if(price > PI[playerid][ac_CASH])
 		{
-			price = PI[playerid][pi_CASH];
+			price = PI[playerid][ac_CASH];
 			if(price < 0) price = 0;
 		}
 
@@ -24637,28 +24589,28 @@ public HealthUp(playerid)
 		PlayerTextDrawHide(playerid, PlayerTextdraws[playerid][ptextdraw_HOSPITAL][0]);
 		PlayerTextDrawHide(playerid, PlayerTextdraws[playerid][ptextdraw_HOSPITAL][1]);
 		PlayerTextDrawHide(playerid, PlayerTextdraws[playerid][ptextdraw_HOSPITAL][2]);
-		PI[playerid][pi_LOCAL_INTERIOR] = 0;
+		PI[playerid][ac_LOCAL_INTERIOR] = 0;
 		PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] = -1;
 		
-		if(PI[playerid][pi_WANTED_LEVEL] > 0 || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED)
+		if(PI[playerid][ac_WANTED_LEVEL] > 0 || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED)
 		{
-			PI[playerid][pi_STATE] = ROLEPLAY_STATE_JAIL;
-			if(PI[playerid][pi_VIP]) PI[playerid][pi_POLICE_JAIL_TIME] = 150 * PI[playerid][pi_WANTED_LEVEL];
-			else PI[playerid][pi_POLICE_JAIL_TIME] = 300 * PI[playerid][pi_WANTED_LEVEL];
-			PI[playerid][pi_WANTED_LEVEL] = 0;
-			PI[playerid][pi_POLICE_JAIL_ID] = 0;
+			ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_JAIL;
+			if(ACCOUNT_INFO[playerid][ac_VIP]) PI[playerid][ac_POLICE_JAIL_TIME] = 150 * PI[playerid][ac_WANTED_LEVEL];
+			else PI[playerid][ac_POLICE_JAIL_TIME] = 300 * PI[playerid][ac_WANTED_LEVEL];
+			PI[playerid][ac_WANTED_LEVEL] = 0;
+			PI[playerid][ac_POLICE_JAIL_ID] = 0;
 			PLAYER_TEMP[playerid][pt_ENTER_JAIL_TIME] = gettime();
-			SetSpawnInfo(playerid, NO_TEAM, PI[playerid][pi_SKIN], JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID] ][jail_X], JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID]  ][jail_Y], JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID]  ][jail_Z], JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID]  ][jail_ANGLE], 0, 0, 0, 0, 0, 0);
-			PI[playerid][pi_INTERIOR] = JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID]  ][jail_INTERIOR];
+			SetSpawnInfo(playerid, NO_TEAM, PI[playerid][ac_SKIN], JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID] ][jail_X], JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_Y], JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_Z], JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_ANGLE], 0, 0, 0, 0, 0, 0);
+			PI[playerid][ac_INTERIOR] = JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_INTERIOR];
 			SetPlayerVirtualWorld(playerid, 0);
 			
-			new time = PI[playerid][pi_POLICE_JAIL_TIME] - (gettime() - PLAYER_TEMP[playerid][pt_ENTER_JAIL_TIME]);
+			new time = PI[playerid][ac_POLICE_JAIL_TIME] - (gettime() - PLAYER_TEMP[playerid][pt_ENTER_JAIL_TIME]);
 			SendFormatNotification(playerid, "Te quedan %s minutos de condena.", TimeConvert(time));
 		}
 		else
 		{
-			GetHospitalSpawnPosition(PLAYER_TEMP[playerid][pt_HOSPITAL], PI[playerid][pi_POS_X], PI[playerid][pi_POS_Y], PI[playerid][pi_POS_Z], PI[playerid][pi_ANGLE], PI[playerid][pi_INTERIOR], PI[playerid][pi_LOCAL_INTERIOR], PI[playerid][pi_STATE]);
-			SetSpawnInfo(playerid, NO_TEAM, PI[playerid][pi_SKIN], PI[playerid][pi_POS_X], PI[playerid][pi_POS_Y], PI[playerid][pi_POS_Z], PI[playerid][pi_ANGLE], 0, 0, 0, 0, 0, 0);
+			GetHospitalSpawnPosition(PLAYER_TEMP[playerid][pt_HOSPITAL], PI[playerid][ac_POS_X], PI[playerid][ac_POS_Y], PI[playerid][ac_POS_Z], PI[playerid][ac_ANGLE], PI[playerid][ac_INTERIOR], PI[playerid][ac_LOCAL_INTERIOR], ACCOUNT_INFO[playerid][ac_STATE]);
+			SetSpawnInfo(playerid, NO_TEAM, PI[playerid][ac_SKIN], PI[playerid][ac_POS_X], PI[playerid][ac_POS_Y], PI[playerid][ac_POS_Z], PI[playerid][ac_ANGLE], 0, 0, 0, 0, 0, 0);
 		}
 		PLAYER_TEMP[playerid][pt_PLAYER_FINISH_HOSPITAL] = true;
 		TogglePlayerSpectatingEx(playerid, false);
@@ -24958,7 +24910,7 @@ RegisterNewPlayerToy(playerid, slot)
 			INSERT INTO ptoys(id_player, name, attached, modelid, bone, offset_x, offset_y, offset_z, rot_x, rot_y, rot_z, scale_x, scale_y, scale_z, color1, color2)\
 			VALUES(%d, '%e', %d, %d, %d, %f, %f, %f, %f, %f, %f, %f, %f, %f, %d, %d);\
 		",
-			PI[playerid][pi_ID], PLAYER_TOYS[playerid][slot][player_toy_NAME], PLAYER_TOYS[playerid][slot][player_toy_ATTACHED], PLAYER_TOYS[playerid][slot][player_toy_MODELID],
+			ACCOUNT_INFO[playerid][ac_ID], PLAYER_TOYS[playerid][slot][player_toy_NAME], PLAYER_TOYS[playerid][slot][player_toy_ATTACHED], PLAYER_TOYS[playerid][slot][player_toy_MODELID],
 			PLAYER_TOYS[playerid][slot][player_toy_BONE], PLAYER_TOYS[playerid][slot][player_toy_OFFSET_X], PLAYER_TOYS[playerid][slot][player_toy_OFFSET_Y],
 			PLAYER_TOYS[playerid][slot][player_toy_OFFSET_Z], PLAYER_TOYS[playerid][slot][player_toy_ROT_X], PLAYER_TOYS[playerid][slot][player_toy_ROT_Y],
 			PLAYER_TOYS[playerid][slot][player_toy_ROT_Z], PLAYER_TOYS[playerid][slot][player_toy_SCALE_X], PLAYER_TOYS[playerid][slot][player_toy_SCALE_Y],
@@ -24981,7 +24933,7 @@ UpdateToysShop(playerid)
 	PlayerTextDrawSetString(playerid, PlayerTextdraws[playerid][ptextdraw_TOYS_SHOP][4], td_str);
 	
 	
-	if(PI[playerid][pi_CASH] < Toys_Shop[ PLAYER_TEMP[playerid][pt_TOYS_SHOP_TOY_SELECTED] ][shop_toy_price]) PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_TOYS_SHOP][5], -900267777);
+	if(PI[playerid][ac_CASH] < Toys_Shop[ PLAYER_TEMP[playerid][pt_TOYS_SHOP_TOY_SELECTED] ][shop_toy_price]) PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_TOYS_SHOP][5], -900267777);
 	else PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_TOYS_SHOP][5], 1855979775);
 	PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_TOYS_SHOP][5]);
 	
@@ -25015,11 +24967,11 @@ HideClothingShopTextdraws(playerid)
 
 ClosePlayerClothingMenu(playerid)
 {
-	PI[playerid][pi_POS_X] = Clothing_Shop_Positions[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP]][clothing_shop_X];
-	PI[playerid][pi_POS_Y] = Clothing_Shop_Positions[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP]][clothing_shop_Y];
-	PI[playerid][pi_POS_Z] = Clothing_Shop_Positions[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP]][clothing_shop_Z];
-	PI[playerid][pi_ANGLE] = Clothing_Shop_Positions[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP]][clothing_shop_ANGLE];
-	SetPlayerSkin(playerid, PI[playerid][pi_SKIN]);
+	PI[playerid][ac_POS_X] = Clothing_Shop_Positions[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP]][clothing_shop_X];
+	PI[playerid][ac_POS_Y] = Clothing_Shop_Positions[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP]][clothing_shop_Y];
+	PI[playerid][ac_POS_Z] = Clothing_Shop_Positions[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP]][clothing_shop_Z];
+	PI[playerid][ac_ANGLE] = Clothing_Shop_Positions[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP]][clothing_shop_ANGLE];
+	SetPlayerSkin(playerid, PI[playerid][ac_SKIN]);
 	TogglePlayerControllableEx(playerid, true);
 	
 	HideClothingShopTextdraws(playerid);
@@ -25031,7 +24983,7 @@ ClosePlayerClothingMenu(playerid)
 
 ExitPlayerWardrobe(playerid)
 {
-	SetPlayerPosEx(playerid, PI[playerid][pi_POS_X], PI[playerid][pi_POS_Y], PI[playerid][pi_POS_Z], PI[playerid][pi_ANGLE], ENTER_EXIT[ PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] ][ee_INT_INTERIOR], ENTER_EXIT[ PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] ][ee_INT_WORLD], false, true);
+	SetPlayerPosEx(playerid, PI[playerid][ac_POS_X], PI[playerid][ac_POS_Y], PI[playerid][ac_POS_Z], PI[playerid][ac_ANGLE], ENTER_EXIT[ PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] ][ee_INT_INTERIOR], ENTER_EXIT[ PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] ][ee_INT_WORLD], false, true);
 	return 1;
 }
 
@@ -25046,14 +24998,14 @@ UpdateClothingShop(playerid)
 	{
 		case INTERIOR_BINCO:
 		{
-			switch(PI[playerid][pi_GENDER])
+			switch(PI[playerid][ac_GENDER])
 			{
 				case SEX_MALE:
 				{
 					SetPlayerSkin(playerid, Binco_Shop_Male_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]][0]);
 					cost = Binco_Shop_Male_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]][2];
 					
-					if(PI[playerid][pi_CASH] < cost) PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], -1459617611);
+					if(PI[playerid][ac_CASH] < cost) PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], -1459617611);
 					else PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], 9306312);
 					
 					format(textdraw_str, sizeof textdraw_str, "Precio:_%s$~n~Ropa:_%d/%d", number_format_thousand(cost), PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN] + 1, sizeof(Binco_Shop_Male_Skins));
@@ -25064,7 +25016,7 @@ UpdateClothingShop(playerid)
 					SetPlayerSkin(playerid, Binco_Shop_Female_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]][0]);
 					cost = Binco_Shop_Female_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]][2];
 					
-					if(PI[playerid][pi_CASH] < cost) PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], -1459617611);
+					if(PI[playerid][ac_CASH] < cost) PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], -1459617611);
 					else PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], 9306312);
 					
 					format(textdraw_str, sizeof textdraw_str, "Precio:_%s$~n~Ropa:_%d/%d", number_format_thousand(cost), PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN] + 1, sizeof(Binco_Shop_Female_Skins));
@@ -25074,14 +25026,14 @@ UpdateClothingShop(playerid)
 		}
 		case INTERIOR_SUBURBAN:
 		{
-			switch(PI[playerid][pi_GENDER])
+			switch(PI[playerid][ac_GENDER])
 			{
 				case SEX_MALE:
 				{
 					SetPlayerSkin(playerid, Suburban_Shop_Male_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]][0]);
 					cost = Suburban_Shop_Male_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]][2];
 					
-					if(PI[playerid][pi_CASH] < cost) PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], -1459617611);
+					if(PI[playerid][ac_CASH] < cost) PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], -1459617611);
 					else PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], 9306312);
 					
 					format(textdraw_str, sizeof textdraw_str, "Precio:_%s$~n~Ropa:_%d/%d", number_format_thousand(cost), PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN] + 1, sizeof(Suburban_Shop_Male_Skins));
@@ -25092,7 +25044,7 @@ UpdateClothingShop(playerid)
 					SetPlayerSkin(playerid, Suburban_Shop_Female_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]][0]);
 					cost = Suburban_Shop_Female_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]][2];
 					
-					if(PI[playerid][pi_CASH] < cost) PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], -1459617611);
+					if(PI[playerid][ac_CASH] < cost) PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], -1459617611);
 					else PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], 9306312);
 					
 					format(textdraw_str, sizeof textdraw_str, "Precio:_%s$~n~Ropa:_%d/%d", number_format_thousand(cost), PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN] + 1, sizeof(Suburban_Shop_Female_Skins));
@@ -25102,14 +25054,14 @@ UpdateClothingShop(playerid)
 		}
 		case INTERIOR_PROLAPS:
 		{
-			switch(PI[playerid][pi_GENDER])
+			switch(PI[playerid][ac_GENDER])
 			{
 				case SEX_MALE:
 				{
 					SetPlayerSkin(playerid, Prolaps_Shop_Male_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]][0]);
 					cost = Prolaps_Shop_Male_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]][2];
 					
-					if(PI[playerid][pi_CASH] < cost) PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], -1459617611);
+					if(PI[playerid][ac_CASH] < cost) PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], -1459617611);
 					else PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], 9306312);
 					
 					format(textdraw_str, sizeof textdraw_str, "Precio:_%s$~n~Ropa:_%d/%d", number_format_thousand(cost), PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN] + 1, sizeof(Prolaps_Shop_Male_Skins));
@@ -25120,7 +25072,7 @@ UpdateClothingShop(playerid)
 					SetPlayerSkin(playerid, Prolaps_Shop_Female_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]][0]);
 					cost = Prolaps_Shop_Female_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]][2];
 					
-					if(PI[playerid][pi_CASH] < cost) PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], -1459617611);
+					if(PI[playerid][ac_CASH] < cost) PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], -1459617611);
 					else PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], 9306312);
 					
 					format(textdraw_str, sizeof textdraw_str, "Precio:_%s$~n~Ropa:_%d/%d", number_format_thousand(cost), PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN] + 1, sizeof(Prolaps_Shop_Female_Skins));
@@ -25130,14 +25082,14 @@ UpdateClothingShop(playerid)
 		}
 		case INTERIOR_DIDIER_SACHS:
 		{
-			switch(PI[playerid][pi_GENDER])
+			switch(PI[playerid][ac_GENDER])
 			{
 				case SEX_MALE:
 				{
 					SetPlayerSkin(playerid, Didier_Shop_Male_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]][0]);
 					cost = Didier_Shop_Male_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]][2];
 					
-					if(PI[playerid][pi_CASH] < cost) PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], -1459617611);
+					if(PI[playerid][ac_CASH] < cost) PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], -1459617611);
 					else PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], 9306312);
 					
 					format(textdraw_str, sizeof textdraw_str, "Precio:_%s$~n~Ropa:_%d/%d", number_format_thousand(cost), PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN] + 1, sizeof(Didier_Shop_Male_Skins));
@@ -25148,7 +25100,7 @@ UpdateClothingShop(playerid)
 					SetPlayerSkin(playerid, Didier_Shop_Female_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]][0]);
 					cost = Didier_Shop_Female_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]][2];
 					
-					if(PI[playerid][pi_CASH] < cost) PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], -1459617611);
+					if(PI[playerid][ac_CASH] < cost) PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], -1459617611);
 					else PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], 9306312);
 					
 					format(textdraw_str, sizeof textdraw_str, "Precio:_%s$~n~Ropa:_%d/%d", number_format_thousand(cost), PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN] + 1, sizeof(Didier_Shop_Female_Skins));
@@ -25158,14 +25110,14 @@ UpdateClothingShop(playerid)
 		}
 		case INTERIOR_VICTIM:
 		{
-			switch(PI[playerid][pi_GENDER])
+			switch(PI[playerid][ac_GENDER])
 			{
 				case SEX_MALE:
 				{
 					SetPlayerSkin(playerid, Victim_Shop_Male_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]][0]);
 					cost = Victim_Shop_Male_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]][2];
 					
-					if(PI[playerid][pi_CASH] < cost) PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], -1459617611);
+					if(PI[playerid][ac_CASH] < cost) PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], -1459617611);
 					else PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], 9306312);
 					
 					format(textdraw_str, sizeof textdraw_str, "Precio:_%s$~n~Ropa:_%d/%d", number_format_thousand(cost), PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN] + 1, sizeof(Victim_Shop_Male_Skins));
@@ -25176,7 +25128,7 @@ UpdateClothingShop(playerid)
 					SetPlayerSkin(playerid, Victim_Shop_Female_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]][0]);
 					cost = Victim_Shop_Female_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]][2];
 					
-					if(PI[playerid][pi_CASH] < cost) PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], -1459617611);
+					if(PI[playerid][ac_CASH] < cost) PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], -1459617611);
 					else PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], 9306312);
 					
 					format(textdraw_str, sizeof textdraw_str, "Precio:_%s$~n~Ropa:_%d/%d", number_format_thousand(cost), PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN] + 1, sizeof(Victim_Shop_Female_Skins));
@@ -25186,14 +25138,14 @@ UpdateClothingShop(playerid)
 		}
 		case INTERIOR_ZIP:
 		{
-			switch(PI[playerid][pi_GENDER])
+			switch(PI[playerid][ac_GENDER])
 			{
 				case SEX_MALE:
 				{
 					SetPlayerSkin(playerid, Zip_Shop_Male_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]][0]);
 					cost = Zip_Shop_Male_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]][2];
 					
-					if(PI[playerid][pi_CASH] < cost) PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], -1459617611);
+					if(PI[playerid][ac_CASH] < cost) PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], -1459617611);
 					else PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], 9306312);
 					
 					format(textdraw_str, sizeof textdraw_str, "Precio:_%s$~n~Ropa:_%d/%d", number_format_thousand(cost), PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN] + 1, sizeof(Zip_Shop_Male_Skins));
@@ -25204,7 +25156,7 @@ UpdateClothingShop(playerid)
 					SetPlayerSkin(playerid, Zip_Shop_Female_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]][0]);
 					cost = Zip_Shop_Female_Skins[PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN]][2];
 					
-					if(PI[playerid][pi_CASH] < cost) PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], -1459617611);
+					if(PI[playerid][ac_CASH] < cost) PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], -1459617611);
 					else PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][2], 9306312);
 					
 					format(textdraw_str, sizeof textdraw_str, "Precio:_%s$~n~Ropa:_%d/%d", number_format_thousand(cost), PLAYER_TEMP[playerid][pt_CLOTHING_SHOP_SELECTED_SKIN] + 1, sizeof(Zip_Shop_Female_Skins));
@@ -25276,13 +25228,13 @@ UpdatePlayerHud(playerid)
 	if(!PLAYER_TEMP[playerid][pt_HUD_TEXTDRAWS]) return 0;
 	
 	new Float:size;
-	size = 500.699981 + (PI[playerid][pi_HUNGRY] * 0.46030121);
+	size = 500.699981 + (PI[playerid][ac_HUNGRY] * 0.46030121);
 	PlayerTextDrawTextSize(playerid, PlayerTextdraws[playerid][ptextdraw_HUD][1], size, 0.000000);
 	
-	size = 557.699981 + (PI[playerid][pi_THIRST] * 0.46030121);
+	size = 557.699981 + (PI[playerid][ac_THIRST] * 0.46030121);
 	PlayerTextDrawTextSize(playerid, PlayerTextdraws[playerid][ptextdraw_HUD][2], size, 0.000000);
 	
-	if(PI[playerid][pi_CONFIG_HUD])
+	if(PI[playerid][ac_CONFIG_HUD])
 	{
 		PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_HUD][1]);
 		PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_HUD][2]);
@@ -25302,7 +25254,7 @@ public HungryThirstDown(playerid)
 	
 	new current_gettime = gettime();
 	
-	if(PI[playerid][pi_VIP])
+	if(ACCOUNT_INFO[playerid][ac_VIP])
 	{
 		if(current_gettime - PLAYER_TEMP[playerid][pt_LAST_SU_CHECK] > 300)
 		{
@@ -25310,37 +25262,37 @@ public HungryThirstDown(playerid)
 		}
 	}
 
-	if(PI[playerid][pi_WANTED_LEVEL] > 0 && PI[playerid][pi_STATE] == ROLEPLAY_STATE_NORMAL && !PLAYER_TEMP[playerid][pt_CUFFED])
+	if(PI[playerid][ac_WANTED_LEVEL] > 0 && ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_NORMAL && !PLAYER_TEMP[playerid][pt_CUFFED])
 	{
 		if(gettime() - PLAYER_TEMP[playerid][pt_LAST_SET_WANTED_LEVEL] > 300)
 		{
-			if(PI[playerid][pi_WANTED_LEVEL] == 1)
+			if(PI[playerid][ac_WANTED_LEVEL] == 1)
 			{
 				SendFormatNotification(playerid, "Has perdido de vista a la policía.");
 				SetPlayerWantedLevelEx(playerid, 0);
 			}
-			else SetPlayerWantedLevelEx(playerid, PI[playerid][pi_WANTED_LEVEL] - 1);
+			else SetPlayerWantedLevelEx(playerid, PI[playerid][ac_WANTED_LEVEL] - 1);
 		}
 	}
 
-	PI[playerid][pi_THIRST] -= floatdiv(float(INTERVAL_HUNGRY_THIRST_DOWN), floatmul(THIRST_HOURS_STOPPED, 36));
-	PI[playerid][pi_HUNGRY] -= floatdiv(float(INTERVAL_HUNGRY_THIRST_DOWN), floatmul(HUNGRY_HOURS_STOPPED, 36));
+	PI[playerid][ac_THIRST] -= floatdiv(float(INTERVAL_HUNGRY_THIRST_DOWN), floatmul(THIRST_HOURS_STOPPED, 36));
+	PI[playerid][ac_HUNGRY] -= floatdiv(float(INTERVAL_HUNGRY_THIRST_DOWN), floatmul(HUNGRY_HOURS_STOPPED, 36));
 	
-	if(PI[playerid][pi_THIRST] <= 0.5) PI[playerid][pi_THIRST] = 0.5;
-	if(PI[playerid][pi_HUNGRY] <= 0.5) PI[playerid][pi_HUNGRY] = 0.5;
-	if(PI[playerid][pi_THIRST] < 20.0)
+	if(PI[playerid][ac_THIRST] <= 0.5) PI[playerid][ac_THIRST] = 0.5;
+	if(PI[playerid][ac_HUNGRY] <= 0.5) PI[playerid][ac_HUNGRY] = 0.5;
+	if(PI[playerid][ac_THIRST] < 20.0)
 	{
-		PI[playerid][pi_HEALTH] -= 0.2;
+		PI[playerid][ac_HEALTH] -= 0.2;
 		
-		if(PI[playerid][pi_THIRST] <= 1.0 || PI[playerid][pi_HEALTH] <= 0.5)
+		if(PI[playerid][ac_THIRST] <= 1.0 || PI[playerid][ac_HEALTH] <= 0.5)
 		{
 			SendNotification(playerid, "Te has desmayado por deshidratación.");
 			SetPlayerHealthEx(playerid, 0.0);
-			PI[playerid][pi_THIRST] = 75.0;
+			PI[playerid][ac_THIRST] = 75.0;
 			return 1;
 		}
 		
-		SetPlayerHealthEx(playerid, PI[playerid][pi_HEALTH]);
+		SetPlayerHealthEx(playerid, PI[playerid][ac_HEALTH]);
 		
 		if(!PLAYER_TEMP[playerid][pt_THIRST_MESSAGE])
 		{
@@ -25349,19 +25301,19 @@ public HungryThirstDown(playerid)
 		}
 	}
 	
-	if(PI[playerid][pi_HUNGRY] < 20.0)
+	if(PI[playerid][ac_HUNGRY] < 20.0)
 	{
-		PI[playerid][pi_HEALTH] -= 0.2;
+		PI[playerid][ac_HEALTH] -= 0.2;
 		
-		if(PI[playerid][pi_HUNGRY] <= 1.0 || PI[playerid][pi_HEALTH] <= 0.5)
+		if(PI[playerid][ac_HUNGRY] <= 1.0 || PI[playerid][ac_HEALTH] <= 0.5)
 		{
 			SendNotification(playerid, "Te has desmayado por hambre.");
 			SetPlayerHealthEx(playerid, 0.0);
-			PI[playerid][pi_HUNGRY] = 55.0;
+			PI[playerid][ac_HUNGRY] = 55.0;
 			return 1;
 		}
 		
-		SetPlayerHealthEx(playerid, PI[playerid][pi_HEALTH]);
+		SetPlayerHealthEx(playerid, PI[playerid][ac_HEALTH]);
 		
 		if(!PLAYER_TEMP[playerid][pt_HUNGRY_MESSAGE])
 		{
@@ -25380,9 +25332,9 @@ SetPlayerHud(playerid)
 	UpdatePlayerHud(playerid);
 	UpdateReputationTextDraws(playerid);
 	
-	if(PI[playerid][pi_CONFIG_TIME]) TextDrawShowForPlayer(playerid, Textdraws[textdraw_SERVER_TIME]);
+	if(PI[playerid][ac_CONFIG_TIME]) TextDrawShowForPlayer(playerid, Textdraws[textdraw_SERVER_TIME]);
 	
-	if(PI[playerid][pi_CONFIG_HUD])
+	if(PI[playerid][ac_CONFIG_HUD])
 	{
 		for(new i = 0; i < HUD_TEXTDRAWS_SIZE; i ++) {
 			TextDrawShowForPlayer(playerid, Textdraws[textdraw_HUD][i]);	
@@ -25448,13 +25400,13 @@ is_open(hour, open, close)
 
 Add_Hungry_Thirst(playerid, Float:hungry, Float:thirst)
 {
-	PI[playerid][pi_HUNGRY] += hungry;
-	if(PI[playerid][pi_HUNGRY] > 30.0) PLAYER_TEMP[playerid][pt_HUNGRY_MESSAGE] = false;
-	if(PI[playerid][pi_HUNGRY] > 100.0) PI[playerid][pi_HUNGRY] = 100.0;
+	PI[playerid][ac_HUNGRY] += hungry;
+	if(PI[playerid][ac_HUNGRY] > 30.0) PLAYER_TEMP[playerid][pt_HUNGRY_MESSAGE] = false;
+	if(PI[playerid][ac_HUNGRY] > 100.0) PI[playerid][ac_HUNGRY] = 100.0;
 	
-	PI[playerid][pi_THIRST] += thirst;
-	if(PI[playerid][pi_THIRST] > 30.0) PLAYER_TEMP[playerid][pt_THIRST_MESSAGE] = false;
-	if(PI[playerid][pi_THIRST] > 100.0) PI[playerid][pi_THIRST] = 100.0;
+	PI[playerid][ac_THIRST] += thirst;
+	if(PI[playerid][ac_THIRST] > 30.0) PLAYER_TEMP[playerid][pt_THIRST_MESSAGE] = false;
+	if(PI[playerid][ac_THIRST] > 100.0) PI[playerid][ac_THIRST] = 100.0;
 	
 	UpdatePlayerHud(playerid);
 	return 1;
@@ -25491,8 +25443,8 @@ GetPlayerIdByBankAccountId(account_id)
 {
 	for(new i = 0; i != sizeof(PI); i ++)
 	{
-		if(PI[i][pi_BANK_ACCOUNT] == 0) continue;
-		if(PI[i][pi_BANK_ACCOUNT] == account_id) return i;
+		if(PI[i][ac_BANK_ACCOUNT] == 0) continue;
+		if(PI[i][ac_BANK_ACCOUNT] == account_id) return i;
 	}
 	return -1;
 }
@@ -25562,7 +25514,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		GLOBAL_VEHICLES[vehicleid][gb_vehicle_DRIVER] = playerid;
 		GLOBAL_VEHICLES[vehicleid][gb_vehicle_LAST_DRIVER] = playerid;
 		GLOBAL_VEHICLES[vehicleid][gb_vehicle_OCCUPIED] = true;
-		if(PI[playerid][pi_DRIVE_LICENSE_POINTS] == 0 && !PLAYER_TEMP[playerid][pt_DL_EXAM] && VEHICLE_INFO[ GLOBAL_VEHICLES[vehicleid][gb_vehicle_MODELID] - 400][vehicle_info_NORMAL_SPEEDO])
+		if(PI[playerid][ac_DRIVE_LICENSE_POINTS] == 0 && !PLAYER_TEMP[playerid][pt_DL_EXAM] && VEHICLE_INFO[ GLOBAL_VEHICLES[vehicleid][gb_vehicle_MODELID] - 400][vehicle_info_NORMAL_SPEEDO])
 		{
 			SendNotification(playerid, "Estás conduciendo sin licencia de conducción, la policía podría multarte.");
 		}
@@ -25611,7 +25563,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] = vehicleid;
 				new pvehicles = CountPlayerVehicles(playerid);
 				if(pvehicles >= MAX_SU_VEHICLES) return SendFormatNotification(playerid, "No puedes comprar más vehículos, el límite es %d.", MAX_SU_VEHICLES);
-				if(!PI[playerid][pi_VIP])
+				if(!ACCOUNT_INFO[playerid][ac_VIP])
 				{
 					if(pvehicles >= MAX_NU_VEHICLES)
 					{
@@ -25715,7 +25667,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 					{
 						if(TRUCK_VEHICLE[vehicleid][truck_vehicle_LOADED])
 						{
-							if(TRUCK_VEHICLE[vehicleid][truck_vehicle_DRIVER_USER_ID] != PI[playerid][pi_ID])
+							if(TRUCK_VEHICLE[vehicleid][truck_vehicle_DRIVER_USER_ID] != ACCOUNT_INFO[playerid][ac_ID])
 							{
 								SendNotification(playerid, "No eres el conductor de este vehículo.");
 								RemovePlayerFromVehicle(playerid);
@@ -25780,7 +25732,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 					{
 						if(PIZZA_VEHICLE[vehicleid][pizza_vehicle_STARTED])
 						{
-							if(PIZZA_VEHICLE[vehicleid][pizza_vehicle_DRIVER_AID] != PI[playerid][pi_ID])
+							if(PIZZA_VEHICLE[vehicleid][pizza_vehicle_DRIVER_AID] != ACCOUNT_INFO[playerid][ac_ID])
 							{
 								if(GetVehicleDistanceFromPoint(vehicleid, GLOBAL_VEHICLES[vehicleid][gb_vehicle_SPAWN_X], GLOBAL_VEHICLES[vehicleid][gb_vehicle_SPAWN_Y], GLOBAL_VEHICLES[vehicleid][gb_vehicle_SPAWN_Z]) < 20.0)
 								{
@@ -25811,7 +25763,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 						else
 						{
 							PIZZA_VEHICLE[vehicleid][pizza_vehicle_STARTED] = true;
-							PIZZA_VEHICLE[vehicleid][pizza_vehicle_DRIVER_AID] = PI[playerid][pi_ID];
+							PIZZA_VEHICLE[vehicleid][pizza_vehicle_DRIVER_AID] = ACCOUNT_INFO[playerid][ac_ID];
 							PIZZA_VEHICLE[vehicleid][pizza_vehicle_PIZZAS] = minrand(3, 6);
 							PIZZA_VEHICLE[vehicleid][pizza_vehicle_PIZZA_POINT] = random( sizeof(PIZZA_DELIVERY_POINT) );
 							PIZZA_VEHICLE[vehicleid][pizza_vehicle_PIZZA_POINT_DELI] = false;
@@ -26133,7 +26085,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 					work_extra_payment = (work_info[WORK_TAXI][work_info_EXTRA_PAY] * floatround(floatdiv(PLAYER_WORKS[ driver ][WORK_TAXI][pwork_LEVEL], work_info[WORK_TAXI][work_info_EXTRA_PAY_EXP])));
 					if(work_info[WORK_TAXI][work_info_EXTRA_PAY_LIMIT] != 0) if(work_extra_payment > work_info[WORK_TAXI][work_info_EXTRA_PAY_LIMIT]) work_extra_payment = work_info[WORK_TAXI][work_info_EXTRA_PAY_LIMIT];
 				
-					if(PI[playerid][pi_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
+					if(ACCOUNT_INFO[playerid][ac_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
 				}
 				PLAYER_WORKS[driver][WORK_TAXI][pwork_LEVEL] ++;
 				
@@ -26357,7 +26309,7 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 				SetPlayerPos(playerid, sx, sy, sz);
 				return 1;
 			}
-			if(GLOBAL_VEHICLES[vehicleid][gb_vehicle_VIP] && !PI[playerid][pi_VIP])
+			if(GLOBAL_VEHICLES[vehicleid][gb_vehicle_VIP] && !ACCOUNT_INFO[playerid][ac_VIP])
 			{
 				SendNotification(playerid, "Necesitas adquirir membresía VIP para usar este vehículo. (/ayuda > membresía VIP)");
 				RemovePlayerFromVehicle(playerid);
@@ -26498,7 +26450,7 @@ AddPersonalVehicle(playerid, modelid, Float:X, Float:Y, Float:Z, Float:Angle, Co
 	GLOBAL_VEHICLES[vehicle_id][gb_vehicle_WORLD] = 0;
 	
 	PLAYER_VEHICLES[vehicle_id][player_vehicle_VALID] = true;
-	PLAYER_VEHICLES[vehicle_id][player_vehicle_OWNER_ID] = PI[playerid][pi_ID];
+	PLAYER_VEHICLES[vehicle_id][player_vehicle_OWNER_ID] = ACCOUNT_INFO[playerid][ac_ID];
 	RegisterNewPlayerVehicle(playerid, vehicle_id);
 	
 	SetVehicleToRespawnEx(vehicle_id);
@@ -26525,7 +26477,7 @@ RegisterNewPlayerVehicle(playerid, vehicleid)
 			INSERT INTO pvehicles (id_player, modelid, spawn_x, spawn_y, spawn_z, spawn_angle, color1, color2, gas, max_gas)\
 			VALUES(%d, %d, %f, %f, %f, %f, %d, %d, %f, %f);\
 		",
-			PI[playerid][pi_ID], GLOBAL_VEHICLES[vehicleid][gb_vehicle_MODELID], GLOBAL_VEHICLES[vehicleid][gb_vehicle_SPAWN_X], GLOBAL_VEHICLES[vehicleid][gb_vehicle_SPAWN_Y], GLOBAL_VEHICLES[vehicleid][gb_vehicle_SPAWN_Z],
+			ACCOUNT_INFO[playerid][ac_ID], GLOBAL_VEHICLES[vehicleid][gb_vehicle_MODELID], GLOBAL_VEHICLES[vehicleid][gb_vehicle_SPAWN_X], GLOBAL_VEHICLES[vehicleid][gb_vehicle_SPAWN_Y], GLOBAL_VEHICLES[vehicleid][gb_vehicle_SPAWN_Z],
 			GLOBAL_VEHICLES[vehicleid][gb_vehicle_SPAWN_ANGLE], GLOBAL_VEHICLES[vehicleid][gb_vehicle_COLOR_1], GLOBAL_VEHICLES[vehicleid][gb_vehicle_COLOR_2], GLOBAL_VEHICLES[vehicleid][gb_vehicle_GAS],
 			GLOBAL_VEHICLES[vehicleid][gb_vehicle_MAX_GAS]
 	);
@@ -26535,7 +26487,7 @@ RegisterNewPlayerVehicle(playerid, vehicleid)
 
 LoadPlayerVehicles(playerid)
 {
-	if(PI[playerid][pi_ID] == 0) return 0;
+	if(ACCOUNT_INFO[playerid][ac_ID] == 0) return 0;
 	
 	inline OnPlayerVehiclesLoad()
 	{
@@ -26598,7 +26550,7 @@ LoadPlayerVehicles(playerid)
 				if(vehicle_id != INVALID_VEHICLE_ID)
 				{
 					PLAYER_VEHICLES[vehicle_id][player_vehicle_VALID] = true;
-					PLAYER_VEHICLES[vehicle_id][player_vehicle_OWNER_ID] = PI[playerid][pi_ID];
+					PLAYER_VEHICLES[vehicle_id][player_vehicle_OWNER_ID] = ACCOUNT_INFO[playerid][ac_ID];
 					PLAYER_VEHICLES[vehicle_id][player_vehicle_ID] = id;
 					PLAYER_VEHICLES[vehicle_id][player_vehicle_ACCESSIBLE] = true;
 					PLAYER_VEHICLES[vehicle_id][player_vehicle_CLAMP] = vClamp;
@@ -26631,7 +26583,7 @@ LoadPlayerVehicles(playerid)
 					GLOBAL_VEHICLES[vehicle_id][gb_vehicle_COMPONENTS] = components;
 					GLOBAL_VEHICLES[vehicle_id][gb_vehicle_LAST_REPAIR_TIME] = gettime();
 
-					if(!PI[playerid][pi_VIP]) 
+					if(!ACCOUNT_INFO[playerid][ac_VIP]) 
 					{
 						if(i >= MAX_NU_VEHICLES)
 						{
@@ -26738,19 +26690,19 @@ LoadPlayerVehicles(playerid)
 			}
 		}
 	}
-	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM pvehicles WHERE id_player = %d;", PI[playerid][pi_ID]);
+	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM pvehicles WHERE id_player = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 	MySQL_TQueryInline(srp_db, using inline OnPlayerVehiclesLoad, QUERY_BUFFER);
 	return 1;
 }
 
 SavePlayerVehicles(playerid, destroy = false)
 {
-	if(PI[playerid][pi_ID] == 0) return 0;
+	if(ACCOUNT_INFO[playerid][ac_ID] == 0) return 0;
 	
 	for(new i = 0, j = GetVehiclePoolSize(); i <= j; i ++)
 	{
 		if(!PLAYER_VEHICLES[i][player_vehicle_VALID]) continue;
-		if(PLAYER_VEHICLES[i][player_vehicle_OWNER_ID] != PI[playerid][pi_ID]) continue;
+		if(PLAYER_VEHICLES[i][player_vehicle_OWNER_ID] != ACCOUNT_INFO[playerid][ac_ID]) continue;
 		
 		GetVehiclePos(i, GLOBAL_VEHICLES[i][gb_vehicle_SPAWN_X], GLOBAL_VEHICLES[i][gb_vehicle_SPAWN_Y], GLOBAL_VEHICLES[i][gb_vehicle_SPAWN_Z]);
 		GetVehicleZAngle(i, GLOBAL_VEHICLES[i][gb_vehicle_SPAWN_ANGLE]);
@@ -26996,11 +26948,11 @@ public OnVehicleDeath(vehicleid, killerid)
 			new playerid = GetPlayerIdFromAccountId(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID]);
 			if(playerid != INVALID_PLAYER_ID)
 			{
-				if(PI[playerid][pi_PHONE_NUMBER])
+				if(PI[playerid][ac_PHONE_NUMBER])
 				{
 					new message[64]; format(message, sizeof message, "Vehículo de sustitución entregado en últ. estacionamiento.");
-					RegisterPhoneMessage(0, PI[playerid][pi_ID], message);
-					if(PI[playerid][pi_PHONE_STATE] == PHONE_STATE_ON)
+					RegisterPhoneMessage(0, ACCOUNT_INFO[playerid][ac_ID], message);
+					if(PI[playerid][ac_PHONE_STATE] == PHONE_STATE_ON)
 					{
 						if((PLAYER_TEMP[playerid][pt_GAME_STATE] == GAME_STATE_NORMAL || PLAYER_TEMP[playerid][pt_GAME_STATE] == GAME_STATE_DEAD))
 						{
@@ -27113,7 +27065,7 @@ GetPlayerIdFromAccountId(accountid)
 	{
 		if(IsPlayerConnected(i))
 		{
-			if(PI[i][pi_ID] == accountid)
+			if(ACCOUNT_INFO[i][ac_ID] == accountid)
 			{
 				return i;
 			}
@@ -27126,7 +27078,7 @@ GetPlayerIdFromAccountId(accountid)
 CMD:trabajar(playerid, params[])
 {	
 	if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return SendNotification(playerid, "Debes estar a pie.");
-	if(PI[playerid][pi_WANTED_LEVEL] > 0) return SendNotification(playerid, "No puedes obtener un trabajo cuando estás en búsqueda.");
+	if(PI[playerid][ac_WANTED_LEVEL] > 0) return SendNotification(playerid, "No puedes obtener un trabajo cuando estás en búsqueda.");
 	
 	if(gettime() < PLAYER_TEMP[playerid][pt_LAST_GOT_WORK_TIME] + NECESSARY_TIME_BETWEEN_WORKS)
 	{
@@ -27136,7 +27088,7 @@ CMD:trabajar(playerid, params[])
 	}
 
 	new player_jobs = CountPlayerJobs(playerid);
-	if(PI[playerid][pi_VIP])
+	if(ACCOUNT_INFO[playerid][ac_VIP])
 	{
 		if(player_jobs >= MAX_SU_WORKS)
 		{
@@ -27162,7 +27114,7 @@ CMD:trabajar(playerid, params[])
 		{
 			if(IsPlayerInRangeOfPoint(playerid, 1.0, obtain_work_coords[i][obtain_work_X], obtain_work_coords[i][obtain_work_Y], obtain_work_coords[i][obtain_work_Z]))
 			{
-				if(work_info[i][work_info_LEVEL] > PI[playerid][pi_LEVEL])
+				if(work_info[i][work_info_LEVEL] > ACCOUNT_INFO[playerid][ac_LEVEL])
 				{
 					SendFormatNotification(playerid, "Necesitas ser al menos nivel %d para obtener este trabajo.", work_info[i][work_info_LEVEL]);
 					return 1;
@@ -27174,7 +27126,7 @@ CMD:trabajar(playerid, params[])
 					return 1;
 				}
 				
-				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO pworks (id_player, id_work, `set`, level) VALUES(%d, %d, 1, 1) ON DUPLICATE KEY UPDATE `set` = 1;", PI[playerid][pi_ID], i);
+				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO pworks (id_player, id_work, `set`, level) VALUES(%d, %d, 1, 1) ON DUPLICATE KEY UPDATE `set` = 1;", ACCOUNT_INFO[playerid][ac_ID], i);
 				mysql_tquery(srp_db, QUERY_BUFFER);
 				
 				PLAYER_WORKS[playerid][i][pwork_SET] = true;
@@ -27224,13 +27176,13 @@ CMD:dimitir(playerid, params[])
 	
 	if(work == WORK_POLICE)
 	{
-		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pworks SET `set` = 0, level = 0 WHERE id_player = %d AND id_work = %d;", PI[playerid][pi_ID], work);
+		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pworks SET `set` = 0, level = 0 WHERE id_player = %d AND id_work = %d;", ACCOUNT_INFO[playerid][ac_ID], work);
 		mysql_tquery(srp_db, QUERY_BUFFER);
 		PLAYER_WORKS[playerid][work][pwork_LEVEL] = 0;
 	}
 	else
 	{
-		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pworks SET `set` = 0 WHERE id_player = %d AND id_work = %d;", PI[playerid][pi_ID], work);
+		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pworks SET `set` = 0 WHERE id_player = %d AND id_work = %d;", ACCOUNT_INFO[playerid][ac_ID], work);
 		mysql_tquery(srp_db, QUERY_BUFFER);
 	}
 	SendFormatNotification(playerid, "Has abandonado tu trabajo de ~b~%s~w~.", work_info[work][work_info_NAME]);
@@ -27304,9 +27256,9 @@ CMD:abrir(playerid, params[])
 		
 	if(vehicleid == INVALID_VEHICLE_ID) return SendNotification(playerid, "No estás en tu vehículo o cerca de él para abrirlo.");
 	if(!PLAYER_VEHICLES[vehicleid][player_vehicle_VALID]) return SendNotification(playerid, "Este no es tú vehículo.");
-	if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] != PI[playerid][pi_ID]) return SendNotification(playerid, "Este no es tú vehículo.");
+	if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] != ACCOUNT_INFO[playerid][ac_ID]) return SendNotification(playerid, "Este no es tú vehículo.");
 	
-	if(!PI[playerid][pi_VIP] && !PLAYER_VEHICLES[vehicleid][player_vehicle_ACCESSIBLE])
+	if(!ACCOUNT_INFO[playerid][ac_VIP] && !PLAYER_VEHICLES[vehicleid][player_vehicle_ACCESSIBLE])
 	{
 		SendNotification(playerid, "Este vehículo está bloqueado, desbloquealo con VIP.");
 		SendFormatNotification(playerid, "¡Los jugadores ~y~VIP ~w~pueden tener hasta %d vehículos! Usa ~y~/ayuda ~w~si quieres ser ~y~VIP~w~.", MAX_SU_VEHICLES);
@@ -27331,7 +27283,7 @@ CMD:cerrar(playerid, params[])
 		
 	if(vehicleid == INVALID_VEHICLE_ID) return SendNotification(playerid, "No estás en tu vehículo o cerca de él para abrirlo.");
 	if(!PLAYER_VEHICLES[vehicleid][player_vehicle_VALID]) return SendNotification(playerid, "Este no es tú vehículo.");
-	if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] != PI[playerid][pi_ID]) return SendNotification(playerid, "Este no es tú vehículo.");
+	if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] != ACCOUNT_INFO[playerid][ac_ID]) return SendNotification(playerid, "Este no es tú vehículo.");
 	if(GLOBAL_VEHICLES[vehicleid][gb_vehicle_PARAMS_DOORS]) return SendNotification(playerid, "Las puertas de tu vehículo ya están cerradas.");
 	
 	GLOBAL_VEHICLES[vehicleid][gb_vehicle_LAST_CLOSED_TIME] = gettime();
@@ -27350,7 +27302,7 @@ CMD:aparcar(playerid, params[])
 		
 	if(vehicleid == INVALID_VEHICLE_ID) return SendNotification(playerid, "No estás en tu vehículo para aparcarlo.");
 	if(!PLAYER_VEHICLES[vehicleid][player_vehicle_VALID]) return SendNotification(playerid, "Este no es tú vehículo.");
-	if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] != PI[playerid][pi_ID]) return SendNotification(playerid, "Este no es tú vehículo.");
+	if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] != ACCOUNT_INFO[playerid][ac_ID]) return SendNotification(playerid, "Este no es tú vehículo.");
 	
 	new Float:pos[3], Float:angle;
 	GetVehiclePos(vehicleid, pos[0], pos[1], pos[2]);
@@ -27381,7 +27333,7 @@ CMD:luces(playerid, params[])
 			GLOBAL_VEHICLES[vehicleid][gb_vehicle_PARAMS_LIGHTS] = 0;
 			UpdateVehicleParams(vehicleid);
 			
-			if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == PI[playerid][pi_ID]) Auto_SendPlayerAction(playerid, "ha apagado las luces de su vehículo.");
+			if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID]) Auto_SendPlayerAction(playerid, "ha apagado las luces de su vehículo.");
 			else Auto_SendPlayerAction(playerid, "ha apagado las luces de el vehículo.");
 		}
 		else
@@ -27389,7 +27341,7 @@ CMD:luces(playerid, params[])
 			GLOBAL_VEHICLES[vehicleid][gb_vehicle_PARAMS_LIGHTS] = 1;
 			UpdateVehicleParams(vehicleid);
 			
-			if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == PI[playerid][pi_ID]) Auto_SendPlayerAction(playerid, "ha encendido las luces de su vehículo.");
+			if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID]) Auto_SendPlayerAction(playerid, "ha encendido las luces de su vehículo.");
 			else Auto_SendPlayerAction(playerid, "ha encendido las luces de el vehículo.");
 		}
 	}
@@ -27420,7 +27372,7 @@ CMD:motor(playerid, params[])
 			GLOBAL_VEHICLES[vehicleid][gb_vehicle_PARAMS_ENGINE] = 0;
 			UpdateVehicleParams(vehicleid);
 			
-			if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == PI[playerid][pi_ID]) Auto_SendPlayerAction(playerid, "ha detenido su vehículo.");
+			if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID]) Auto_SendPlayerAction(playerid, "ha detenido su vehículo.");
 			else Auto_SendPlayerAction(playerid, "ha detenido el vehículo.");
 		}
 		else
@@ -27456,7 +27408,7 @@ public StartVehicleEngine(playerid, vehicleid)
 		DetachTrailerFromVehicle(vehicleid);
 	}
 	
-	if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == PI[playerid][pi_ID]) Auto_SendPlayerAction(playerid, "ha arrancado su vehículo.");
+	if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID]) Auto_SendPlayerAction(playerid, "ha arrancado su vehículo.");
 	else Auto_SendPlayerAction(playerid, "ha arrancado el vehículo.");
 
 	SendNotification(playerid, "~h~~g~Encendido");
@@ -27800,19 +27752,19 @@ SetNormalPlayerMarkers(playerid)
 
 LoadPlayerCrewInfo(playerid)
 {
-	if(PI[playerid][pi_ID] == 0) return 0;
+	if(ACCOUNT_INFO[playerid][ac_ID] == 0) return 0;
 	
-	if(PI[playerid][pi_CREW])
+	if(PI[playerid][ac_CREW])
 	{
-		new crew_index = GetCrewIndexById(PI[playerid][pi_CREW]);
+		new crew_index = GetCrewIndexById(PI[playerid][ac_CREW]);
 		if(crew_index == -1)
 		{
-			PI[playerid][pi_CREW] = 0;
-			PI[playerid][pi_CREW_RANK] = 0;
+			PI[playerid][ac_CREW] = 0;
+			PI[playerid][ac_CREW_RANK] = 0;
 			PLAYER_TEMP[playerid][pt_CREW_INDEX] = 0;
 			SendNotification(playerid, "La banda a la que pertenecías ya no existe.");
 
-			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET crew = NULL WHERE id = %d;", PI[playerid][pi_ID]);
+			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET crew = NULL WHERE id = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 			mysql_tquery(srp_db, QUERY_BUFFER);
 		}
 		else
@@ -27826,7 +27778,7 @@ LoadPlayerCrewInfo(playerid)
 
 LoadPlayerWorks(playerid)
 {
-	if(PI[playerid][pi_ID] == 0) return 0;
+	if(ACCOUNT_INFO[playerid][ac_ID] == 0) return 0;
 	
 	inline OnPworksLoad()
 	{
@@ -27840,20 +27792,20 @@ LoadPlayerWorks(playerid)
 				cache_get_value_name_int(i, "set", PLAYER_WORKS[playerid][work][pwork_SET]);
 				cache_get_value_name_int(i, "level", PLAYER_WORKS[playerid][work][pwork_LEVEL]);
 
-				if(PLAYER_WORKS[playerid][work][pwork_SET] && !PI[playerid][pi_VIP])
+				if(PLAYER_WORKS[playerid][work][pwork_SET] && !ACCOUNT_INFO[playerid][ac_VIP])
 				{
 					if(count >= MAX_NU_WORKS)
 					{
 						PLAYER_WORKS[playerid][work][pwork_SET] = false;
 						if(work == WORK_POLICE)
 						{
-							mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pworks SET `set` = 0, level = 0 WHERE id_player = %d AND id_work = %d;", PI[playerid][pi_ID], work);
+							mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pworks SET `set` = 0, level = 0 WHERE id_player = %d AND id_work = %d;", ACCOUNT_INFO[playerid][ac_ID], work);
 							mysql_tquery(srp_db, QUERY_BUFFER);
 							PLAYER_WORKS[playerid][work][pwork_LEVEL] = 0;
 						}
 						else
 						{
-							mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pworks SET `set` = 0 WHERE id_player = %d AND id_work = %d;", PI[playerid][pi_ID], work);
+							mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pworks SET `set` = 0 WHERE id_player = %d AND id_work = %d;", ACCOUNT_INFO[playerid][ac_ID], work);
 							mysql_tquery(srp_db, QUERY_BUFFER);
 						}
 					}
@@ -27863,7 +27815,7 @@ LoadPlayerWorks(playerid)
 			}
 		}
 	}
-	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM pworks WHERE id_player = %d;", PI[playerid][pi_ID]);
+	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM pworks WHERE id_player = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 	MySQL_TQueryInline(srp_db, using inline OnPworksLoad, QUERY_BUFFER);
 	return 1;
 }
@@ -28006,7 +27958,7 @@ CMD:basurero(playerid, params[])
 
 CMD:reparar(playerid, params[]) {
 	if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return SendNotification(playerid, "No estás depie.");
-	if(PI[playerid][pi_MECHANIC_KITS] <= 0) return SendNotification(playerid, "No tienes un kit de reparación, compra uno en el taller.");
+	if(PI[playerid][ac_MECHANIC_KITS] <= 0) return SendNotification(playerid, "No tienes un kit de reparación, compra uno en el taller.");
 
 	new vehicleid = GetPlayerCameraTargetVehicle(playerid);
 	if(vehicleid == INVALID_VEHICLE_ID) return SendNotification(playerid, "No estás cerca de ningún vehículo.");
@@ -28014,7 +27966,7 @@ CMD:reparar(playerid, params[]) {
 	if(GLOBAL_VEHICLES[vehicleid][gb_vehicle_STATE] != VEHICLE_STATE_DAMAGED) return SendNotification(playerid, "El vehículo no está dañado.");
 
 	RepairVehicleEx(vehicleid, playerid, MIN_VEHICLE_HEALTH + 50.0);
-	PI[playerid][pi_MECHANIC_KITS] --;
+	PI[playerid][ac_MECHANIC_KITS] --;
 	SendNotification(playerid, "~w~Has usado ~y~1 kit de reparación ~w~para arreglar este vehículo.");
 	return 1;
 }
@@ -28222,7 +28174,7 @@ CMD:piezas(playerid, params[])
 			if(params[0] <= 0 || params[0] >= 10000) return SendNotification(playerid, "~r~Modo de uso: ~w~/piezas [cantidad > 0]");
 
 			new price = params[0] * 50;
-			if(price > PI[playerid][pi_CASH])
+			if(price > PI[playerid][ac_CASH])
 			{
 				SendFormatNotification(playerid, "Necesitas %s$ para poder comprar %d piezas.", number_format_thousand(price), params[0]);
 				return 1;
@@ -28230,9 +28182,9 @@ CMD:piezas(playerid, params[])
 			if(price < 0) return 1;
 
 			if(GivePlayerCash(playerid, -price, true, true)) {
-				PI[playerid][pi_MECHANIC_PIECES] += params[0];
+				PI[playerid][ac_MECHANIC_PIECES] += params[0];
 
-				SendFormatNotification(playerid, "Has comprado %s piezas por %s$, ahora tienes %s piezas.", number_format_thousand(params[0]), number_format_thousand(price), number_format_thousand(PI[playerid][pi_MECHANIC_PIECES]));
+				SendFormatNotification(playerid, "Has comprado %s piezas por %s$, ahora tienes %s piezas.", number_format_thousand(params[0]), number_format_thousand(price), number_format_thousand(PI[playerid][ac_MECHANIC_PIECES]));
 			}
 			return 1;
 		}
@@ -28250,7 +28202,7 @@ CMD:kit(playerid, params[])
 		if(IsPlayerInRangeOfPoint(playerid, 1.0, MechanicBuyKitsCoords[i][0], MechanicBuyKitsCoords[i][1], MechanicBuyKitsCoords[i][2]))
 		{
 			if(GivePlayerCash(playerid, -1000, true, true)) {
-				PI[playerid][pi_MECHANIC_KITS] += 1;
+				PI[playerid][ac_MECHANIC_KITS] += 1;
 				SendNotification(playerid, "~w~Has comprado un kit de reparación, para usararlo usa ~y~/reparar ~w~cerca del vehículo que quieras reparar.");
 			}
 			else SendNotification(playerid, "No tienes suficiente dinero.");
@@ -28270,7 +28222,7 @@ CMD:botiquin(playerid, params[])
 		if(IsPlayerInRangeOfPoint(playerid, 1.0, MedicalBuyKitsCoords[i][0], MedicalBuyKitsCoords[i][1], MedicalBuyKitsCoords[i][2]))
 		{
 			if(GivePlayerCash(playerid, -5000, true, true)) {
-				PI[playerid][pi_MEDICAL_KITS] += 1;
+				PI[playerid][ac_MEDICAL_KITS] += 1;
 				SendNotification(playerid, "~w~Has comprado un botiquín, para usararlo usa ~y~/curar ~w~cerca de la persona que quieras curar.");
 			}
 			else SendNotification(playerid, "No tienes suficiente dinero.");
@@ -28365,7 +28317,7 @@ public OnPlayerEnterDynamicRaceCP(playerid, checkpointid)
 					work_extra_payment = (work_info[WORK_HARVESTER][work_info_EXTRA_PAY] * floatround(floatdiv(PLAYER_WORKS[playerid][WORK_HARVESTER][pwork_LEVEL], work_info[WORK_HARVESTER][work_info_EXTRA_PAY_EXP])));
 					if(work_info[WORK_HARVESTER][work_info_EXTRA_PAY_LIMIT] != 0) if(work_extra_payment > work_info[WORK_HARVESTER][work_info_EXTRA_PAY_LIMIT]) work_extra_payment = work_info[WORK_HARVESTER][work_info_EXTRA_PAY_LIMIT];
 					
-					if(PI[playerid][pi_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
+					if(ACCOUNT_INFO[playerid][ac_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
 				}
 				
 				new money = minrand(350, 410) + WORK_HARVESTER;
@@ -28399,7 +28351,7 @@ public OnPlayerEnterDynamicRaceCP(playerid, checkpointid)
 					work_extra_payment = (work_info[WORK_FUMIGATOR][work_info_EXTRA_PAY] * floatround(floatdiv(PLAYER_WORKS[playerid][WORK_FUMIGATOR][pwork_LEVEL], work_info[WORK_FUMIGATOR][work_info_EXTRA_PAY_EXP])));
 					if(work_info[WORK_FUMIGATOR][work_info_EXTRA_PAY_LIMIT] != 0) if(work_extra_payment > work_info[WORK_FUMIGATOR][work_info_EXTRA_PAY_LIMIT]) work_extra_payment = work_info[WORK_FUMIGATOR][work_info_EXTRA_PAY_LIMIT];
 				
-					if(PI[playerid][pi_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
+					if(ACCOUNT_INFO[playerid][ac_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
 				}
 				
 				new money = minrand(1200, 1500) + work_extra_payment;
@@ -28431,7 +28383,7 @@ public OnPlayerEnterDynamicRaceCP(playerid, checkpointid)
 
 					if(vhealth >= 800.0)
 					{
-						PI[playerid][pi_DRIVE_LICENSE_POINTS] = 12;
+						PI[playerid][ac_DRIVE_LICENSE_POINTS] = 12;
 						SendNotification(playerid, "¡Felicidades! te has sacado el carnet de conducir, cuentas con 12 puntos.");
 					}
 					else SendNotification(playerid, "No has superado el examen.");
@@ -28718,19 +28670,19 @@ public DestroyFlashObject(objectid)
 ShowPlayerInventory(playerid, pid)
 {
 	if(!IsPlayerConnected(pid)) return 0;
-	if(PI[pid][pi_ID] == 0) return 0;
+	if(ACCOUNT_INFO[pid][ac_ID] == 0) return 0;
 	
 	new caption[48];
 	format(caption, sizeof caption, "Inventario de %s", PLAYER_TEMP[pid][pt_RP_NAME]);
 	
 	new dialog[1800], line_str[128];
 	
-	format(line_str, sizeof line_str, "{"#SILVER_COLOR"}Dinero {"#SILVER_COLOR"}(%s$)\n", number_format_thousand(PI[pid][pi_CASH]));
+	format(line_str, sizeof line_str, "{"#SILVER_COLOR"}Dinero {"#SILVER_COLOR"}(%s$)\n", number_format_thousand(PI[pid][ac_CASH]));
 	strcat(dialog, line_str);
 	
-	if(PI[pid][pi_DRIVE_LICENSE_POINTS])
+	if(PI[pid][ac_DRIVE_LICENSE_POINTS])
 	{
-		format(line_str, sizeof line_str, "Licencia de conducir: {"#SILVER_COLOR"}sí, %d puntos\n", PI[pid][pi_DRIVE_LICENSE_POINTS]);
+		format(line_str, sizeof line_str, "Licencia de conducir: {"#SILVER_COLOR"}sí, %d puntos\n", PI[pid][ac_DRIVE_LICENSE_POINTS]);
 		strcat(dialog, line_str);
 	}
 	else
@@ -28739,9 +28691,9 @@ ShowPlayerInventory(playerid, pid)
 		strcat(dialog, line_str);
 	}
 
-	if(PI[pid][pi_PHONE_NUMBER])
+	if(PI[pid][ac_PHONE_NUMBER])
 	{
-		format(line_str, sizeof line_str, "Teléfono {"#SILVER_COLOR"}(%d)\n", PI[pid][pi_PHONE_NUMBER]);
+		format(line_str, sizeof line_str, "Teléfono {"#SILVER_COLOR"}(%d)\n", PI[pid][ac_PHONE_NUMBER]);
 		strcat(dialog, line_str);
 	}
 	
@@ -28759,11 +28711,11 @@ ShowPlayerInventory(playerid, pid)
 		strcat(dialog, line_str);
 	}
 	
-	if(PI[pid][pi_GPS]) strcat(dialog, "GPS\n");
-	if(PI[pid][pi_Maso]) strcat(dialog, "Masa\n");
-	if(PI[pid][pi_MP3]) strcat(dialog, "Reproductor MP3\n");
-	if(PI[pid][pi_PHONE_RESOLVER]) strcat(dialog, "Guía telefónica\n");
-	if(PI[pid][pi_SPEAKERS]) strcat(dialog, "Altavoces\n");
+	if(PI[pid][ac_GPS]) strcat(dialog, "GPS\n");
+	if(PI[pid][ac_Maso]) strcat(dialog, "Masa\n");
+	if(PI[pid][ac_MP3]) strcat(dialog, "Reproductor MP3\n");
+	if(PI[pid][ac_PHONE_RESOLVER]) strcat(dialog, "Guía telefónica\n");
+	if(PI[pid][ac_SPEAKERS]) strcat(dialog, "Altavoces\n");
 	
 	new player_weapons = CountPlayerWeapons(pid);
 	if(player_weapons > 0)
@@ -28773,63 +28725,63 @@ ShowPlayerInventory(playerid, pid)
 		strcat(dialog, line_str);
 	}
 	
-	if(PI[pid][pi_MECHANIC_PIECES] > 0)
+	if(PI[pid][ac_MECHANIC_PIECES] > 0)
 	{
-		format(line_str, sizeof line_str, "Piezas de mecánico {"#SILVER_COLOR"}(%s)\n", number_format_thousand(PI[pid][pi_MECHANIC_PIECES]));
+		format(line_str, sizeof line_str, "Piezas de mecánico {"#SILVER_COLOR"}(%s)\n", number_format_thousand(PI[pid][ac_MECHANIC_PIECES]));
 		strcat(dialog, line_str);
 	}
 	
-	if(PI[pid][pi_FUEL_DRUM] > 0)
+	if(PI[pid][ac_FUEL_DRUM] > 0)
 	{
-		format(line_str, sizeof line_str, "Bidón de gasolina {"#SILVER_COLOR"}(%d Litros)\n", PI[pid][pi_FUEL_DRUM]);
+		format(line_str, sizeof line_str, "Bidón de gasolina {"#SILVER_COLOR"}(%d Litros)\n", PI[pid][ac_FUEL_DRUM]);
 		strcat(dialog, line_str);
 	}
 	
-	if(PI[pid][pi_SEED_MEDICINE] > 0)
+	if(PI[pid][ac_SEED_MEDICINE] > 0)
 	{
-		format(line_str, sizeof line_str, "{"#BLUE_COLOR"}Semillas de medicina {"#SILVER_COLOR"}(%d)\n", PI[pid][pi_SEED_MEDICINE]);
+		format(line_str, sizeof line_str, "{"#BLUE_COLOR"}Semillas de medicina {"#SILVER_COLOR"}(%d)\n", PI[pid][ac_SEED_MEDICINE]);
 		strcat(dialog, line_str);
 	}
 	
-	if(PI[pid][pi_SEED_CANNABIS] > 0)
+	if(PI[pid][ac_SEED_CANNABIS] > 0)
 	{
-		format(line_str, sizeof line_str, "{"#RED_COLOR"}Semillas de marihuana {"#SILVER_COLOR"}(%d)\n", PI[pid][pi_SEED_CANNABIS]);
+		format(line_str, sizeof line_str, "{"#RED_COLOR"}Semillas de marihuana {"#SILVER_COLOR"}(%d)\n", PI[pid][ac_SEED_CANNABIS]);
 		strcat(dialog, line_str);
 	}
 	
-	if(PI[pid][pi_SEED_CRACK] > 0)
+	if(PI[pid][ac_SEED_CRACK] > 0)
 	{
-		format(line_str, sizeof line_str, "{"#RED_COLOR"}Semillas de coca {"#SILVER_COLOR"}(%d)\n", PI[pid][pi_SEED_CRACK]);
+		format(line_str, sizeof line_str, "{"#RED_COLOR"}Semillas de coca {"#SILVER_COLOR"}(%d)\n", PI[pid][ac_SEED_CRACK]);
 		strcat(dialog, line_str);
 	}
 	
-	if(PI[pid][pi_MEDICINE] > 0)
+	if(PI[pid][ac_MEDICINE] > 0)
 	{
-		format(line_str, sizeof line_str, "{"#BLUE_COLOR"}Medicamentos {"#SILVER_COLOR"}(%dg)\n", PI[pid][pi_MEDICINE]);
+		format(line_str, sizeof line_str, "{"#BLUE_COLOR"}Medicamentos {"#SILVER_COLOR"}(%dg)\n", PI[pid][ac_MEDICINE]);
 		strcat(dialog, line_str);
 	}
 	
-	if(PI[pid][pi_CANNABIS] > 0)
+	if(PI[pid][ac_CANNABIS] > 0)
 	{
-		format(line_str, sizeof line_str, "{"#RED_COLOR"}Marihuana {"#SILVER_COLOR"}(%dg)\n", PI[pid][pi_CANNABIS]);
+		format(line_str, sizeof line_str, "{"#RED_COLOR"}Marihuana {"#SILVER_COLOR"}(%dg)\n", PI[pid][ac_CANNABIS]);
 		strcat(dialog, line_str);
 	}
 	
-	if(PI[pid][pi_CRACK] > 0)
+	if(PI[pid][ac_CRACK] > 0)
 	{
-		format(line_str, sizeof line_str, "{"#RED_COLOR"}Crack {"#SILVER_COLOR"}(%dg)\n", PI[pid][pi_CRACK]);
+		format(line_str, sizeof line_str, "{"#RED_COLOR"}Crack {"#SILVER_COLOR"}(%dg)\n", PI[pid][ac_CRACK]);
 		strcat(dialog, line_str);
 	}
 
-	if(PI[pid][pi_MECHANIC_KITS] > 0)
+	if(PI[pid][ac_MECHANIC_KITS] > 0)
 	{
-		format(line_str, sizeof line_str, "Kits de reparación (%d)\n", PI[pid][pi_MECHANIC_KITS]);
+		format(line_str, sizeof line_str, "Kits de reparación (%d)\n", PI[pid][ac_MECHANIC_KITS]);
 		strcat(dialog, line_str);
 	}
 
-	if(PI[pid][pi_MEDICAL_KITS] > 0)
+	if(PI[pid][ac_MEDICAL_KITS] > 0)
 	{
-		format(line_str, sizeof line_str, "Botiquines (%d)\n", PI[pid][pi_MEDICAL_KITS]);
+		format(line_str, sizeof line_str, "Botiquines (%d)\n", PI[pid][ac_MEDICAL_KITS]);
 		strcat(dialog, line_str);
 	}
 	
@@ -28882,21 +28834,21 @@ CountPlayerWeapons(playerid)
 ShowPlayerSkills(playerid, pid)
 {
 	if(!IsPlayerConnected(pid)) return 0;
-	if(PI[pid][pi_ID] == 0) return 0;
+	if(ACCOUNT_INFO[pid][ac_ID] == 0) return 0;
 	
 	new caption[48], line_str[80], dialog[sizeof line_str * (sizeof(work_info) + 5)];
 	format(caption, sizeof caption, "Experiencia de %s", PLAYER_TEMP[pid][pt_RP_NAME]);
 	
 	strcat(dialog, "{"#BLUE_COLOR"}CUENTA\n");
-	format(line_str, sizeof line_str, "{"#SILVER_COLOR"}Nivel: {"#PRIMARY_COLOR"}%d\n", PI[pid][pi_LEVEL]);
+	format(line_str, sizeof line_str, "{"#SILVER_COLOR"}Nivel: {"#PRIMARY_COLOR"}%d\n", PI[pid][ac_LEVEL]);
 	strcat(dialog, line_str);
 	
-	new neccessary_rep = PI[pid][pi_LEVEL] * REP_MULTIPLIER;
-	format(line_str, sizeof line_str, "{"#SILVER_COLOR"}Reputación: {"#PRIMARY_COLOR"}%d/%d\n", PI[pid][pi_REP], neccessary_rep);
+	new neccessary_rep = PI[pid][ac_LEVEL] * REP_MULTIPLIER;
+	format(line_str, sizeof line_str, "{"#SILVER_COLOR"}Reputación: {"#PRIMARY_COLOR"}%d/%d\n", PI[pid][ac_REP], neccessary_rep);
 	strcat(dialog, line_str);
 	
 	new Float:hours;
-	ConvertTime_SecondsToHoursFloat(PI[pid][pi_TIME_PLAYING], hours);
+	ConvertTime_SecondsToHoursFloat(ACCOUNT_INFO[pid][ac_TIME_PLAYING], hours);
 	format(line_str, sizeof line_str, "{"#SILVER_COLOR"}Horas de juego: {"#PRIMARY_COLOR"}%.1f horas\n", hours);
 	strcat(dialog, line_str);
 	
@@ -29105,24 +29057,24 @@ CMD:recoger(playerid, params[])
 
 		if(IsPlayerInRangeOfPoint(playerid, 1.5, pos[0], pos[1], pos[2]))
 		{
-			if(PLANTS[i][plant_IMMUNITY] > 0 && PLANTS[i][plant_PLANTED_BY_ACCOUNT_ID] != PI[playerid][pi_ID]) return SendFormatNotification(playerid, "Esta planta tiene tiempo de inmunidad.");
+			if(PLANTS[i][plant_IMMUNITY] > 0 && PLANTS[i][plant_PLANTED_BY_ACCOUNT_ID] != ACCOUNT_INFO[playerid][ac_ID]) return SendFormatNotification(playerid, "Esta planta tiene tiempo de inmunidad.");
 			
 			KillTimer(PLANTS[i][plant_TIMER]);
 			switch(seed_info[ PLANTS[i][plant_TYPE] ][seed_info_PLANT_TYPE])
 			{
 				case PLANT_TYPE_MEDICINE:
 				{
-					PI[playerid][pi_MEDICINE] += 2;
+					PI[playerid][ac_MEDICINE] += 2;
 					SendNotification(playerid, "Has recogido la planta y has obtenido ~g~2 gramos de medicamento~w~.");
 				}
 				case PLANT_TYPE_CANNABIS:
 				{
-					PI[playerid][pi_CANNABIS] += 6;
+					PI[playerid][ac_CANNABIS] += 6;
 					SendNotification(playerid, "Has recogido la planta y has obtenido ~g~6 gramos de marihuana~w~.");
 				}
 				case PLANT_TYPE_CRACK:
 				{
-					PI[playerid][pi_CRACK] += 4;
+					PI[playerid][ac_CRACK] += 4;
 					SendNotification(playerid, "Has recogido la planta y has obtenido ~g~4 gramos de crack~w~.");
 				}
 			}
@@ -29210,7 +29162,7 @@ public UpdatePlayer_GPS_Map(playerid)
 	
 	new Float:pos[3];
 	
-	switch(PI[playerid][pi_STATE])
+	switch(ACCOUNT_INFO[playerid][ac_STATE])
 	{
 		case ROLEPLAY_STATE_INTERIOR:
 		{
@@ -29388,7 +29340,7 @@ public UpdatePlayer_GPS_Map(playerid)
 							if(cp_counts >= MAX_PLAYER_MAP_GPS_POINTS) break;
 							
 							new Float:player_pos[3];
-							switch(PI[i][pi_STATE])
+							switch(PI[i][ac_STATE])
 							{
 								case ROLEPLAY_STATE_INTERIOR:
 								{
@@ -29417,12 +29369,12 @@ public UpdatePlayer_GPS_Map(playerid)
 				{
 					if(PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_NORMAL)
 					{
-						if(PI[i][pi_WANTED_LEVEL] > 0)
+						if(PI[i][ac_WANTED_LEVEL] > 0)
 						{
 							if(cp_counts >= MAX_PLAYER_MAP_GPS_POINTS) break;
 
 							new Float:player_pos[3];
-							switch(PI[i][pi_STATE])
+							switch(PI[i][ac_STATE])
 							{
 								case ROLEPLAY_STATE_INTERIOR:
 								{
@@ -29463,7 +29415,7 @@ public UpdatePlayer_GPS_Map(playerid)
 				{
 					if(PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_NORMAL)
 					{
-						if(PI[i][pi_STATE] == ROLEPLAY_STATE_CRACK)
+						if(PI[i][ac_STATE] == ROLEPLAY_STATE_CRACK)
 						{
 							if(cp_counts >= MAX_PLAYER_MAP_GPS_POINTS) break;
 
@@ -29724,7 +29676,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 			}
 		}
 	}
-	if(PI[playerid][pi_CREW])
+	if(PI[playerid][ac_CREW])
 	{
 		if(gettime() > CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_LAST_ATTACK] + 300)
 		{
@@ -29732,7 +29684,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 			{
 				if(IsPlayerInDynamicArea(playerid, TERRITORIES[ PLAYER_TEMP[playerid][pt_LAST_TERRITORY] ][territory_AREA]))
 				{
-					if(TERRITORIES[ PLAYER_TEMP[playerid][pt_LAST_TERRITORY] ][territory_CREW_ID] != PI[playerid][pi_CREW])
+					if(TERRITORIES[ PLAYER_TEMP[playerid][pt_LAST_TERRITORY] ][territory_CREW_ID] != PI[playerid][ac_CREW])
 					{
 						if(!TERRITORIES[ PLAYER_TEMP[playerid][pt_LAST_TERRITORY] ][territory_WAR] && !CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_FIGHTING])
 						{
@@ -29768,7 +29720,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float: amount, weaponid, bodypart
 {
 	if(damagedid != INVALID_PLAYER_ID)
 	{
-		if(PLAYER_TEMP[playerid][pt_WORKING_IN] != WORK_POLICE && PI[playerid][pi_STATE] != ROLEPLAY_STATE_CRACK && PI[playerid][pi_STATE] != ROLEPLAY_STATE_JAIL) {
+		if(PLAYER_TEMP[playerid][pt_WORKING_IN] != WORK_POLICE && ACCOUNT_INFO[playerid][ac_STATE] != ROLEPLAY_STATE_CRACK && ACCOUNT_INFO[playerid][ac_STATE] != ROLEPLAY_STATE_JAIL) {
 			if(PLAYER_TEMP[playerid][pt_COMBAT])
 			{
 				KillTimer(PLAYER_TEMP[playerid][pt_COMBAT_TIMER]);
@@ -29785,7 +29737,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float: amount, weaponid, bodypart
 			}
 		}
 
-		if(PLAYER_TEMP[damagedid][pt_WORKING_IN] != WORK_POLICE && PI[damagedid][pi_STATE] != ROLEPLAY_STATE_CRACK && PI[damagedid][pi_STATE] != ROLEPLAY_STATE_JAIL) {
+		if(PLAYER_TEMP[damagedid][pt_WORKING_IN] != WORK_POLICE && PI[damagedid][ac_STATE] != ROLEPLAY_STATE_CRACK && PI[damagedid][ac_STATE] != ROLEPLAY_STATE_JAIL) {
 			if(PLAYER_TEMP[damagedid][pt_COMBAT])
 			{
 				KillTimer(PLAYER_TEMP[damagedid][pt_COMBAT_TIMER]);
@@ -29814,7 +29766,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float: amount, weaponid, bodypart
 				new city[45], zone[45];
 				GetPlayerZones(playerid, city, zone);
 
-				if(!PI[playerid][pi_WANTED_LEVEL]) SetPlayerWantedLevelEx(playerid, 1);
+				if(!PI[playerid][ac_WANTED_LEVEL]) SetPlayerWantedLevelEx(playerid, 1);
 
 				new message[145];
 				format(message, sizeof message, "{"#PRIMARY_COLOR"}[Central policía] {FFFFFF}%s está causando disturbios en {"#PRIMARY_COLOR"}%s, %s.", PLAYER_TEMP[playerid][pt_RP_NAME], city, zone);
@@ -29889,7 +29841,7 @@ CheckWeaponAndAmmo(playerid, weaponid)
 new ADMIN_LEVEL_AC_IMMUNITY = 3; //nivel 3 en adelante
 OnPlayerCheatDetected(playerid, cheat, Float:extra = 0.0)
 {
-	if(PI[playerid][pi_ADMIN_LEVEL] >= ADMIN_LEVEL_AC_IMMUNITY) return 1;
+	if(ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] >= ADMIN_LEVEL_AC_IMMUNITY) return 1;
 	if(PLAYER_TEMP[playerid][pt_KICKED]) return 1;
 	
 
@@ -29901,20 +29853,20 @@ OnPlayerCheatDetected(playerid, cheat, Float:extra = 0.0)
 	{	
 		new bad_history[24];
 		format(bad_history, sizeof bad_history, "ac, cheat (%02d)", cheat);
-		AddPlayerBadHistory(PI[playerid][pi_ID], -1, TYPE_KICK, bad_history);
+		AddPlayerBadHistory(ACCOUNT_INFO[playerid][ac_ID], -1, TYPE_KICK, bad_history);
 		
-		if(extra != 0.0) format(ac_message, sizeof ac_message, "{"#RED_COLOR"}[AC-KICK] {FFFFFF}%s (%d): %s (cd: %02d, ps: %02d, ping: %d, dec: %d:%d, extra: %.1f)", PI[playerid][pi_NAME], playerid, ac_Info[cheat][ac_Name], cheat, player_state, GetPlayerPing(playerid), PLAYER_AC_INFO[playerid][cheat][p_ac_info_DETECTIONS], ac_Info[cheat][ac_Interval], extra);
-		else format(ac_message, sizeof ac_message, "{"#RED_COLOR"}[AC-KICK] {FFFFFF}%s (%d): %s (cd: %02d, ps: %02d, ping: %d, dec: %d:%d)", PI[playerid][pi_NAME], playerid, ac_Info[cheat][ac_Name], cheat, player_state, GetPlayerPing(playerid), PLAYER_AC_INFO[playerid][cheat][p_ac_info_DETECTIONS], ac_Info[cheat][ac_Interval]);
+		if(extra != 0.0) format(ac_message, sizeof ac_message, "{"#RED_COLOR"}[AC-KICK] {FFFFFF}%s (%d): %s (cd: %02d, ps: %02d, ping: %d, dec: %d:%d, extra: %.1f)", ACCOUNT_INFO[playerid][ac_NAME], playerid, ac_Info[cheat][ac_Name], cheat, player_state, GetPlayerPing(playerid), PLAYER_AC_INFO[playerid][cheat][p_ac_info_DETECTIONS], ac_Info[cheat][ac_Interval], extra);
+		else format(ac_message, sizeof ac_message, "{"#RED_COLOR"}[AC-KICK] {FFFFFF}%s (%d): %s (cd: %02d, ps: %02d, ping: %d, dec: %d:%d)", ACCOUNT_INFO[playerid][ac_NAME], playerid, ac_Info[cheat][ac_Name], cheat, player_state, GetPlayerPing(playerid), PLAYER_AC_INFO[playerid][cheat][p_ac_info_DETECTIONS], ac_Info[cheat][ac_Interval]);
 		
 		KickEx(playerid);
 		
-		if(cheat == CHEAT_PLAYER_HEALTH) PI[playerid][pi_HEALTH] = 20.0;
-		if(cheat == CHEAT_PLAYER_ARMOUR) PI[playerid][pi_ARMOUR] = 0.0;
+		if(cheat == CHEAT_PLAYER_HEALTH) PI[playerid][ac_HEALTH] = 20.0;
+		if(cheat == CHEAT_PLAYER_ARMOUR) PI[playerid][ac_ARMOUR] = 0.0;
 	}
 	else
 	{
-		if(extra != 0.0) format(ac_message, sizeof ac_message, "{"#RED_COLOR"}[AC-AVISO] {FFFFFF}%s (%d): %s (cd: %02d, ps: %02d, ping: %d, dec: %d:%d, extra: %.1f)", PI[playerid][pi_NAME], playerid, ac_Info[cheat][ac_Name], cheat, player_state, GetPlayerPing(playerid), PLAYER_AC_INFO[playerid][cheat][p_ac_info_DETECTIONS], ac_Info[cheat][ac_Interval], extra);
-		else format(ac_message, sizeof ac_message, "{"#RED_COLOR"}[AC-AVISO] {FFFFFF}%s (%d): %s (cd: %02d, ps: %02d, ping: %d, dec: %d:%d)", PI[playerid][pi_NAME], playerid, ac_Info[cheat][ac_Name], cheat, player_state, GetPlayerPing(playerid), PLAYER_AC_INFO[playerid][cheat][p_ac_info_DETECTIONS], ac_Info[cheat][ac_Interval]);
+		if(extra != 0.0) format(ac_message, sizeof ac_message, "{"#RED_COLOR"}[AC-AVISO] {FFFFFF}%s (%d): %s (cd: %02d, ps: %02d, ping: %d, dec: %d:%d, extra: %.1f)", ACCOUNT_INFO[playerid][ac_NAME], playerid, ac_Info[cheat][ac_Name], cheat, player_state, GetPlayerPing(playerid), PLAYER_AC_INFO[playerid][cheat][p_ac_info_DETECTIONS], ac_Info[cheat][ac_Interval], extra);
+		else format(ac_message, sizeof ac_message, "{"#RED_COLOR"}[AC-AVISO] {FFFFFF}%s (%d): %s (cd: %02d, ps: %02d, ping: %d, dec: %d:%d)", ACCOUNT_INFO[playerid][ac_NAME], playerid, ac_Info[cheat][ac_Name], cheat, player_state, GetPlayerPing(playerid), PLAYER_AC_INFO[playerid][cheat][p_ac_info_DETECTIONS], ac_Info[cheat][ac_Interval]);
 	}
 	
 	SendMessageToAdminsAC(-1, ac_message);
@@ -29929,7 +29881,7 @@ RegisterNewPlayerWeapon(playerid, weapon_slot)
 	{
 		PLAYER_WEAPONS[playerid][weapon_slot][player_weapon_DB_ID] = cache_insert_id();
 	}
-	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO pweapons (id_player, weaponid, ammo) VALUES (%d, %d, %d);", PI[playerid][pi_ID], PLAYER_WEAPONS[playerid][weapon_slot][player_weapon_ID], PLAYER_WEAPONS[playerid][weapon_slot][player_weapon_AMMO]);
+	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO pweapons (id_player, weaponid, ammo) VALUES (%d, %d, %d);", ACCOUNT_INFO[playerid][ac_ID], PLAYER_WEAPONS[playerid][weapon_slot][player_weapon_ID], PLAYER_WEAPONS[playerid][weapon_slot][player_weapon_AMMO]);
 	MySQL_TQueryInline(srp_db, using inline OnPweaponInserted, QUERY_BUFFER);
 	QUERY_BUFFER[0] = EOS;
 	return 1;
@@ -29972,7 +29924,7 @@ RemovePlayerSlotWeapon(playerid, slot, bool:db_delete = false)
 
 LoadPlayerWeaponsData(playerid)
 {
-	if(PI[playerid][pi_ID] == 0) return 0;
+	if(ACCOUNT_INFO[playerid][ac_ID] == 0) return 0;
 	
 	inline OnPweaponsLoad()
 	{
@@ -29991,7 +29943,7 @@ LoadPlayerWeaponsData(playerid)
 			}
 		}
 	}
-	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM pweapons WHERE id_player = %d LIMIT 13;", PI[playerid][pi_ID]);
+	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM pweapons WHERE id_player = %d LIMIT 13;", ACCOUNT_INFO[playerid][ac_ID]);
 	MySQL_TQueryInline(srp_db, using inline OnPweaponsLoad, QUERY_BUFFER);
 	return 1;
 }
@@ -30000,8 +29952,8 @@ SetPlayerHealthEx(playerid, Float:health)
 {
 	PLAYER_AC_INFO[playerid][CHEAT_PLAYER_HEALTH][p_ac_info_IMMUNITY] = gettime() + 3;
 	
-	PI[playerid][pi_HEALTH] = health;
-	SetPlayerHealth(playerid, PI[playerid][pi_HEALTH]);
+	PI[playerid][ac_HEALTH] = health;
+	SetPlayerHealth(playerid, PI[playerid][ac_HEALTH]);
 	return 1;
 }
 
@@ -30009,8 +29961,8 @@ SetPlayerArmourEx(playerid, Float:armour)
 {
 	PLAYER_AC_INFO[playerid][CHEAT_PLAYER_ARMOUR][p_ac_info_IMMUNITY] = gettime() + 3;
 	
-	PI[playerid][pi_ARMOUR] = armour;
-	SetPlayerArmour(playerid, PI[playerid][pi_ARMOUR]);
+	PI[playerid][ac_ARMOUR] = armour;
+	SetPlayerArmour(playerid, PI[playerid][ac_ARMOUR]);
 	return 1;
 }
 
@@ -30018,9 +29970,9 @@ GivePlayerHealthEx(playerid, Float:health)
 {
 	PLAYER_AC_INFO[playerid][CHEAT_PLAYER_HEALTH][p_ac_info_IMMUNITY] = gettime() + 3;
 	
-	PI[playerid][pi_HEALTH] += health;
-	if(PI[playerid][pi_HEALTH] > 100.0) PI[playerid][pi_HEALTH] = 100.0;
-	SetPlayerHealth(playerid, PI[playerid][pi_HEALTH]);
+	PI[playerid][ac_HEALTH] += health;
+	if(PI[playerid][ac_HEALTH] > 100.0) PI[playerid][ac_HEALTH] = 100.0;
+	SetPlayerHealth(playerid, PI[playerid][ac_HEALTH]);
 	return 1;
 }
 
@@ -30028,15 +29980,15 @@ GivePlayerArmourEx(playerid, Float:armour)
 {
 	PLAYER_AC_INFO[playerid][CHEAT_PLAYER_ARMOUR][p_ac_info_IMMUNITY] = gettime() + 3;
 	
-	PI[playerid][pi_ARMOUR] += armour;
-	if(PI[playerid][pi_ARMOUR] > 100.0) PI[playerid][pi_ARMOUR] = 100.0;
-	SetPlayerArmour(playerid, PI[playerid][pi_ARMOUR]);
+	PI[playerid][ac_ARMOUR] += armour;
+	if(PI[playerid][ac_ARMOUR] > 100.0) PI[playerid][ac_ARMOUR] = 100.0;
+	SetPlayerArmour(playerid, PI[playerid][ac_ARMOUR]);
 	return 1;
 }
 
 TransferPlayerWeapon(from_playerid, slot, to_playerid)
 {
-	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pweapons SET id_player = %d WHERE id = %d;", PI[to_playerid][pi_ID], PLAYER_WEAPONS[from_playerid][slot][player_weapon_DB_ID]);
+	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pweapons SET id_player = %d WHERE id = %d;", ACCOUNT_INFO[to_playerid][ac_ID], PLAYER_WEAPONS[from_playerid][slot][player_weapon_DB_ID]);
 	mysql_tquery(srp_db, QUERY_BUFFER);
 	
 	PLAYER_WEAPONS[to_playerid][slot][player_weapon_VALID] = true;
@@ -30056,7 +30008,7 @@ PlayerPayday(playerid)
 		dialog_header[630],
 		dialog_string[140],
 		date[24],
-		money = 300 * PI[playerid][pi_LEVEL];
+		money = 300 * ACCOUNT_INFO[playerid][ac_LEVEL];
 
 	if(money > 4500) money = 4500;
 	money += minrand(100, 200);
@@ -30070,14 +30022,14 @@ PlayerPayday(playerid)
 	format(dialog_string, sizeof dialog_string, "{FFFFFF}Paga del gobierno: {FFFF7F}%s dólares\n", number_format_thousand(money));
 	strcat(dialog_header, dialog_string);
 	
-	if(!PI[playerid][pi_VIP])
+	if(!ACCOUNT_INFO[playerid][ac_VIP])
 	{
 		strcat(dialog_header, "\n\n{FF6746}____ [ VEHÍCULOS ] ____\n");
 
 		for(new i = 0, j = GetVehiclePoolSize(); i <= j; i ++)
 		{
 			if(!PLAYER_VEHICLES[i][player_vehicle_VALID]) continue;
-			if(PLAYER_VEHICLES[i][player_vehicle_OWNER_ID] != PI[playerid][pi_ID]) continue;
+			if(PLAYER_VEHICLES[i][player_vehicle_OWNER_ID] != ACCOUNT_INFO[playerid][ac_ID]) continue;
 			
 			new veh_money = VEHICLE_INFO[GLOBAL_VEHICLES[i][gb_vehicle_MODELID] - 400][vehicle_info_PRICE] / 100;
 			money -= veh_money;
@@ -30091,7 +30043,7 @@ PlayerPayday(playerid)
 		for(new i = 0; i != MAX_PROPERTIES; i ++)
 		{
 			if(!PROPERTY_INFO[i][property_VALID]) continue;
-			if(PROPERTY_INFO[i][property_OWNER_ID] != PI[playerid][pi_ID]) continue;
+			if(PROPERTY_INFO[i][property_OWNER_ID] != ACCOUNT_INFO[playerid][ac_ID]) continue;
 		
 			if(PROPERTY_INFO[i][property_VIP_LEVEL]) format(dialog_string, sizeof dialog_string, "{FFFFFF}Seguro de la propiedad %s: {FFFF7F}PROPIEDAD VIP, NO SE PAGA SEGURO.\n", PROPERTY_INFO[i][property_NAME]);
 			else
@@ -30122,11 +30074,11 @@ PlayerPayday(playerid)
 		strcat(dialog_header, dialog_string);
 	}
 
-	if(PI[playerid][pi_CREW])
+	if(PI[playerid][ac_CREW])
 	{
 		new 
-			territories = GetCrewTerritories(PI[playerid][pi_CREW]),
-			graffitis = CountCrewGraffitis(PI[playerid][pi_CREW]);
+			territories = GetCrewTerritories(PI[playerid][ac_CREW]),
+			graffitis = CountCrewGraffitis(PI[playerid][ac_CREW]);
 
 		if(territories > 0 || graffitis > 0)
 		{
@@ -30141,10 +30093,10 @@ PlayerPayday(playerid)
 		}
 	}
 	
-	if(money + PI[playerid][pi_CASH] <= 0)
+	if(money + PI[playerid][ac_CASH] <= 0)
 	{
 		money = 0;
-		PI[playerid][pi_CASH] = 0;
+		PI[playerid][ac_CASH] = 0;
 	}
 
 	strcat(dialog_header, "\n\n{FF6746}____ [ RESUMEN ] ____\n");
@@ -30164,224 +30116,224 @@ PlayerPayday(playerid)
 //ANIMACIONES
 CMD:animaciones(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	ShowDialog(playerid, DIALOG_ANIMS);
 	return 1;
 }
 alias:animaciones("anims", "acciones");
 CMD:parar(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.1, 0, 0, 0, 0, 0, true);
 	ClearAnimations(playerid);
 	return 1;
 }
 CMD:rendirse(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
     SetPlayerSpecialAction(playerid, SPECIAL_ACTION_HANDSUP); //rendirse
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:blowjob(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	ApplyAnimation(playerid, "BLOWJOBZ", "BJ_COUCH_LOOP_W", 4.0, 1, 1, 1, 0, 0);//blowjob
 	SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:rodar(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	ApplyAnimation(playerid,"PED","BIKE_fallR",4.0,0,1,1,1,0);
 	SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:borracho(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
     ApplyAnimation(playerid,"PED", "WALK_DRUNK",4.0,1,1,1,1,500);//borracho
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:bomba(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
     ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 0, 1, 1, 0,0);//bomba
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:apuntar(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	ApplyAnimation( playerid,"ped", "ARRESTgun", 4.0, 0, 1, 1, 1,500);
 	SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:reir(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
     ApplyAnimation(playerid, "RAPPING", "Laugh_01", 4.0, 0, 0, 0, 0,0);//reir
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:amenazar(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
     ApplyAnimation(playerid, "SHOP", "ROB_Loop_Threat", 4.0, 0, 0, 0, 1,500);//amenazar
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:paja(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	ApplyAnimation(playerid, "PAULNMAC", "wank_loop", 4.0, 1, 0, 0, 1, 0);
 	SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:herido(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	ApplyAnimation(playerid, "SWEET", "LaFin_Sweet", 4.0, 0, 1, 1, 1, 0);
 	SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:cruzarbrazos(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	ApplyAnimation(playerid, "COP_AMBIENT", "Coplook_loop", 4.0, 1, 1, 1, 0, 4000);
 	SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:recostarse(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	ApplyAnimation(playerid,"SUNBATHE", "Lay_Bac_in", 4.0, 0, 0, 0, 1, 0);//recostarse
 	SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:cubrirse(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
     ApplyAnimation(playerid, "ped", "cower", 4.0, 1, 0, 0, 0, 0);//crubrirse
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:vomitar(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
     ApplyAnimation(playerid, "FOOD", "EAT_Vomit_P", 3.0, 0, 0, 0, 0, 0);//vomitar
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:comer(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	ApplyAnimation(playerid, "FOOD", "EAT_Burger", 3.00, 0, 0, 0, 0, 0);
 	SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:despedir(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	ApplyAnimation(playerid, "KISSING", "BD_GF_Wave", 3.0, 0, 0, 0, 0, 0);//despedir
 	SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:nalgada(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	ApplyAnimation(playerid, "SWEET", "sweet_ass_slap", 4.0, 0, 0, 0, 0, 0);//nalgada
 	SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:agonizar(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	ApplyAnimation(playerid, "WUZI", "CS_Dead_Guy", 4.0, 0, 0, 0, 1, 0);//agonizar
 	SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:besar(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	ApplyAnimation(playerid, "KISSING", "Playa_Kiss_02", 4.0, 0, 0, 0, 0, 0);//besar
 	SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:crack(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
     ApplyAnimation(playerid, "CRACK", "crckdeth2", 4.0, 0, 0, 0, 1, 0);//crack
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:mear(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
     SetPlayerSpecialAction(playerid, SPECIAL_ACTION_PISSING);//mear
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:sentarse(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
     ApplyAnimation(playerid, "SUNBATHE", "ParkSit_M_in", 4.000000, 0, 1, 1, 1, 0);//sentarse
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:asiento(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
     ApplyAnimation(playerid, "ped", "SEAT_down", 4.000000, 0, 1, 1, 1, 0);
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:fucku(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
     ApplyAnimation( playerid,"ped", "fucku", 4.0, 0, 1, 1, 1, 1 );//fucku
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:taichi(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	ApplyAnimation(playerid, "PARK", "Tai_Chi_Loop",  4.1,7,5,1,1,1);//taichi
 	SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:beber(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	ApplyAnimation(playerid, "BAR", "dnk_stndM_loop", 4.0, 0, 1, 1, 0, 4000);//beber
 	SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:boxear(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	ApplyAnimation(playerid, "GYMNASIUM", "gym_shadowbox",  4.1,7,5,1,1,1);//boxear
 	SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:saludar(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	ApplyAnimation(playerid,"GANGS","hndshkfa_swt",4.1,0,0,0,0,0);//saludar
 	SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:llorar(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	ApplyAnimation(playerid,"GRAVEYARD","mrnF_loop",4.1,0,0,0,0,0);//llorar
 	SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:dormir(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	if(!GetPlayerInterior(playerid)) return SendNotification(playerid, "Solo puedes hacer esto en un interior");
 	ApplyAnimation(playerid,"INT_HOUSE","BED_In_R",4.1,0,0,0,1,0);//dormir
 	SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
@@ -30389,21 +30341,21 @@ CMD:dormir(playerid, params[])
 }
 CMD:rapear(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	ApplyAnimation(playerid,"RAPPING","RAP_B_Loop",4.0,1,0,0,0,8000);//rapear
 	SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:astrip(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	ApplyAnimation(playerid,"STRIP","strip_A",4.1,7,5,1,1,1);//strip
 	SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:bailar(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
     if(sscanf(params, "d", params[0])) return SendClientMessage(playerid, 0xFF4500FF, "ERROR: /bailar [1-4]");
 
 	switch(params[0])
@@ -30418,14 +30370,14 @@ CMD:bailar(playerid, params[])
 }
 CMD:alentar(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	ApplyAnimation(playerid,"ON_LOOKERS","shout_02",4.1,7,5,1,1,1);//alentar
 	SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
 }
 CMD:hablar(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
     ApplyAnimation(playerid,"PED","IDLE_chat",4.1,7,5,1,1,1);//hablar
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
 	return 1;
@@ -30510,13 +30462,13 @@ CMD:guardar(playerid, params[])
 	new option[24], extra;
 	if(sscanf(params, "s[24]d", option, extra)) return SendNotification(playerid, "Error en los parámetros, utilice ~r~/man guardar~w~.");
 
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_NORMAL || PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK)
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_NORMAL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK)
 	{
 		new vehicleid = GetPlayerCameraTargetVehicle(playerid);
 		if(vehicleid == INVALID_VEHICLE_ID) return SendNotification(playerid, "No estás cerca de tu vehículo.");
 		
 		if(!PLAYER_VEHICLES[vehicleid][player_vehicle_VALID]) return SendNotification(playerid, "Este no es tú vehículo.");
-		if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] != PI[playerid][pi_ID]) return SendNotification(playerid, "Este no es tú vehículo.");
+		if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] != ACCOUNT_INFO[playerid][ac_ID]) return SendNotification(playerid, "Este no es tú vehículo.");
 				
 		new boot_slot = GetPlayerVehicleAvaibleBootSlot(vehicleid);
 		if(boot_slot == -1) return SendNotification(playerid, "No tienes suficiente espacio en tu /maletero.");
@@ -30540,36 +30492,36 @@ CMD:guardar(playerid, params[])
 			SavePlayerWeaponInVehicleBoot(playerid, extra, vehicleid, boot_slot);
 		}
 		else if(!strcmp(option, "medicamentos", true)) {
-			if(extra < 0 || extra > PI[playerid][pi_MEDICINE]) return SendNotification(playerid, "Cantidad incorrecta.");
+			if(extra < 0 || extra > PI[playerid][ac_MEDICINE]) return SendNotification(playerid, "Cantidad incorrecta.");
 			
-			PI[playerid][pi_MEDICINE] -= extra;
+			PI[playerid][ac_MEDICINE] -= extra;
 			RegisterVehicleBootObject(vehicleid, boot_slot, BOOT_TYPE_MEDICINES, extra, 0);
 			
 			Auto_SendPlayerAction(playerid, "guarda medicamentos en el maletero de su vehículo.");
 		}
 		else if(!strcmp(option, "marihuana", true)) {
-			if(extra < 0 || extra > PI[playerid][pi_CANNABIS]) return SendNotification(playerid, "Cantidad incorrecta.");
+			if(extra < 0 || extra > PI[playerid][ac_CANNABIS]) return SendNotification(playerid, "Cantidad incorrecta.");
 			
-			PI[playerid][pi_CANNABIS] -= extra;
+			PI[playerid][ac_CANNABIS] -= extra;
 			RegisterVehicleBootObject(vehicleid, boot_slot, BOOT_TYPE_CANNABIS, extra, 0);
 
 			Auto_SendPlayerAction(playerid, "guarda marihuana en el maletero de su vehículo.");
 		}
 		else if(!strcmp(option, "crack", true)) {
-			if(extra < 0 || extra > PI[playerid][pi_CRACK]) return SendNotification(playerid, "Cantidad incorrecta.");
+			if(extra < 0 || extra > PI[playerid][ac_CRACK]) return SendNotification(playerid, "Cantidad incorrecta.");
 			
-			PI[playerid][pi_CRACK] -= extra;
+			PI[playerid][ac_CRACK] -= extra;
 			RegisterVehicleBootObject(vehicleid, boot_slot, BOOT_TYPE_CRACK, extra, 0);
 
 			Auto_SendPlayerAction(playerid, "guarda crack en el maletero de su vehículo.");
 		}
 		else SendNotification(playerid, "Error en los parámetros, utilice ~b~/man guardar~w~.");
 	}
-	else if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_OWN_PROPERTY)
+	else if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_OWN_PROPERTY)
 	{
-		new index = GetPropertyIndexByID(PI[playerid][pi_LOCAL_INTERIOR]);
+		new index = GetPropertyIndexByID(PI[playerid][ac_LOCAL_INTERIOR]);
 		if(index == -1) return SendNotification(playerid, "BUG: CMD /guardar (casa), Tome captura y contacte con administrador.");
-		if(PROPERTY_INFO[index][property_OWNER_ID] != PI[playerid][pi_ID]) return SendNotification(playerid, "Esta no es tu casa");
+		if(PROPERTY_INFO[index][property_OWNER_ID] != ACCOUNT_INFO[playerid][ac_ID]) return SendNotification(playerid, "Esta no es tu casa");
 
 		new Float:z_pos = PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_Z];
 		if(PROPERTY_INFO[index][property_DIS_DEFAULT_INTERIOR]) z_pos += PROPERTY_EMPTY_INTERIOR_Z_OFFSET;
@@ -30597,25 +30549,25 @@ CMD:guardar(playerid, params[])
 				SaveWeaponInPropertyCloset(playerid, extra, index, closet_slot);
 			}
 			else if(!strcmp(option, "medicamentos", true)) {
-				if(extra < 0 || extra > PI[playerid][pi_MEDICINE]) return SendNotification(playerid, "Cantidad incorrecta.");
+				if(extra < 0 || extra > PI[playerid][ac_MEDICINE]) return SendNotification(playerid, "Cantidad incorrecta.");
 				
-				PI[playerid][pi_MEDICINE] -= extra;
+				PI[playerid][ac_MEDICINE] -= extra;
 				RegisterPropertyClosetObject(index, closet_slot, BOOT_TYPE_MEDICINES, extra, 0);
 				
 				Auto_SendPlayerAction(playerid, "guarda medicamentos en el armario.");
 			}
 			else if(!strcmp(option, "marihuana", true)) {
-				if(extra < 0 || extra > PI[playerid][pi_CANNABIS]) return SendNotification(playerid, "Cantidad incorrecta.");
+				if(extra < 0 || extra > PI[playerid][ac_CANNABIS]) return SendNotification(playerid, "Cantidad incorrecta.");
 				
-				PI[playerid][pi_CANNABIS] -= extra;
+				PI[playerid][ac_CANNABIS] -= extra;
 				RegisterPropertyClosetObject(index, closet_slot, BOOT_TYPE_CANNABIS, extra, 0);
 				
 				Auto_SendPlayerAction(playerid, "guarda marihuana en el armario.");
 			}
 			else if(!strcmp(option, "crack", true)) {
-				if(extra < 0 || extra > PI[playerid][pi_CRACK]) return SendNotification(playerid, "Cantidad incorrecta.");
+				if(extra < 0 || extra > PI[playerid][ac_CRACK]) return SendNotification(playerid, "Cantidad incorrecta.");
 				
-				PI[playerid][pi_CRACK] -= extra;
+				PI[playerid][ac_CRACK] -= extra;
 				RegisterPropertyClosetObject(index, closet_slot, BOOT_TYPE_CRACK, extra, 0);
 				
 				Auto_SendPlayerAction(playerid, "guarda crack en el armario.");
@@ -30635,13 +30587,13 @@ CMD:maletero(playerid, params[])
 	new vehicleid = GetPlayerCameraTargetVehicle(playerid);
 	if(vehicleid == INVALID_VEHICLE_ID) return SendNotification(playerid, "No estás cerca de tu vehículo.");
 	
-	if((PLAYER_TEMP[playerid][pt_WORKING_IN] == WORK_POLICE) && PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] != PI[playerid][pi_ID])
+	if((PLAYER_TEMP[playerid][pt_WORKING_IN] == WORK_POLICE) && PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] != ACCOUNT_INFO[playerid][ac_ID])
 	{
 		if(!PLAYER_VEHICLES[vehicleid][player_vehicle_VALID]) return SendNotification(playerid, "Este vehiculo es del gobierno o de un consecionario.");
 		new pid = -1;
 		for(new i, j = GetPlayerPoolSize(); i <= j; i++)
 		{
-			if(PLAYER_TEMP[i][pt_USER_LOGGED] && PI[i][pi_ID] == PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID])
+			if(PLAYER_TEMP[i][pt_USER_LOGGED] && ACCOUNT_INFO[i][ac_ID] == PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID])
 			pid = i;
 		}
 
@@ -30656,7 +30608,7 @@ CMD:maletero(playerid, params[])
 	}
 
 	if(!PLAYER_VEHICLES[vehicleid][player_vehicle_VALID]) return SendNotification(playerid, "Este no es tú vehículo.");
-	if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] != PI[playerid][pi_ID]) return SendNotification(playerid, "Este no es tú vehículo.");
+	if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] != ACCOUNT_INFO[playerid][ac_ID]) return SendNotification(playerid, "Este no es tú vehículo.");
 		
 	PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE] = vehicleid;
 	ShowDialog(playerid, DIALOG_VEHICLE_BOOT);
@@ -30672,7 +30624,7 @@ SetWantedPlayerMarkers(playerid)
 		{
 			if(PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_NORMAL)
 			{
-				if(PI[i][pi_WANTED_LEVEL] > 0)
+				if(PI[i][ac_WANTED_LEVEL] > 0)
 				{
 					SetPlayerMarkerForPlayer(playerid, i, PlayerWantedColor(i));
 				}
@@ -30684,12 +30636,12 @@ SetWantedPlayerMarkers(playerid)
 
 PlayerWantedColor(playerid)
 {
-	if(PI[playerid][pi_WANTED_LEVEL] > 0)
+	if(PI[playerid][ac_WANTED_LEVEL] > 0)
 	{
-		if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return 0x009900ff;
+		if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return 0x009900ff;
 		else
 		{
-			switch(PI[playerid][pi_WANTED_LEVEL])
+			switch(PI[playerid][ac_WANTED_LEVEL])
 			{
 				case 1: return 0xfffdbaff;
 				case 2: return 0xf7f254ff;
@@ -30714,7 +30666,7 @@ CMD:nivel(playerid, params[])
 	
 	if(!IsPlayerConnected(params[0])) return SendNotification(playerid, "El jugador no está conectado.");
 	if(PLAYER_WORKS[params[0]][WORK_POLICE][pwork_SET]) return SendNotification(playerid, "Este jugador es policía.");
-	if(PI[params[0]][pi_STATE] == ROLEPLAY_STATE_JAIL) return SendNotification(playerid, "Esta persona está en la cárcel.");
+	if(PI[params[0]][ac_STATE] == ROLEPLAY_STATE_JAIL) return SendNotification(playerid, "Esta persona está en la cárcel.");
 
 	new Float:pos[3]; GetPlayerPos(params[0], pos[0], pos[1], pos[2]);
 	if(!IsPlayerInRangeOfPoint(playerid, 100.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "Este jugador no está cerca tuya. (A más de 100 metros)");
@@ -30764,11 +30716,11 @@ CMD:esposar(playerid, params[])
 	if(!IsPlayerInRangeOfPoint(playerid, NEARS_PLAYERS_DISTANCE, pos[0], pos[1], pos[2])) return SendNotification(playerid, "Este jugador no está cerca tuya.");
 	if(PLAYER_TEMP[params[0]][pt_GAME_STATE] != GAME_STATE_NORMAL) return SendNotification(playerid, "No puedes esposar a este jugador ahora.");
 	if(GetPlayerState(params[0]) != PLAYER_STATE_ONFOOT) return SendNotification(playerid, "Para esposar a esta persona tiene que estar depie.");
-	if(PI[params[0]][pi_WANTED_LEVEL] == 0) return SendNotification(playerid, "Esta persona no tiene nivel de búsqueda.");
+	if(PI[params[0]][ac_WANTED_LEVEL] == 0) return SendNotification(playerid, "Esta persona no tiene nivel de búsqueda.");
 	
-	new oldstate = PI[params[0]][pi_STATE];
+	new oldstate = PI[params[0]][ac_STATE];
 	DisablePlayerInjuredMark(params[0]);
-	PI[params[0]][pi_STATE] = ROLEPLAY_STATE_NORMAL;
+	PI[params[0]][ac_STATE] = ROLEPLAY_STATE_NORMAL;
 	ApplyAnimation(params[0], "CARRY", "crry_prtial", 4.1, 0, 0, 0, 0, 0, true);
 	ClearAnimations(params[0]);
 
@@ -30820,7 +30772,7 @@ CMD:placa(playerid, params[])
 	format(action, sizeof action, "le enseña su placa a %s.", PLAYER_TEMP[params[0]][pt_RP_NAME]);
 	Auto_SendPlayerAction(playerid, action);
 	
-	SendClientMessageEx(params[0], -1, "{"#SILVER_COLOR"}%s %c. %s {A9C4E4}[Placa: %d]", POLICE_RANKS[ PLAYER_WORKS[playerid][WORK_POLICE][pwork_LEVEL] ], PLAYER_TEMP[playerid][pt_FIRST_NAME][0], PLAYER_TEMP[playerid][pt_SUB_NAME], PI[playerid][pi_PLACA_PD]);
+	SendClientMessageEx(params[0], -1, "{"#SILVER_COLOR"}%s %c. %s {A9C4E4}[Placa: %d]", POLICE_RANKS[ PLAYER_WORKS[playerid][WORK_POLICE][pwork_LEVEL] ], PLAYER_TEMP[playerid][pt_FIRST_NAME][0], PLAYER_TEMP[playerid][pt_SUB_NAME], PI[playerid][ac_PLACA_PD]);
 	return 1;
 }
 
@@ -30831,13 +30783,13 @@ CMD:licencia(playerid, params[])
 	new Float:pos[3]; GetPlayerPos(params[0], pos[0], pos[1], pos[2]);
 	if(!IsPlayerInRangeOfPoint(playerid, 2.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "Este jugador no está cerca tuya.");
 
-	if(PI[playerid][pi_DRIVE_LICENSE_POINTS] == 0) SendFormatNotification(params[0], "~r~%s~w~ no tiene licencia de conducción.", PLAYER_TEMP[playerid][pt_RP_NAME]);
+	if(PI[playerid][ac_DRIVE_LICENSE_POINTS] == 0) SendFormatNotification(params[0], "~r~%s~w~ no tiene licencia de conducción.", PLAYER_TEMP[playerid][pt_RP_NAME]);
 	else
 	{
 		new action[128];
 		format(action, 128, "le muestra su licencia de conducir a %s.", PLAYER_TEMP[params[0]][pt_RP_NAME]);
 		Auto_SendPlayerAction(playerid, action);
-		SendClientMessageEx(params[0], -1, "{"#SILVER_COLOR"}Licencia de conducir de %s, puntos: %d.", PLAYER_TEMP[playerid][pt_RP_NAME], PI[playerid][pi_DRIVE_LICENSE_POINTS]);
+		SendClientMessageEx(params[0], -1, "{"#SILVER_COLOR"}Licencia de conducir de %s, puntos: %d.", PLAYER_TEMP[playerid][pt_RP_NAME], PI[playerid][ac_DRIVE_LICENSE_POINTS]);
 	}
 	return 1;
 }
@@ -30854,7 +30806,7 @@ CMD:revisar(playerid, params[])
 	if(!IsPlayerInRangeOfPoint(playerid, 2.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "Este jugador no está cerca tuya.");
 	if(PLAYER_TEMP[params[0]][pt_GAME_STATE] != GAME_STATE_NORMAL) return SendNotification(playerid, "No puedes revisar a este jugador ahora.");
 	if(GetPlayerState(params[0]) != PLAYER_STATE_ONFOOT) return SendNotification(playerid, "Para revisar a esta persona tiene que estar depie.");
-	if(PI[params[0]][pi_WANTED_LEVEL] == 0) return SendNotification(playerid, "Esta persona no tiene nivel de búsqueda.");
+	if(PI[params[0]][ac_WANTED_LEVEL] == 0) return SendNotification(playerid, "Esta persona no tiene nivel de búsqueda.");
 	if(!PLAYER_TEMP[params[0]][pt_CUFFED]) return SendNotification(playerid, "Para revisar a esta persona tiene que estar esposada.");
 	
 	ShowPlayerInventory(playerid, params[0]);
@@ -30878,11 +30830,11 @@ CMD:puntos(playerid, params[])
 	if(!IsPlayerInRangeOfPoint(playerid, 2.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "Este jugador no está cerca tuya.");
 	if(PLAYER_TEMP[params[0]][pt_GAME_STATE] != GAME_STATE_NORMAL) return SendNotification(playerid, "No puedes quitarle puntos a este jugador ahora.");
 	
-	PI[params[0]][pi_DRIVE_LICENSE_POINTS] -= params[1];
-	if(PI[params[0]][pi_DRIVE_LICENSE_POINTS] < 0) PI[params[0]][pi_DRIVE_LICENSE_POINTS] = 0;
+	PI[params[0]][ac_DRIVE_LICENSE_POINTS] -= params[1];
+	if(PI[params[0]][ac_DRIVE_LICENSE_POINTS] < 0) PI[params[0]][ac_DRIVE_LICENSE_POINTS] = 0;
 	
-	SendFormatNotification(playerid, "Le has quitado ~r~%d puntos~w~ del carnet a %s, ahora tiene ~r~%d puntos~w~.", params[1], PLAYER_TEMP[params[0]][pt_RP_NAME], PI[params[0]][pi_DRIVE_LICENSE_POINTS]);
-	SendFormatNotification(params[0], "El policía %s te ha quitado ~r~%d puntos~w~ del carnet de conducir, te quedan ~r~%d puntos~w~.", PLAYER_TEMP[playerid][pt_RP_NAME], params[1], PI[params[0]][pi_DRIVE_LICENSE_POINTS]);
+	SendFormatNotification(playerid, "Le has quitado ~r~%d puntos~w~ del carnet a %s, ahora tiene ~r~%d puntos~w~.", params[1], PLAYER_TEMP[params[0]][pt_RP_NAME], PI[params[0]][ac_DRIVE_LICENSE_POINTS]);
+	SendFormatNotification(params[0], "El policía %s te ha quitado ~r~%d puntos~w~ del carnet de conducir, te quedan ~r~%d puntos~w~.", PLAYER_TEMP[playerid][pt_RP_NAME], params[1], PI[params[0]][ac_DRIVE_LICENSE_POINTS]);
 	return 1;
 }
 
@@ -30898,7 +30850,7 @@ CMD:requisar(playerid, params[])
 	if(!IsPlayerInRangeOfPoint(playerid, 2.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "Este jugador no está cerca tuya.");
 	if(PLAYER_TEMP[params[0]][pt_GAME_STATE] != GAME_STATE_NORMAL) return SendNotification(playerid, "No puedes revisar a este jugador ahora.");
 	if(GetPlayerState(params[0]) != PLAYER_STATE_ONFOOT) return SendNotification(playerid, "Para revisar a esta persona tiene que estar depie.");
-	if(PI[params[0]][pi_WANTED_LEVEL] == 0) return SendNotification(playerid, "Esta persona no tiene nivel de búsqueda.");
+	if(PI[params[0]][ac_WANTED_LEVEL] == 0) return SendNotification(playerid, "Esta persona no tiene nivel de búsqueda.");
 	if(!PLAYER_TEMP[params[0]][pt_CUFFED]) return SendNotification(playerid, "Para revisar a esta persona tiene que estar esposada.");
 	
 	DeleteIlegalInv(params[0]);
@@ -30911,7 +30863,7 @@ CMD:requisar(playerid, params[])
 
 CMD:ref(playerid, params[])
 {
-	if(PI[playerid][pi_CREW]) return Crew_RequestHelp(playerid, PI[playerid][pi_CREW]);
+	if(PI[playerid][ac_CREW]) return Crew_RequestHelp(playerid, PI[playerid][ac_CREW]);
 
 	if(!PLAYER_WORKS[playerid][WORK_POLICE][pwork_SET]) return SendNotification(playerid, "No eres policía.");
 	if(PLAYER_TEMP[playerid][pt_WORKING_IN] != WORK_POLICE) return SendNotification(playerid, "No estás de servicio como policía.");
@@ -30952,7 +30904,7 @@ CMD:control(playerid, params[])
 	if(index == -1) return SendNotification(playerid, "No se pueden crear más objetos policiales.");
 	
 	POLICE_OBJECTS[index][police_object_VALID] = true;
-	format(POLICE_OBJECTS[index][police_object_USER], 24, "%s", PI[playerid][pi_NAME]);
+	format(POLICE_OBJECTS[index][police_object_USER], 24, "%s", ACCOUNT_INFO[playerid][ac_NAME]);
 	
 	new Float:pos[3], Float:angle;
 	GetPlayerPos(playerid, pos[0], pos[1], pos[2]);
@@ -31019,7 +30971,7 @@ public OnPlayerSelectDynamicObject(playerid, STREAMER_TAG_OBJECT objectid, model
 			return 1;
 		}
 		default: {
-			if(PI[playerid][pi_ADMIN_LEVEL] == CMD_DEVELOPER) {
+			if(ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] == CMD_DEVELOPER) {
 				EditDynamicObject(playerid, objectid);
 			}
 		}
@@ -31113,7 +31065,7 @@ public OnPlayerEditDynamicObject(playerid, STREAMER_TAG_OBJECT objectid, respons
 
 					SendNotification(playerid, "Objeto movido correctamente");
 
-					format(POLICE_OBJECTS[ info[1] ][police_object_USER], 24, "%s", PI[playerid][pi_NAME]);
+					format(POLICE_OBJECTS[ info[1] ][police_object_USER], 24, "%s", ACCOUNT_INFO[playerid][ac_NAME]);
 
 				}
 				case OBJECT_TYPE_TEST: {
@@ -31137,10 +31089,10 @@ CMD:multar(playerid, params[])
 	new Float:pos[3]; GetPlayerPos(params[0], pos[0], pos[1], pos[2]);
 	if(!IsPlayerInRangeOfPoint(playerid, 5.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "Este jugador no está cerca tuya.");
 	if(PLAYER_TEMP[params[0]][pt_GAME_STATE] != GAME_STATE_NORMAL) return SendNotification(playerid, "No puedes multar a este jugador ahora.");
-	if(PI[params[0]][pi_STATE] == ROLEPLAY_STATE_ARRESTED || PI[params[0]][pi_STATE] == ROLEPLAY_STATE_JAIL) return SendNotification(playerid, "No puedes multar a este jugador ahora.");
+	if(PI[params[0]][ac_STATE] == ROLEPLAY_STATE_ARRESTED || PI[params[0]][ac_STATE] == ROLEPLAY_STATE_JAIL) return SendNotification(playerid, "No puedes multar a este jugador ahora.");
 	
 	PLAYER_TEMP[params[0]][pt_POLICE_PEN_PID] = playerid;
-	PLAYER_TEMP[params[0]][pt_POLICE_PEN_AID] = PI[playerid][pi_ID];
+	PLAYER_TEMP[params[0]][pt_POLICE_PEN_AID] = ACCOUNT_INFO[playerid][ac_ID];
 	PLAYER_TEMP[params[0]][pt_POLICE_PEN_IM] = params[1];
 	PLAYER_TEMP[params[0]][pt_POLICE_PEN_TIME] = gettime();
 	ShowDialog(params[0], DIALOG_POLICE_PENALTY);
@@ -31170,29 +31122,29 @@ CMD:arrestar(playerid, params[])
 	if(!IsPlayerInRangeOfPoint(playerid, 5.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "Este jugador no está cerca tuya.");
 	if(PLAYER_TEMP[params[0]][pt_GAME_STATE] != GAME_STATE_NORMAL) return SendNotification(playerid, "No puedes arrestar a este jugador ahora.");
 	
-	if(PI[params[0]][pi_WANTED_LEVEL] == 0) return SendNotification(playerid, "Esta persona no tiene nivel de búsqueda.");
-	if(!PLAYER_TEMP[params[0]][pt_CUFFED] && PI[params[0]][pi_STATE] != ROLEPLAY_STATE_CRACK) return SendNotification(playerid, "Para arrestar a esta persona tiene que estar esposada.");
+	if(PI[params[0]][ac_WANTED_LEVEL] == 0) return SendNotification(playerid, "Esta persona no tiene nivel de búsqueda.");
+	if(!PLAYER_TEMP[params[0]][pt_CUFFED] && PI[params[0]][ac_STATE] != ROLEPLAY_STATE_CRACK) return SendNotification(playerid, "Para arrestar a esta persona tiene que estar esposada.");
 	
-	if(PI[params[0]][pi_STATE] == ROLEPLAY_STATE_ARRESTED)
+	if(PI[params[0]][ac_STATE] == ROLEPLAY_STATE_ARRESTED)
 	{
 		TogglePlayerControllableEx(params[0], true);
 		PLAYER_TEMP[params[0]][pt_CUFFED] = false;
 		PLAYER_TEMP[params[0]][pt_CUFFING] = false;
 		SetPlayerSpecialAction(params[0], SPECIAL_ACTION_NONE);
-		PI[params[0]][pi_STATE] = ROLEPLAY_STATE_NORMAL;
+		PI[params[0]][ac_STATE] = ROLEPLAY_STATE_NORMAL;
 		
 		SendFormatNotification(playerid, "Has soltado a ~r~%s~w~.", PLAYER_TEMP[params[0]][pt_RP_NAME]);
 		return 1;
 	}
 	else
 	{
-		if(PI[params[0]][pi_STATE] == ROLEPLAY_STATE_CRACK) {
+		if(PI[params[0]][ac_STATE] == ROLEPLAY_STATE_CRACK) {
 			DisablePlayerInjuredMark(params[0]);
 			ApplyAnimation(params[0], "CARRY", "crry_prtial", 4.1, 0, 0, 0, 0, 0, true);
 			ClearAnimations(params[0]);
 		}
 
-		PI[params[0]][pi_STATE] = ROLEPLAY_STATE_ARRESTED;
+		PI[params[0]][ac_STATE] = ROLEPLAY_STATE_ARRESTED;
 		TogglePlayerControllableEx(params[0], false);
 		PutPlayerInVehicleEx(params[0], vehicleid, params[1]);
 	}
@@ -31281,24 +31233,24 @@ CMD:entregar(playerid, params[])
 	if(PLAYER_TEMP[params[0]][pt_GAME_STATE] != GAME_STATE_NORMAL) return SendNotification(playerid, "No puedes arrestar a este jugador ahora.");
 	if(GetPlayerState(params[0]) != PLAYER_STATE_PASSENGER) return SendNotification(playerid, "Para entregar a esta persona tiene que estar dentro del vehículo policial.");
 	if(GetPlayerVehicleID(params[0]) != vehicleid) return SendNotification(playerid, "Para entregar a esta persona tiene que estar dentro del vehículo policial.");
-	if(PI[params[0]][pi_WANTED_LEVEL] == 0) return SendNotification(playerid, "Esta persona no tiene nivel de búsqueda.");
+	if(PI[params[0]][ac_WANTED_LEVEL] == 0) return SendNotification(playerid, "Esta persona no tiene nivel de búsqueda.");
 	
 	if(IsPlayerInRangeOfPoint(playerid, 20.0, 1564.971923, -1694.916381, 5.617697) || IsPlayerInRangeOfPoint(playerid, 20.0, 6808.6948, 5335.9800 ,14.9625))
 	{
 		SendNotification(playerid, "La persona ahora está en la cárcel.");
-		PI[params[0]][pi_POLICE_JAIL_ID] = 0;
+		PI[params[0]][ac_POLICE_JAIL_ID] = 0;
 		JailPlayer(params[0]);
 	}
 	else if(IsPlayerInRangeOfPoint(playerid, 20.0, -1589.333496, 716.759521, -5.515106) || IsPlayerInRangeOfPoint(playerid, 20.0, 6005.6670, 4917.3179, 23.0543))
 	{
 		SendNotification(playerid, "La persona ahora está en la cárcel.");
-		PI[params[0]][pi_POLICE_JAIL_ID] = 1;
+		PI[params[0]][ac_POLICE_JAIL_ID] = 1;
 		JailPlayer(params[0]);
 	}
 	else if(IsPlayerInRangeOfPoint(playerid, 20.0, 2282.200439, 2431.598632, 3.000518) || IsPlayerInRangeOfPoint(playerid, 20.0, 4405.0625, 5969.0493, 59.0018))
 	{
 		SendNotification(playerid, "La persona ahora está en la cárcel.");
-		PI[params[0]][pi_POLICE_JAIL_ID] = 2;
+		PI[params[0]][ac_POLICE_JAIL_ID] = 2;
 		JailPlayer(params[0]);
 	}
 	else SendNotification(playerid, "No estás en el lugar adecuado.");
@@ -31317,21 +31269,21 @@ CMD:policias(playerid, params[])
 
 CMD:entregarse(playerid, params[])
 {
-	if(PI[playerid][pi_WANTED_LEVEL] <= 0) return SendNotification(playerid, "No tienes cargos.");
+	if(PI[playerid][ac_WANTED_LEVEL] <= 0) return SendNotification(playerid, "No tienes cargos.");
 	
 	if(IsPlayerInRangeOfPoint(playerid, 1.5, 250.049026, 67.635704, 1003.640625))
 	{
-		PI[playerid][pi_POLICE_JAIL_ID] = 0;
+		PI[playerid][ac_POLICE_JAIL_ID] = 0;
 		JailPlayer(playerid);
 	}
 	else if(IsPlayerInRangeOfPoint(playerid, 1.5, 246.349716, 118.358116, 1003.218750))
 	{
-		PI[playerid][pi_POLICE_JAIL_ID] = 1;
+		PI[playerid][ac_POLICE_JAIL_ID] = 1;
 		JailPlayer(playerid);
 	}
 	else if(IsPlayerInRangeOfPoint(playerid, 1.5, 235.772537, 165.382186, 1003.029968))
 	{
-		PI[playerid][pi_POLICE_JAIL_ID] = 2;
+		PI[playerid][ac_POLICE_JAIL_ID] = 2;
 		JailPlayer(playerid);
 	}
 	else SendNotification(playerid, "No estás en el lugar adecuado.");
@@ -31373,7 +31325,7 @@ public CuffPlayer(playerid)
 	}
 	if(PLAYER_TEMP[playerid][pt_PLAYER_IN_CALL]) EndPhoneCall(playerid);
 	if(PLAYER_TEMP[playerid][pt_GPS_MAP]) HidePlayerGpsMap(playerid);
-	if(PI[playerid][pi_WANTED_LEVEL] > 0) DisablePlayerPoliceMark(playerid);
+	if(PI[playerid][ac_WANTED_LEVEL] > 0) DisablePlayerPoliceMark(playerid);
 	
 	PLAYER_TEMP[playerid][pt_CUFFED] = true;
 	PLAYER_TEMP[playerid][pt_CUFFING] = false;
@@ -31448,7 +31400,7 @@ GetPlayerZones(playerid, city[], zone[])
 {
 	new Float:f_Pos[3];
 	
-	switch(PI[playerid][pi_STATE])
+	switch(ACCOUNT_INFO[playerid][ac_STATE])
 	{
 		case ROLEPLAY_STATE_INTERIOR:
 		{
@@ -31491,9 +31443,9 @@ GetPlayerZones(playerid, city[], zone[])
 
 SetPlayerWantedLevelEx(playerid, level)
 {
-	PI[playerid][pi_WANTED_LEVEL] = level;
+	PI[playerid][ac_WANTED_LEVEL] = level;
 
-	if(PI[playerid][pi_WANTED_LEVEL] == 0)
+	if(PI[playerid][ac_WANTED_LEVEL] == 0)
 	{
 		DisablePlayerPoliceMark(playerid);
 		PlayerTextDrawHide(playerid, PlayerTextdraws[playerid][ptextdraw_WANTED_LEVEL][0]);
@@ -31502,7 +31454,7 @@ SetPlayerWantedLevelEx(playerid, level)
 	else
 	{
 		new td_str[24];
-		for(new i = 0; i != PI[playerid][pi_WANTED_LEVEL]; i ++) strcat(td_str, "]");
+		for(new i = 0; i != PI[playerid][ac_WANTED_LEVEL]; i ++) strcat(td_str, "]");
 		PlayerTextDrawSetString(playerid, PlayerTextdraws[playerid][ptextdraw_WANTED_LEVEL][1], td_str);
 
 		PLAYER_TEMP[playerid][pt_LAST_SET_WANTED_LEVEL] = gettime();
@@ -31545,24 +31497,24 @@ JailPlayer(playerid, time = 0)
 	PlayerTextDrawHide(playerid, PlayerTextdraws[playerid][ptextdraw_WANTED_LEVEL][0]);
 	PlayerTextDrawHide(playerid, PlayerTextdraws[playerid][ptextdraw_WANTED_LEVEL][1]);
 		
-	PI[playerid][pi_STATE] = ROLEPLAY_STATE_JAIL;
+	ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_JAIL;
 
 	if(time)
-		PI[playerid][pi_POLICE_JAIL_TIME] = time;
+		PI[playerid][ac_POLICE_JAIL_TIME] = time;
 	else
 	{	
-		if(PI[playerid][pi_VIP]) PI[playerid][pi_POLICE_JAIL_TIME] = 150 * PI[playerid][pi_WANTED_LEVEL];
-		else PI[playerid][pi_POLICE_JAIL_TIME] = 300 * PI[playerid][pi_WANTED_LEVEL];
+		if(ACCOUNT_INFO[playerid][ac_VIP]) PI[playerid][ac_POLICE_JAIL_TIME] = 150 * PI[playerid][ac_WANTED_LEVEL];
+		else PI[playerid][ac_POLICE_JAIL_TIME] = 300 * PI[playerid][ac_WANTED_LEVEL];
 	}
 
 	SetPlayerWantedLevelEx(playerid, 0);
 	PLAYER_TEMP[playerid][pt_ENTER_JAIL_TIME] = gettime();
-	SetPlayerPosEx(playerid, JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID] ][jail_X], JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID]  ][jail_Y], JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID]  ][jail_Z], JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID]  ][jail_ANGLE], JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID]  ][jail_INTERIOR], 0, true);
+	SetPlayerPosEx(playerid, JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID] ][jail_X], JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_Y], JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_Z], JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_ANGLE], JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_INTERIOR], 0, true);
 	
 	KillTimer(PLAYER_TEMP[playerid][pt_TIMERS][15]);
-	PLAYER_TEMP[playerid][pt_TIMERS][15] = SetTimerEx("UnjailPlayer", PI[playerid][pi_POLICE_JAIL_TIME] * 1000, false, "i", playerid);
+	PLAYER_TEMP[playerid][pt_TIMERS][15] = SetTimerEx("UnjailPlayer", PI[playerid][ac_POLICE_JAIL_TIME] * 1000, false, "i", playerid);
 	
-	SendFormatNotification(playerid, "Te quedan %s minutos de condena.", TimeConvert( PI[playerid][pi_POLICE_JAIL_TIME] - (gettime() - PLAYER_TEMP[playerid][pt_ENTER_JAIL_TIME]) ));
+	SendFormatNotification(playerid, "Te quedan %s minutos de condena.", TimeConvert( PI[playerid][ac_POLICE_JAIL_TIME] - (gettime() - PLAYER_TEMP[playerid][pt_ENTER_JAIL_TIME]) ));
 	ResetPlayerWeaponsEx(playerid);
 	SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
 	DisablePlayerPoliceMark(playerid);
@@ -31574,17 +31526,17 @@ forward UnjailPlayer(playerid);
 public UnjailPlayer(playerid)
 {
 	KillTimer(PLAYER_TEMP[playerid][pt_TIMERS][15]);
-	PI[playerid][pi_POLICE_JAIL_TIME] = 0;
+	PI[playerid][ac_POLICE_JAIL_TIME] = 0;
 	SetPlayerWantedLevelEx(playerid, 0);
-	PI[playerid][pi_STATE] = ROLEPLAY_STATE_INTERIOR;
+	ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_INTERIOR;
 	SetWeaponsForPlayer(playerid);
 	SetPlayerArmedWeapon(playerid, 0);
 	
 	for(new i = 0; i != sizeof ENTER_EXIT; i ++)
 	{
-		if(ENTER_EXIT[i][ee_INTERIOR_TYPE] == JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID] ][jail_INT])
+		if(ENTER_EXIT[i][ee_INTERIOR_TYPE] == JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID] ][jail_INT])
 		{
-			PI[playerid][pi_LOCAL_INTERIOR] = ENTER_EXIT[i][ee_ID];
+			PI[playerid][ac_LOCAL_INTERIOR] = ENTER_EXIT[i][ee_ID];
 			PLAYER_TEMP[playerid][pt_PROPERTY_INDEX] = -1;
 			SetPlayerPosEx(playerid, ENTER_EXIT[i][ee_INT_X], ENTER_EXIT[i][ee_INT_Y], ENTER_EXIT[i][ee_INT_Z], ENTER_EXIT[i][ee_INT_ANGLE] + 180.0, ENTER_EXIT[i][ee_INT_INTERIOR], ENTER_EXIT[i][ee_INT_WORLD], true);
 			StopAudioStreamForPlayer(playerid);
@@ -31633,7 +31585,7 @@ Crew_RequestHelp(playerid, crew_id)
 				if(PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_NORMAL)
 				{
 					if(i == playerid) continue;
-					if(PI[i][pi_CREW] != crew_id) continue;
+					if(PI[i][ac_CREW] != crew_id) continue;
 					
 					SetPlayerMarkerForPlayer(i, playerid, 0xDD4C4FFF);
 				}
@@ -31653,7 +31605,7 @@ Crew_RequestHelp(playerid, crew_id)
 				if(PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_NORMAL)
 				{
 					if(i == playerid) continue;
-					if(PI[i][pi_CREW] != crew_id) continue;
+					if(PI[i][ac_CREW] != crew_id) continue;
 					
 					SetPlayerMarkerForPlayer(i, playerid, PLAYER_COLOR);
 				}
@@ -31689,15 +31641,15 @@ SetWantedMarkerToPolice(playerid)
 ShowPlayerStats(playerid, pid)
 {
 	if(!IsPlayerConnected(pid)) return 0;
-	if(PI[pid][pi_ID] == 0) return 0;
+	if(ACCOUNT_INFO[pid][ac_ID] == 0) return 0;
 	
 	new Float:hours;
-	ConvertTime_SecondsToHoursFloat(PI[pid][pi_TIME_PLAYING], hours);
+	ConvertTime_SecondsToHoursFloat(ACCOUNT_INFO[pid][ac_TIME_PLAYING], hours);
 
-	new next_rep[24], neccessary_rep = PI[pid][pi_LEVEL] * REP_MULTIPLIER;
-	if(PI[pid][pi_REP] < neccessary_rep)
+	new next_rep[24], neccessary_rep = PI[pid][ac_LEVEL] * REP_MULTIPLIER;
+	if(PI[pid][ac_REP] < neccessary_rep)
 	{
-		new time = (PI[pid][pi_TIME_FOR_REP] - (gettime() * 1000 - PLAYER_TEMP[pid][pt_TIME_PASSED_LAST_REP])) / 1000;
+		new time = (ACCOUNT_INFO[pid][ac_TIME_FOR_REP] - (gettime() * 1000 - PLAYER_TEMP[pid][pt_TIME_PASSED_LAST_REP])) / 1000;
 		if(time < 3) time = 3;
 		
 		format(next_rep, sizeof next_rep, "%sm", TimeConvert(time));
@@ -31731,20 +31683,21 @@ ShowPlayerStats(playerid, pid)
 			\n\
 		",
 			
-			PI[pid][pi_ID],
-			PI[pid][pi_NAME],
-			PI[pid][pi_EMAIL],
-			PI[pid][pi_REG_DATE],
-			PI[pid][pi_LAST_CONNECTION],
+			ACCOUNT_INFO[pid][ac_ID],
+			ACCOUNT_INFO[pid][ac_NAME],
+			ACCOUNT_INFO[pid][ac_EMAIL],
+			ACCOUNT_INFO[pid][ac_REG_DATE],
+			ACCOUNT_INFO[pid][ac_LAST_CONNECTION],
 			hours,
-			PI[pid][pi_LEVEL],
-			PI[pid][pi_REP], neccessary_rep,
+			ACCOUNT_INFO[pid][ac_LEVEL],
+			ACCOUNT_INFO[pid][ac_REP],
+			neccessary_rep,
 			next_rep,
 			getPlayerWorks(pid),
 			getPlayerCrew(pid),
-			number_format_thousand(PI[pid][pi_CASH]),
-			number_format_thousand(PI[pid][pi_BANK_MONEY]),
-			PI[pid][pi_COINS],
+			number_format_thousand(PI[pid][ac_CASH]),
+			number_format_thousand(PI[pid][ac_BANK_MONEY]),
+			PI[pid][ac_COINS],
 			getPlayerVip(pid)
 			
 	);
@@ -31756,7 +31709,7 @@ ShowPlayerStats(playerid, pid)
 getPlayerCrew(playerid)
 {
 	new crew[32];
-	if(!PI[playerid][pi_CREW]) crew = "ninguna";
+	if(!PI[playerid][ac_CREW]) crew = "ninguna";
 	else format(crew, sizeof crew, "%s", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_NAME]);
 	return crew;
 }
@@ -31764,8 +31717,8 @@ getPlayerCrew(playerid)
 getPlayerVip(playerid)
 {
 	new vip[16];
-	if(!PI[playerid][pi_VIP]) vip = "No";
-	else format(vip, sizeof vip, "Sí, VIP (%d)", PI[playerid][pi_VIP]);
+	if(!ACCOUNT_INFO[playerid][ac_VIP]) vip = "No";
+	else format(vip, sizeof vip, "Sí, VIP (%d)", ACCOUNT_INFO[playerid][ac_VIP]);
 	return vip;
 }
 
@@ -31828,7 +31781,7 @@ CMD:reportar(playerid, params[])
 	
 	SendNotification(playerid, "Tu reporte ha sido enviado a los administradores en línea.");
 	
-	new str[145]; format(str, 145, "{"#RED_COLOR"}[REPORTE] {FFFFFF}%s (%d) > %s (%d): %s", PI[playerid][pi_NAME], playerid, PI[params[0]][pi_NAME], params[0], reason);
+	new str[145]; format(str, 145, "{"#RED_COLOR"}[REPORTE] {FFFFFF}%s (%d) > %s (%d): %s", ACCOUNT_INFO[playerid][ac_NAME], playerid, ACCOUNT_INFO[params[0]][ac_NAME], params[0], reason);
 	SendMessageToAdmins(-1, str);
 	return 1;
 }
@@ -31839,7 +31792,7 @@ CMD:r(playerid, params[])
 	if(sscanf(params, "s[128]", message)) return SendNotification(playerid, "~r~Modo de uso: ~w~/r [MENSAJE]");
 	
 	if(PLAYER_TEMP[playerid][pt_ADMIN_PM_PID] == INVALID_PLAYER_ID || !PLAYER_TEMP[playerid][pt_ADMIN_PM_AID]) return SendNotification(playerid, "Nada para responder.");
-	if(PI[ PLAYER_TEMP[playerid][pt_ADMIN_PM_PID] ][pi_ID] != PLAYER_TEMP[playerid][pt_ADMIN_PM_AID])
+	if(ACCOUNT_INFO[ PLAYER_TEMP[playerid][pt_ADMIN_PM_PID] ][ac_ID] != PLAYER_TEMP[playerid][pt_ADMIN_PM_AID])
 	{
 		PLAYER_TEMP[playerid][pt_ADMIN_PM_PID] = INVALID_PLAYER_ID;
 		PLAYER_TEMP[playerid][pt_ADMIN_PM_AID] = 0;
@@ -31856,7 +31809,7 @@ CMD:r(playerid, params[])
 		return 1;
 	}
 	
-	SendClientMessageEx(PLAYER_TEMP[playerid][pt_ADMIN_PM_PID], -1, "Respuesta de %s (%d): %s", PI[playerid][pi_NAME], playerid, message);
+	SendClientMessageEx(PLAYER_TEMP[playerid][pt_ADMIN_PM_PID], -1, "Respuesta de %s (%d): %s", ACCOUNT_INFO[playerid][ac_NAME], playerid, message);
 	SendNotification(playerid, "Tu mensaje ha sido enviado al administrador.");
 	PLAYER_TEMP[playerid][pt_ADMIN_PM_PID] = INVALID_PLAYER_ID;
 	PLAYER_TEMP[playerid][pt_ADMIN_PM_AID] = 0;
@@ -31870,13 +31823,13 @@ CMD:id(playerid, params[])
 	if(sscanf(params, "u", to_player)) return SendNotification(playerid, "~r~Modo de uso: ~w~/id [PlayerID/Nombre]");
 	if(!IsPlayerConnected(to_player)) return SendNotification(playerid, "Jugador desconectado.");
 	
-	SendFormatNotification(playerid, "Nombre: '%s'~n~DB-ID: '%d'~n~Playerid: '%d'~n~Nivel: %d~n~Ping: %d", PI[to_player][pi_NAME], PI[to_player][pi_ID], to_player, PI[to_player][pi_LEVEL], GetPlayerPing(to_player));
+	SendFormatNotification(playerid, "Nombre: '%s'~n~DB-ID: '%d'~n~Playerid: '%d'~n~Nivel: %d~n~Ping: %d", ACCOUNT_INFO[to_player][ac_NAME], ACCOUNT_INFO[to_player][ac_ID], to_player, ACCOUNT_INFO[to_player][ac_LEVEL], GetPlayerPing(to_player));
 	return 1;
 }
 
 CMD:admins(playerid, params[])
 {
-	if(PI[playerid][pi_ADMIN_LEVEL] < 2) return SendNotification(playerid, "SERVER: Unknown command.");
+	if(ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] < 2) return SendNotification(playerid, "SERVER: Unknown command.");
 	PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT] = 10;
 	PLAYER_TEMP[playerid][pt_DIALOG_DB_PAGE] = 0;
 	ShowDialog(playerid, DIALOG_ADMIN_LIST);
@@ -31948,14 +31901,14 @@ CMD:aka(playerid, params[])
 	new to_player;
 	if(sscanf(params, "u", to_player)) return SendNotification(playerid, "~r~Modo de uso:~w~ /aka <player_id>");
 	if(!IsPlayerConnected(to_player)) return SendNotification(playerid, "Jugador desconectado.");
-	if(isnull(PI[to_player][pi_IP])) return SendNotification(playerid, "IP no válida.");
+	if(isnull(ACCOUNT_INFO[to_player][ac_IP])) return SendNotification(playerid, "IP no válida.");
 	
 	inline OnInfoQueryLoad()
 	{
 		new rows;
 		if(cache_get_row_count(rows))
 		{
-			SendFormatNotification(playerid, "AKA de %s (%d):", PI[to_player][pi_NAME], to_player);
+			SendFormatNotification(playerid, "AKA de %s (%d):", ACCOUNT_INFO[to_player][ac_NAME], to_player);
 			for(new i = 0; i != rows; i ++)
 			{
 				new id, name[24];
@@ -31966,7 +31919,7 @@ CMD:aka(playerid, params[])
 			SendClientMessageEx(playerid, -1, "Se encontraron %d coincidencias, el límite es 20.", rows);
 		}
 	}
-	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id, name FROM player WHERE ip = '%e' LIMIT 20;", PI[to_player][pi_IP]);
+	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id, name FROM player WHERE ip = '%e' LIMIT 20;", ACCOUNT_INFO[to_player][ac_IP]);
 	MySQL_TQueryInline(srp_db, using inline OnInfoQueryLoad, QUERY_BUFFER);
 	return 1;
 }
@@ -31977,19 +31930,19 @@ CMD:adv(playerid, params[])
 	new to_player, reason[128];
 	if(sscanf(params, "us[128]", to_player, reason)) return SendNotification(playerid, "~r~Modo de uso:~w~ /adv <player_id> <razon>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
-	if(PI[to_player][pi_ADMIN_LEVEL] > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
+	if(ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
 	
 	
-	AddPlayerBadHistory(PI[to_player][pi_ID], PI[playerid][pi_ID], TYPE_WARNING, reason);
+	AddPlayerBadHistory(ACCOUNT_INFO[to_player][ac_ID], ACCOUNT_INFO[playerid][ac_ID], TYPE_WARNING, reason);
 	
 	new dialog[170];
 	format(dialog, sizeof dialog, "Has recibido una advertencia, razón:\n%s\n", reason);
 	ShowPlayerDialog(to_player, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Aviso", dialog, "Entiendo", "");
 	
-	SendFormatNotification(playerid, "Jugador (nick: '%s' dbid: '%d', pid: '%d') advertido.", PI[to_player][pi_NAME], PI[to_player][pi_ID], to_player);
+	SendFormatNotification(playerid, "Jugador (nick: '%s' dbid: '%d', pid: '%d') advertido.", ACCOUNT_INFO[to_player][ac_NAME], ACCOUNT_INFO[to_player][ac_ID], to_player);
 	
 
-	new str[145]; format(str, 145, "{"#RED_COLOR"}[ADMIN] {FFFFFF}%s (%d) advirtió a %s (%d): %s", PI[playerid][pi_NAME], playerid, PI[to_player][pi_NAME], to_player, reason);
+	new str[145]; format(str, 145, "{"#RED_COLOR"}[ADMIN] {FFFFFF}%s (%d) advirtió a %s (%d): %s", ACCOUNT_INFO[playerid][ac_NAME], playerid, ACCOUNT_INFO[to_player][ac_NAME], to_player, reason);
 	SendAdminAd(-1, str);
 	return 1;
 }
@@ -32000,23 +31953,23 @@ CMD:kick(playerid, params[])
 	new to_player, reason[128];
 	if(sscanf(params, "us[128]", to_player, reason)) return SendNotification(playerid, "~r~Modo de uso:~w~ /kick <player_id> <razon>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
-	if(PI[to_player][pi_ADMIN_LEVEL] > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
+	if(ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
 	
 	if(PLAYER_TEMP[to_player][pt_KICKED]) return SendNotification(playerid, "El jugador ya está expulsado.");
-	if(!PI[to_player][pi_ID]) return Kick(to_player);
+	if(!ACCOUNT_INFO[to_player][ac_ID]) return Kick(to_player);
 	
 	
-	AddPlayerBadHistory(PI[to_player][pi_ID], PI[playerid][pi_ID], TYPE_KICK, reason);
+	AddPlayerBadHistory(ACCOUNT_INFO[to_player][ac_ID], ACCOUNT_INFO[playerid][ac_ID], TYPE_KICK, reason);
 	
 	new dialog[170];
 	format(dialog, sizeof dialog, "Has sido expulsado, razón:\n%s\n", reason);
 	ShowPlayerDialog(to_player, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Aviso", dialog, "Entiendo", "");
 	KickEx(to_player, 500);
 	
-	SendFormatNotification(playerid, "Jugador (nick: '%s' dbid: '%d', pid: '%d') expulsado.", PI[to_player][pi_NAME], PI[to_player][pi_ID], to_player);
+	SendFormatNotification(playerid, "Jugador (nick: '%s' dbid: '%d', pid: '%d') expulsado.", ACCOUNT_INFO[to_player][ac_NAME], ACCOUNT_INFO[to_player][ac_ID], to_player);
 	
 	
-	new str[145]; format(str, 145, "{"#RED_COLOR"}[ADMIN] {FFFFFF}%s (%d) expulsó a %s (%d): %s", PI[playerid][pi_NAME], playerid, PI[to_player][pi_NAME], to_player, reason);
+	new str[145]; format(str, 145, "{"#RED_COLOR"}[ADMIN] {FFFFFF}%s (%d) expulsó a %s (%d): %s", ACCOUNT_INFO[playerid][ac_NAME], playerid, ACCOUNT_INFO[to_player][ac_NAME], to_player, reason);
 	SendAdminAd(-1, str);
 	return 1;
 }
@@ -32026,7 +31979,7 @@ CMD:spec(playerid, params[])
 	new to_player;
 	if(sscanf(params, "u", to_player)) return SendNotification(playerid, "~r~Modo de uso:~w~ /spec <player_id>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
-	if(PI[to_player][pi_ADMIN_LEVEL] > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
+	if(ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
 
 	if(GetPlayerState(playerid) != PLAYER_STATE_SPECTATING)
     {
@@ -32034,7 +31987,7 @@ CMD:spec(playerid, params[])
 		GetPlayerPos(playerid, p[0], p[1], p[2]);
 		GetPlayerFacingAngle(playerid, p[3]);
 		SetSpawnInfo(playerid, NO_TEAM, GetPlayerSkin(playerid), p[0], p[1], p[2], p[3], 0, 0, 0, 0, 0, 0);
-		PI[playerid][pi_INTERIOR] = GetPlayerInterior(playerid);
+		PI[playerid][ac_INTERIOR] = GetPlayerInterior(playerid);
 		PLAYER_TEMP[playerid][pt_VIRTUAL_WORLD] = GetPlayerVirtualWorld(playerid);
 	}
 	
@@ -32053,7 +32006,7 @@ alias:spec("specp", "spp");
 
 CMD:specoff(playerid, params[])
 {
-	SetPlayerInterior(playerid, PI[playerid][pi_INTERIOR]);
+	SetPlayerInterior(playerid, PI[playerid][ac_INTERIOR]);
 	SetPlayerVirtualWorld(playerid, PLAYER_TEMP[playerid][pt_VIRTUAL_WORLD]);
 	TogglePlayerSpectatingEx(playerid, false);
 	KillTimer(PLAYER_TEMP[playerid][pt_TIMERS][3]);
@@ -32068,7 +32021,7 @@ CMD:freeze(playerid, params[])
 	if(sscanf(params, "u", to_player)) return SendNotification(playerid, "~r~Modo de uso:~w~ /freeze <player_id>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
 	
-	SendFormatNotification(playerid, "Jugador '%s' (%d) congelado.", PI[to_player][pi_NAME], to_player);
+	SendFormatNotification(playerid, "Jugador '%s' (%d) congelado.", ACCOUNT_INFO[to_player][ac_NAME], to_player);
 	TogglePlayerControllableEx(to_player, false);
 	return 1;
 }
@@ -32080,7 +32033,7 @@ CMD:unfreeze(playerid, params[])
 	if(sscanf(params, "u", to_player)) return SendNotification(playerid, "~r~Modo de uso:~w~ /unfreeze <player_id>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
 	
-	SendFormatNotification(playerid, "Jugador '%s' (%d) descongelado.", PI[to_player][pi_NAME], to_player);
+	SendFormatNotification(playerid, "Jugador '%s' (%d) descongelado.", ACCOUNT_INFO[to_player][ac_NAME], to_player);
 	TogglePlayerControllableEx(to_player, true);
 	return 1;
 }
@@ -32091,7 +32044,7 @@ CMD:pest(playerid, params[])
 	new to_player;
 	if(sscanf(params, "u", to_player)) return SendNotification(playerid, "~r~Modo de uso:~w~ /pest <player_id>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
-	if(PI[to_player][pi_ADMIN_LEVEL] > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
+	if(ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
 	
 	ShowPlayerStats(playerid, to_player);
 	return 1;
@@ -32102,7 +32055,7 @@ CMD:pinv(playerid, params[])
 	new to_player;
 	if(sscanf(params, "u", to_player)) return SendNotification(playerid, "~r~Modo de uso:~w~ /pinv <player_id>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
-	if(PI[to_player][pi_ADMIN_LEVEL] > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
+	if(ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
 	
 	ShowPlayerInventory(playerid, to_player);
 	return 1;
@@ -32113,7 +32066,7 @@ CMD:pexp(playerid, params[])
 	new to_player;
 	if(sscanf(params, "u", to_player)) return SendNotification(playerid, "~r~Modo de uso:~w~ /pexp <player_id>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
-	if(PI[to_player][pi_ADMIN_LEVEL] > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
+	if(ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
 	
 	ShowPlayerSkills(playerid, to_player);
 	return 1;
@@ -32146,10 +32099,10 @@ CMD:pbank(playerid, params[])
 	new to_player;
 	if(sscanf(params, "u", to_player)) return SendNotification(playerid, "~r~Modo de uso:~w~ /pbank <player_id>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
-	if(PI[to_player][pi_ADMIN_LEVEL] > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
+	if(ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
 	
-	if(!PI[to_player][pi_BANK_ACCOUNT]) SendNotification(playerid, "El jugador no tiene cuenta bancaria.");
-	else SendFormatNotification(playerid, "Cuenta bancaria ID: '%d' Balance: '%s'", PI[to_player][pi_BANK_ACCOUNT], number_format_thousand(PI[to_player][pi_BANK_MONEY]));
+	if(!PI[to_player][ac_BANK_ACCOUNT]) SendNotification(playerid, "El jugador no tiene cuenta bancaria.");
+	else SendFormatNotification(playerid, "Cuenta bancaria ID: '%d' Balance: '%s'", PI[to_player][ac_BANK_ACCOUNT], number_format_thousand(PI[to_player][ac_BANK_MONEY]));
 	return 1;
 }
 
@@ -32158,12 +32111,12 @@ CMD:unjail(playerid, params[])
 	new to_player;
 	if(sscanf(params, "u", to_player)) return SendNotification(playerid, "~r~Modo de uso:~w~ /unjail <player_id>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
-	if(PI[to_player][pi_ADMIN_LEVEL] > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
+	if(ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
 	
-	if(PI[to_player][pi_STATE] != ROLEPLAY_STATE_JAIL) return SendNotification(playerid, "El jugador no está en el cárcel.");
+	if(ACCOUNT_INFO[to_player][ac_STATE] != ROLEPLAY_STATE_JAIL) return SendNotification(playerid, "El jugador no está en el cárcel.");
 	
 	UnjailPlayer(to_player);
-	SendFormatNotification(playerid, "El jugador %s (%d) ahora está en libertad.", PI[to_player][pi_NAME], to_player);
+	SendFormatNotification(playerid, "El jugador %s (%d) ahora está en libertad.", ACCOUNT_INFO[to_player][ac_NAME], to_player);
 	
 	
 	SendCmdLogToAdmins(playerid, "unjail", params);
@@ -32175,9 +32128,9 @@ CMD:ip(playerid, params[])
 	new to_player;
 	if(sscanf(params, "u", to_player)) return SendNotification(playerid, "~r~Modo de uso:~w~ /ip <player_id>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
-	if(PI[to_player][pi_ADMIN_LEVEL] > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
+	if(ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
 
-	SendFormatNotification(playerid, "IP %s (%d): %s", PI[to_player][pi_NAME], to_player, PI[to_player][pi_IP]);
+	SendFormatNotification(playerid, "IP %s (%d): %s", ACCOUNT_INFO[to_player][ac_NAME], to_player, ACCOUNT_INFO[to_player][ac_IP]);
 	return 1;
 }
 
@@ -32224,7 +32177,7 @@ alias:gotoveh("irvehiculo", "gotocar", "iracarro");
 
 CMD:duty(playerid)
 {
-	if(PI[playerid][pi_ADMIN_LEVEL] < 1) return SendNotification(playerid, "SERVER: Unknown command.");
+	if(ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] < 1) return SendNotification(playerid, "SERVER: Unknown command.");
 	if(PLAYER_TEMP[playerid][pt_ADMIN_SERVICE])
 	{
 		PLAYER_TEMP[playerid][pt_ADMIN_SERVICE] = false;
@@ -32236,7 +32189,7 @@ CMD:duty(playerid)
 			PLAYER_TEMP[playerid][pt_ADMIN_LABEL] = Text3D:INVALID_STREAMER_ID;
 		}
 
-		SendFormatNotification(playerid, "Ahora no estás de servicio como %s.", ADMIN_LEVELS[ PI[playerid][pi_ADMIN_LEVEL] ]);
+		SendFormatNotification(playerid, "Ahora no estás de servicio como %s.", ADMIN_LEVELS[ ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] ]);
 	}	
 	else
 	{
@@ -32250,18 +32203,18 @@ CMD:duty(playerid)
 		}
 		
 		new label_str[64];
-		switch(PI[playerid][pi_ADMIN_LEVEL])
+		switch(ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL])
 		{
-			case 1: format(label_str, sizeof label_str, "{0099FF}%s en servicio", ADMIN_LEVELS[ PI[playerid][pi_ADMIN_LEVEL] ]);
-			case 2: format(label_str, sizeof label_str, "{FFFF00}%s en servicio", ADMIN_LEVELS[ PI[playerid][pi_ADMIN_LEVEL] ]);
-			case 3: format(label_str, sizeof label_str, "{00CC00}%s en servicio", ADMIN_LEVELS[ PI[playerid][pi_ADMIN_LEVEL] ]);
-			case 4: format(label_str, sizeof label_str, "{FFCC00}%s en servicio", ADMIN_LEVELS[ PI[playerid][pi_ADMIN_LEVEL] ]);
-			case 5: format(label_str, sizeof label_str, "{FFFFCC}%s en servicio", ADMIN_LEVELS[ PI[playerid][pi_ADMIN_LEVEL] ]);
+			case 1: format(label_str, sizeof label_str, "{0099FF}%s en servicio", ADMIN_LEVELS[ ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] ]);
+			case 2: format(label_str, sizeof label_str, "{FFFF00}%s en servicio", ADMIN_LEVELS[ ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] ]);
+			case 3: format(label_str, sizeof label_str, "{00CC00}%s en servicio", ADMIN_LEVELS[ ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] ]);
+			case 4: format(label_str, sizeof label_str, "{FFCC00}%s en servicio", ADMIN_LEVELS[ ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] ]);
+			case 5: format(label_str, sizeof label_str, "{FFFFCC}%s en servicio", ADMIN_LEVELS[ ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] ]);
 		}
 		PLAYER_TEMP[playerid][pt_ADMIN_LABEL] = CreateDynamic3DTextLabel(label_str, -1, 0.0, 0.0, 0.3, 20.0, playerid, .testlos = true);
 
 		if(PLAYER_TEMP[playerid][pt_WORKING_IN]) SendFormatNotification(playerid, "Deberías dejar de estar de servicio como %s para administrar mejor...", work_info[ PLAYER_TEMP[playerid][pt_WORKING_IN] ][work_info_NAME]);
-		SendFormatNotification(playerid, "Ahora estás de servicio como %s.", ADMIN_LEVELS[ PI[playerid][pi_ADMIN_LEVEL] ]);
+		SendFormatNotification(playerid, "Ahora estás de servicio como %s.", ADMIN_LEVELS[ ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] ]);
 	}
 	return 1;
 }
@@ -32271,7 +32224,7 @@ CMD:goto(playerid, params[])
 	new to_player;
 	if(sscanf(params, "u", to_player)) return SendNotification(playerid, "~r~Modo de uso:~w~ /goto <player_id>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
-	if(PI[to_player][pi_ADMIN_LEVEL] > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
+	if(ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
 
 	new Float:p[4];
 	GetPlayerPos(to_player, p[0], p[1], p[2]);
@@ -32292,7 +32245,7 @@ CMD:get(playerid, params[])
 	new to_player;
 	if(sscanf(params, "u", to_player)) return SendNotification(playerid, "~r~Modo de uso:~w~ /get <player_id>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
-	if(PI[to_player][pi_ADMIN_LEVEL] > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
+	if(ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
 
 	new Float:p[4];
 	GetPlayerPos(playerid, p[0], p[1], p[2]);
@@ -32325,7 +32278,7 @@ CMD:unban(playerid, params[])
 				
 				SendFormatNotification(playerid, "'%s' ha sido desbaneado.", name);
 				
-				new str[145]; format(str, 145, "{"#RED_COLOR"}[ADMIN] {FFFFFF}%s (%d) ha desbaneado a '%s'.", PI[playerid][pi_NAME], playerid, name);
+				new str[145]; format(str, 145, "{"#RED_COLOR"}[ADMIN] {FFFFFF}%s (%d) ha desbaneado a '%s'.", ACCOUNT_INFO[playerid][ac_NAME], playerid, name);
 				SendMessageToAdmins(-1, str);
 
 				inline OnCountQueryLoad()
@@ -32337,7 +32290,7 @@ CMD:unban(playerid, params[])
 						{
 							new id_player;
 							cache_get_value_index_int(0, 0, id_player);
-							if(id_player) AddPlayerBadHistory(id_player, PI[playerid][pi_ID], TYPE_UNBAN, "/unban");
+							if(id_player) AddPlayerBadHistory(id_player, ACCOUNT_INFO[playerid][ac_ID], TYPE_UNBAN, "/unban");
 						}
 					}
 				}
@@ -32358,7 +32311,7 @@ CMD:jail(playerid, params[])
     if(sscanf(params, "uds[128]", to_player, time, reason)) return SendNotification(playerid, "~r~Modo de uso:~w~ /jail <player_id> <minutos> <razón>");
 	if(time < 0 || time > 1440) return SendNotification(playerid, "Intervalo de minutos incorrecto.");
     if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
-    if(PI[to_player][pi_ADMIN_LEVEL] > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
+    if(ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
 
     StopAudioStreamForPlayer(to_player);
     CancelEdit(to_player);
@@ -32378,12 +32331,12 @@ CMD:jail(playerid, params[])
     if(PLAYER_TEMP[to_player][pt_PLAYER_IN_CALL]) EndPhoneCall(to_player);
     if(PLAYER_TEMP[to_player][pt_GPS_MAP]) HidePlayerGpsMap(to_player);
 
-	PI[params[0]][pi_POLICE_JAIL_ID] = 0;
+	PI[params[0]][ac_POLICE_JAIL_ID] = 0;
     JailPlayer(to_player, time * 60);
     SendClientMessageEx(to_player, -1, "{"#SILVER_COLOR"}Te quedan %s minutos de sanción, razón: %s.", TimeConvert(time * 60), reason);
     SetPlayerSpecialAction(to_player, SPECIAL_ACTION_NONE);
 
-    new str[145]; format(str, 145, "{"#RED_COLOR"}[ADMIN] {FFFFFF}%s (%d) sancionó a %s (%d): %s.", PI[playerid][pi_NAME], playerid, PI[to_player][pi_NAME], to_player, reason);
+    new str[145]; format(str, 145, "{"#RED_COLOR"}[ADMIN] {FFFFFF}%s (%d) sancionó a %s (%d): %s.", ACCOUNT_INFO[playerid][ac_NAME], playerid, ACCOUNT_INFO[to_player][ac_NAME], to_player, reason);
     SendAdminAd(-1, str);
     return 1;
 }
@@ -32396,7 +32349,7 @@ CMD:say(playerid, params[])
 
 	if(sscanf(params, "us[128]", to_player, command)) return SendNotification(playerid, "~r~Modo de uso:~w~ /say <player_id> <comando>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
-	if(PI[to_player][pi_ADMIN_LEVEL] > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
+	if(ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
 
 	if(strfind(command, "/", true) == -1) CallLocalFunction("OnPlayerText", "is", to_player, command);
 	else 
@@ -32414,21 +32367,21 @@ CMD:ban(playerid, params[])
 	new to_player, reason[128];
 	if(sscanf(params, "us[128]", to_player, reason)) return SendNotification(playerid, "~r~Modo de uso:~w~ /ban <player_id> <razon>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
-	if(PI[to_player][pi_ADMIN_LEVEL] > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
+	if(ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
 	
 	if(PLAYER_TEMP[to_player][pt_KICKED]) return SendNotification(playerid, "El jugador ya está expulsado.");
-	if(!PI[to_player][pi_ID]) return Kick(to_player);
+	if(!ACCOUNT_INFO[to_player][ac_ID]) return Kick(to_player);
 	
-	AddPlayerBan(PI[to_player][pi_ID], PI[to_player][pi_NAME], PI[to_player][pi_IP], PI[playerid][pi_ID], TYPE_BAN, reason);
+	AddPlayerBan(ACCOUNT_INFO[to_player][ac_ID], ACCOUNT_INFO[to_player][ac_NAME], ACCOUNT_INFO[to_player][ac_IP], ACCOUNT_INFO[playerid][ac_ID], TYPE_BAN, reason);
 	
 	new dialog[250];
 	format(dialog, sizeof dialog, "Has sido baneado, razón:\n%s\n", reason);
 	ShowPlayerDialog(to_player, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Aviso", dialog, "Entiendo", "");
 	KickEx(to_player, 500);
 	
-	SendFormatNotification(playerid, "Jugador (nick: '%s' dbid: '%d', id: '%d') baneado.", PI[to_player][pi_NAME], PI[to_player][pi_ID], to_player);
+	SendFormatNotification(playerid, "Jugador (nick: '%s' dbid: '%d', id: '%d') baneado.", ACCOUNT_INFO[to_player][ac_NAME], ACCOUNT_INFO[to_player][ac_ID], to_player);
 	
-	new str[145]; format(str, 145, "{"#RED_COLOR"}[ADMIN] {FFFFFF}%s (%d) baneó a %s (%d): %s.", PI[playerid][pi_NAME], playerid, PI[to_player][pi_NAME], to_player, reason);
+	new str[145]; format(str, 145, "{"#RED_COLOR"}[ADMIN] {FFFFFF}%s (%d) baneó a %s (%d): %s.", ACCOUNT_INFO[playerid][ac_NAME], playerid, ACCOUNT_INFO[to_player][ac_NAME], to_player, reason);
 	SendAdminAd(-1, str);
 	return 1;
 }
@@ -32447,23 +32400,23 @@ CMD:tban(playerid, params[])
 	new to_player, days, reason[128];
 	if(sscanf(params, "uds[128]", to_player, days, reason)) return SendNotification(playerid, "~r~Modo de uso:~w~ /tban <player_id> <dias> <razon>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
-	if(PI[to_player][pi_ADMIN_LEVEL] > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
+	if(ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
 	if(days <= 0 || days > 9999) return SendNotification(playerid, "~r~Modo de uso:~w~ /ban <player_id> <dias> <razon>");
 	
 	if(PLAYER_TEMP[to_player][pt_KICKED]) return SendNotification(playerid, "El jugador ya está expulsado.");
-	if(!PI[to_player][pi_ID]) return Kick(to_player);
+	if(!ACCOUNT_INFO[to_player][ac_ID]) return Kick(to_player);
 	
-	AddPlayerBan(PI[to_player][pi_ID], PI[to_player][pi_NAME], PI[to_player][pi_IP], PI[playerid][pi_ID], TYPE_TEMP_BAN, reason, days);
+	AddPlayerBan(ACCOUNT_INFO[to_player][ac_ID], ACCOUNT_INFO[to_player][ac_NAME], ACCOUNT_INFO[to_player][ac_IP], ACCOUNT_INFO[playerid][ac_ID], TYPE_TEMP_BAN, reason, days);
 	
 	new dialog[250];
 	format(dialog, sizeof dialog, "Has sido baneado por %d días, razón:\n%s\n", days, reason);
 	ShowPlayerDialog(to_player, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Aviso", dialog, "Entiendo", "");
 	KickEx(to_player, 500);
 	
-	SendFormatNotification(playerid, "Jugador (nick: '%s' dbid: '%d', pid: '%d') baneado por %d días.", PI[to_player][pi_NAME], PI[to_player][pi_ID], to_player, days);
+	SendFormatNotification(playerid, "Jugador (nick: '%s' dbid: '%d', pid: '%d') baneado por %d días.", ACCOUNT_INFO[to_player][ac_NAME], ACCOUNT_INFO[to_player][ac_ID], to_player, days);
 	
 	
-	new str[145]; format(str, 145, "{"#RED_COLOR"}[ADMIN] {FFFFFF}%s (%d) baneó %d días a %s (%d): %s", PI[playerid][pi_NAME], playerid, days, PI[to_player][pi_NAME], to_player, reason);
+	new str[145]; format(str, 145, "{"#RED_COLOR"}[ADMIN] {FFFFFF}%s (%d) baneó %d días a %s (%d): %s", ACCOUNT_INFO[playerid][ac_NAME], playerid, days, ACCOUNT_INFO[to_player][ac_NAME], to_player, reason);
 	SendAdminAd(-1, str);
 	return 1;
 }
@@ -32509,7 +32462,7 @@ CMD:dban(playerid, params[])
 				cache_get_value_name_int(0, "playerid", pid);
 				cache_get_value_name_int(0, "admin_level", admin_level);
 
-				if(PI[playerid][pi_ADMIN_LEVEL] >= admin_level)
+				if(ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] >= admin_level)
 				{
 					if(connected) SendFormatNotification(playerid, "JUGADOR '%s' DB-ID '%d' conectado utilice /ban, su player_id: %d.", name, id, pid);
 					else
@@ -32529,10 +32482,10 @@ CMD:dban(playerid, params[])
 								}
 								else
 								{
-									AddPlayerBan(id, name, ip, PI[playerid][pi_ID], TYPE_BAN, reason);
+									AddPlayerBan(id, name, ip, ACCOUNT_INFO[playerid][ac_ID], TYPE_BAN, reason);
 									SendFormatNotification(playerid, "Jugador (nick: '%s' db_id: '%d') baneado.", name, id);
 									
-									new str[145]; format(str, 145, "{"#RED_COLOR"}[ADMIN] {FFFFFF}%s (%d) baneó a %s (offline, db_id: %d): %s", PI[playerid][pi_NAME], playerid, name, id, reason);
+									new str[145]; format(str, 145, "{"#RED_COLOR"}[ADMIN] {FFFFFF}%s (%d) baneó a %s (offline, db_id: %d): %s", ACCOUNT_INFO[playerid][ac_NAME], playerid, name, id, reason);
 									SendMessageToAdmins(-1, str);
 								}
 							}
@@ -32572,7 +32525,7 @@ CMD:dtban(playerid, params[])
 				cache_get_value_name_int(0, "playerid", pid);
 				cache_get_value_name_int(0, "admin_level", admin_level);
 
-				if(PI[playerid][pi_ADMIN_LEVEL] >= admin_level)
+				if(ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] >= admin_level)
 				{
 					if(connected) SendFormatNotification(playerid, "JUGADOR '%s' DB-ID '%d' conectado utilice /ban, su player_id: %d.", name, id, pid);
 					else
@@ -32592,10 +32545,10 @@ CMD:dtban(playerid, params[])
 								}
 								else
 								{
-									AddPlayerBan(id, name, ip, PI[playerid][pi_ID], TYPE_BAN, reason, days);
+									AddPlayerBan(id, name, ip, ACCOUNT_INFO[playerid][ac_ID], TYPE_BAN, reason, days);
 									SendFormatNotification(playerid, "Jugador (nick: '%s' dbid: '%d') baneado por %d días.", name, id, days);
 					
-									new str[145]; format(str, 145, "{"#RED_COLOR"}[ADMIN] {FFFFFF}%s (%d) baneó %d días a %s (offline, db_id: %d): %s", PI[playerid][pi_NAME], playerid, days, name, id, reason);
+									new str[145]; format(str, 145, "{"#RED_COLOR"}[ADMIN] {FFFFFF}%s (%d) baneó %d días a %s (offline, db_id: %d): %s", ACCOUNT_INFO[playerid][ac_NAME], playerid, days, name, id, reason);
 									SendMessageToAdmins(-1, str);
 								}
 							}
@@ -32648,10 +32601,10 @@ CMD:pm(playerid, params[])
 	if(sscanf(params, "us[128]", to_player, message)) return SendNotification(playerid, "~r~Modo de uso:~w~ /pm <player_id> <mensaje>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
 	
-	SendFormatNotification(playerid, "Mensaje enviado a %s (%d): %s", PI[to_player][pi_NAME], to_player, message);
+	SendFormatNotification(playerid, "Mensaje enviado a %s (%d): %s", ACCOUNT_INFO[to_player][ac_NAME], to_player, message);
 	
 	PLAYER_TEMP[to_player][pt_ADMIN_PM_PID] = playerid;
-	PLAYER_TEMP[to_player][pt_ADMIN_PM_AID] = PI[playerid][pi_ID];
+	PLAYER_TEMP[to_player][pt_ADMIN_PM_AID] = ACCOUNT_INFO[playerid][ac_ID];
 	PLAYER_TEMP[to_player][pt_ADMIN_PM_TIME] = gettime();
 	SendClientMessageEx(to_player, -1, "{"#SILVER_COLOR"}Mensaje de un administrador (/r para responder): {FFFFFF}%s", message);
 	
@@ -32708,10 +32661,10 @@ CMD:dameadmin(playerid, params[])
 {
 	if(!IsPlayerAdmin(playerid)) return SendNotification(playerid, "SERVER: Unknown command.");
 	
-	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET admin_level = 5 WHERE id = %d;", PI[playerid][pi_ID]);
+	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET admin_level = 5 WHERE id = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 	mysql_tquery(srp_db, QUERY_BUFFER);
 	
-	PI[playerid][pi_ADMIN_LEVEL] = 5;
+	ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] = 5;
 	SendNotification(playerid, "Ok.");
 	return 1;
 }
@@ -32721,16 +32674,16 @@ CMD:givemod(playerid, params[])
 	new to_player, level;
 	if(sscanf(params, "ud", to_player, level)) return SendNotification(playerid, "~r~Modo de uso:~w~ /givemod <player_id> <rango>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
-	if(PI[to_player][pi_ADMIN_LEVEL] > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
+	if(ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
 	if(level < 0 || level >= sizeof ADMIN_LEVELS) return SendNotification(playerid, "El rango no es válido.");
-	if(level > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "No puedes dar este rango por ser un rango superior al tuyo.");
+	if(level > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "No puedes dar este rango por ser un rango superior al tuyo.");
 	
-	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET admin_level = %d WHERE id = %d;", level, PI[to_player][pi_ID]);
+	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET admin_level = %d WHERE id = %d;", level, ACCOUNT_INFO[to_player][ac_ID]);
 	mysql_tquery(srp_db, QUERY_BUFFER);
 	
-	PI[to_player][pi_ADMIN_LEVEL] = level;
-	SendClientMessageEx(to_player, -1, "%s cambió tu rango administrativo a: %s.", PI[playerid][pi_NAME], ADMIN_LEVELS[level]);
-	SendFormatNotification(playerid, "El rango administrativo de %s (%d) ahora es %s.", PI[to_player][pi_NAME], to_player, ADMIN_LEVELS[level]);
+	ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] = level;
+	SendClientMessageEx(to_player, -1, "%s cambió tu rango administrativo a: %s.", ACCOUNT_INFO[playerid][ac_NAME], ADMIN_LEVELS[level]);
+	SendFormatNotification(playerid, "El rango administrativo de %s (%d) ahora es %s.", ACCOUNT_INFO[to_player][ac_NAME], to_player, ADMIN_LEVELS[level]);
 	
 	SendCmdLogToAdmins(playerid, "givemod", params);
 	return 1;
@@ -32749,10 +32702,10 @@ CMD:setthirst(playerid, params[])
 	if(sscanf(params, "uf", to_player, amount)) return SendNotification(playerid, "~r~Modo de uso:~w~ /setthirst <player_id> <valor>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
 	if(amount < 0.0 || amount > 100.0) return SendNotification(playerid, "Cantidad no válida.");
-	if(PI[to_player][pi_ADMIN_LEVEL] > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
+	if(ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
 	
-	PI[to_player][pi_THIRST] = amount;
-	SendFormatNotification(playerid, "La hidratación de %s (%d) ahora es %.1f.", PI[to_player][pi_NAME], to_player, amount);
+	PI[to_player][ac_THIRST] = amount;
+	SendFormatNotification(playerid, "La hidratación de %s (%d) ahora es %.1f.", ACCOUNT_INFO[to_player][ac_NAME], to_player, amount);
 	
 	SendCmdLogToAdmins(playerid, "setthirst", params);
 	return 1;
@@ -32765,10 +32718,10 @@ CMD:sethunger(playerid, params[])
 	if(sscanf(params, "uf", to_player, amount)) return SendNotification(playerid, "~r~Modo de uso:~w~ /sethungry <player_id> <valor>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
 	if(amount < 0.0 || amount > 100.0) return SendNotification(playerid, "Cantidad no válida.");
-	if(PI[to_player][pi_ADMIN_LEVEL] > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
+	if(ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
 	
-	PI[to_player][pi_HUNGRY] = amount;
-	SendFormatNotification(playerid, "La alimentación de %s (%d) ahora es %.1f.", PI[to_player][pi_NAME], to_player, amount);
+	PI[to_player][ac_HUNGRY] = amount;
+	SendFormatNotification(playerid, "La alimentación de %s (%d) ahora es %.1f.", ACCOUNT_INFO[to_player][ac_NAME], to_player, amount);
 	
 	SendCmdLogToAdmins(playerid, "sethunger", params);
 	return 1;
@@ -32816,10 +32769,10 @@ CMD:sethealth(playerid, params[])
 	if(sscanf(params, "uf", to_player, amount)) return SendNotification(playerid, "~r~Modo de uso:~w~ /sethealth <player_id> <valor>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
 	if(amount < 0.0 || amount > 100.0) return SendNotification(playerid, "Valor no válido.");
-	if(PI[to_player][pi_ADMIN_LEVEL] > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
+	if(ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
 	
 	SetPlayerHealthEx(to_player, amount);
-	SendFormatNotification(playerid, "La vida de %s (%d) ahora es %.1f.", PI[to_player][pi_NAME], to_player, amount);
+	SendFormatNotification(playerid, "La vida de %s (%d) ahora es %.1f.", ACCOUNT_INFO[to_player][ac_NAME], to_player, amount);
 	
 	SendCmdLogToAdmins(playerid, "sethealth", params);
 	return 1;
@@ -32832,10 +32785,10 @@ CMD:setarmour(playerid, params[])
 	if(sscanf(params, "uf", to_player, amount)) return SendNotification(playerid, "~r~Modo de uso:~w~ /setarmour <player_id> <valor>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
 	if(amount < 0.0 || amount > 100.0) return SendNotification(playerid, "Valor no válido.");
-	if(PI[to_player][pi_ADMIN_LEVEL] > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
+	if(ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
 	
 	SetPlayerArmourEx(to_player, amount);
-	SendFormatNotification(playerid, "El chaleco de %s (%d) ahora es %.1f.", PI[to_player][pi_NAME], to_player, amount);
+	SendFormatNotification(playerid, "El chaleco de %s (%d) ahora es %.1f.", ACCOUNT_INFO[to_player][ac_NAME], to_player, amount);
 	
 	SendCmdLogToAdmins(playerid, "setarmour", params);
 	return 1;
@@ -32847,29 +32800,29 @@ CMD:setlevel(playerid, params[])
 	new to_player, level;
 	if(sscanf(params, "ud", to_player, level)) return SendNotification(playerid, "~r~Modo de uso:~w~ /level <player_id> <nivel>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
-	if(PI[to_player][pi_ADMIN_LEVEL] > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
+	if(ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
 	
 	KillTimer(PLAYER_TEMP[to_player][pt_TIMERS][2]);
 	
-	PI[to_player][pi_REP] = 1;
-	PI[to_player][pi_LEVEL] = level;
+	ACCOUNT_INFO[to_player][ac_REP] = 1;
+	ACCOUNT_INFO[to_player][ac_LEVEL] = level;
 	UpdateReputationTextDraws(to_player);
 	SetPlayerSkillLevels(to_player);
 	
-	SendFormatNotification(to_player, "~g~¡Felicidades! ~w~Has subido al nivel %d.", PI[to_player][pi_LEVEL]);
-	SetPlayerScore(to_player, PI[to_player][pi_LEVEL]);
+	SendFormatNotification(to_player, "~g~¡Felicidades! ~w~Has subido al nivel %d.", ACCOUNT_INFO[to_player][ac_LEVEL]);
+	SetPlayerScore(to_player, ACCOUNT_INFO[to_player][ac_LEVEL]);
 	PlayerPlaySoundEx(to_player, 1058, 0.0, 0.0, 0.0);
 	
-	PI[to_player][pi_TIME_FOR_REP] = TIME_FOR_REP;
+	ACCOUNT_INFO[to_player][ac_TIME_FOR_REP] = TIME_FOR_REP;
 	PLAYER_TEMP[to_player][pt_TIME_PASSED_LAST_REP] = gettime() * 1000;
 	
-	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET time_playing = %d, level = %d, rep = %d, time_for_rep = %d, payday_rep = %d WHERE id = %d;", PI[to_player][pi_TIME_PLAYING], PI[to_player][pi_LEVEL], PI[to_player][pi_REP], TIME_FOR_REP, PI[to_player][pi_PAYDAY_REP], PI[to_player][pi_ID]);
+	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET time_playing = %d, level = %d, rep = %d, time_for_rep = %d, payday_rep = %d WHERE id = %d;", ACCOUNT_INFO[to_player][ac_TIME_PLAYING], ACCOUNT_INFO[to_player][ac_LEVEL], ACCOUNT_INFO[to_player][ac_REP], TIME_FOR_REP, ACCOUNT_INFO[to_player][ac_PAYDAY_REP], ACCOUNT_INFO[to_player][ac_ID]);
 	mysql_tquery(srp_db, QUERY_BUFFER);
 	
 	KillTimer(PLAYER_TEMP[to_player][pt_TIMERS][2]);
-	PLAYER_TEMP[to_player][pt_TIMERS][2] = SetTimerEx("AddPlayerReputation", PI[to_player][pi_TIME_FOR_REP], false, "i", to_player);
+	PLAYER_TEMP[to_player][pt_TIMERS][2] = SetTimerEx("AddPlayerReputation", ACCOUNT_INFO[to_player][ac_TIME_FOR_REP], false, "i", to_player);
 	
-	SendFormatNotification(playerid, "El nivel de %s (%d) ahora es %d.", PI[to_player][pi_NAME], to_player, PI[to_player][pi_LEVEL]);
+	SendFormatNotification(playerid, "El nivel de %s (%d) ahora es %d.", ACCOUNT_INFO[to_player][ac_NAME], to_player, ACCOUNT_INFO[to_player][ac_LEVEL]);
 	
 	SendCmdLogToAdmins(playerid, "setlevel", params);
 	return 1;
@@ -32880,7 +32833,7 @@ CMD:setwork(playerid, params[])
 	new to_player, work, set;
 	if(sscanf(params, "udd", to_player, work, set)) return SendNotification(playerid, "~r~Modo de uso:~w~ /setwork <player_id> <work> <set>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
-	if(PI[to_player][pi_ADMIN_LEVEL] > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
+	if(ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
 	
 	if(work < 0 || work >= sizeof work_info) return SendNotification(playerid, "El trabajo no es válido, para verlos usa /works.");
 	
@@ -32888,7 +32841,7 @@ CMD:setwork(playerid, params[])
 	
 	
 	new player_jobs = CountPlayerJobs(to_player);
-	if(PI[to_player][pi_VIP])
+	if(ACCOUNT_INFO[to_player][ac_VIP])
 	{
 		if(player_jobs >= MAX_SU_WORKS && set)
 		{
@@ -32909,17 +32862,17 @@ CMD:setwork(playerid, params[])
 	{
 		if(work == WORK_POLICE)
 		{
-			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO pworks (id_player, id_work, `set`, level) VALUES(%d, %d, 1, 1) ON DUPLICATE KEY UPDATE `set` = 1, level = 1;", PI[to_player][pi_ID], work);
+			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO pworks (id_player, id_work, `set`, level) VALUES(%d, %d, 1, 1) ON DUPLICATE KEY UPDATE `set` = 1, level = 1;", ACCOUNT_INFO[to_player][ac_ID], work);
 			mysql_tquery(srp_db, QUERY_BUFFER);
 
-			PI[to_player][pi_PLACA_PD] = random(10000000);
+			PI[to_player][ac_PLACA_PD] = random(10000000);
 			PLAYER_WORKS[to_player][work][pwork_LEVEL] = 1;
-			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET placa_pd = %d WHERE id = %d;", PI[to_player][pi_PLACA_PD], PI[to_player][pi_ID]);
+			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET placa_pd = %d WHERE id = %d;", PI[to_player][ac_PLACA_PD], ACCOUNT_INFO[to_player][ac_ID]);
 			mysql_tquery(srp_db, QUERY_BUFFER);
 		}
 		else
 		{
-			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO pworks (id_player, id_work, `set`, level) VALUES(%d, %d, 1, 1) ON DUPLICATE KEY UPDATE `set` = 1;", PI[to_player][pi_ID], work);
+			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO pworks (id_player, id_work, `set`, level) VALUES(%d, %d, 1, 1) ON DUPLICATE KEY UPDATE `set` = 1;", ACCOUNT_INFO[to_player][ac_ID], work);
 			mysql_tquery(srp_db, QUERY_BUFFER);
 		}
 	
@@ -32932,17 +32885,17 @@ CMD:setwork(playerid, params[])
 	{
 		if(work == WORK_POLICE)
 		{
-			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pworks SET `set` = 0, level = 0 WHERE id_player = %d AND id_work = %d;", PI[to_player][pi_ID], work);
+			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pworks SET `set` = 0, level = 0 WHERE id_player = %d AND id_work = %d;", ACCOUNT_INFO[to_player][ac_ID], work);
 			mysql_tquery(srp_db, QUERY_BUFFER);
 
-			PI[to_player][pi_PLACA_PD] = 0;
+			PI[to_player][ac_PLACA_PD] = 0;
 			PLAYER_WORKS[to_player][work][pwork_LEVEL] = 0;
-			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET placa_pd = %d WHERE id = %d;", PI[to_player][pi_PLACA_PD], PI[to_player][pi_ID]);
+			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET placa_pd = %d WHERE id = %d;", PI[to_player][ac_PLACA_PD], ACCOUNT_INFO[to_player][ac_ID]);
 			mysql_tquery(srp_db, QUERY_BUFFER);
 		}
 		else
 		{
-			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pworks SET `set` = 0 WHERE id_player = %d AND id_work = %d;", PI[to_player][pi_ID], work);
+			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pworks SET `set` = 0 WHERE id_player = %d AND id_work = %d;", ACCOUNT_INFO[to_player][ac_ID], work);
 			mysql_tquery(srp_db, QUERY_BUFFER);
 		}
 
@@ -32950,7 +32903,7 @@ CMD:setwork(playerid, params[])
 		SendClientMessageEx(to_player, -1, "{"#SILVER_COLOR"}Has abandonado tu trabajo de %s.", work_info[work][work_info_NAME]);
 	}
 
-	SendFormatNotification(playerid, "El trabajo %s de %s (%d) es: '%d'.", work_info[ work ][work_info_NAME], PI[to_player][pi_NAME], to_player, set);
+	SendFormatNotification(playerid, "El trabajo %s de %s (%d) es: '%d'.", work_info[ work ][work_info_NAME], ACCOUNT_INFO[to_player][ac_NAME], to_player, set);
 	SendCmdLogToAdmins(playerid, "setwork", params);
 	return 1;
 }
@@ -32960,17 +32913,17 @@ CMD:setworkexp(playerid, params[])
 	new to_player, work, exp;
 	if(sscanf(params, "udd", to_player, work, exp)) return SendNotification(playerid, "~r~Modo de uso:~w~ /setworkexp <player_id> <work, para verlos /works> <exp>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
-	if(PI[to_player][pi_ADMIN_LEVEL] > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
+	if(ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
 	
 	if(work < 0 || work >= sizeof work_info) return SendNotification(playerid, "El trabajo no es válido, para verlos usa /works.");
 	
 	if(PLAYER_WORKS[to_player][ work ][pwork_SET])
 	{
-		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pworks SET level = %d WHERE id_player = %d AND id_work = %d;", exp, PI[to_player][pi_ID], work);
+		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pworks SET level = %d WHERE id_player = %d AND id_work = %d;", exp, ACCOUNT_INFO[to_player][ac_ID], work);
 		mysql_tquery(srp_db, QUERY_BUFFER);
 
 		PLAYER_WORKS[to_player][ work ][pwork_LEVEL] = exp;
-		SendFormatNotification(playerid, "La experiencia de %s (%d) en el trabajo '%s' ahora es %d.", PI[to_player][pi_NAME], to_player, work_info[ work ][work_info_NAME], exp);
+		SendFormatNotification(playerid, "La experiencia de %s (%d) en el trabajo '%s' ahora es %d.", ACCOUNT_INFO[to_player][ac_NAME], to_player, work_info[ work ][work_info_NAME], exp);
 		SendCmdLogToAdmins(playerid, "setworkexp", params);
 	}
 	else SendNotification(playerid, "El jugador no tiene el trabajo");
@@ -32982,10 +32935,10 @@ CMD:setcash(playerid, params[])
 	new to_player, value;
 	if(sscanf(params, "ud", to_player, value)) return SendNotification(playerid, "~r~Modo de uso:~w~ /setcash <player_id> <amount>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
-	if(PI[to_player][pi_ADMIN_LEVEL] > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
+	if(ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
 	
 	SetPlayerCash(to_player, value);
-	SendFormatNotification(playerid, "El dinero de %s (%d) ahora es %d.", PI[to_player][pi_NAME], to_player, value);
+	SendFormatNotification(playerid, "El dinero de %s (%d) ahora es %d.", ACCOUNT_INFO[to_player][ac_NAME], to_player, value);
 	
 	SendCmdLogToAdmins(playerid, "setcash", params);
 	return 1;
@@ -32996,10 +32949,10 @@ CMD:givecash(playerid, params[])
 	new to_player, value;
 	if(sscanf(params, "ud", to_player, value)) return SendNotification(playerid, "~r~Modo de uso:~w~ /givecash <player_id> <amount>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
-	if(PI[to_player][pi_ADMIN_LEVEL] > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
+	if(ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
 	
 	GivePlayerCash(to_player, value, true, value < 0 ? true : false);
-	SendFormatNotification(playerid, "El jugador %s (%d) ha recibido %d.", PI[to_player][pi_NAME], to_player, value);
+	SendFormatNotification(playerid, "El jugador %s (%d) ha recibido %d.", ACCOUNT_INFO[to_player][ac_NAME], to_player, value);
 	
 	SendCmdLogToAdmins(playerid, "givecash", params);
 	return 1;
@@ -33010,10 +32963,10 @@ CMD:setbmlevel(playerid, params[])
 	new to_player, value;
 	if(sscanf(params, "ud", to_player, value)) return SendNotification(playerid, "~r~Modo de uso:~w~ /setbmlevel <player_id> <level>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
-	if(PI[to_player][pi_ADMIN_LEVEL] > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
+	if(ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
 	
-	PI[to_player][pi_BLACK_MARKET_LEVEL] = value;
-	SendFormatNotification(playerid, "El nivel 'black_market' de %s (%d) ahora es %d.", PI[to_player][pi_NAME], to_player, value);
+	PI[to_player][ac_BLACK_MARKET_LEVEL] = value;
+	SendFormatNotification(playerid, "El nivel 'black_market' de %s (%d) ahora es %d.", ACCOUNT_INFO[to_player][ac_NAME], to_player, value);
 	
 	SendCmdLogToAdmins(playerid, "setbmlevel", params);
 	return 1;
@@ -33103,9 +33056,9 @@ CMD:restart(playerid, params[])
 
 CMD:nombre(playerid, params[])
 {
-	if(CHANGE_NAME_SD_PRICE > PI[playerid][pi_COINS])
+	if(CHANGE_NAME_SD_PRICE > PI[playerid][ac_COINS])
 	{
-		SendFormatNotification(playerid, "Te faltan %d "SERVER_COIN" para poder cambiarte el nombre.", CHANGE_NAME_SD_PRICE - PI[playerid][pi_COINS]);
+		SendFormatNotification(playerid, "Te faltan %d "SERVER_COIN" para poder cambiarte el nombre.", CHANGE_NAME_SD_PRICE - PI[playerid][ac_COINS]);
 		return 1;
 	}
 
@@ -33151,7 +33104,7 @@ CMD:setnameplayer(playerid, params[])
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
 
 	SetRolePlayNames(to_player);
-	SetPlayerName(to_player, PI[to_player][pi_NAME]);
+	SetPlayerName(to_player, ACCOUNT_INFO[to_player][ac_NAME]);
 	SendNotification(playerid, "Nombre cambiado.");
 	return 1;
 }
@@ -33172,17 +33125,17 @@ CMD:setname(playerid, params[])
 			else
 			{
 				format(PLAYER_TEMP[to_player][pt_NAME], 24, "%s", new_name);
-				format(PI[to_player][pi_NAME], 24, "%s", new_name);
+				format(ACCOUNT_INFO[to_player][ac_NAME], 24, "%s", new_name);
 				SetRolePlayNames(to_player);
 				SetPlayerName(to_player, new_name);
 				
-				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET name = '%e' WHERE id = %d;", new_name, PI[to_player][pi_ID]);
+				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET name = '%e' WHERE id = %d;", new_name, ACCOUNT_INFO[to_player][ac_ID]);
 				mysql_tquery(srp_db, QUERY_BUFFER);
 				
 				for(new i = 0; i != MAX_PROPERTIES; i ++)
 				{
 					if(!PROPERTY_INFO[i][property_VALID]) continue;
-					if(PROPERTY_INFO[i][property_OWNER_ID] != PI[to_player][pi_ID]) continue;
+					if(PROPERTY_INFO[i][property_OWNER_ID] != ACCOUNT_INFO[to_player][ac_ID]) continue;
 					
 					new label_str[256];
 					format
@@ -33193,7 +33146,7 @@ CMD:setname(playerid, params[])
 							Propiedad {"#PRIMARY_COLOR"}#%d\n\n\
 							{FFFFFF}Propietario: {"#PRIMARY_COLOR"}%s\n\
 							{FFFFFF}Presiona {"#PRIMARY_COLOR"}~k~~CONVERSATION_YES~ {FFFFFF}para entrar.\
-						", PROPERTY_INFO[i][property_ID], PI[to_player][pi_NAME]
+						", PROPERTY_INFO[i][property_ID], ACCOUNT_INFO[to_player][ac_NAME]
 					);
 					UpdateDynamic3DTextLabelText(PROPERTY_INFO[i][property_EXT_LABEL_ID], 0xFFFFFFFF, label_str);
 				}
@@ -33277,7 +33230,7 @@ CMD:setpass(playerid, params[])
 				cache_get_value_name_int(0, "connected", connected);
 				cache_get_value_name_int(0, "playerid", pid);
 				cache_get_value_name_int(0, "admin_level", admin_level);
-				if(PI[playerid][pi_ADMIN_LEVEL] >= admin_level)
+				if(ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] >= admin_level)
 				{
 					if(connected) SendFormatNotification(playerid, "JUGADOR '%s' DB-ID '%d' conectado, player_id: %d, no es necario cambiar la contraseña.", name, id, pid);
 					else
@@ -33323,7 +33276,7 @@ CMD:delete(playerid, params[])
 				cache_get_value_name_int(0, "playerid", pid);
 				cache_get_value_name_int(0, "admin_level", admin_level);
 
-				if(PI[playerid][pi_ADMIN_LEVEL] >= admin_level)
+				if(ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] >= admin_level)
 				{
 					if(connected) SendFormatNotification(playerid, "JUGADOR '%s' DB-ID '%d' conectado para eliminarlo debe estar desconectado, utilice kick, su player_id: %d.", name, id, pid);
 					else
@@ -33361,7 +33314,7 @@ CMD:delete(playerid, params[])
 						SendFormatNotification(playerid, "CUENTA (Nombre '%s' DB-ID: '%d') ha sido eliminada.", name, id);
 						if(ex_properties > 0) SendFormatNotification(playerid, "Se han expropiado '%d' propiedades del jugador eliminado.", ex_properties);
 						
-						new str[145]; format(str, 145, "{"#RED_COLOR"}[ADMIN] {FFFFFF}%s (%d) ha eliminado el usuario '%s'", PI[playerid][pi_NAME], playerid, name);
+						new str[145]; format(str, 145, "{"#RED_COLOR"}[ADMIN] {FFFFFF}%s (%d) ha eliminado el usuario '%s'", ACCOUNT_INFO[playerid][ac_NAME], playerid, name);
 						SendMessageToAdmins(-1, str);
 					}
 				}
@@ -33457,7 +33410,7 @@ SendChatMessageToAdmins(color, const message[])
 {
 	for(new i = 0, j = GetPlayerPoolSize(); i <= j; i++) 
 	    if(IsPlayerConnected(i) && PLAYER_TEMP[i][pt_USER_LOGGED])
-	        if(PI[i][pi_ADMIN_LEVEL] > 1 && PLAYER_TEMP[i][pt_SEE_ADM_CHAT] /*&& PLAYER_TEMP[i][pt_ADMIN_SERVICE]*/)
+	        if(ACCOUNT_INFO[i][ac_ADMIN_LEVEL] > 1 && PLAYER_TEMP[i][pt_SEE_ADM_CHAT] /*&& PLAYER_TEMP[i][pt_ADMIN_SERVICE]*/)
 	            SendClientMessage(i, color, message);
 }
 
@@ -33465,7 +33418,7 @@ SendMessageToAdmins(color, const message[], level = 1)
 {
 	for(new i = 0, j = GetPlayerPoolSize(); i <= j; i++) 
 	    if(IsPlayerConnected(i) && PLAYER_TEMP[i][pt_USER_LOGGED])
-	        if(PI[i][pi_ADMIN_LEVEL] > level && PLAYER_TEMP[i][pt_SEE_ADM_LOG] /*&& PLAYER_TEMP[i][pt_ADMIN_SERVICE]*/)
+	        if(ACCOUNT_INFO[i][ac_ADMIN_LEVEL] > level && PLAYER_TEMP[i][pt_SEE_ADM_LOG] /*&& PLAYER_TEMP[i][pt_ADMIN_SERVICE]*/)
 	            SendClientMessage(i, color, message);
 
 	return 1;
@@ -33474,12 +33427,12 @@ SendMessageToAdmins(color, const message[], level = 1)
 SendCmdLogToAdmins(playerid, cmdtext[], params[])
 {
 	new message[145];
-	if(isnull(params)) format(message, sizeof message, "El administrador %s (%d) ha utilizado el comando /%s", PI[playerid][pi_NAME], playerid, cmdtext);
-	else format(message, sizeof message, "El administrador %s (%d) ha utilizado el comando /%s %s", PI[playerid][pi_NAME], playerid, cmdtext, params);
+	if(isnull(params)) format(message, sizeof message, "El administrador %s (%d) ha utilizado el comando /%s", ACCOUNT_INFO[playerid][ac_NAME], playerid, cmdtext);
+	else format(message, sizeof message, "El administrador %s (%d) ha utilizado el comando /%s %s", ACCOUNT_INFO[playerid][ac_NAME], playerid, cmdtext, params);
 	
 	for(new i = 0, j = GetPlayerPoolSize(); i <= j; i++) 
 	    if(IsPlayerConnected(i) && PLAYER_TEMP[i][pt_USER_LOGGED])
-	        if(PI[i][pi_ADMIN_LEVEL] >= PI[playerid][pi_ADMIN_LEVEL] && PLAYER_TEMP[i][pt_SEE_ACMD_LOG] /*&& PLAYER_TEMP[i][pt_ADMIN_SERVICE]*/)
+	        if(ACCOUNT_INFO[i][ac_ADMIN_LEVEL] >= ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] && PLAYER_TEMP[i][pt_SEE_ACMD_LOG] /*&& PLAYER_TEMP[i][pt_ADMIN_SERVICE]*/)
 	            SendClientMessage(i, 0xA9C4E4FF, message);
 	
 	return 1;
@@ -33489,7 +33442,7 @@ SendMessageToAdminsAC(color, const message[])
 {
 	for(new i = 0, j = GetPlayerPoolSize(); i <= j; i++) 
 	    if(IsPlayerConnected(i) && PLAYER_TEMP[i][pt_USER_LOGGED])
-	        if(PI[i][pi_ADMIN_LEVEL] > 1 && PLAYER_TEMP[i][pt_SEE_AC_LOG] /*&& PLAYER_TEMP[i][pt_ADMIN_SERVICE]*/)
+	        if(ACCOUNT_INFO[i][ac_ADMIN_LEVEL] > 1 && PLAYER_TEMP[i][pt_SEE_AC_LOG] /*&& PLAYER_TEMP[i][pt_ADMIN_SERVICE]*/)
 	            SendClientMessage(i, color, message);
 	
 	return 1;
@@ -33529,7 +33482,7 @@ RespawnGlobalUnoccupiedVehicles()
 
 CMD:kill(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK) {
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK) {
 		new now = gettime();
 		if(now < PLAYER_TEMP[playerid][pt_DEATH_TIME] + 30)
 		{
@@ -33831,7 +33784,7 @@ UpdatePlayerShop(playerid)
 								}
 							}
 						}
-						mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM shop WHERE id_player = %d;", PI[playerid][pi_ID]);
+						mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM shop WHERE id_player = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 						MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 						PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_PAGE]);
 					}
@@ -33839,7 +33792,7 @@ UpdatePlayerShop(playerid)
 			}
 			new limit1 = PLAYER_TEMP[playerid][pt_DIALOG_DB_PAGE] * PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT];
 			if(limit1 < 0) limit1 = 0;
-			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT player.connected, shop.*, shop.id AS ad_id FROM shop INNER JOIN player ON shop.id_player = player.id WHERE shop.id_player = %d ORDER BY player.connected DESC, shop.date DESC LIMIT %d, %d;", PI[playerid][pi_ID], limit1, PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT]);
+			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT player.connected, shop.*, shop.id AS ad_id FROM shop INNER JOIN player ON shop.id_player = player.id WHERE shop.id_player = %d ORDER BY player.connected DESC, shop.date DESC LIMIT %d, %d;", ACCOUNT_INFO[playerid][ac_ID], limit1, PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT]);
 			MySQL_TQueryInline(srp_db, using inline OnShopLoad, QUERY_BUFFER);
 			return 1;
 		}
@@ -33914,7 +33867,7 @@ UpdatePlayerShop(playerid)
 						PlayerTextDrawSetString(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_BUTTONS][4], "Atr˜s");
 						PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_BUTTONS][4]);
 						
-						if(PI[playerid][pi_ID] == id_player)
+						if(ACCOUNT_INFO[playerid][ac_ID] == id_player)
 						{
 							PlayerTextDrawSetString(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_BUTTONS][2], "Modificar");
 							PlayerTextDrawSetString(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_BUTTONS][3], "Eliminar");
@@ -34031,14 +33984,14 @@ public OnPlayerStreamIn(playerid, forplayerid)
 		}
 	}
 
-	if(PI[playerid][pi_WANTED_LEVEL] > 0)
+	if(PI[playerid][ac_WANTED_LEVEL] > 0)
 	{
 		if(!PLAYER_WORKS[forplayerid][WORK_POLICE][pwork_SET]) return 1;
 		if(PLAYER_TEMP[forplayerid][pt_WORKING_IN] != WORK_POLICE) return 1;
 		SetPlayerMarkerForPlayer(forplayerid, playerid, PlayerWantedColor(playerid));
 	}
 	
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK)
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK)
 	{
 		if(!PLAYER_WORKS[forplayerid][WORK_MEDIC][pwork_SET]) return 1;
 		if(PLAYER_TEMP[forplayerid][pt_WORKING_IN] != WORK_MEDIC) return 1;
@@ -34059,14 +34012,14 @@ public OnPlayerStreamOut(playerid, forplayerid)
 		}
 	}
 	
-	if(PI[playerid][pi_WANTED_LEVEL] > 0)
+	if(PI[playerid][ac_WANTED_LEVEL] > 0)
 	{
 		if(!PLAYER_WORKS[forplayerid][WORK_POLICE][pwork_SET]) return 1;
 		if(PLAYER_TEMP[forplayerid][pt_WORKING_IN] != WORK_POLICE) return 1;
 		SetPlayerMarkerForPlayer(forplayerid, playerid, PlayerWantedColor(playerid));
 	}
 	
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK)
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK)
 	{
 		if(!PLAYER_WORKS[forplayerid][WORK_MEDIC][pwork_SET]) return 1;
 		if(PLAYER_TEMP[forplayerid][pt_WORKING_IN] != WORK_MEDIC) return 1;
@@ -34082,7 +34035,7 @@ GetPlayerPlantedPlants(playerid)
 	for(new i = 0; i != MAX_PLANTS; i ++)
 	{
 		if(!PLANTS[i][plant_VALID]) continue;
-		if(PLANTS[i][plant_PLANTED_BY_ACCOUNT_ID] == PI[playerid][pi_ID]) plants ++;
+		if(PLANTS[i][plant_PLANTED_BY_ACCOUNT_ID] == ACCOUNT_INFO[playerid][ac_ID]) plants ++;
 	}
 	return plants;
 }
@@ -34156,7 +34109,7 @@ public StartPlayerJob(playerid, work, vehicleid)
 		}
 		case WORK_TRASH:
 		{
-			if(PI[playerid][pi_GENDER] == SEX_MALE)
+			if(PI[playerid][ac_GENDER] == SEX_MALE)
 			{
 				SetPlayerSkin(playerid, 16);
 				for(new i = 0; i != MAX_SU_TOYS; i ++) RemovePlayerAttachedObject(playerid, i);
@@ -34164,7 +34117,7 @@ public StartPlayerJob(playerid, work, vehicleid)
 		}
 		case WORK_MECHANIC:
 		{
-			if(PI[playerid][pi_GENDER] == SEX_MALE)
+			if(PI[playerid][ac_GENDER] == SEX_MALE)
 			{
 				SetPlayerSkin(playerid, 50);
 				for(new i = 0; i != MAX_SU_TOYS; i ++) RemovePlayerAttachedObject(playerid, i);
@@ -34173,7 +34126,7 @@ public StartPlayerJob(playerid, work, vehicleid)
 		case WORK_POLICE:
 		{
 			new label_str[128];
-			format(label_str, sizeof label_str, "%s | Nº%d | %c. %s", POLICE_RANKS[ PLAYER_WORKS[playerid][WORK_POLICE][pwork_LEVEL] ], PI[playerid][pi_PLACA_PD], PLAYER_TEMP[playerid][pt_FIRST_NAME][0], PLAYER_TEMP[playerid][pt_SUB_NAME]);
+			format(label_str, sizeof label_str, "%s | Nº%d | %c. %s", POLICE_RANKS[ PLAYER_WORKS[playerid][WORK_POLICE][pwork_LEVEL] ], PI[playerid][ac_PLACA_PD], PLAYER_TEMP[playerid][pt_FIRST_NAME][0], PLAYER_TEMP[playerid][pt_SUB_NAME]);
 			
 			if(IsValidDynamic3DTextLabel(PLAYER_TEMP[playerid][pt_POLICE_LABEL]))
 			{
@@ -34184,11 +34137,11 @@ public StartPlayerJob(playerid, work, vehicleid)
 
 			for(new i = 0; i != MAX_SU_TOYS; i ++) RemovePlayerAttachedObject(playerid, i);
 			SetWantedPlayerMarkers(playerid);
-			SetPlayerSkin(playerid, PI[playerid][pi_POLICE_DUTY]);
+			SetPlayerSkin(playerid, PI[playerid][ac_POLICE_DUTY]);
 		}
 		case WORK_PIZZA:
 		{
-			if(PI[playerid][pi_GENDER] == SEX_MALE)
+			if(PI[playerid][ac_GENDER] == SEX_MALE)
 			{
 				SetPlayerSkin(playerid, 155);
 				for(new i = 0; i != MAX_SU_TOYS; i ++) RemovePlayerAttachedObject(playerid, i);
@@ -34200,7 +34153,7 @@ public StartPlayerJob(playerid, work, vehicleid)
 		}
 		case WORK_MEDIC:
 		{
-			if(PI[playerid][pi_GENDER] == SEX_MALE) SetPlayerSkin(playerid, male_medic_skins[ random(sizeof(male_medic_skins)) ]);
+			if(PI[playerid][ac_GENDER] == SEX_MALE) SetPlayerSkin(playerid, male_medic_skins[ random(sizeof(male_medic_skins)) ]);
 			else SetPlayerSkin(playerid, 308);
 			for(new i = 0; i != MAX_SU_TOYS; i ++) RemovePlayerAttachedObject(playerid, i);
 			SetInjuredPlayerMarkers(playerid);
@@ -34228,7 +34181,7 @@ public EndPlayerJob(playerid, work, bool:changeskin)
 		{
 			if(PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID] != INVALID_VEHICLE_ID)
 			{
-				if(TRUCK_VEHICLE[ PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID] ][truck_vehicle_DRIVER_USER_ID] == PI[playerid][pi_ID])
+				if(TRUCK_VEHICLE[ PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID] ][truck_vehicle_DRIVER_USER_ID] == ACCOUNT_INFO[playerid][ac_ID])
 				{
 					if(TRUCK_VEHICLE[ PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID] ][truck_vehicle_LOADING])
 					{
@@ -34287,7 +34240,7 @@ public EndPlayerJob(playerid, work, bool:changeskin)
 		{
 			if(changeskin)
 			{
-				SetPlayerSkin(playerid, PI[playerid][pi_SKIN]);
+				SetPlayerSkin(playerid, PI[playerid][ac_SKIN]);
 				SetPlayerToys(playerid);
 			}
 			
@@ -34319,9 +34272,9 @@ public EndPlayerJob(playerid, work, bool:changeskin)
 			}
 			if(changeskin)
 			{
-				SetPlayerSkin(playerid, PI[playerid][pi_SKIN]);
+				SetPlayerSkin(playerid, PI[playerid][ac_SKIN]);
 				SetPlayerToys(playerid);
-				PI[playerid][pi_POLICE_DUTY] = 0;
+				PI[playerid][ac_POLICE_DUTY] = 0;
 			}
 			SetNormalPlayerMarkers(playerid);
 		}
@@ -34329,7 +34282,7 @@ public EndPlayerJob(playerid, work, bool:changeskin)
 		{
 			if(changeskin)
 			{
-				SetPlayerSkin(playerid, PI[playerid][pi_SKIN]);
+				SetPlayerSkin(playerid, PI[playerid][ac_SKIN]);
 				SetPlayerToys(playerid);
 			}
 			SetNormalPlayerMarkers(playerid);
@@ -34338,7 +34291,7 @@ public EndPlayerJob(playerid, work, bool:changeskin)
 		{
 			if(PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID] != INVALID_VEHICLE_ID)
 			{
-				if(PIZZA_VEHICLE[ PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID] ][pizza_vehicle_DRIVER_AID] == PI[playerid][pi_ID]) SetVehicleToRespawnEx(PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID]);
+				if(PIZZA_VEHICLE[ PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID] ][pizza_vehicle_DRIVER_AID] == ACCOUNT_INFO[playerid][ac_ID]) SetVehicleToRespawnEx(PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID]);
 			}
 			if(IsValidDynamicCP(PLAYER_TEMP[playerid][pt_PIZZA_CHECKPOINT]))
 			{
@@ -34352,7 +34305,7 @@ public EndPlayerJob(playerid, work, bool:changeskin)
 			}
 			if(changeskin)
 			{
-				SetPlayerSkin(playerid, PI[playerid][pi_SKIN]);
+				SetPlayerSkin(playerid, PI[playerid][ac_SKIN]);
 				SetPlayerToys(playerid);
 			}
 		}
@@ -34360,7 +34313,7 @@ public EndPlayerJob(playerid, work, bool:changeskin)
 		{
 			if(changeskin)
 			{
-				SetPlayerSkin(playerid, PI[playerid][pi_SKIN]);
+				SetPlayerSkin(playerid, PI[playerid][ac_SKIN]);
 				SetPlayerToys(playerid);
 			}
 			SetNormalPlayerMarkers(playerid);
@@ -34368,7 +34321,7 @@ public EndPlayerJob(playerid, work, bool:changeskin)
 	}
 	
 	EnablePlayerArmedWeapons(playerid);
-	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pworks SET level = %d WHERE id_player = %d AND id_work = %d;", PLAYER_WORKS[playerid][ PLAYER_TEMP[playerid][pt_WORKING_IN] ][pwork_LEVEL], PI[playerid][pi_ID], PLAYER_TEMP[playerid][pt_WORKING_IN]);
+	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pworks SET level = %d WHERE id_player = %d AND id_work = %d;", PLAYER_WORKS[playerid][ PLAYER_TEMP[playerid][pt_WORKING_IN] ][pwork_LEVEL], ACCOUNT_INFO[playerid][ac_ID], PLAYER_TEMP[playerid][pt_WORKING_IN]);
 	mysql_tquery(srp_db, QUERY_BUFFER);
 	PLAYER_TEMP[playerid][pt_WORKING_IN] = WORK_NONE;
 	return 1;
@@ -34453,7 +34406,7 @@ randomEx(max, exception)
 
 SetPlayerSkillLevels(playerid)
 {	
-	if(PI[playerid][pi_LEVEL] >= 10)
+	if(ACCOUNT_INFO[playerid][ac_LEVEL] >= 10)
 	{
 		SetPlayerSkillLevel(playerid, WEAPONSKILL_SAWNOFF_SHOTGUN,		200);
 		SetPlayerSkillLevel(playerid, WEAPONSKILL_PISTOL, 				40);
@@ -34488,18 +34441,18 @@ DeleteIlegalInv(playerid)
 {
 	if(!PLAYER_WORKS[playerid][WORK_POLICE][pwork_SET])
 	{
-		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET seed_cannabis = 0, seed_crack = 0, cannabis = 0, crack = 0 WHERE id = %d;", PI[playerid][pi_ID]);
+		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET seed_cannabis = 0, seed_crack = 0, cannabis = 0, crack = 0 WHERE id = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 		mysql_tquery(srp_db, QUERY_BUFFER);
 
-		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "DELETE FROM pweapons WHERE id_player = %d;", PI[playerid][pi_ID]);
+		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "DELETE FROM pweapons WHERE id_player = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 		mysql_tquery(srp_db, QUERY_BUFFER);
 		ResetPlayerWeaponsEx(playerid);
 	}
 	
-	PI[playerid][pi_SEED_CANNABIS] = 0;
-	PI[playerid][pi_SEED_CRACK] = 0;
-	PI[playerid][pi_CANNABIS] = 0;
-	PI[playerid][pi_CRACK] = 0;
+	PI[playerid][ac_SEED_CANNABIS] = 0;
+	PI[playerid][ac_SEED_CRACK] = 0;
+	PI[playerid][ac_CANNABIS] = 0;
+	PI[playerid][ac_CRACK] = 0;
 	return 1;
 }
 
@@ -34511,7 +34464,7 @@ SetInjuredPlayerMarkers(playerid)
 		{
 			if(PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_NORMAL)
 			{
-				if(PI[i][pi_STATE] == ROLEPLAY_STATE_CRACK)
+				if(PI[i][ac_STATE] == ROLEPLAY_STATE_CRACK)
 				{
 					SetPlayerMarkerForPlayer(playerid, i, 0x4aba00FF);
 				}
@@ -34562,8 +34515,8 @@ DisablePlayerInjuredMark(playerid)
 CMD:curar(playerid, params[])
 {
 	if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return SendNotification(playerid, "No estás depie.");
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK) return SendNotification(playerid, "No puedes curar estando herido.");
-	if(PI[playerid][pi_CREW] && CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_FIGHTING]) return SendNotification(playerid, "No puedes curar mientras tu banda está en combate.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK) return SendNotification(playerid, "No puedes curar estando herido.");
+	if(PI[playerid][ac_CREW] && CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_FIGHTING]) return SendNotification(playerid, "No puedes curar mientras tu banda está en combate.");
 
 	new to_player;
 	if(sscanf(params, "u", to_player)) return SendNotification(playerid, "~r~Modo de uso: ~w~/curar [PlayerID/Nombre]");
@@ -34574,17 +34527,17 @@ CMD:curar(playerid, params[])
 	GetPlayerPos(to_player, pos[0], pos[1], pos[2]);
 	if(!IsPlayerInRangeOfPoint(playerid, NEARS_PLAYERS_DISTANCE, pos[0], pos[1], pos[2])) return SendNotification(playerid, "Este jugador no está cerca tuya.");
 
-	if(PI[to_player][pi_STATE] != ROLEPLAY_STATE_CRACK) return SendNotification(playerid, "Esta persona no está herida.");
-	if(PI[to_player][pi_CREW] && CREW_INFO[ PLAYER_TEMP[to_player][pt_CREW_INDEX] ][crew_FIGHTING]) return SendNotification(playerid, "No puedes curar a esta persona porque su banda está en combate.");
+	if(ACCOUNT_INFO[to_player][ac_STATE] != ROLEPLAY_STATE_CRACK) return SendNotification(playerid, "Esta persona no está herida.");
+	if(PI[to_player][ac_CREW] && CREW_INFO[ PLAYER_TEMP[to_player][pt_CREW_INDEX] ][crew_FIGHTING]) return SendNotification(playerid, "No puedes curar a esta persona porque su banda está en combate.");
 
 	if(!PLAYER_WORKS[playerid][WORK_MEDIC][pwork_SET] && PLAYER_TEMP[playerid][pt_WORKING_IN] != WORK_MEDIC) {
-		if(PI[playerid][pi_MEDICAL_KITS] <= 0) return SendNotification(playerid, "No tienes botiquines para curar a esta persona.");
+		if(PI[playerid][ac_MEDICAL_KITS] <= 0) return SendNotification(playerid, "No tienes botiquines para curar a esta persona.");
 		else {
 			new now = gettime();
 			if(PLAYER_TEMP[playerid][pt_COOLDOWN_MEDICAL_KIT] > now) return SendFormatNotification(playerid, "Debes esperar %d segundos para volver a poder curar.", PLAYER_TEMP[playerid][pt_COOLDOWN_MEDICAL_KIT] - now);
 			PLAYER_TEMP[playerid][pt_COOLDOWN_MEDICAL_KIT] = now + 300;
 
-			PI[playerid][pi_MEDICAL_KITS] --;
+			PI[playerid][ac_MEDICAL_KITS] --;
 			SendNotification(playerid, "Has usado 1 botiquín para curar a esta persona.");
 		}
 	}
@@ -34607,7 +34560,7 @@ public StandUp(medic, playerid)
 			work_extra_payment = (work_info[WORK_MEDIC][work_info_EXTRA_PAY] * floatround(floatdiv(PLAYER_WORKS[medic][WORK_MEDIC][pwork_LEVEL], work_info[WORK_MEDIC][work_info_EXTRA_PAY_EXP])));
 			if(work_info[WORK_MEDIC][work_info_EXTRA_PAY_LIMIT] != 0) if(work_extra_payment > work_info[WORK_MEDIC][work_info_EXTRA_PAY_LIMIT]) work_extra_payment = work_info[WORK_MEDIC][work_info_EXTRA_PAY_LIMIT];
 		
-			if(PI[medic][pi_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
+			if(ACCOUNT_INFO[medic][ac_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
 		}
 		
 		new money = minrand(600, 800) + work_extra_payment;
@@ -34616,9 +34569,9 @@ public StandUp(medic, playerid)
 		SendClientMessageEx(medic, -1, "Has salvado la vida de esta persona, has ganado {"#PRIMARY_COLOR"}%s$.", number_format_thousand(money));
 	}
 	
-	PI[playerid][pi_STATE] = ROLEPLAY_STATE_NORMAL;
+	ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_NORMAL;
 	SetWeaponsForPlayer(playerid);
-	if(PI[playerid][pi_VIP]) SetPlayerHealthEx(playerid, 50.0);
+	if(ACCOUNT_INFO[playerid][ac_VIP]) SetPlayerHealthEx(playerid, 50.0);
 	else SetPlayerHealthEx(playerid, 25.0);
 	ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.1, 0, 0, 0, 0, 0, true);
 	ClearAnimations(playerid);
@@ -34627,7 +34580,7 @@ public StandUp(medic, playerid)
 
 CMD:banda(playerid, params[])
 {
-	if(!PI[playerid][pi_CREW])
+	if(!PI[playerid][ac_CREW])
 	{
 		if(PLAYER_WORKS[playerid][WORK_POLICE][pwork_SET]) return SendNotification(playerid, "Los policías no pueden tener bandas.");
 		
@@ -34648,11 +34601,11 @@ CMD:banda(playerid, params[])
 
 CMD:abandonar(playerid, params[])
 {
-	if(!PI[playerid][pi_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
-	if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_LEAVE_TERRITORY]) return SendNotification(playerid, "No tienes permiso para abandonar territorios.");
+	if(!PI[playerid][ac_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
+	if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_LEAVE_TERRITORY]) return SendNotification(playerid, "No tienes permiso para abandonar territorios.");
 	if(PLAYER_TEMP[playerid][pt_LAST_TERRITORY] == INVALID_STREAMER_ID) return SendNotification(playerid, "No estás en un territorio de tu banda.");
 	if(!IsPlayerInDynamicArea(playerid, TERRITORIES[ PLAYER_TEMP[playerid][pt_LAST_TERRITORY] ][territory_AREA])) return SendNotification(playerid, "No estás en un territorio de tu banda.");
-	if(TERRITORIES[ PLAYER_TEMP[playerid][pt_LAST_TERRITORY] ][territory_CREW_ID] != PI[playerid][pi_CREW]) return SendNotification(playerid, "No estás en un territorio de tu banda.");			
+	if(TERRITORIES[ PLAYER_TEMP[playerid][pt_LAST_TERRITORY] ][territory_CREW_ID] != PI[playerid][ac_CREW]) return SendNotification(playerid, "No estás en un territorio de tu banda.");			
 	if(CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_FIGHTING]) return SendNotification(playerid, "No puedes abandonar territorios mientras tu banda está en combate.");
 	
 	PLAYER_TEMP[playerid][pt_PLAYER_TERRITORY_PRO] = PLAYER_TEMP[playerid][pt_LAST_TERRITORY];
@@ -34662,10 +34615,10 @@ CMD:abandonar(playerid, params[])
 
 CMD:invitar(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	
-	if(!PI[playerid][pi_CREW]) return SendNotification(playerid, "No eres miembro de ninguna banda.");
-	if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][pi_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_INVITE]) return SendNotification(playerid, "No tienes permiso para invitar personas a la banda.");
+	if(!PI[playerid][ac_CREW]) return SendNotification(playerid, "No eres miembro de ninguna banda.");
+	if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_INVITE]) return SendNotification(playerid, "No tienes permiso para invitar personas a la banda.");
 	if(CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_FIGHTING]) return SendNotification(playerid, "No puedes invitar a gente a la banda cuando la banda está en combate.");
 	
 	new to_player;
@@ -34673,7 +34626,7 @@ CMD:invitar(playerid, params[])
 	if(!IsPlayerConnected(to_player)) return SendNotification(playerid, "El jugador está desconectado.");
 	if(to_player == playerid) return SendNotification(playerid, "Eres tú.");
 	
-	new members = CountCrewPlayers(PI[playerid][pi_CREW]);
+	new members = CountCrewPlayers(PI[playerid][ac_CREW]);
 	if(members >= MAX_CREW_MEMBERS) {
 		return SendFormatNotification(playerid, "Actualmente la banda cuenta con %d miembros, el límite es de %d miembros.", members, MAX_CREW_MEMBERS);
 	}
@@ -34681,7 +34634,7 @@ CMD:invitar(playerid, params[])
 	new Float:pos[3]; GetPlayerPos(to_player, pos[0], pos[1], pos[2]);
 	if(!IsPlayerInRangeOfPoint(playerid, 2.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "Este jugador no está cerca tuya.");
 	if(PLAYER_WORKS[to_player][WORK_POLICE][pwork_SET]) return SendNotification(playerid, "Esta persona es policía y no puede tener banda.");
-	if(PI[to_player][pi_CREW]) return SendNotification(playerid, "Esta persona pertenece a otra banda.");
+	if(PI[to_player][ac_CREW]) return SendNotification(playerid, "Esta persona pertenece a otra banda.");
 	if(PLAYER_TEMP[to_player][pt_GAME_STATE] != GAME_STATE_NORMAL) return SendNotification(playerid, "No puedes invitar a este jugador ahora.");
 	
 	if(gettime() < PLAYER_TEMP[ to_player ][pt_LAST_GOT_CREW] + 600)
@@ -34692,7 +34645,7 @@ CMD:invitar(playerid, params[])
 	}
 	
 	PLAYER_TEMP[playerid][pt_CREW_INVITE_PID] = to_player;
-	PLAYER_TEMP[playerid][pt_CREW_INVITE_AID] = PI[to_player][pi_ID];
+	PLAYER_TEMP[playerid][pt_CREW_INVITE_AID] = ACCOUNT_INFO[to_player][ac_ID];
 	SendFormatNotification(playerid, "Quieres invitar a %s a la banda, elige el rango que le ofreces.", PLAYER_TEMP[to_player][pt_RP_NAME]);
 	ShowDialog(playerid, DIALOG_CREW_INVITE_RANK);
 	return 1;
@@ -34700,7 +34653,7 @@ CMD:invitar(playerid, params[])
 
 CMD:reclutar(playerid, params[])
 {
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "~r~Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "~r~Ahora no puedes usar este comando.");
 	
 	if(PLAYER_WORKS[playerid][WORK_POLICE][pwork_SET])
 	{
@@ -34713,12 +34666,12 @@ CMD:reclutar(playerid, params[])
 		
 		new Float:pos[3]; GetPlayerPos(to_player, pos[0], pos[1], pos[2]);
 		if(!IsPlayerInRangeOfPoint(playerid, 2.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "~r~Este jugador no está cerca tuya.");
-		if(PI[to_player][pi_CREW]) return SendClientMessage(playerid,-1, "{"#RED_COLOR"}Esta persona pertenece a una banda y no puede ser policía.");
+		if(PI[to_player][ac_CREW]) return SendClientMessage(playerid,-1, "{"#RED_COLOR"}Esta persona pertenece a una banda y no puede ser policía.");
 		if(PLAYER_WORKS[to_player][WORK_POLICE][pwork_SET]) return SendNotification(playerid, "~r~Éste usuario es miembro.");
 		if(PLAYER_TEMP[to_player][pt_GAME_STATE] != GAME_STATE_NORMAL) return SendNotification(playerid, "~r~No puedes reclutar a este jugador ahora.");
 		
 		new player_jobs = CountPlayerJobs(to_player);
-		if(PI[to_player][pi_VIP])
+		if(ACCOUNT_INFO[to_player][ac_VIP])
 		{
 			if(player_jobs >= MAX_SU_WORKS)
 			{
@@ -34737,14 +34690,14 @@ CMD:reclutar(playerid, params[])
 		
 		if(PLAYER_TEMP[to_player][pt_WORKING_IN]) return SendNotification(playerid, "~r~Esta persona no puede unirse porque esta de servicio en su trabajo.");
 		
-		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO pworks (id_player, id_work, `set`, level) VALUES(%d, %d, 1, 1) ON DUPLICATE KEY UPDATE `set` = 1, level = 1;", PI[to_player][pi_ID], WORK_POLICE);
+		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO pworks (id_player, id_work, `set`, level) VALUES(%d, %d, 1, 1) ON DUPLICATE KEY UPDATE `set` = 1, level = 1;", ACCOUNT_INFO[to_player][ac_ID], WORK_POLICE);
 		mysql_tquery(srp_db, QUERY_BUFFER);
 
 		PLAYER_WORKS[to_player][WORK_POLICE][pwork_SET] = true;
 		PLAYER_WORKS[to_player][WORK_POLICE][pwork_LEVEL] = 1;
 		
-		PI[to_player][pi_PLACA_PD] = random(10000000);
-		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET placa_pd = %d WHERE id = %d;", PI[to_player][pi_PLACA_PD], PI[to_player][pi_ID]);
+		PI[to_player][ac_PLACA_PD] = random(10000000);
+		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET placa_pd = %d WHERE id = %d;", PI[to_player][ac_PLACA_PD], ACCOUNT_INFO[to_player][ac_ID]);
 		mysql_tquery(srp_db, QUERY_BUFFER);
 		
 		SendFormatNotification(playerid, "%s ahora es policía.", PLAYER_TEMP[to_player][pt_RP_NAME]);
@@ -34775,10 +34728,10 @@ NewCrewRegister(index, playerid)
 		CREW_INFO[index][crew_ID] = cache_insert_id();
 		if(CREW_INFO[index][crew_ID])
 		{
-			PI[playerid][pi_CREW] = CREW_INFO[index][crew_ID];
-			PI[playerid][pi_CREW_RANK] = 0;
+			PI[playerid][ac_CREW] = CREW_INFO[index][crew_ID];
+			PI[playerid][ac_CREW_RANK] = 0;
 			PLAYER_TEMP[playerid][pt_CREW_INDEX] = index;
-			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET crew = %d, crew_rank = %d WHERE id = %d;", PI[playerid][pi_CREW], PI[playerid][pi_CREW_RANK], PI[playerid][pi_ID]);
+			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET crew = %d, crew_rank = %d WHERE id = %d;", PI[playerid][ac_CREW], PI[playerid][ac_CREW_RANK], ACCOUNT_INFO[playerid][ac_ID]);
 			mysql_tquery(srp_db, QUERY_BUFFER);
 			RegisterNewCrewRank(index, 0);
 		}
@@ -34794,7 +34747,7 @@ SendMessageToCrewMembers(crew_id, color, const message[])
 	{
 		if(IsPlayerConnected(i) && PLAYER_TEMP[i][pt_USER_LOGGED])
 		{
-			if(PI[i][pi_CREW] == crew_id)
+			if(PI[i][ac_CREW] == crew_id)
 			{
 				SendClientMessage(i, color, message);
 			}
@@ -34890,7 +34843,7 @@ UpdateGangZoneColor(index)
 		{
 			if(IsPlayerConnected(i))
 			{
-				if(PI[i][pi_CREW])
+				if(PI[i][ac_CREW])
 				{
 					GangZoneFlashForPlayer(i, TERRITORIES[index][territory_GANG_ZONE], flash_color);
 				}
@@ -34903,7 +34856,7 @@ UpdateGangZoneColor(index)
 		{
 			if(IsPlayerConnected(i))
 			{
-				if(PI[i][pi_CREW])
+				if(PI[i][ac_CREW])
 				{
 					GangZoneShowForPlayer(i, TERRITORIES[index][territory_GANG_ZONE], TERRITORIES[index][territory_COLOR]);
 				}
@@ -34947,12 +34900,12 @@ StartTerritoryAttack(crew_index, territory_index, time)
 	{
 		if(IsPlayerConnected(i))
 		{
-			if(PI[i][pi_CREW])
+			if(PI[i][ac_CREW])
 			{
 				SendClientMessage(i, -1, message);
 				if(IsPlayerInDynamicArea(i, TERRITORIES[territory_index][territory_AREA]))
 				{	
-					if(PI[i][pi_WANTED_LEVEL] < 3)
+					if(PI[i][ac_WANTED_LEVEL] < 3)
 						SetPlayerWantedLevelEx(i, 3);
 
 					new r, g, b, a;
@@ -35047,12 +35000,12 @@ public UpdateTerritoryAttack(territory_index)
 		{
 			if(IsPlayerConnected(i))
 			{
-				if(PI[i][pi_CREW])
+				if(PI[i][ac_CREW])
 				{
 					SendClientMessage(i, -1, message);
 					if(IsPlayerInDynamicArea(i, TERRITORIES[territory_index][territory_AREA]))
 					{
-						if(PI[i][pi_CREW] == TERRITORIES[territory_index][territory_CREW_ID])
+						if(PI[i][ac_CREW] == TERRITORIES[territory_index][territory_CREW_ID])
 						{
 							GivePlayerCash(i, prize, true, false);
 							SendClientMessage(i, -1, prize_message);
@@ -35096,7 +35049,7 @@ public UpdateTerritoryAttack(territory_index)
 		{
 			if(IsPlayerConnected(i))
 			{
-				if(PI[i][pi_CREW])
+				if(PI[i][ac_CREW])
 				{
 					SendClientMessage(i, -1, message);
 					if(IsPlayerInDynamicArea(i, TERRITORIES[territory_index][territory_AREA]))
@@ -35124,11 +35077,11 @@ CountCrewPlayersInTerritory(crew_index, territory_index)
 	{
 		if(IsPlayerConnected(i))
 		{
-			if(PI[i][pi_CREW])
+			if(PI[i][ac_CREW])
 			{
 				if(PLAYER_TEMP[i][pt_CREW_INDEX] == crew_index)
 				{
-					if(PI[i][pi_STATE] == ROLEPLAY_STATE_NORMAL && PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_NORMAL)
+					if(PI[i][ac_STATE] == ROLEPLAY_STATE_NORMAL && PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_NORMAL)
 					{
 						if(IsPlayerInDynamicArea(i, TERRITORIES[territory_index][territory_AREA]))
 						{
@@ -35434,8 +35387,8 @@ CMD:eco(playerid, params[])
 
 ReLockPlayerVehicles(playerid, bool:remove = false)
 {
-	if(PI[playerid][pi_ID] == 0) return 0;
-	if(PI[playerid][pi_VIP]) return 0;
+	if(ACCOUNT_INFO[playerid][ac_ID] == 0) return 0;
+	if(ACCOUNT_INFO[playerid][ac_VIP]) return 0;
 	
 	inline OnQueryLoadedInline()
 	{
@@ -35478,7 +35431,7 @@ ReLockPlayerVehicles(playerid, bool:remove = false)
 			}
 		}
 	}
-	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id FROM pvehicles WHERE id_player = %d ORDER BY id DESC LIMIT %d;", PI[playerid][pi_ID], MAX_SU_VEHICLES);
+	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id FROM pvehicles WHERE id_player = %d ORDER BY id DESC LIMIT %d;", ACCOUNT_INFO[playerid][ac_ID], MAX_SU_VEHICLES);
 	MySQL_TQueryInline(srp_db, using inline OnQueryLoadedInline, QUERY_BUFFER);
 	return 1;
 }
@@ -35491,7 +35444,7 @@ UnlockPlayerVehicles(playerid)
 		if(!GLOBAL_VEHICLES[i][gb_vehicle_VALID]) continue;
 		if(!PLAYER_VEHICLES[i][player_vehicle_VALID]) continue;
 		
-		if(PLAYER_VEHICLES[i][player_vehicle_ID] == PI[playerid][pi_ID])
+		if(PLAYER_VEHICLES[i][player_vehicle_ID] == ACCOUNT_INFO[playerid][ac_ID])
 		{
 			if(total >= MAX_SU_VEHICLES) break;
 			
@@ -35515,7 +35468,7 @@ GetPlayerVehicleIdFromDbId(veh_did)
 
 CMD:vip(playerid, params[])
 {
-	if(PI[playerid][pi_VIP]) ShowDialog(playerid, DIALOG_SU);
+	if(ACCOUNT_INFO[playerid][ac_VIP]) ShowDialog(playerid, DIALOG_SU);
 	else ShowDialog(playerid, DIALOG_SU_BUY);
 	return 1;
 }
@@ -35526,11 +35479,11 @@ CMD:setcoins(playerid, params[])
 	if(sscanf(params, "ud", to_player, sd)) return SendNotification(playerid, "~r~Modo de uso:~w~ /setcoins <player_id> <sd>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
 	
-	PI[to_player][pi_COINS] = sd;
+	PI[to_player][ac_COINS] = sd;
 	SendFormatNotification(to_player, "Ahora tienes ~g~%d "SERVER_COIN"~w~.", sd);
 	PlayerPlaySoundEx(to_player, 1058, 0.0, 0.0, 0.0);
 	
-	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET coins = %d WHERE id = %d;", PI[to_player][pi_COINS], PI[to_player][pi_ID]);
+	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET coins = %d WHERE id = %d;", PI[to_player][ac_COINS], ACCOUNT_INFO[to_player][ac_ID]);
 	mysql_tquery(srp_db, QUERY_BUFFER);
 	
 	SendCmdLogToAdmins(playerid, "setcoins", params);
@@ -35543,11 +35496,11 @@ CMD:givecoins(playerid, params[])
 	if(sscanf(params, "ud", to_player, sd)) return SendNotification(playerid, "~r~Modo de uso:~w~ /givecoins <player_id> <sd>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
 	
-	PI[to_player][pi_COINS] += sd;
+	PI[to_player][ac_COINS] += sd;
 	SendClientMessageEx(to_player, -1, "{"#SILVER_COLOR"}Has comprado %d "SERVER_COIN".", sd);
 	PlayerPlaySoundEx(to_player, 1058, 0.0, 0.0, 0.0);
 	
-	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET coins = %d WHERE id = %d;", PI[to_player][pi_COINS], PI[to_player][pi_ID]);
+	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET coins = %d WHERE id = %d;", PI[to_player][ac_COINS], ACCOUNT_INFO[to_player][ac_ID]);
 	mysql_tquery(srp_db, QUERY_BUFFER);
 	
 	SendCmdLogToAdmins(playerid, "givecoins", params);
@@ -35568,7 +35521,7 @@ CMD:setvip(playerid, params[])
 
 CheckPlayerSuperUser(playerid)
 {
-	if(PI[playerid][pi_VIP])
+	if(ACCOUNT_INFO[playerid][ac_VIP])
 	{
 		inline OnInfoQueryLoad()
 		{
@@ -35577,19 +35530,19 @@ CheckPlayerSuperUser(playerid)
 			{
 				if(rows)
 				{
-					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET vip = 0, vip_expire_date = '0000-00-00 00:00:00' WHERE id = %d;", PI[playerid][pi_ID]);
+					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET vip = 0, vip_expire_date = '0000-00-00 00:00:00' WHERE id = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 					mysql_tquery(srp_db, QUERY_BUFFER);
 
-					PI[playerid][pi_VIP] = false;
-					PI[playerid][pi_VIP_EXPIRE_DATE][0] = EOS;
+					ACCOUNT_INFO[playerid][ac_VIP] = false;
+					ACCOUNT_INFO[playerid][ac_VIP_EXPIRE_DATE][0] = EOS;
 					SendNotification(playerid, "¡Tu VIP ha expirado! Usa /vip para comprar de nuevo.");
-					if(GetPlayerSkin(playerid) == PI[playerid][pi_SKIN]) SetPlayerToys(playerid);
+					if(GetPlayerSkin(playerid) == PI[playerid][ac_SKIN]) SetPlayerToys(playerid);
 					ReLockPlayerVehicles(playerid, true);
 				}
 				PLAYER_TEMP[playerid][pt_LAST_SU_CHECK] = gettime();
 			}
 		}
-		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id FROM player WHERE id = %d AND NOW() >= vip_expire_date;", PI[playerid][pi_ID]);
+		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id FROM player WHERE id = %d AND NOW() >= vip_expire_date;", ACCOUNT_INFO[playerid][ac_ID]);
 		MySQL_TQueryInline(srp_db, using inline OnInfoQueryLoad, QUERY_BUFFER);
 	}
 	return 1;
@@ -35601,10 +35554,10 @@ CMD:darskin(playerid, params[])
     if(sscanf(params, "ud", to_player, skin)) return SendNotification(playerid, "~r~Modo de uso:~w~ /setskin <player_id> <skin>");
     if(!IsPlayerConnected(to_player)) return SendNotification(playerid, "Jugador desconectado");
 
-	PI[to_player][pi_SKIN] = skin;
-    SetPlayerSkin(to_player, PI[to_player][pi_SKIN]);
+	PI[to_player][ac_SKIN] = skin;
+    SetPlayerSkin(to_player, PI[to_player][ac_SKIN]);
 	
-	SendFormatNotification(playerid, "Skin '%s (%d)' cambiado a '%d'.", PI[to_player][pi_NAME], to_player, skin);
+	SendFormatNotification(playerid, "Skin '%s (%d)' cambiado a '%d'.", ACCOUNT_INFO[to_player][ac_NAME], to_player, skin);
     return 1;
 }
 alias:darskin("setskin");
@@ -35615,10 +35568,10 @@ CMD:setfstyle(playerid, params[])
     if(sscanf(params, "ud", to_player, style)) return SendNotification(playerid, "~r~Modo de uso:~w~ /setfstyle <player_id> <style>");
     if(!IsPlayerConnected(to_player)) return SendNotification(playerid, "Jugador desconectado");
 
-	PI[to_player][pi_FIGHT_STYLE] = style;
-    SetPlayerFightingStyle(to_player, PI[to_player][pi_FIGHT_STYLE]);
+	PI[to_player][ac_FIGHT_STYLE] = style;
+    SetPlayerFightingStyle(to_player, PI[to_player][ac_FIGHT_STYLE]);
 	
-	SendFormatNotification(playerid, "FStyle '%s (%d)' cambiado a '%d'.", PI[to_player][pi_NAME], to_player, style);
+	SendFormatNotification(playerid, "FStyle '%s (%d)' cambiado a '%d'.", ACCOUNT_INFO[to_player][ac_NAME], to_player, style);
     return 1;
 }
 
@@ -35628,14 +35581,14 @@ CMD:ls(playerid, params[])
     if(sscanf(params, "u", to_player)) return SendNotification(playerid, "~r~Modo de uso:~w~ /sendls <player_id>");
     if(!IsPlayerConnected(to_player)) return SendNotification(playerid, "Jugador desconectado");
 
-	PI[to_player][pi_STATE] = ROLEPLAY_STATE_NORMAL;
-	PI[to_player][pi_LOCAL_INTERIOR] = 0;
+	ACCOUNT_INFO[to_player][ac_STATE] = ROLEPLAY_STATE_NORMAL;
+	PI[to_player][ac_LOCAL_INTERIOR] = 0;
 	PLAYER_TEMP[to_player][pt_INTERIOR_INDEX] = -1;
-	PI[to_player][pi_INTERIOR] = 0;
-	PI[to_player][pi_POLICE_JAIL_TIME] = 0;
+	PI[to_player][ac_INTERIOR] = 0;
+	PI[to_player][ac_POLICE_JAIL_TIME] = 0;
     SetPlayerPosEx(to_player, 1555.400390, -1675.611694, 16.195312, 0.0, 0, 0, true);
     SetPlayerCityWeather(to_player);
-	SendFormatNotification(playerid, "Jugador '%s (%d)' fue llevado a LS.", PI[to_player][pi_NAME], to_player);
+	SendFormatNotification(playerid, "Jugador '%s (%d)' fue llevado a LS.", ACCOUNT_INFO[to_player][ac_NAME], to_player);
     return 1;
 }
 
@@ -35677,7 +35630,7 @@ CMD:lsdb(playerid, params[])
 
 CMD:vpcar(playerid, params[])
 {
-	if(PI[playerid][pi_ADMIN_LEVEL] < 5) return 0;
+	if(ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] < 5) return 0;
 	
 	new to_player, modelid;
 	if(sscanf(params, "ud", to_player, modelid)) return SendNotification(playerid, "~r~Modo de uso:~w~ /vpcar <playerid> <modelid>");
@@ -35686,7 +35639,7 @@ CMD:vpcar(playerid, params[])
 	
 	new pvehicles = CountPlayerVehicles(to_player);
 	if(pvehicles >= MAX_SU_VEHICLES) return SendFormatNotification(playerid, "El jugador no puede tener más vehículos, su límite es %d.", MAX_SU_VEHICLES);
-	if(!PI[to_player][pi_VIP])
+	if(!ACCOUNT_INFO[to_player][ac_VIP])
 	{
 		if(pvehicles >= MAX_NU_VEHICLES)
 		{
@@ -35722,12 +35675,12 @@ CMD:revivir(playerid, params[])
 	new to_player;
 	if(sscanf(params, "u", to_player)) return SendNotification(playerid, "~r~Modo de uso:~w~ /revivir <playerid>");
 	
-	if(PI[to_player][pi_STATE] != ROLEPLAY_STATE_CRACK) return SendNotification(playerid, "Esta persona no está herida.");
+	if(ACCOUNT_INFO[to_player][ac_STATE] != ROLEPLAY_STATE_CRACK) return SendNotification(playerid, "Esta persona no está herida.");
 	
 	DisablePlayerInjuredMark(to_player);
-	PI[to_player][pi_STATE] = ROLEPLAY_STATE_NORMAL;
+	ACCOUNT_INFO[to_player][ac_STATE] = ROLEPLAY_STATE_NORMAL;
 	SetWeaponsForPlayer(to_player);
-	if(PI[to_player][pi_VIP]) SetPlayerHealthEx(playerid, 50.0);
+	if(ACCOUNT_INFO[to_player][ac_VIP]) SetPlayerHealthEx(playerid, 50.0);
 	else SetPlayerHealthEx(to_player, 25.0);
 	ApplyAnimation(to_player, "CARRY", "crry_prtial", 4.1, 0, 0, 0, 0, 0, true);
 	ClearAnimations(to_player);
@@ -35740,15 +35693,15 @@ alias:revivir("revive");
 CMD:tuning(playerid, params[])
 {	
 	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendNotification(playerid, "No estás en nigún vehículo.");
-	if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_CRACK || PI[playerid][pi_STATE] == ROLEPLAY_STATE_JAIL || PI[playerid][pi_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
 	if(GetPlayerInterior(playerid) != 0 || GetPlayerVirtualWorld(playerid) != 0) return SendNotification(playerid, "No estás en el lugar adecuado.");
 	if(!IsPlayerInRangeOfPoint(playerid, 5.0, 263.592102, 22.960014, 2.170951)) return SendNotification(playerid, "No estás en el lugar adecuado.");
 	
 	new vehicleid = GetPlayerVehicleID(playerid);
 	if(!PLAYER_VEHICLES[vehicleid][player_vehicle_VALID]) return SendNotification(playerid, "Solo puedes tunear tus vehículos personales.");
-	if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] != PI[playerid][pi_ID]) return SendNotification(playerid, "Solo puedes tunear tus vehículos personales.");
+	if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] != ACCOUNT_INFO[playerid][ac_ID]) return SendNotification(playerid, "Solo puedes tunear tus vehículos personales.");
 	if(!VEHICLE_INFO[GLOBAL_VEHICLES[vehicleid][gb_vehicle_MODELID] - 400][vehicle_info_NORMAL_SPEEDO]) return SendNotification(playerid, "Este vehículo no se puede tunear.");
-	if(PI[playerid][pi_LEVEL] < 2) return SendNotification(playerid, "Debes de ser al menos nivel 2 para tunear vehículos aquí.");
+	if(ACCOUNT_INFO[playerid][ac_LEVEL] < 2) return SendNotification(playerid, "Debes de ser al menos nivel 2 para tunear vehículos aquí.");
 	
 	PLAYER_TEMP[playerid][pt_IN_TUNING_GARAGE] = true;
 	PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] = vehicleid;
@@ -36570,13 +36523,13 @@ public HidePlayerMessage(playerid)
 
 PlayerPlaySoundEx(playerid, sound, Float:X, Float:Y, Float:Z)
 {
-	if(PI[playerid][pi_CONFIG_SOUNDS]) PlayerPlaySound(playerid, sound, X, Y, Z);
+	if(PI[playerid][ac_CONFIG_SOUNDS]) PlayerPlaySound(playerid, sound, X, Y, Z);
 	return 1;
 }
 
 PlayAudioStreamForPlayerEx(playerid, url[], Float:posX = 0.0, Float:posY = 0.0, Float:posZ = 0.0, Float:distance = 50.0, usepos = 0)
 {
-	if(PI[playerid][pi_CONFIG_AUDIO]) PlayAudioStreamForPlayer(playerid, url, posX, posY, posZ, distance, usepos);
+	if(PI[playerid][ac_CONFIG_AUDIO]) PlayAudioStreamForPlayer(playerid, url, posX, posY, posZ, distance, usepos);
 	return 1;
 }
 
@@ -36603,8 +36556,8 @@ SetPlayerVip(playerid, vip_level, price_coin = 0, days = 30)
 	if(vip_level < 1) return 0;
 	
 	vip_level = 2;//ok
-	PI[playerid][pi_COINS] -= price_coin;
-	PI[playerid][pi_VIP] = vip_level;
+	PI[playerid][ac_COINS] -= price_coin;
+	ACCOUNT_INFO[playerid][ac_VIP] = vip_level;
 	
 	inline OnInfoQueryLoad()
 	{
@@ -36615,18 +36568,18 @@ SetPlayerVip(playerid, vip_level, price_coin = 0, days = 30)
 			{
 				if(rows)
 				{
-					cache_get_value_index(0, 0, PI[playerid][pi_VIP_EXPIRE_DATE]);
-					SendClientMessageEx(playerid, -1, "{"#PRIMARY_COLOR"}¡Felicidades! {FFFFFF}Has comprado VIP (%d) por %d días, fecha de caducidad: %s.", PI[playerid][pi_VIP], days, PI[playerid][pi_VIP_EXPIRE_DATE]);
+					cache_get_value_index(0, 0, ACCOUNT_INFO[playerid][ac_VIP_EXPIRE_DATE]);
+					SendClientMessageEx(playerid, -1, "{"#PRIMARY_COLOR"}¡Felicidades! {FFFFFF}Has comprado VIP (%d) por %d días, fecha de caducidad: %s.", ACCOUNT_INFO[playerid][ac_VIP], days, ACCOUNT_INFO[playerid][ac_VIP_EXPIRE_DATE]);
 					SendClientMessage(playerid, -1, "Puedes utilizar {"#PRIMARY_COLOR"}/vip {FFFFFF}para ver el tiempo restante o renovar.");
 					UnlockPlayerVehicles(playerid);
-					if(GetPlayerSkin(playerid) == PI[playerid][pi_SKIN]) SetPlayerToys(playerid);
+					if(GetPlayerSkin(playerid) == PI[playerid][ac_SKIN]) SetPlayerToys(playerid);
 				}
 			}
 		}
-		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT vip_expire_date FROM player WHERE id = %d;", PI[playerid][pi_ID]);
+		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT vip_expire_date FROM player WHERE id = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 		MySQL_TQueryInline(srp_db, using inline OnCountQueryLoad, QUERY_BUFFER);
 	}
-	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET coins = %d, vip = %d, vip_expire_date = DATE_ADD(NOW(), INTERVAL %d DAY) WHERE id = %d;", PI[playerid][pi_COINS], PI[playerid][pi_VIP], days, PI[playerid][pi_ID]);
+	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET coins = %d, vip = %d, vip_expire_date = DATE_ADD(NOW(), INTERVAL %d DAY) WHERE id = %d;", PI[playerid][ac_COINS], ACCOUNT_INFO[playerid][ac_VIP], days, ACCOUNT_INFO[playerid][ac_ID]);
 	MySQL_TQueryInline(srp_db, using inline OnInfoQueryLoad, QUERY_BUFFER);
 	return 1;
 }
@@ -36729,10 +36682,10 @@ public CarJackingFinish(playerid)
 
 SetPlayerNormalColor(playerid)
 {
-	/*if(PI[playerid][pi_VIP]) return SetPlayerColorEx(playerid, 0x{"#PRIMARY_COLOR"}00);
+	/*if(ACCOUNT_INFO[playerid][ac_VIP]) return SetPlayerColorEx(playerid, 0x{"#PRIMARY_COLOR"}00);
 	else
 	{
-		if(PI[playerid][pi_ADMIN_LEVEL] && PLAYER_TEMP[playerid][pt_ADMIN_SERVICE] == true) SetPlayerColorEx(playerid, 0x8000FF00);
+		if(ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] && PLAYER_TEMP[playerid][pt_ADMIN_SERVICE] == true) SetPlayerColorEx(playerid, 0x8000FF00);
 		else SetPlayerColorEx(playerid, PLAYER_COLOR);
 	}*/
 	SetPlayerColorEx(playerid, PLAYER_COLOR);
@@ -36747,7 +36700,7 @@ SendAdminAd(color, const text[])
 	{
 		if(IsPlayerConnected(i))
 		{
-			if((PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_NORMAL || PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_DEAD) && PI[i][pi_CONFIG_ADMIN])
+			if((PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_NORMAL || PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_DEAD) && PI[i][ac_CONFIG_ADMIN])
 			{
 				SendClientMessage(i, color, text);
 			}
@@ -36761,7 +36714,7 @@ public OnPlayerCommandReceived(playerid, cmd[], params[], flags)
 {
 	if(PLAYER_TEMP[playerid][pt_KICKED]) return 0;
 	
-	if(PLAYER_TEMP[playerid][pt_GAME_STATE] != GAME_STATE_NORMAL || PI[playerid][pi_STATE] == ROLEPLAY_STATE_HOSPITAL || IsPlayerInWorkTutorial(playerid))
+	if(PLAYER_TEMP[playerid][pt_GAME_STATE] != GAME_STATE_NORMAL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_HOSPITAL || IsPlayerInWorkTutorial(playerid))
 	{
 		SendNotification(playerid, "Ahora no puedes usar comandos.");
 		return 0;
@@ -36802,7 +36755,7 @@ public OnPlayerCommandReceived(playerid, cmd[], params[], flags)
 			return 0;
 		}
 
-		if(flags > PI[playerid][pi_ADMIN_LEVEL])
+		if(flags > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL])
 		{
 			SendClientMessage(playerid, 0xFFFFFFFF, "SERVER: Unknown command."); 
 			return 0;
@@ -36818,7 +36771,7 @@ public OnPlayerCommandReceived(playerid, cmd[], params[], flags)
 	PLAYER_TEMP[playerid][pt_ANTIFLOOD_COMMANDS] = GetTickCount();
 	
 	#if CMD_LOGGIN
-		printf("[CMD] %s (%d): /%s %s", PI[playerid][pi_NAME], PI[playerid][pi_ID], cmd, params);
+		printf("[CMD] %s (%d): /%s %s", ACCOUNT_INFO[playerid][ac_NAME], ACCOUNT_INFO[playerid][ac_ID], cmd, params);
 	#endif
 	return 1;
 }
@@ -36836,15 +36789,15 @@ public OnPlayerCommandPerformed(playerid, cmd[], params[], result, flags)
 SendMessageToDoubtChannel(playerid, message[])
 {
 	new str[145];
-	if(PI[playerid][pi_ADMIN_LEVEL]) format(str, 145, "{"#PRIMARY_COLOR"}[Dudas] {"#SILVER_COLOR"}%s (%d) [%s]: %s", PLAYER_TEMP[playerid][pt_RP_NAME], playerid, ADMIN_LEVELS[ PI[playerid][pi_ADMIN_LEVEL] ], message);
-	else format(str, 145, "{"#PRIMARY_COLOR"}[Dudas] {"#SILVER_COLOR"}%s (%d) [Nivel %d]: %s", PLAYER_TEMP[playerid][pt_RP_NAME], playerid, PI[playerid][pi_LEVEL], message);
+	if(ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) format(str, 145, "{"#PRIMARY_COLOR"}[Dudas] {"#SILVER_COLOR"}%s (%d) [%s]: %s", PLAYER_TEMP[playerid][pt_RP_NAME], playerid, ADMIN_LEVELS[ ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] ], message);
+	else format(str, 145, "{"#PRIMARY_COLOR"}[Dudas] {"#SILVER_COLOR"}%s (%d) [Nivel %d]: %s", PLAYER_TEMP[playerid][pt_RP_NAME], playerid, ACCOUNT_INFO[playerid][ac_LEVEL], message);
 
 	PLAYER_TEMP[playerid][pt_DOUBT_CHANNEL_TIME] = gettime();
 	for(new i = 0, j = GetPlayerPoolSize(); i <= j; i++)
 	{
 		if(IsPlayerConnected(i))
 		{
-			if((PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_NORMAL || PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_DEAD) && PI[i][pi_DOUBT_CHANNEL])
+			if((PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_NORMAL || PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_DEAD) && PI[i][ac_DOUBT_CHANNEL])
 			{
 				SendClientMessage(i, 0x77c7ffFF, str);
 			}
@@ -36860,16 +36813,16 @@ CMD:muteard(playerid, params[])
     if(sscanf(params, "uds[128]", to_player, time, reason)) return SendNotification(playerid, "~r~Modo de uso:~w~ /muteard <player_id> <minutos> <razón>");
 	if(time < 0 || time > 1440) return SendNotification(playerid, "Intervalo de minutos incorrecto.");
     if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
-    if(PI[to_player][pi_ADMIN_LEVEL] > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
-	if(gettime() < PI[to_player][pi_MUTE]) return SendNotification(playerid, "El jugador ya está muteado.");
+    if(ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
+	if(gettime() < PI[to_player][ac_MUTE]) return SendNotification(playerid, "El jugador ya está muteado.");
 
 	new seconds = time * 60;
-	PI[to_player][pi_MUTE] = gettime() + seconds;
-	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET mute = %d WHERE id = %d;", PI[to_player][pi_MUTE], PI[to_player][pi_ID]);
+	PI[to_player][ac_MUTE] = gettime() + seconds;
+	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET mute = %d WHERE id = %d;", PI[to_player][ac_MUTE], ACCOUNT_INFO[to_player][ac_ID]);
 	mysql_tquery(srp_db, QUERY_BUFFER);
 	SendClientMessageEx(to_player, -1, "Has sido silenciado del canal de dudas por %d minutos, razón: %s", time, reason);
 	
-	new str[145]; format(str, 145, "{"#RED_COLOR"}[ADMIN] {FFFFFF}%s (%d) silenció a %s (%d) del canal de dudas: %s.", PI[playerid][pi_NAME], playerid, PI[to_player][pi_NAME], to_player, reason);
+	new str[145]; format(str, 145, "{"#RED_COLOR"}[ADMIN] {FFFFFF}%s (%d) silenció a %s (%d) del canal de dudas: %s.", ACCOUNT_INFO[playerid][ac_NAME], playerid, ACCOUNT_INFO[to_player][ac_NAME], to_player, reason);
     SendAdminAd(-1, str);
 	return 1;
 }
@@ -36879,16 +36832,16 @@ CMD:desmuteard(playerid, params[])
     new to_player;
     if(sscanf(params, "u", to_player)) return SendNotification(playerid, "~r~Modo de uso:~w~ /desmuteard <player_id>");
     if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
-    if(PI[to_player][pi_ADMIN_LEVEL] > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
+    if(ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
 
-	if(gettime() > PI[to_player][pi_MUTE]) return SendNotification(playerid, "Este jugador no está silenciado.");
+	if(gettime() > PI[to_player][ac_MUTE]) return SendNotification(playerid, "Este jugador no está silenciado.");
 	
-	PI[to_player][pi_MUTE] = 0;
-	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET mute = %d WHERE id = %d;", PI[to_player][pi_MUTE], PI[to_player][pi_ID]);
+	PI[to_player][ac_MUTE] = 0;
+	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET mute = %d WHERE id = %d;", PI[to_player][ac_MUTE], ACCOUNT_INFO[to_player][ac_ID]);
 	mysql_tquery(srp_db, QUERY_BUFFER);
 	SendClientMessage(to_player, -1, "Ya puedes volver a enviar dudas.");
 	
-	SendFormatNotification(playerid, "Jugador %s (%d) ha sido des-silenciado.", PI[to_player][pi_NAME], to_player);
+	SendFormatNotification(playerid, "Jugador %s (%d) ha sido des-silenciado.", ACCOUNT_INFO[to_player][ac_NAME], to_player);
 	return 1;
 }
 
@@ -36933,7 +36886,7 @@ CMD:abyc(playerid, params[])
 	if(PLAYER_TEMP[to_player][pt_GAME_STATE] != GAME_STATE_NORMAL) return SendNotification(playerid, "No se puede añadir byc a este jugador ahora.");
 	if(PLAYER_WORKS[to_player][WORK_POLICE][pwork_SET]) return SendNotification(playerid, "No puedes añadir byc a este jugador porque es policía.");
 	
-	AddPlayerPoliceHistory(to_player, PI[playerid][pi_ID], reason);
+	AddPlayerPoliceHistory(to_player, ACCOUNT_INFO[playerid][ac_ID], reason);
 	SendFormatNotification(playerid, "Se ha añadido el informe al historial policial de %s.", PLAYER_TEMP[to_player][pt_RP_NAME]);
 	return 1;
 }
@@ -36949,7 +36902,7 @@ CMD:dbyc(playerid, params[])
 	if(!IsPlayerConnected(to_player)) return SendNotification(playerid, "Jugador desconectado.");
 	if(PLAYER_TEMP[to_player][pt_GAME_STATE] != GAME_STATE_NORMAL) return SendNotification(playerid, "No se puede eliminar el historial policial de este jugador ahora.");
 	
-	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "DELETE FROM police_history WHERE id_player = %d;", PI[to_player][pi_ID]);
+	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "DELETE FROM police_history WHERE id_player = %d;", ACCOUNT_INFO[to_player][ac_ID]);
 	mysql_tquery(srp_db, QUERY_BUFFER);
 	
 	SendFormatNotification(playerid, "Has borrado el historial policial de %s.", PLAYER_TEMP[to_player][pt_RP_NAME]);
@@ -36968,11 +36921,11 @@ CMD:byc(playerid, params[])
 
 AddPlayerPoliceHistory(playerid, by_id, reason[])
 {
-	if(!PI[playerid][pi_ID]) return 0;
+	if(!ACCOUNT_INFO[playerid][ac_ID]) return 0;
 	
 	new date[24];
 	getDateTime(date);
-	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO police_history (id_player, by_id, text, date) VALUES (%d, %d, '%e', '%e');", PI[playerid][pi_ID], by_id, reason, date);
+	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO police_history (id_player, by_id, text, date) VALUES (%d, %d, '%e', '%e');", ACCOUNT_INFO[playerid][ac_ID], by_id, reason, date);
 	mysql_tquery(srp_db, QUERY_BUFFER);
 	return 1;
 }
@@ -37015,7 +36968,7 @@ PlayMp3(playerid, url[], song_name[])
 		{
 			if(IsPlayerConnected(i))
 			{
-				if( (PI[i][pi_STATE] == ROLEPLAY_STATE_OWN_PROPERTY || PI[i][pi_STATE] == ROLEPLAY_STATE_GUEST_PROPERTY) && PI[i][pi_LOCAL_INTERIOR] == PI[playerid][pi_LOCAL_INTERIOR])
+				if( (PI[i][ac_STATE] == ROLEPLAY_STATE_OWN_PROPERTY || PI[i][ac_STATE] == ROLEPLAY_STATE_GUEST_PROPERTY) && PI[i][ac_LOCAL_INTERIOR] == PI[playerid][ac_LOCAL_INTERIOR])
 				{
 					PlayAudioStreamForPlayerEx(i, url);
 					SendFormatNotification(i, "~b~Reproduciendo '%s'~n~~n~~w~Utiliza ~r~/stop ~w~para parar la música.", song_name);
@@ -37042,7 +36995,7 @@ PlayMp3(playerid, url[], song_name[])
 			}
 		}
 		PLAYER_TEMP[playerid][pt_MUSIC_FOR_VEHICLE] = false;
-		if(PLAYER_VEHICLES[ GetPlayerVehicleID(playerid) ][player_vehicle_OWNER_ID] == PI[playerid][pi_ID]) Auto_SendPlayerAction(playerid, "pone música en su vehículo.");
+		if(PLAYER_VEHICLES[ GetPlayerVehicleID(playerid) ][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID]) Auto_SendPlayerAction(playerid, "pone música en su vehículo.");
 		else Auto_SendPlayerAction(playerid, "pone música en el vehículo.");
 	}
 	else if(PLAYER_TEMP[playerid][pt_MUSIC_FOR_SPEAKERS])
@@ -37054,7 +37007,7 @@ PlayMp3(playerid, url[], song_name[])
 		{
 			if(IsPlayerConnected(i))
 			{
-				if((PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_NORMAL || PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_DEAD) && PI[i][pi_CONFIG_AUDIO])
+				if((PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_NORMAL || PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_DEAD) && PI[i][ac_CONFIG_AUDIO])
 				{
 					if(GetPlayerDistanceFromPoint(i, pos[0], pos[1], pos[2]) <= 30.0)
 					{
@@ -37263,7 +37216,7 @@ CMD:osetname(playerid, params[])
 							cache_get_value_name_int(0, "playerid", pid);
 							cache_get_value_name_int(0, "admin_level", admin_level);
 
-							if(PI[playerid][pi_ADMIN_LEVEL] >= admin_level)
+							if(ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] >= admin_level)
 							{
 								if(connected) SendFormatNotification(playerid, "JUGADOR '%s' DB-ID '%d' conectado utilice /setname, su player_id: %d.", name, id, pid);
 								else
@@ -37476,8 +37429,8 @@ CMD:historial(playerid, params[])
 	new to_player;
 	if(sscanf(params, "u", to_player)) return SendNotification(playerid, "~r~Modo de uso:~w~ /historial <player_id>");
 	if(!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
-	if(PI[to_player][pi_ADMIN_LEVEL] > PI[playerid][pi_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
-	if(!PI[to_player][pi_ID]) return SendNotification(playerid, "DB ID = 0!");
+	if(ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
+	if(!ACCOUNT_INFO[to_player][ac_ID]) return SendNotification(playerid, "DB ID = 0!");
 
 	inline OnInfoQueryLoad()
 	{
@@ -37485,7 +37438,7 @@ CMD:historial(playerid, params[])
 		if(cache_get_row_count(rows))
 		{
 			new caption[40], dialog[1600], line_str[256];
-			format(caption, sizeof caption, "Bad historial de %s (%d)", PI[to_player][pi_NAME], to_player);
+			format(caption, sizeof caption, "Bad historial de %s (%d)", ACCOUNT_INFO[to_player][ac_NAME], to_player);
 			format(dialog, sizeof dialog, "Por\tFecha\tTipo\tDescr.\n");
 			if(rows)
 			{
@@ -37516,7 +37469,7 @@ CMD:historial(playerid, params[])
 			SendNotification(playerid, "Limite: 20");
 		}
 	}
-	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT bad_history.*, player.name FROM bad_history LEFT JOIN player ON bad_history.by = player.id WHERE bad_history.id_player = %d ORDER BY bad_history.date LIMIT 20;", PI[to_player][pi_ID]);
+	mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT bad_history.*, player.name FROM bad_history LEFT JOIN player ON bad_history.by = player.id WHERE bad_history.id_player = %d ORDER BY bad_history.date LIMIT 20;", ACCOUNT_INFO[to_player][ac_ID]);
 	MySQL_TQueryInline(srp_db, using inline OnInfoQueryLoad, QUERY_BUFFER);
 	return 1;
 }
@@ -37576,7 +37529,7 @@ CMD:placaex(playerid, params[])
 	else
 	{
 		CallLocalFunction("EndPlayerJob", "iib", playerid, PLAYER_TEMP[playerid][pt_WORKING_IN], true);
-		PI[playerid][pi_POLICE_DUTY] = 0;
+		PI[playerid][ac_POLICE_DUTY] = 0;
 	}
 	return 1;
 }
@@ -37596,7 +37549,7 @@ CMD:vehicles(playerid, params[])
 		if(!PLAYER_VEHICLES[i][player_vehicle_VALID]) continue;
 		if(total_vehicles > MAX_SU_VEHICLES) break;
 		
-		if(PLAYER_VEHICLES[i][player_vehicle_OWNER_ID] == PI[to_player][pi_ID])
+		if(PLAYER_VEHICLES[i][player_vehicle_OWNER_ID] == ACCOUNT_INFO[to_player][ac_ID])
 		{
 			
 			new Float:pos[3];
@@ -37749,35 +37702,35 @@ SetPiDefaultValues(playerid)
 	new date[24];
 	getDateTime(date);
 
-	GetPlayerIp(playerid, PI[playerid][pi_IP], 16);
-	format(PI[playerid][pi_NAME], 24, "%s", PLAYER_TEMP[playerid][pt_NAME]);
-	format(PI[playerid][pi_LAST_CONNECTION], 24, "%s", date);
-	format(PI[playerid][pi_REG_DATE], 24, "%s", date);
-	PI[playerid][pi_LAST_CONNECTION_TIMESTAMP] = gettime();
-	PI[playerid][pi_LEVEL] = 1;
-	PI[playerid][pi_REP] = 1;
-	PI[playerid][pi_CONNECTED] = 1;
-	PI[playerid][pi_PLAYERID] = playerid;
-	PI[playerid][pi_TIME_FOR_REP] = TIME_FOR_REP;
-	PI[playerid][pi_SKIN] = Intro_Skins[0][0];
-	PI[playerid][pi_CASH] = minrand(5000, 7000);
-	PI[playerid][pi_POS_X] = New_User_Pos[0];
-	PI[playerid][pi_POS_Y] = New_User_Pos[1];
-	PI[playerid][pi_POS_Z] = New_User_Pos[2];
-	PI[playerid][pi_ANGLE] = New_User_Pos[3];
-	PI[playerid][pi_STATE] = ROLEPLAY_STATE_NORMAL;
-	PI[playerid][pi_FIGHT_STYLE] = 4;
-	PI[playerid][pi_HEALTH] = 100.0;
-	PI[playerid][pi_HUNGRY] = 100.0;
-	PI[playerid][pi_THIRST] = 100.0;
-	PI[playerid][pi_CONFIG_SOUNDS] = 1;
-	PI[playerid][pi_CONFIG_AUDIO] = 1;
-	PI[playerid][pi_CONFIG_TIME] = 1;
-	PI[playerid][pi_CONFIG_HUD] = 1;
-	PI[playerid][pi_CONFIG_ADMIN] = 1;
-	PI[playerid][pi_CONFIG_SECURE_LOGIN] = 0;
-	PI[playerid][pi_PHONE_VISIBLE_NUMBER] = 1;
-	PI[playerid][pi_DOUBT_CHANNEL] = 1;
+	GetPlayerIp(playerid, ACCOUNT_INFO[playerid][ac_IP], 16);
+	format(ACCOUNT_INFO[playerid][ac_NAME], 24, "%s", PLAYER_TEMP[playerid][pt_NAME]);
+	format(ACCOUNT_INFO[playerid][ac_LAST_CONNECTION], 24, "%s", date);
+	format(ACCOUNT_INFO[playerid][ac_REG_DATE], 24, "%s", date);
+	ACCOUNT_INFO[playerid][ac_LAST_CONNECTION_TIMESTAMP] = gettime();
+	ACCOUNT_INFO[playerid][ac_LEVEL] = 1;
+	ACCOUNT_INFO[playerid][ac_REP] = 1;
+	PI[playerid][ac_CONNECTED] = 1;
+	PI[playerid][ac_PLAYERID] = playerid;
+	ACCOUNT_INFO[playerid][ac_TIME_FOR_REP] = TIME_FOR_REP;
+	PI[playerid][ac_SKIN] = Intro_Skins[0][0];
+	PI[playerid][ac_CASH] = minrand(5000, 7000);
+	PI[playerid][ac_POS_X] = New_User_Pos[0];
+	PI[playerid][ac_POS_Y] = New_User_Pos[1];
+	PI[playerid][ac_POS_Z] = New_User_Pos[2];
+	PI[playerid][ac_ANGLE] = New_User_Pos[3];
+	ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_NORMAL;
+	PI[playerid][ac_FIGHT_STYLE] = 4;
+	PI[playerid][ac_HEALTH] = 100.0;
+	PI[playerid][ac_HUNGRY] = 100.0;
+	PI[playerid][ac_THIRST] = 100.0;
+	PI[playerid][ac_CONFIG_SOUNDS] = 1;
+	PI[playerid][ac_CONFIG_AUDIO] = 1;
+	PI[playerid][ac_CONFIG_TIME] = 1;
+	PI[playerid][ac_CONFIG_HUD] = 1;
+	PI[playerid][ac_CONFIG_ADMIN] = 1;
+	PI[playerid][ac_CONFIG_SECURE_LOGIN] = 0;
+	PI[playerid][ac_PHONE_VISIBLE_NUMBER] = 1;
+	ACCOUNT_INFO[playerid][ac_DOUBT_CHANNEL] = 1;
 	return 1;
 }
 
@@ -37813,27 +37766,27 @@ public OnPlayerRegister(playerid)
 
 public OnPlayerLogin(playerid)
 {
-	if(PI[playerid][pi_CONFIG_SECURE_LOGIN]) {
-		if(PI[playerid][pi_CONFIG_SECURE_LOGIN] && strcmp(PLAYER_TEMP[playerid][pt_IP], PI[playerid][pi_IP])) {
+	if(PI[playerid][ac_CONFIG_SECURE_LOGIN]) {
+		if(PI[playerid][ac_CONFIG_SECURE_LOGIN] && strcmp(PLAYER_TEMP[playerid][pt_IP], ACCOUNT_INFO[playerid][ac_IP])) {
 			inline OnSecureLoginCheck() {
 				new rows;
 				if(cache_get_row_count(rows)) {
 					if(rows) {
 						new date[24];
 						getDateTime(date);
-						mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player_secure_login SET last_connection = '%e' WHERE ip = '%e' AND id_player = %d;", date, PLAYER_TEMP[playerid][pt_IP], PI[playerid][pi_ID]);
+						mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player_secure_login SET last_connection = '%e' WHERE ip = '%e' AND id_player = %d;", date, PLAYER_TEMP[playerid][pt_IP], ACCOUNT_INFO[playerid][ac_ID]);
 						mysql_tquery(srp_db, QUERY_BUFFER);
 						LoginPlayer(playerid);
 					}
 					else {
 						new string[128];
-						format(string, sizeof string, "id=%d&ip=%s", PI[playerid][pi_ID], PLAYER_TEMP[playerid][pt_IP]);
+						format(string, sizeof string, "id=%d&ip=%s", ACCOUNT_INFO[playerid][ac_ID], PLAYER_TEMP[playerid][pt_IP]);
 						HTTP(playerid, HTTP_POST, SECURE_LOGIN_REQUEST_URL, string, "OnSecureLoginRequestCode");
 					}
 				}
 				else Kick(playerid);
 			}
-			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT ip FROM player_secure_login WHERE ip = '%e' AND id_player = %d;", PLAYER_TEMP[playerid][pt_IP], PI[playerid][pi_ID]);
+			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT ip FROM player_secure_login WHERE ip = '%e' AND id_player = %d;", PLAYER_TEMP[playerid][pt_IP], ACCOUNT_INFO[playerid][ac_ID]);
 			MySQL_TQueryInline(srp_db, using inline OnSecureLoginCheck, QUERY_BUFFER);
 			return 1;
 		}
@@ -37855,22 +37808,22 @@ LoginPlayer(playerid) {
 	LoadPlayerWorks(playerid);
 	LoadPlayerCrewInfo(playerid);
 
-	SetPlayerScore(playerid, PI[playerid][pi_LEVEL]);
+	SetPlayerScore(playerid, ACCOUNT_INFO[playerid][ac_LEVEL]);
 	PLAYER_TEMP[playerid][pt_DOUBT_CHANNEL_TIME] = gettime();
 	ResetPlayerWeapons(playerid);
 	ResetPlayerMoney(playerid);
-	GivePlayerMoney(playerid, PI[playerid][pi_CASH]);
-	SetPlayerFightingStyle(playerid, PI[playerid][pi_FIGHT_STYLE]);
-	SetPlayerHealthEx(playerid, PI[playerid][pi_HEALTH]);
-	SetPlayerArmourEx(playerid, PI[playerid][pi_ARMOUR]);
+	GivePlayerMoney(playerid, PI[playerid][ac_CASH]);
+	SetPlayerFightingStyle(playerid, PI[playerid][ac_FIGHT_STYLE]);
+	SetPlayerHealthEx(playerid, PI[playerid][ac_HEALTH]);
+	SetPlayerArmourEx(playerid, PI[playerid][ac_ARMOUR]);
 	SetPlayerVirtualWorld(playerid, 0);
 	SetPlayerNormalColor(playerid);
 	StopAudioStreamForPlayer(playerid);
-	SetSpawnInfo(playerid, NO_TEAM, PI[playerid][pi_SKIN], PI[playerid][pi_POS_X], PI[playerid][pi_POS_Y], PI[playerid][pi_POS_Z], PI[playerid][pi_ANGLE], 0, 0, 0, 0, 0, 0);
-	SetPlayerInterior(playerid, PI[playerid][pi_INTERIOR]);
+	SetSpawnInfo(playerid, NO_TEAM, PI[playerid][ac_SKIN], PI[playerid][ac_POS_X], PI[playerid][ac_POS_Y], PI[playerid][ac_POS_Z], PI[playerid][ac_ANGLE], 0, 0, 0, 0, 0, 0);
+	SetPlayerInterior(playerid, PI[playerid][ac_INTERIOR]);
 	
 	PLAYER_TEMP[playerid][pt_BAD_LOGIN_ATTEMP] = 0;
-	SendClientMessageEx(playerid, 0xB09CA9FF, "> Bienvenido de vuelta, %s. Tu última conexión fue el %s.", PLAYER_TEMP[playerid][pt_RP_NAME], PI[playerid][pi_LAST_CONNECTION]);
+	SendClientMessageEx(playerid, 0xB09CA9FF, "> Bienvenido de vuelta, %s. Tu última conexión fue el %s.", PLAYER_TEMP[playerid][pt_RP_NAME], ACCOUNT_INFO[playerid][ac_LAST_CONNECTION]);
 
     TogglePlayerSpectatingEx(playerid, false);
 	TogglePlayerControllableEx(playerid, false);
@@ -37881,115 +37834,115 @@ UpdatePlayerWorldInfo(playerid)
 	if(PLAYER_TEMP[playerid][pt_GAME_STATE] == GAME_STATE_DEAD || PLAYER_TEMP[playerid][pt_GAME_STATE] == GAME_STATE_NORMAL)
 	{
 		//health armour
-		GetPlayerHealth(playerid, PI[playerid][pi_HEALTH]);
-		GetPlayerArmour(playerid, PI[playerid][pi_ARMOUR]);
-		if(PI[playerid][pi_HEALTH] <= 0.0) PI[playerid][pi_HEALTH] = 1.0;
-		if(PI[playerid][pi_HEALTH] > 100.0) PI[playerid][pi_HEALTH] = 100.0;
-		if(PI[playerid][pi_ARMOUR] > 100.0) PI[playerid][pi_ARMOUR] = 100.0;
+		GetPlayerHealth(playerid, PI[playerid][ac_HEALTH]);
+		GetPlayerArmour(playerid, PI[playerid][ac_ARMOUR]);
+		if(PI[playerid][ac_HEALTH] <= 0.0) PI[playerid][ac_HEALTH] = 1.0;
+		if(PI[playerid][ac_HEALTH] > 100.0) PI[playerid][ac_HEALTH] = 100.0;
+		if(PI[playerid][ac_ARMOUR] > 100.0) PI[playerid][ac_ARMOUR] = 100.0;
 
 		//world
-		switch(PI[playerid][pi_STATE])
+		switch(ACCOUNT_INFO[playerid][ac_STATE])
 		{
 			case ROLEPLAY_STATE_INTERIOR:
 			{
-				new index = GetEnterExitIndexById(PI[playerid][pi_LOCAL_INTERIOR]);
+				new index = GetEnterExitIndexById(PI[playerid][ac_LOCAL_INTERIOR]);
 				if(index == -1)
 				{
-					PI[playerid][pi_STATE] = ROLEPLAY_STATE_NORMAL;
-					PI[playerid][pi_LOCAL_INTERIOR] = 0;
-					PI[playerid][pi_POS_X] = New_User_Pos[0];
-					PI[playerid][pi_POS_Y] = New_User_Pos[1];
-					PI[playerid][pi_POS_Z] = New_User_Pos[2];
-					PI[playerid][pi_ANGLE] = New_User_Pos[3];
-					PI[playerid][pi_INTERIOR] = 0;
+					ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_NORMAL;
+					PI[playerid][ac_LOCAL_INTERIOR] = 0;
+					PI[playerid][ac_POS_X] = New_User_Pos[0];
+					PI[playerid][ac_POS_Y] = New_User_Pos[1];
+					PI[playerid][ac_POS_Z] = New_User_Pos[2];
+					PI[playerid][ac_ANGLE] = New_User_Pos[3];
+					PI[playerid][ac_INTERIOR] = 0;
 				}
 				else
 				{
-					PI[playerid][pi_STATE] = ROLEPLAY_STATE_NORMAL;
-					PI[playerid][pi_LOCAL_INTERIOR] = 0;
-					PI[playerid][pi_POS_X] = ENTER_EXIT[index][ee_EXT_X];
-					PI[playerid][pi_POS_Y] = ENTER_EXIT[index][ee_EXT_Y];
-					PI[playerid][pi_POS_Z] = ENTER_EXIT[index][ee_EXT_Z];
-					PI[playerid][pi_ANGLE] = ENTER_EXIT[index][ee_EXT_ANGLE];
-					PI[playerid][pi_INTERIOR] = ENTER_EXIT[index][ee_EXT_INTERIOR];
+					ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_NORMAL;
+					PI[playerid][ac_LOCAL_INTERIOR] = 0;
+					PI[playerid][ac_POS_X] = ENTER_EXIT[index][ee_EXT_X];
+					PI[playerid][ac_POS_Y] = ENTER_EXIT[index][ee_EXT_Y];
+					PI[playerid][ac_POS_Z] = ENTER_EXIT[index][ee_EXT_Z];
+					PI[playerid][ac_ANGLE] = ENTER_EXIT[index][ee_EXT_ANGLE];
+					PI[playerid][ac_INTERIOR] = ENTER_EXIT[index][ee_EXT_INTERIOR];
 				}
 			}
 			case ROLEPLAY_STATE_OWN_PROPERTY:
 			{
-				new index = GetPropertyIndexByID(PI[playerid][pi_LOCAL_INTERIOR]);
+				new index = GetPropertyIndexByID(PI[playerid][ac_LOCAL_INTERIOR]);
 				if(index == -1)
 				{
-					PI[playerid][pi_STATE] = ROLEPLAY_STATE_NORMAL;
-					PI[playerid][pi_LOCAL_INTERIOR] = 0;
-					PI[playerid][pi_POS_X] = New_User_Pos[0];
-					PI[playerid][pi_POS_Y] = New_User_Pos[1];
-					PI[playerid][pi_POS_Z] = New_User_Pos[2];
-					PI[playerid][pi_ANGLE] = New_User_Pos[3];
-					PI[playerid][pi_INTERIOR] = 0;
+					ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_NORMAL;
+					PI[playerid][ac_LOCAL_INTERIOR] = 0;
+					PI[playerid][ac_POS_X] = New_User_Pos[0];
+					PI[playerid][ac_POS_Y] = New_User_Pos[1];
+					PI[playerid][ac_POS_Z] = New_User_Pos[2];
+					PI[playerid][ac_ANGLE] = New_User_Pos[3];
+					PI[playerid][ac_INTERIOR] = 0;
 				}
 				else
 				{
-					if(PROPERTY_INFO[index][property_OWNER_ID] == PI[playerid][pi_ID])
+					if(PROPERTY_INFO[index][property_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
 					{
-						PI[playerid][pi_POS_X] = PROPERTY_INTERIORS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_INT_X];
-						PI[playerid][pi_POS_Y] = PROPERTY_INTERIORS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_INT_Y];
+						PI[playerid][ac_POS_X] = PROPERTY_INTERIORS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_INT_X];
+						PI[playerid][ac_POS_Y] = PROPERTY_INTERIORS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_INT_Y];
 
 						new Float:z_pos = PROPERTY_INTERIORS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_INT_Z];
 						if(PROPERTY_INFO[index][property_DIS_DEFAULT_INTERIOR]) z_pos += PROPERTY_EMPTY_INTERIOR_Z_OFFSET;
-						PI[playerid][pi_POS_Z] = z_pos;
+						PI[playerid][ac_POS_Z] = z_pos;
 
-						PI[playerid][pi_ANGLE] = PROPERTY_INTERIORS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_INT_ANGLE];
-						PI[playerid][pi_INTERIOR] = PROPERTY_INTERIORS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_INT_INTERIOR];
+						PI[playerid][ac_ANGLE] = PROPERTY_INTERIORS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_INT_ANGLE];
+						PI[playerid][ac_INTERIOR] = PROPERTY_INTERIORS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_INT_INTERIOR];
 					}
 					else
 					{
-						PI[playerid][pi_STATE] = ROLEPLAY_STATE_NORMAL;
-						PI[playerid][pi_LOCAL_INTERIOR] = 0;
-						PI[playerid][pi_POS_X] = PROPERTY_INFO[index][property_EXT_X];
-						PI[playerid][pi_POS_Y] = PROPERTY_INFO[index][property_EXT_Y];
-						PI[playerid][pi_POS_Z] = PROPERTY_INFO[index][property_EXT_Z];
-						PI[playerid][pi_ANGLE] = PROPERTY_INFO[index][property_EXT_ANGLE];
-						PI[playerid][pi_INTERIOR] = PROPERTY_INFO[index][property_EXT_INTERIOR];
+						ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_NORMAL;
+						PI[playerid][ac_LOCAL_INTERIOR] = 0;
+						PI[playerid][ac_POS_X] = PROPERTY_INFO[index][property_EXT_X];
+						PI[playerid][ac_POS_Y] = PROPERTY_INFO[index][property_EXT_Y];
+						PI[playerid][ac_POS_Z] = PROPERTY_INFO[index][property_EXT_Z];
+						PI[playerid][ac_ANGLE] = PROPERTY_INFO[index][property_EXT_ANGLE];
+						PI[playerid][ac_INTERIOR] = PROPERTY_INFO[index][property_EXT_INTERIOR];
 					}
 				}
 			}
 			case ROLEPLAY_STATE_GUEST_PROPERTY:
 			{
-				new index = GetPropertyIndexByID(PI[playerid][pi_LOCAL_INTERIOR]);
+				new index = GetPropertyIndexByID(PI[playerid][ac_LOCAL_INTERIOR]);
 				if(index == -1)
 				{
-					PI[playerid][pi_STATE] = ROLEPLAY_STATE_NORMAL;
-					PI[playerid][pi_LOCAL_INTERIOR] = 0;
-					PI[playerid][pi_POS_X] = New_User_Pos[0];
-					PI[playerid][pi_POS_Y] = New_User_Pos[1];
-					PI[playerid][pi_POS_Z] = New_User_Pos[2];
-					PI[playerid][pi_ANGLE] = New_User_Pos[3];
-					PI[playerid][pi_INTERIOR] = 0;
+					ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_NORMAL;
+					PI[playerid][ac_LOCAL_INTERIOR] = 0;
+					PI[playerid][ac_POS_X] = New_User_Pos[0];
+					PI[playerid][ac_POS_Y] = New_User_Pos[1];
+					PI[playerid][ac_POS_Z] = New_User_Pos[2];
+					PI[playerid][ac_ANGLE] = New_User_Pos[3];
+					PI[playerid][ac_INTERIOR] = 0;
 				}
 				else
 				{
-					PI[playerid][pi_STATE] = ROLEPLAY_STATE_NORMAL;
-					PI[playerid][pi_LOCAL_INTERIOR] = 0;
-					PI[playerid][pi_POS_X] = PROPERTY_INFO[index][property_EXT_X];
-					PI[playerid][pi_POS_Y] = PROPERTY_INFO[index][property_EXT_Y];
-					PI[playerid][pi_POS_Z] = PROPERTY_INFO[index][property_EXT_Z];
-					PI[playerid][pi_ANGLE] = PROPERTY_INFO[index][property_EXT_ANGLE];
-					PI[playerid][pi_INTERIOR] = PROPERTY_INFO[index][property_EXT_INTERIOR];
+					ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_NORMAL;
+					PI[playerid][ac_LOCAL_INTERIOR] = 0;
+					PI[playerid][ac_POS_X] = PROPERTY_INFO[index][property_EXT_X];
+					PI[playerid][ac_POS_Y] = PROPERTY_INFO[index][property_EXT_Y];
+					PI[playerid][ac_POS_Z] = PROPERTY_INFO[index][property_EXT_Z];
+					PI[playerid][ac_ANGLE] = PROPERTY_INFO[index][property_EXT_ANGLE];
+					PI[playerid][ac_INTERIOR] = PROPERTY_INFO[index][property_EXT_INTERIOR];
 				}
 			}
 			case ROLEPLAY_STATE_JAIL:
 			{
-				PI[playerid][pi_POS_X] = JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID] ][jail_X];
-				PI[playerid][pi_POS_Y] = JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID] ][jail_Y];
-				PI[playerid][pi_POS_Z] = JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID] ][jail_Z];
-				PI[playerid][pi_ANGLE] = JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID] ][jail_ANGLE];
-				PI[playerid][pi_INTERIOR] = JAIL_POSITIONS[ PI[playerid][pi_POLICE_JAIL_ID]  ][jail_INTERIOR];
+				PI[playerid][ac_POS_X] = JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID] ][jail_X];
+				PI[playerid][ac_POS_Y] = JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID] ][jail_Y];
+				PI[playerid][ac_POS_Z] = JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID] ][jail_Z];
+				PI[playerid][ac_ANGLE] = JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID] ][jail_ANGLE];
+				PI[playerid][ac_INTERIOR] = JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_INTERIOR];
 			}
 			default:
 			{
-				GetPlayerPos(playerid, PI[playerid][pi_POS_X], PI[playerid][pi_POS_Y], PI[playerid][pi_POS_Z]);
-				GetPlayerFacingAngle(playerid, PI[playerid][pi_ANGLE]);
-				PI[playerid][pi_INTERIOR] = GetPlayerInterior(playerid);
+				GetPlayerPos(playerid, PI[playerid][ac_POS_X], PI[playerid][ac_POS_Y], PI[playerid][ac_POS_Z]);
+				GetPlayerFacingAngle(playerid, PI[playerid][ac_ANGLE]);
+				PI[playerid][ac_INTERIOR] = GetPlayerInterior(playerid);
 			}
 		}
 		return 1;
@@ -37999,15 +37952,15 @@ UpdatePlayerWorldInfo(playerid)
 
 SavePlayerData(playerid)
 {
-	if(PI[playerid][pi_ID])
+	if(ACCOUNT_INFO[playerid][ac_ID])
 	{
 		new tmp_crew[24], tmp_vip_expire_date[24];
 		
 		tmp_crew = "NULL";
-		if(PI[playerid][pi_CREW]) format(tmp_crew, sizeof tmp_crew, "%d", PI[playerid][pi_CREW]);
+		if(PI[playerid][ac_CREW]) format(tmp_crew, sizeof tmp_crew, "%d", PI[playerid][ac_CREW]);
 
 		tmp_vip_expire_date = "'0000-00-00 00:00:00'";
-		if(strlen(PI[playerid][pi_VIP_EXPIRE_DATE]) > 3) format(tmp_vip_expire_date, sizeof tmp_vip_expire_date, "'%s'", PI[playerid][pi_VIP_EXPIRE_DATE]);
+		if(strlen(ACCOUNT_INFO[playerid][ac_VIP_EXPIRE_DATE]) > 3) format(tmp_vip_expire_date, sizeof tmp_vip_expire_date, "'%s'", ACCOUNT_INFO[playerid][ac_VIP_EXPIRE_DATE]);
 
 		mysql_format
 		(
@@ -38087,19 +38040,78 @@ SavePlayerData(playerid)
 					medical_kits = %d \
 				WHERE id = %d;\
 			",
-				PI[playerid][pi_NAME], PI[playerid][pi_IP], PI[playerid][pi_EMAIL], PI[playerid][pi_SALT], PI[playerid][pi_PASS], PI[playerid][pi_REG_DATE], PI[playerid][pi_LAST_CONNECTION],
-				PI[playerid][pi_LAST_CONNECTION_TIMESTAMP], PI[playerid][pi_TIME_PLAYING], PI[playerid][pi_LEVEL], PI[playerid][pi_REP], PI[playerid][pi_CONNECTED], PI[playerid][pi_PLAYERID],
-				PI[playerid][pi_DOUBT_CHANNEL], PI[playerid][pi_TIME_FOR_REP], PI[playerid][pi_ADMIN_LEVEL], PI[playerid][pi_PAYDAY_REP], PI[playerid][pi_VIP], tmp_vip_expire_date,
-				PI[playerid][pi_SKIN], PI[playerid][pi_CASH], PI[playerid][pi_POS_X], PI[playerid][pi_POS_Y], PI[playerid][pi_POS_Z], PI[playerid][pi_ANGLE],
-				PI[playerid][pi_STATE], PI[playerid][pi_INTERIOR], PI[playerid][pi_LOCAL_INTERIOR], PI[playerid][pi_FIGHT_STYLE], PI[playerid][pi_HEALTH], PI[playerid][pi_ARMOUR], PI[playerid][pi_GENDER],
-				PI[playerid][pi_HUNGRY], PI[playerid][pi_THIRST], PI[playerid][pi_BLACK_MARKET_LEVEL], PI[playerid][pi_WANTED_LEVEL], PI[playerid][pi_POLICE_JAIL_TIME], PI[playerid][pi_POLICE_DUTY],
-				PI[playerid][pi_POLICE_JAIL_ID], PI[playerid][pi_DRIVE_LICENSE_POINTS], PI[playerid][pi_BANK_ACCOUNT], PI[playerid][pi_BANK_MONEY], PI[playerid][pi_PHONE_NUMBER],
-				PI[playerid][pi_PHONE_STATE], PI[playerid][pi_PHONE_VISIBLE_NUMBER], PI[playerid][pi_GPS],PI[playerid][pi_Maso], PI[playerid][pi_MP3], PI[playerid][pi_PHONE_RESOLVER], PI[playerid][pi_SPEAKERS],
-				PI[playerid][pi_MECHANIC_PIECES], PI[playerid][pi_FUEL_DRUM], PI[playerid][pi_SEED_MEDICINE], PI[playerid][pi_SEED_CANNABIS], PI[playerid][pi_SEED_CRACK], PI[playerid][pi_MEDICINE],
-				PI[playerid][pi_CANNABIS], PI[playerid][pi_CRACK], PI[playerid][pi_CONFIG_SOUNDS], PI[playerid][pi_CONFIG_AUDIO], PI[playerid][pi_CONFIG_TIME], PI[playerid][pi_CONFIG_HUD],
-				PI[playerid][pi_CONFIG_ADMIN], PI[playerid][pi_CONFIG_SECURE_LOGIN], PI[playerid][pi_MUTE], PI[playerid][pi_PLACA_PD], PI[playerid][pi_CAN_BUY_BM], tmp_crew, PI[playerid][pi_CREW_RANK],
-				PI[playerid][pi_MECHANIC_KITS], PI[playerid][pi_MEDICAL_KITS],
-				PI[playerid][pi_ID]
+				ACCOUNT_INFO[playerid][ac_NAME],
+				ACCOUNT_INFO[playerid][ac_IP],
+				ACCOUNT_INFO[playerid][ac_EMAIL],
+				ACCOUNT_INFO[playerid][ac_SALT],
+				ACCOUNT_INFO[playerid][ac_PASS],
+				ACCOUNT_INFO[playerid][ac_REG_DATE],
+				ACCOUNT_INFO[playerid][ac_LAST_CONNECTION],
+				ACCOUNT_INFO[playerid][ac_LAST_CONNECTION_TIMESTAMP],
+				ACCOUNT_INFO[playerid][ac_TIME_PLAYING],
+				ACCOUNT_INFO[playerid][ac_LEVEL],
+				ACCOUNT_INFO[playerid][ac_REP],
+				PI[playerid][ac_CONNECTED],
+				PI[playerid][ac_PLAYERID],
+				ACCOUNT_INFO[playerid][ac_DOUBT_CHANNEL],
+				ACCOUNT_INFO[playerid][ac_TIME_FOR_REP],
+				ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL],
+				ACCOUNT_INFO[playerid][ac_PAYDAY_REP],
+				ACCOUNT_INFO[playerid][ac_VIP],
+				tmp_vip_expire_date,
+				PI[playerid][ac_SKIN],
+				PI[playerid][ac_CASH],
+				PI[playerid][ac_POS_X],
+				PI[playerid][ac_POS_Y],
+				PI[playerid][ac_POS_Z],
+				PI[playerid][ac_ANGLE],
+				ACCOUNT_INFO[playerid][ac_STATE],
+				PI[playerid][ac_INTERIOR],
+				PI[playerid][ac_LOCAL_INTERIOR],
+				PI[playerid][ac_FIGHT_STYLE],
+				PI[playerid][ac_HEALTH],
+				PI[playerid][ac_ARMOUR],
+				PI[playerid][ac_GENDER],
+				PI[playerid][ac_HUNGRY],
+				PI[playerid][ac_THIRST],
+				PI[playerid][ac_BLACK_MARKET_LEVEL],
+				PI[playerid][ac_WANTED_LEVEL],
+				PI[playerid][ac_POLICE_JAIL_TIME],
+				PI[playerid][ac_POLICE_DUTY],
+				PI[playerid][ac_POLICE_JAIL_ID],
+				PI[playerid][ac_DRIVE_LICENSE_POINTS],
+				PI[playerid][ac_BANK_ACCOUNT],
+				PI[playerid][ac_BANK_MONEY],
+				PI[playerid][ac_PHONE_NUMBER],
+				PI[playerid][ac_PHONE_STATE],
+				PI[playerid][ac_PHONE_VISIBLE_NUMBER],
+				PI[playerid][ac_GPS],
+				PI[playerid][ac_Maso],
+				PI[playerid][ac_MP3],
+				PI[playerid][ac_PHONE_RESOLVER],
+				PI[playerid][ac_SPEAKERS],
+				PI[playerid][ac_MECHANIC_PIECES],
+				PI[playerid][ac_FUEL_DRUM],
+				PI[playerid][ac_SEED_MEDICINE],
+				PI[playerid][ac_SEED_CANNABIS],
+				PI[playerid][ac_SEED_CRACK],
+				PI[playerid][ac_MEDICINE],
+				PI[playerid][ac_CANNABIS],
+				PI[playerid][ac_CRACK],
+				PI[playerid][ac_CONFIG_SOUNDS],
+				PI[playerid][ac_CONFIG_AUDIO],
+				PI[playerid][ac_CONFIG_TIME],
+				PI[playerid][ac_CONFIG_HUD],
+				PI[playerid][ac_CONFIG_ADMIN],
+				PI[playerid][ac_CONFIG_SECURE_LOGIN],
+				PI[playerid][ac_MUTE],
+				PI[playerid][ac_PLACA_PD],
+				PI[playerid][ac_CAN_BUY_BM],
+				tmp_crew,
+				PI[playerid][ac_CREW_RANK],
+				PI[playerid][ac_MECHANIC_KITS],
+				PI[playerid][ac_MEDICAL_KITS],
+				ACCOUNT_INFO[playerid][ac_ID]
 		);
 		mysql_tquery(srp_db, QUERY_BUFFER);
 		return 1;
@@ -38110,13 +38122,13 @@ SavePlayerData(playerid)
 CountPlayerVehicles(playerid)
 {
 	new count;
-	if(PI[playerid][pi_ID])
+	if(ACCOUNT_INFO[playerid][ac_ID])
 	{
 		for(new i = 0; i < MAX_VEHICLES; i ++)
 		{
 			if(PLAYER_VEHICLES[i][player_vehicle_VALID])
 			{
-				if(PLAYER_VEHICLES[i][player_vehicle_OWNER_ID] == PI[playerid][pi_ID])
+				if(PLAYER_VEHICLES[i][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
 				{
 					count ++;
 					if(count >= MAX_SU_VEHICLES)
@@ -38133,13 +38145,13 @@ CountPlayerVehicles(playerid)
 CountPlayerProperties(playerid)
 {
 	new count;
-	if(PI[playerid][pi_ID])
+	if(ACCOUNT_INFO[playerid][ac_ID])
 	{
 		for(new i = 0; i < MAX_PROPERTIES; i ++)
 		{
 			if(PROPERTY_INFO[i][property_VALID])
 			{
-				if(PROPERTY_INFO[i][property_SOLD] && PROPERTY_INFO[i][property_OWNER_ID] == PI[playerid][pi_ID])
+				if(PROPERTY_INFO[i][property_SOLD] && PROPERTY_INFO[i][property_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
 				{
 					count ++;
 					if(count >= MAX_SU_PROPERTIES)
@@ -38155,12 +38167,12 @@ CountPlayerProperties(playerid)
 
 SavePlayerWorkLevels(playerid)
 {
-	if(!PI[playerid][pi_ID]) return 0;
+	if(!ACCOUNT_INFO[playerid][ac_ID]) return 0;
 	
 	for(new i = 0; i != sizeof work_info; i ++)
 	{
 		if(!PLAYER_WORKS[playerid][i][pwork_SET] || !i) continue;
-		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pworks SET level = %d WHERE id_player = %d AND id_work = %d;", PLAYER_WORKS[playerid][i][pwork_LEVEL], PI[playerid][pi_ID], i);
+		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pworks SET level = %d WHERE id_player = %d AND id_work = %d;", PLAYER_WORKS[playerid][i][pwork_LEVEL], ACCOUNT_INFO[playerid][ac_ID], i);
 		mysql_tquery(srp_db, QUERY_BUFFER);
 	}
 	return 1;
@@ -38169,7 +38181,7 @@ SavePlayerWorkLevels(playerid)
 #define PlayerTask_Interval_Seconds 10
 ptask PlayerTask[PlayerTask_Interval_Seconds * 1000](playerid)
 {
-	PI[playerid][pi_TIME_PLAYING] += PlayerTask_Interval_Seconds;
+	ACCOUNT_INFO[playerid][ac_TIME_PLAYING] += PlayerTask_Interval_Seconds;
 }
 
 native gpci(playerid, serial[], len);
@@ -38429,31 +38441,31 @@ hook OnPlayerKeyPressFinish(playerid) {
 		{
 			switch(seed_info[ PLAYER_TEMP[playerid][pt_PLANTING_PLANT_SELECTED] ][seed_info_PLANT_TYPE])
 			{
-				case PLANT_TYPE_MEDICINE: PI[playerid][pi_SEED_MEDICINE] += plant_info[ PLAYER_TEMP[playerid][pt_PLANTING_PLANT_SELECTED] ][plant_info_SEEDS];
-				case PLANT_TYPE_CANNABIS: PI[playerid][pi_SEED_CANNABIS] += plant_info[ PLAYER_TEMP[playerid][pt_PLANTING_PLANT_SELECTED] ][plant_info_SEEDS];
-				case PLANT_TYPE_CRACK: PI[playerid][pi_SEED_CRACK] += plant_info[ PLAYER_TEMP[playerid][pt_PLANTING_PLANT_SELECTED] ][plant_info_SEEDS];
+				case PLANT_TYPE_MEDICINE: PI[playerid][ac_SEED_MEDICINE] += plant_info[ PLAYER_TEMP[playerid][pt_PLANTING_PLANT_SELECTED] ][plant_info_SEEDS];
+				case PLANT_TYPE_CANNABIS: PI[playerid][ac_SEED_CANNABIS] += plant_info[ PLAYER_TEMP[playerid][pt_PLANTING_PLANT_SELECTED] ][plant_info_SEEDS];
+				case PLANT_TYPE_CRACK: PI[playerid][ac_SEED_CRACK] += plant_info[ PLAYER_TEMP[playerid][pt_PLANTING_PLANT_SELECTED] ][plant_info_SEEDS];
 			}
 
 			SendNotification(playerid, "No queda espacio para más plantas, te hemos devuelto las semillas. Prueba ms tarde.");
 			return 1;
 		}
 
-		GetPlayerPos(playerid, PI[playerid][pi_POS_X], PI[playerid][pi_POS_Y], PI[playerid][pi_POS_Z]);
-		GetPlayerFacingAngle(playerid, PI[playerid][pi_ANGLE]);
-		PI[playerid][pi_POS_X] += (1.0 * floatsin(-PI[playerid][pi_ANGLE], degrees));
-		PI[playerid][pi_POS_Y] += (1.0 * floatcos(-PI[playerid][pi_ANGLE], degrees));
-		PI[playerid][pi_POS_Z] -= 0.75;
+		GetPlayerPos(playerid, PI[playerid][ac_POS_X], PI[playerid][ac_POS_Y], PI[playerid][ac_POS_Z]);
+		GetPlayerFacingAngle(playerid, PI[playerid][ac_ANGLE]);
+		PI[playerid][ac_POS_X] += (1.0 * floatsin(-PI[playerid][ac_ANGLE], degrees));
+		PI[playerid][ac_POS_Y] += (1.0 * floatcos(-PI[playerid][ac_ANGLE], degrees));
+		PI[playerid][ac_POS_Z] -= 0.75;
 
 		PLANTS[index][plant_VALID] = true;
 		PLANTS[index][plant_GROWING] = true;
 		PLANTS[index][plant_INVISIBLE] = true;
 		PLANTS[index][plant_GROWING_PROGRESS] = frandom(10.0, 8.0, 2);
 		PLANTS[index][plant_TYPE] = PLAYER_TEMP[playerid][pt_PLANTING_PLANT_SELECTED];
-		PLANTS[index][plant_PLANTED_BY_ACCOUNT_ID] = PI[playerid][pi_ID];
+		PLANTS[index][plant_PLANTED_BY_ACCOUNT_ID] = ACCOUNT_INFO[playerid][ac_ID];
 		PLANTS[index][plant_IMMUNITY] = -1;
 
 		format(PLANTS[index][plant_PLANTED_BY_NAME], 24, "%s", PLAYER_TEMP[playerid][pt_RP_NAME]);
-		PLANTS[index][plant_OBJECT_ID] = CreateDynamicObject(2244, PI[playerid][pi_POS_X], PI[playerid][pi_POS_Y], PI[playerid][pi_POS_Z], 0.0, 0.0, PI[playerid][pi_ANGLE], 0, 0);
+		PLANTS[index][plant_OBJECT_ID] = CreateDynamicObject(2244, PI[playerid][ac_POS_X], PI[playerid][ac_POS_Y], PI[playerid][ac_POS_Z], 0.0, 0.0, PI[playerid][ac_ANGLE], 0, 0);
 		SetDynamicObjectMaterial(PLANTS[index][plant_OBJECT_ID], 2, 2244, "plants_tabletop", "CJ_PLANT", 0x00FFFFFF);
 
 		new info[3];
@@ -38464,7 +38476,7 @@ hook OnPlayerKeyPressFinish(playerid) {
 		new label_str[256];
 		if(seed_info[ PLANTS[index][plant_TYPE] ][seed_info_TYPE] == TYPE_LEGAL) format(label_str, sizeof label_str, "{FF7373}Planta (%s)\n{CCCCCC}Agricultor: %s\n\n{FF7373}(%.1f%%)", plant_info[ PLANTS[index][plant_TYPE] ][plant_info_NAME], PLANTS[index][plant_PLANTED_BY_NAME], PLANTS[index][plant_GROWING_PROGRESS]);
 		else format(label_str, sizeof label_str, "{FF7373}Planta (%s)\n{CCCCCC}Agricultor: %s\n\n{FF7373}(%.1f%%)", plant_info[ PLANTS[index][plant_TYPE] ][plant_info_NAME], PLANTS[index][plant_PLANTED_BY_NAME], PLANTS[index][plant_GROWING_PROGRESS]);
-		PLANTS[index][plant_LABEL_ID] = CreateDynamic3DTextLabel(label_str, 0xFFFFFFFF, PI[playerid][pi_POS_X], PI[playerid][pi_POS_Y], PI[playerid][pi_POS_Z] + 0.25, 10.0, .testlos = false, .interiorid = 0, .worldid = 0);
+		PLANTS[index][plant_LABEL_ID] = CreateDynamic3DTextLabel(label_str, 0xFFFFFFFF, PI[playerid][ac_POS_X], PI[playerid][ac_POS_Y], PI[playerid][ac_POS_Z] + 0.25, 10.0, .testlos = false, .interiorid = 0, .worldid = 0);
 
 		KillTimer(PLANTS[index][plant_TIMER]);
 		PLANTS[index][plant_TIMER] = SetTimerEx("GrowPlantUp", 5000, false, "d", index);
@@ -38477,14 +38489,14 @@ hook OnPlayerKeyPressFinish(playerid) {
 	}
 	else if(PLAYER_TEMP[playerid][pt_PLAYER_LUMBERJACK_TREE] != -1) {
 		new tree = PLAYER_TEMP[playerid][pt_PLAYER_LUMBERJACK_TREE];
-		GetPlayerFacingAngle(playerid, PI[playerid][pi_ANGLE]);
-		SetDynamicObjectRot(LUMBER_TREES[ tree ][lumber_tree_OBJECT_ID], LUMBER_TREES[ tree ][lumber_tree_RX], LUMBER_TREES[ tree ][lumber_tree_RY], PI[playerid][pi_ANGLE]);	
-		MoveDynamicObject(LUMBER_TREES[ tree ][lumber_tree_OBJECT_ID], LUMBER_TREES[ tree ][lumber_tree_X], LUMBER_TREES[ tree ][lumber_tree_Y], LUMBER_TREES[ tree ][lumber_tree_Z] + 0.01, 0.0065, -85.0, 0.0, PI[playerid][pi_ANGLE]);
+		GetPlayerFacingAngle(playerid, PI[playerid][ac_ANGLE]);
+		SetDynamicObjectRot(LUMBER_TREES[ tree ][lumber_tree_OBJECT_ID], LUMBER_TREES[ tree ][lumber_tree_RX], LUMBER_TREES[ tree ][lumber_tree_RY], PI[playerid][ac_ANGLE]);	
+		MoveDynamicObject(LUMBER_TREES[ tree ][lumber_tree_OBJECT_ID], LUMBER_TREES[ tree ][lumber_tree_X], LUMBER_TREES[ tree ][lumber_tree_Y], LUMBER_TREES[ tree ][lumber_tree_Z] + 0.01, 0.0065, -85.0, 0.0, PI[playerid][ac_ANGLE]);
 		RemovePlayerAttachedObject(playerid, 9);
 		SetPlayerAttachedObject(playerid, 9, 341, 1, -0.172999, -0.165, -0.053999, 0.0, -7.599999, -9.6);
 		
 		KillTimer(PLAYER_TEMP[playerid][pt_TIMERS][11]);
-		PLAYER_TEMP[playerid][pt_TIMERS][11] = SetTimerEx("ContinueTreeAnimation", 1400, false, "iif", playerid, tree, PI[playerid][pi_ANGLE]);
+		PLAYER_TEMP[playerid][pt_TIMERS][11] = SetTimerEx("ContinueTreeAnimation", 1400, false, "iif", playerid, tree, PI[playerid][ac_ANGLE]);
 		
 		ClearAnimations(playerid);
 		SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
@@ -38568,9 +38580,9 @@ IRPC:RPC_VehicleDestroy(playerid, BitStream:bs)
 			return 0;
 		}
 
-		if(PI[playerid][pi_LEVEL] < 3)
+		if(ACCOUNT_INFO[playerid][ac_LEVEL] < 3)
 		{
-			if( (vehicleid == GetPlayerVehicleID(playerid) && GLOBAL_VEHICLES[vehicleid][gb_vehicle_DRIVER] == playerid) || (PLAYER_VEHICLES[vehicleid][player_vehicle_VALID] && PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == PI[playerid][pi_ID]) )
+			if( (vehicleid == GetPlayerVehicleID(playerid) && GLOBAL_VEHICLES[vehicleid][gb_vehicle_DRIVER] == playerid) || (PLAYER_VEHICLES[vehicleid][player_vehicle_VALID] && PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID]) )
 			{
 				return 1;
 			}
@@ -38618,7 +38630,7 @@ SetPropertyDefaultFurniture(index, bool:toggle) {
 
 		for(new i = 0, j = GetPlayerPoolSize(); i <= j; i++)
 		{
-			if(IsPlayerConnected(i) && (PI[i][pi_STATE] == ROLEPLAY_STATE_OWN_PROPERTY || PI[i][pi_STATE] == ROLEPLAY_STATE_GUEST_PROPERTY) && PI[i][pi_LOCAL_INTERIOR] == PROPERTY_INFO[index][property_ID])
+			if(IsPlayerConnected(i) && (PI[i][ac_STATE] == ROLEPLAY_STATE_OWN_PROPERTY || PI[i][ac_STATE] == ROLEPLAY_STATE_GUEST_PROPERTY) && PI[i][ac_LOCAL_INTERIOR] == PROPERTY_INFO[index][property_ID])
 			{
 				new Float:pos[3], Float:angle;
 				GetPlayerPos(i, pos[0], pos[1], pos[2]);

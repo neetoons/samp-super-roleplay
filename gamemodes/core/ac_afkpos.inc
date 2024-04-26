@@ -41,7 +41,7 @@ forward CheckAFKPos(playerid);
 public CheckAFKPos(playerid) {
     pAFKPosTimer[playerid] = -1;
     if(ac_Info[CHEAT_AFKPOS][ac_Enabled]) {
-        if(PI[playerid][pi_STATE] != ROLEPLAY_STATE_JAIL && GetPlayerDistanceFromPoint(playerid, PAFKLastPositions[playerid][0], PAFKLastPositions[playerid][1], PAFKLastPositions[playerid][2]) <= AFK_POS_DISTANCE) {
+        if(ACCOUNT_INFO[playerid][ac_STATE] != ROLEPLAY_STATE_JAIL && GetPlayerDistanceFromPoint(playerid, PAFKLastPositions[playerid][0], PAFKLastPositions[playerid][1], PAFKLastPositions[playerid][2]) <= AFK_POS_DISTANCE) {
             new now = gettime();
             if(now > PLAYER_AC_INFO[playerid][CHEAT_AFKPOS][p_ac_info_IMMUNITY])
             {
