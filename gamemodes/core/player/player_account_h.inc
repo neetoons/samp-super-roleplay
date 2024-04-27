@@ -1,3 +1,8 @@
+#if defined player_account_included 
+	#endinput
+#endif
+#define player_account_included
+
 enum account_Enum
 {
 	ac_ID,
@@ -24,7 +29,6 @@ new ACCOUNT_INFO[MAX_PLAYERS][account_Enum]; // AI (AccountInfo)
 
 enum enum_PI
 {
-	ac_REG_DATE[24],
 	ac_LEVEL,
 	ac_REP,
 	ac_CONNECTED,
