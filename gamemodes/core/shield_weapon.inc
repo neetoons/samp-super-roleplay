@@ -79,7 +79,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
     if ((newkeys & KEY_WALK) && !(oldkeys & KEY_WALK)) {
         if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT && !pInShield[playerid] && HasPlayerShield(playerid)) {
-            if(PI[playerid][pi_STATE] != ROLEPLAY_STATE_JAIL && PI[playerid][pi_STATE] != ROLEPLAY_STATE_CRACK) {
+            if(ACCOUNT_INFO[playerid][ac_STATE] != ROLEPLAY_STATE_JAIL && ACCOUNT_INFO[playerid][ac_STATE] != ROLEPLAY_STATE_CRACK) {
                 SetPlayerShield(playerid);
             }
         }

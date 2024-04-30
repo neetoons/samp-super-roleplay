@@ -1,7 +1,7 @@
 #include <YSI_Coding\y_hooks>
 
 hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ) {
-    if(PI[playerid][pi_CREW]) {
+    if(PI[playerid][ac_CREW]) {
         new now = gettime(), crewIndex = PLAYER_TEMP[playerid][pt_CREW_INDEX];
         new enterExitIndex = PLAYER_TEMP[playerid][pt_INTERIOR_INDEX];
         if(enterExitIndex != -1 && ENTER_EXIT[enterExitIndex][ee_ROBBABLE]) {
@@ -46,7 +46,7 @@ hook OnPlayerEnterInterior(playerid, index) {
             PlayerPlaySoundEx(playerid, 3401, x, y, z);
         }
         
-        if(PI[playerid][pi_CREW] && ENTER_EXIT[index][ee_LAST_CREW_INDEX_ROBBERY] == PLAYER_TEMP[playerid][pt_CREW_INDEX]) {
+        if(PI[playerid][ac_CREW] && ENTER_EXIT[index][ee_LAST_CREW_INDEX_ROBBERY] == PLAYER_TEMP[playerid][pt_CREW_INDEX]) {
             TextDrawShowForPlayer(playerid, Textdraws[textdraw_TERRITORY_BOX]);
             TextDrawShowForPlayer(playerid, ENTER_EXIT[index][ee_TEXTDRAW]);
         }
@@ -56,7 +56,7 @@ hook OnPlayerEnterInterior(playerid, index) {
 hook OnPlayerExitInterior(playerid, index) {
     if(ENTER_EXIT[index][ee_TIMER] != -1) {
         PlayerPlaySoundEx(playerid, 0, 0.0, 0.0, 0.0);
-        if(PI[playerid][pi_CREW]) {
+        if(PI[playerid][ac_CREW]) {
             TextDrawHideForPlayer(playerid, Textdraws[textdraw_TERRITORY_BOX]);
             TextDrawHideForPlayer(playerid, ENTER_EXIT[index][ee_TEXTDRAW]);
         }
@@ -70,11 +70,11 @@ CountCrewPlayersInShop(crew_index, enter_exit_index)
 	{
 		if(IsPlayerConnected(i))
 		{
-			if(PI[i][pi_CREW])
+			if(PI[i][ac_CREW])
 			{
 				if(PLAYER_TEMP[i][pt_CREW_INDEX] == crew_index)
 				{
-					if(PI[i][pi_STATE] == ROLEPLAY_STATE_INTERIOR && PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_NORMAL)
+					if(PI[i][ac_STATE] == ROLEPLAY_STATE_INTERIOR && PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_NORMAL)
 					{
 						if(PLAYER_TEMP[i][pt_INTERIOR_INDEX] == enter_exit_index)
 						{
@@ -111,7 +111,7 @@ StartShopAttack(crew_index, enter_exit_index)
 	{
 		if(IsPlayerConnected(i))
 		{
-			if(PI[i][pi_CREW] && PLAYER_TEMP[i][pt_CREW_INDEX] == crew_index && PLAYER_TEMP[i][pt_INTERIOR_INDEX] == enter_exit_index)
+			if(PI[i][ac_CREW] && PLAYER_TEMP[i][pt_CREW_INDEX] == crew_index && PLAYER_TEMP[i][pt_INTERIOR_INDEX] == enter_exit_index)
 			{
                 TextDrawShowForPlayer(i, Textdraws[textdraw_TERRITORY_BOX]);
                 TextDrawShowForPlayer(i, ENTER_EXIT[enter_exit_index][ee_TEXTDRAW]);
@@ -168,11 +168,11 @@ public UpdateShopAttack(crew_index, enter_exit_index) {
                 if(PLAYER_TEMP[i][pt_INTERIOR_INDEX] == enter_exit_index)
                 {
                     PlayerPlaySoundEx(i, 3401, x, y, z);
-                    if(PI[i][pi_CREW] && PLAYER_TEMP[i][pt_CREW_INDEX] == crew_index) {
+                    if(PI[i][ac_CREW] && PLAYER_TEMP[i][pt_CREW_INDEX] == crew_index) {
                         GivePlayerCash(i, prize, true, false);
 						SendClientMessage(i, -1, prize_message);
 
-                        if(PI[i][pi_WANTED_LEVEL] < 3)
+                        if(PI[i][ac_WANTED_LEVEL] < 3)
 						SetPlayerWantedLevelEx(i, 3);
                     }
                 }

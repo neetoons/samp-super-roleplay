@@ -236,7 +236,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                     }
                     case 2: { //clonar
                         new property_index = PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED];
-                        new limit = PI[playerid][pi_VIP] ? MAX_SU_PROPERTY_OBJECTS : MAX_NU_PROPERTY_OBJECTS;
+                        new limit = ACCOUNT_INFO[playerid][ac_VIP] ? MAX_SU_PROPERTY_OBJECTS : MAX_NU_PROPERTY_OBJECTS;
                         if(CountPropertyObjects(PROPERTY_INFO[property_index][property_ID]) >= limit) SendNotification(playerid, "No puedes añadir más muebles a esta propiedad.");
                         else {
                             if(GivePlayerCash(playerid, -GetPObjectModelPrice(pPObjectCurrentModelID[playerid]), true, true)) {
@@ -693,7 +693,7 @@ hook OnPlayerSelectDynObject(playerid, STREAMER_TAG_OBJECT objectid, modelid, Fl
 	Streamer_GetArrayData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_EXTRA_ID, info);
 
     if(info[0] == OBJECT_TYPE_FURNITURE) {
-        if(PI[playerid][pi_STATE] == ROLEPLAY_STATE_OWN_PROPERTY && PI[playerid][pi_LOCAL_INTERIOR] == info[2]) {
+        if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_OWN_PROPERTY && PI[playerid][ac_LOCAL_INTERIOR] == info[2]) {
             CancelEdit(playerid);
             pPObjectCurrentModelID[playerid] = modelid;
             pPObjectCurrentObjectID[playerid] = objectid;

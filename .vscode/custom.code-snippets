@@ -13,22 +13,22 @@
         "prefix": "sinclude",
         "body": [
             "#if defined $1_included ",
-            "	#endinput",
+            "\t#endinput",
             "#endif",
             "#define $1_included"
-        ]
+        ],
         "description":"Secure the include is not reinclude"
     },
     "Create entry": {
         "prefix": "entry",
         "body": [
             "#if defined $1_included ",
-            "	#endinput",
+            "\t#endinput",
             "#endif",
             "#define $1_included",
             "\n",
             "#include \"_core/$2/$1_header\"",
-            "#include \"_core/$2/$1_functions\""
+            "#include \"_core/$2/$1_functions\"",
             "#include \"_core/$2/$1_commands\"",
             "#include \"_core/$2/$1_impl\"",
         ],

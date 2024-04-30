@@ -331,8 +331,8 @@ hook OnPlayerObtainWork(playerid, work) {
 
 hook OnPlayerSpawn(playerid) {
     if(pWorkTutorialInfo[playerid][wti_APPLY]) {
-        PI[playerid][pi_STATE] = pWorkTutorialInfo[playerid][wti_RP_STATE];
-        PI[playerid][pi_LOCAL_INTERIOR] = pWorkTutorialInfo[playerid][wti_LOCAL_INTERIOR];
+        ACCOUNT_INFO[playerid][ac_STATE] = pWorkTutorialInfo[playerid][wti_RP_STATE];
+        PI[playerid][ac_LOCAL_INTERIOR] = pWorkTutorialInfo[playerid][wti_LOCAL_INTERIOR];
         PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] = pWorkTutorialInfo[playerid][wti_INTERIOR_INDEX];
         SetPlayerPosEx(playerid, pWorkTutorialInfo[playerid][wti_X], pWorkTutorialInfo[playerid][wti_Y], pWorkTutorialInfo[playerid][wti_Z], pWorkTutorialInfo[playerid][wti_ANGLE], pWorkTutorialInfo[playerid][wti_INTERIOR], pWorkTutorialInfo[playerid][wti_WORLD], 1);
 
@@ -355,7 +355,7 @@ DestroyPlayerWorkTutorial(playerid) {
     pWorkTutorial[playerid] = 0;
     pWorkTutorialStep[playerid] = 0;
 
-    if(PI[playerid][pi_ID] > 0 && pInWorkTutorial[playerid]) {
+    if(ACCOUNT_INFO[playerid][ac_ID] > 0 && pInWorkTutorial[playerid]) {
         TogglePlayerSpectatingEx(playerid, false);
         SetPlayerHud(playerid);
     }
@@ -366,26 +366,26 @@ StartPlayerWorkTutorial(playerid, work) {
     HideNotifications(playerid);
     ClearPlayerChat(playerid);
     
-    GetPlayerHealth(playerid, PI[playerid][pi_HEALTH]);
-	GetPlayerArmour(playerid, PI[playerid][pi_ARMOUR]);
-    PI[playerid][pi_POS_X] = obtain_work_coords[work][obtain_work_X];
-    PI[playerid][pi_POS_Y] = obtain_work_coords[work][obtain_work_Y];
-    PI[playerid][pi_POS_Z] = obtain_work_coords[work][obtain_work_Z];
-    GetPlayerFacingAngle(playerid, PI[playerid][pi_ANGLE]);
-    PI[playerid][pi_INTERIOR] = obtain_work_coords[work][obtain_work_INTERIOR];
+    GetPlayerHealth(playerid, PI[playerid][ac_HEALTH]);
+	GetPlayerArmour(playerid, PI[playerid][ac_ARMOUR]);
+    PI[playerid][ac_POS_X] = obtain_work_coords[work][obtain_work_X];
+    PI[playerid][ac_POS_Y] = obtain_work_coords[work][obtain_work_Y];
+    PI[playerid][ac_POS_Z] = obtain_work_coords[work][obtain_work_Z];
+    GetPlayerFacingAngle(playerid, PI[playerid][ac_ANGLE]);
+    PI[playerid][ac_INTERIOR] = obtain_work_coords[work][obtain_work_INTERIOR];
 
     pWorkTutorialInfo[playerid][wti_APPLY] = true;
-    pWorkTutorialInfo[playerid][wti_RP_STATE] = PI[playerid][pi_STATE];
-    pWorkTutorialInfo[playerid][wti_LOCAL_INTERIOR] = PI[playerid][pi_LOCAL_INTERIOR];
+    pWorkTutorialInfo[playerid][wti_RP_STATE] = ACCOUNT_INFO[playerid][ac_STATE];
+    pWorkTutorialInfo[playerid][wti_LOCAL_INTERIOR] = PI[playerid][ac_LOCAL_INTERIOR];
     pWorkTutorialInfo[playerid][wti_INTERIOR_INDEX] = PLAYER_TEMP[playerid][pt_INTERIOR_INDEX];
     pWorkTutorialInfo[playerid][wti_INTERIOR] = obtain_work_coords[work][obtain_work_INTERIOR];
     pWorkTutorialInfo[playerid][wti_WORLD] = GetPlayerVirtualWorld(playerid);
     pWorkTutorialInfo[playerid][wti_X] = obtain_work_coords[work][obtain_work_X];
     pWorkTutorialInfo[playerid][wti_Y] = obtain_work_coords[work][obtain_work_Y];
     pWorkTutorialInfo[playerid][wti_Z] = obtain_work_coords[work][obtain_work_Z];
-    pWorkTutorialInfo[playerid][wti_ANGLE] = PI[playerid][pi_ANGLE];
+    pWorkTutorialInfo[playerid][wti_ANGLE] = PI[playerid][ac_ANGLE];
 
-    SetSpawnInfo(playerid, NO_TEAM, PI[playerid][pi_SKIN], PI[playerid][pi_POS_X], PI[playerid][pi_POS_Y], PI[playerid][pi_POS_Z], PI[playerid][pi_ANGLE], 0, 0, 0, 0, 0, 0);
+    SetSpawnInfo(playerid, NO_TEAM, PI[playerid][ac_SKIN], PI[playerid][ac_POS_X], PI[playerid][ac_POS_Y], PI[playerid][ac_POS_Z], PI[playerid][ac_ANGLE], 0, 0, 0, 0, 0, 0);
 
     DestroyPlayerWorkTutorial(playerid);
     

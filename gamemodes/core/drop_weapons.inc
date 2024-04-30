@@ -49,13 +49,13 @@ hook OnPlayerDeath(playerid, killerid, reason) {
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
     if(newkeys &  KEY_CTRL_BACK)
 	{
-        if(PI[playerid][pi_STATE] != ROLEPLAY_STATE_CRACK && PI[playerid][pi_STATE] != ROLEPLAY_STATE_JAIL) {
+        if(ACCOUNT_INFO[playerid][ac_STATE] != ROLEPLAY_STATE_CRACK && ACCOUNT_INFO[playerid][ac_STATE] != ROLEPLAY_STATE_JAIL) {
             for(new i = 0; i < list_size(DroppedWeapons); i ++) {
                 new weaponInfo[E_DroppedWeapons];
                 list_get_arr(DroppedWeapons, i, weaponInfo);
 
                 if(GetPlayerInterior(playerid) == weaponInfo[dw_INTERIOR] && GetPlayerVirtualWorld(playerid) == weaponInfo[dw_WORLD] && IsPlayerInRangeOfPoint(playerid, 1.0, weaponInfo[dw_X], weaponInfo[dw_Y], weaponInfo[dw_Z])) {
-                    if(PI[playerid][pi_LEVEL] < 3) SendNotification(playerid, "Deber ser nivel 3 o superior para poder recoger armas del suelo.");
+                    if(ACCOUNT_INFO[playerid][ac_LEVEL] < 3) SendNotification(playerid, "Deber ser nivel 3 o superior para poder recoger armas del suelo.");
                     else {
                         new weapon_slot = WEAPON_INFO[ weaponInfo[dw_WEAPONID] ][weapon_info_SLOT];
                         if(PLAYER_WEAPONS[playerid][weapon_slot][player_weapon_ID] != 0) {

@@ -76,7 +76,7 @@ CMD:avion(playerid, params[]) {
         new dialog_str[256];
         format(dialog_str, sizeof dialog_str, "1. Rellenar combustible\n2. Reparar (%s$)\n", number_format_thousand(REPAIR_PLANE_PRICE));
 
-        if(PLAYER_VEHICLES[vehicleid][player_vehicle_VALID] && PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == PI[playerid][pi_ID]) {
+        if(PLAYER_VEHICLES[vehicleid][player_vehicle_VALID] && PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID]) {
             new string[128];
             format(string, sizeof string, "3. Cambiar color primario (%s$)\n4. Cambiar color secundario (%s$)", number_format_thousand(PAINT_PLANE_PRICE), number_format_thousand(PAINT_PLANE_PRICE));
             strcat(dialog_str, string);
@@ -132,7 +132,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                     }
                     case 2, 3: {
                         new vehicleid = PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID];
-                        if(PLAYER_VEHICLES[vehicleid][player_vehicle_VALID] && PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == PI[playerid][pi_ID]) {
+                        if(PLAYER_VEHICLES[vehicleid][player_vehicle_VALID] && PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID]) {
                             PLAYER_TEMP[playerid][pt_MECHANIC_COLOR_SLOT] = listitem - 2;
                             ShowDialog(playerid, DIALOG_PLANE_SELECT_COLOR);
                         }

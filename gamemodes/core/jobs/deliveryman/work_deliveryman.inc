@@ -193,7 +193,7 @@ public OnDeliveryManRequestLoad(playerid, vehicleid) {
                 if(TRUCK_VEHICLE[vehicleid][truck_vehicle_LOADING]) return SendNotification(playerid, "La furgoneta ya se está cargando.");
     
                 TRUCK_VEHICLE[vehicleid][truck_vehicle_LOADING] = true;
-                TRUCK_VEHICLE[vehicleid][truck_vehicle_DRIVER_USER_ID] = PI[playerid][pi_ID];
+                TRUCK_VEHICLE[vehicleid][truck_vehicle_DRIVER_USER_ID] = ACCOUNT_INFO[playerid][ac_ID];
                 
                 SetVehicleVelocity(vehicleid, 0.0, 0.0, 0.0);
                 
@@ -298,7 +298,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate) {
     if(oldstate == PLAYER_STATE_DRIVER && PLAYER_TEMP[playerid][pt_WORKING_IN] == WORK_DELIVERYMAN) {
         if(PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID] != INVALID_VEHICLE_ID) {
             new vehicleid = PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID];
-            if(TRUCK_VEHICLE[vehicleid][truck_vehicle_DRIVER_USER_ID] == PI[playerid][pi_ID] && !TRUCK_VEHICLE[vehicleid][truck_vehicle_DELIVERED]) {
+            if(TRUCK_VEHICLE[vehicleid][truck_vehicle_DRIVER_USER_ID] == ACCOUNT_INFO[playerid][ac_ID] && !TRUCK_VEHICLE[vehicleid][truck_vehicle_DELIVERED]) {
                 new index = TRUCK_VEHICLE[vehicleid][truck_vehicle_POINT];
                 if(index != -1) {
                     new Float:distance = GetPlayerDistanceFromPoint
@@ -328,7 +328,7 @@ hook EndPlayerJob(playerid, work, bool:changeskin) {
         SetPlayerToys(playerid);
         if(PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID] != INVALID_VEHICLE_ID)
         {
-            if(TRUCK_VEHICLE[ PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID] ][truck_vehicle_DRIVER_USER_ID] == PI[playerid][pi_ID] && TRUCK_VEHICLE[ PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID] ][truck_vehicle_LOADING]) {
+            if(TRUCK_VEHICLE[ PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID] ][truck_vehicle_DRIVER_USER_ID] == ACCOUNT_INFO[playerid][ac_ID] && TRUCK_VEHICLE[ PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID] ][truck_vehicle_LOADING]) {
                 SetVehicleToRespawnEx(PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID]);
             }
         }
@@ -390,7 +390,7 @@ hook OnPlayerEnterDynamicCP(playerid, checkpointid)
 
             new vehicleid = PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID];
             if(vehicleid != INVALID_VEHICLE_ID) {
-                if(TRUCK_VEHICLE[vehicleid][truck_vehicle_DRIVER_USER_ID] == PI[playerid][pi_ID]) {
+                if(TRUCK_VEHICLE[vehicleid][truck_vehicle_DRIVER_USER_ID] == ACCOUNT_INFO[playerid][ac_ID]) {
                     RemovePlayerAttachedObject(playerid, 8);
                     SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
                     TRUCK_VEHICLE[vehicleid][truck_vehicle_CURRENT_POINT] ++;
@@ -419,7 +419,7 @@ hook OnPlayerEnterDynamicCP(playerid, checkpointid)
 			if(WORK_VEHICLES[vehicleid][work_vehicle_WORK] != WORK_DELIVERYMAN) return 1;
 			if(!TRUCK_VEHICLE[vehicleid][truck_vehicle_DELIVERED]) return 1;
 			if(TRUCK_VEHICLE[vehicleid][truck_vehicle_UNLOADING]) return 1;
-			if(TRUCK_VEHICLE[vehicleid][truck_vehicle_DRIVER_USER_ID] != PI[playerid][pi_ID]) return SendNotification(playerid, "Solo le pagaremos al conductor que entregó los paquetes.");
+			if(TRUCK_VEHICLE[vehicleid][truck_vehicle_DRIVER_USER_ID] != ACCOUNT_INFO[playerid][ac_ID]) return SendNotification(playerid, "Solo le pagaremos al conductor que entregó los paquetes.");
 			
 			DestroyDynamicCP(PLAYER_TEMP[playerid][pt_TRUCK_CHECKPOINT]);
 			PLAYER_TEMP[playerid][pt_TRUCK_CHECKPOINT] = INVALID_STREAMER_ID;
@@ -432,7 +432,7 @@ hook OnPlayerEnterDynamicCP(playerid, checkpointid)
 				work_extra_payment = (work_info[WORK_DELIVERYMAN][work_info_EXTRA_PAY] * floatround(floatdiv(PLAYER_WORKS[playerid][WORK_DELIVERYMAN][pwork_LEVEL], work_info[WORK_DELIVERYMAN][work_info_EXTRA_PAY_EXP])));
 				if(work_info[WORK_DELIVERYMAN][work_info_EXTRA_PAY_LIMIT] != 0) if(work_extra_payment > work_info[WORK_DELIVERYMAN][work_info_EXTRA_PAY_LIMIT]) work_extra_payment = work_info[WORK_DELIVERYMAN][work_info_EXTRA_PAY_LIMIT];
 			
-				if(PI[playerid][pi_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
+				if(ACCOUNT_INFO[playerid][ac_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
 			}
 
             new prize;

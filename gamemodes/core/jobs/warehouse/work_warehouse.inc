@@ -483,7 +483,7 @@ hook OnPlayerEnterDynamicCP(playerid, checkpointid)
                         work_extra_payment = (work_info[WORK_WAREHOUSE][work_info_EXTRA_PAY] * floatround(floatdiv(PLAYER_WORKS[playerid][WORK_WAREHOUSE][pwork_LEVEL], work_info[WORK_WAREHOUSE][work_info_EXTRA_PAY_EXP])));
                         if(work_info[WORK_WAREHOUSE][work_info_EXTRA_PAY_LIMIT] != 0) if(work_extra_payment > work_info[WORK_WAREHOUSE][work_info_EXTRA_PAY_LIMIT]) work_extra_payment = work_info[WORK_WAREHOUSE][work_info_EXTRA_PAY_LIMIT];
                         
-                        if(PI[playerid][pi_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
+                        if(ACCOUNT_INFO[playerid][ac_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
                     }
                     new amount = (minrand(40, 50) * order[worder_PRODUCTS]) + work_extra_payment;
                     GivePlayerCash(playerid, amount, true, false);
@@ -602,7 +602,7 @@ ShowPlayerWarehouseOrders(playerid) {
     }
 
     new string[128];
-    format(string, sizeof string, "%s~n~Almacén_(%04d)~n~", PI[playerid][pi_NAME], PI[playerid][pi_ID]);
+    format(string, sizeof string, "%s~n~Almacén_(%04d)~n~", ACCOUNT_INFO[playerid][ac_NAME], ACCOUNT_INFO[playerid][ac_ID]);
     FixTextDrawString(string);
     pWarehouseOrdersTd[playerid] = CreatePlayerTextDraw(playerid, 446.000000, 122.000000, string);
     PlayerTextDrawLetterSize(playerid, pWarehouseOrdersTd[playerid], 0.188499, 0.993333);
