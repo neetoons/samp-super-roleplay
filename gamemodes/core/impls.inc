@@ -8934,7 +8934,6 @@ RegisterNewPlayer(playerid)
 				salt,\
 				pass,\
 				reg_date,\
-				last_connection,\
 				last_connection_timestamp,\
 				level,\
 				rep,\
@@ -8963,7 +8962,7 @@ RegisterNewPlayer(playerid)
 			) \
 			VALUES\
 			(\
-				'%e', '%e', '%e', '%e', '%e', '%e', '%e', %d, %d, %d, %d, %d, %d, %d, %d, %f, %f, %f, %f, %d, %d, %f, %f, %f, %d, %d, %d, %d, %d, %d, %d, %d\
+				'%e', '%e', '%e', '%e', '%e', '%e', %d, %d, %d, %d, %d, %d, %d, %d, %f, %f, %f, %f, %d, %d, %f, %f, %f, %d, %d, %d, %d, %d, %d, %d, %d\
 			);\
 		",
 			ACCOUNT_INFO[playerid][ac_NAME],

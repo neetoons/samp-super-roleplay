@@ -67,6 +67,7 @@ L1:
 #include <a_mysql>
 
 // YSI-Includes
+#define CGEN_MEMORY 20000
 #define YSI_NO_HEAP_MALLOC
 #include <YSI_Coding\y_va>
 #include <YSI_Coding\y_stringhash>
