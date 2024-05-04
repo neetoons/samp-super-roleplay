@@ -1,29 +1,20 @@
+/*
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+	SOFTWARE.
 
-#define MAX_TIMERS_PER_PLAYER	(22)
-#define MAX_LISTITEMS			(35)
-/* Timers
-0 = Kick
-1 = Gangzone daño Rojo
-2 = Añadir reputacion
-3 = un/freeze player
-4 = recuperar vida
-5 = restart hambre sed
-6 = esperando llamada
-7 = esperar arrancar veh
-9 = cargando camion
-10 = reciclando
-11 = talando
-12 = plantando
-13 = gps mapa
-14 = esposar
-15 = jail time
-16 = health down
-17 = msg td
-18 = intro 
-19 = anti cj
-20 = terminó descarga dl
-21 = ocultar textdraw login ciudad extra
+	The Initial Developer of the Original Code was adri1.
+	Code originally released from: https://sampforum.blast.hk/showthread.php?tid=639431
+
 */
+#if defined player_temp_included 
+	#endinput
+#endif
+#define player_temp_included
 enum Temp_Enum
 {
 	pt_GAME_STATE,

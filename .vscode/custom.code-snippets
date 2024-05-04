@@ -15,7 +15,7 @@
             "#if defined $1_included ",
             "\t#endinput",
             "#endif",
-            "#define $1_included"
+            "#define $1_included\n",
         ],
         "description":"Secure the include is not reinclude"
     },
@@ -75,8 +75,29 @@
             "#define ${1:Function} Prefix_${1:Function}",
             "#if defined Prefix_${1:Function}",
             "    forward Prefix_${1:Function}(Args);",
-            "#endif"
+            "#endif",
+            ""
         ],
         "description": "Create a function"
-    }
+    },
+    "license": {
+        "prefix": "license",
+        "body": [
+          "/*",
+          "\tTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR",
+          "\tIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,",
+          "\tFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE",
+          "\tAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER",
+          "\tLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,",
+          "\tOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE",
+          "\tSOFTWARE.",
+          "",
+          "\tThe Initial Developer of the Original Code was adri1.",
+          "\tCode originally released from: https://sampforum.blast.hk/showthread.php?tid=639431",
+          "",
+          "*/",
+          ""
+        ],
+        "description": "license"
+      }
 }
