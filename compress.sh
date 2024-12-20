@@ -1,6 +1,6 @@
 git restore srp_db.ini 
 commit=$(git rev-parse --short=8 HEAD)
-zip -r super-roleplay-$commit.zip\
+zip -r super-roleplay-v2-$commit.zip\
 	libmariadb.dll\
 	.git\
 	.gitignore\
