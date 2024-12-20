@@ -7,7 +7,12 @@ plugins
 *.db
 *.log
 *.exe
+pawno/*.ini
 !scriptfiles/SERVER/AC.txt
 !scriptfiles/SERVER/ECO.txt
 *.hmap
 *.pdb
+*.zip
+*.rar
+*.tar
+samp03svr
