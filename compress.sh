@@ -1,6 +1,6 @@
 git restore srp_db.ini 
-variable=$(git rev-parse --short=8 HEAD)
-zip -r super-roleplay-2-$variable.zip\
+commit=$(git rev-parse --short=8 HEAD)
+zip -r super-roleplay-$commit.zip\
 	libmariadb.dll\
 	.git\
 	.gitignore\
@@ -8,7 +8,9 @@ zip -r super-roleplay-2-$variable.zip\
 	log-core.so\
 	srp_db.ini\
 	announce\
+	announce.exe\
 	server.cfg\
+	samp-server.exe\
 	samp03svr\
 	pawno/*\
 	plugins/*\
@@ -16,5 +18,4 @@ zip -r super-roleplay-2-$variable.zip\
 	filterscripts/*\
 	scriptfiles/*\
 	gamemodes/*\
-	samp-server.exe\
 	README.md
