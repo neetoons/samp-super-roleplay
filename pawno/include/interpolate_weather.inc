@@ -1,7 +1,7 @@
-#if defined _inc_interpolate_weather
+#if defined inc_interpolate_weather
 	#endinput
 #endif
-#define _inc_interpolate_weather
+#define inc_interpolate_weather
 
 #include <YSI_Coding\y_hooks>
 

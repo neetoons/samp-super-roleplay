@@ -83,12 +83,12 @@ L1:
 #include <Pawn.CMD>
 #include <Pawn.Regex>
 #include <Pawn.RakNet>
-#include <interpolate_weather>
 #include <mapandreas>
 
 #define PP_SYNTAX_FOR_LIST
 #include <PawnPlus>
 
+#include <interpolate_weather>
 /*
 
     8888888b.            .d888 d8b                            
@@ -250,7 +250,7 @@ Y88b  d88P 888  888  888 Y88b 888      X88
     888       888 "Y888888 888 888  888 
 */
 
-#include "core/dialog/showdialog" // se tiene que modular
+#include "core/dialog/showDialog" // se tiene que modular
 #include "core/dialog/response" // se tiene que modular
 
 
