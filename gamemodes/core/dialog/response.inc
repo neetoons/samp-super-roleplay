@@ -1,3 +1,21 @@
+/*
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+	SOFTWARE.
+
+	The Initial Developer of the Original Code was adri1.
+	Code originally released from: https://sampforum.blast.hk/showthread.php?tid=639431
+
+*/
+#if defined response_included 
+	#endinput
+#endif
+#define response_included
+
 public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 	if(PLAYER_TEMP[playerid][pt_DIALOG_RESPONDED] || PLAYER_TEMP[playerid][pt_DIALOG_ID] != dialogid) return Y_HOOKS_BREAK_RETURN_0;
@@ -1586,13 +1604,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						{
 							if(IsPlayerConnected(i))
 							{
-								if( PI[i][ac_STATE] == ROLEPLAY_STATE_GUEST_PROPERTY && PI[i][ac_LOCAL_INTERIOR] == PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_ID])
+								if( ACCOUNT_INFO[i][ac_STATE] == ROLEPLAY_STATE_GUEST_PROPERTY && PI[i][ac_LOCAL_INTERIOR] == PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_ID])
 								{
 									if(PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_POLICE_FORCED] && (PLAYER_WORKS[i][WORK_POLICE][pwork_SET] && PLAYER_TEMP[i][pt_WORKING_IN] == WORK_POLICE)) {
 										continue;
 									}
 
-									PI[i][ac_STATE] = ROLEPLAY_STATE_NORMAL;
+									ACCOUNT_INFO[i][ac_STATE] = ROLEPLAY_STATE_NORMAL;
 									PI[i][ac_LOCAL_INTERIOR] = 0;
 									PLAYER_TEMP[i][pt_PROPERTY_INDEX] = -1;
 									SetPlayerPosEx(i, PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_X], PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_Y], PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_Z], PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_ANGLE], PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_INTERIOR], 0, PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_FREEZE], false);

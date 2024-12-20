@@ -330,7 +330,8 @@ hook OnPlayerObtainWork(playerid, work) {
 }
 
 hook OnPlayerSpawn(playerid) {
-    if(pWorkTutorialInfo[playerid][wti_APPLY]) {
+    if(pWorkTutorialInfo[playerid][wti_APPLY])
+    {
         ACCOUNT_INFO[playerid][ac_STATE] = pWorkTutorialInfo[playerid][wti_RP_STATE];
         PI[playerid][ac_LOCAL_INTERIOR] = pWorkTutorialInfo[playerid][wti_LOCAL_INTERIOR];
         PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] = pWorkTutorialInfo[playerid][wti_INTERIOR_INDEX];
@@ -341,25 +342,29 @@ hook OnPlayerSpawn(playerid) {
     }
 }
 
-DestroyPlayerWorkTutorial(playerid) {
-    if(pWorkTutorialTimer[playerid] != -1) {
-        KillTimer(pWorkTutorialTimer[playerid]);
-        pWorkTutorialTimer[playerid] = -1;
-    }
+DestroyPlayerWorkTutorial(playerid) 
+    {
+        if(pWorkTutorialTimer[playerid] != -1) 
+        {
+            KillTimer(pWorkTutorialTimer[playerid]);
+            pWorkTutorialTimer[playerid] = -1;
+        }
 
-    if(pWorkTutorialTd[playerid] != PlayerText:INVALID_TEXT_DRAW) {
-        PlayerTextDrawDestroy(playerid, pWorkTutorialTd[playerid]);
-        pWorkTutorialTd[playerid] = PlayerText:INVALID_TEXT_DRAW;
-    }
-    
-    pWorkTutorial[playerid] = 0;
-    pWorkTutorialStep[playerid] = 0;
+        if(pWorkTutorialTd[playerid] != PlayerText:INVALID_TEXT_DRAW) 
+        {
+            PlayerTextDrawDestroy(playerid, pWorkTutorialTd[playerid]);
+            pWorkTutorialTd[playerid] = PlayerText:INVALID_TEXT_DRAW;
+        }
+        
+        pWorkTutorial[playerid] = 0;
+        pWorkTutorialStep[playerid] = 0;
 
-    if(ACCOUNT_INFO[playerid][ac_ID] > 0 && pInWorkTutorial[playerid]) {
-        TogglePlayerSpectatingEx(playerid, false);
-        SetPlayerHud(playerid);
-    }
-    pInWorkTutorial[playerid] = false;
+        if(ACCOUNT_INFO[playerid][ac_ID] > 0 && pInWorkTutorial[playerid]) 
+        {
+            TogglePlayerSpectatingEx(playerid, false);
+            SetPlayerHud(playerid);
+        }
+        pInWorkTutorial[playerid] = false;
 }
 
 StartPlayerWorkTutorial(playerid, work) {
