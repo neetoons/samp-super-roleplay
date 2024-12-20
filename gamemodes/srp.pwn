@@ -84,11 +84,10 @@ L1:
 #include <Pawn.Regex>
 #include <Pawn.RakNet>
 #include <mapandreas>
-
+#include <interpolate_weather>
 #define PP_SYNTAX_FOR_LIST
 #include <PawnPlus>
 
-#include <interpolate_weather>
 /*
 
     8888888b.            .d888 d8b                            
@@ -126,6 +125,7 @@ L1:
 #define SECURE_LOGIN_CHECK_URL "api.yourwebsite/auth/auth-check-code"
 #define SECURE_LOGIN_TIME 180000 //3 min en logear o kick
 #define KEY_F								( 16 )
+// basura innecesaria, se espera por cambio
 #define callbackp:%0(%1)						forward %0(%1) ; public %0(%1)
 //YOUTUBE
 #define SEARCH_YT_PATH "yt.yourwebsite/search"
@@ -366,6 +366,7 @@ public OnGameModeExit()
 	}
 	mysql_close(srp_db);
 	/*
+     * Pendiente por borrar o cambiar, esto me parece que es innecesario
 	for(new i, j = GetPlayerPoolSize(); i <= j; i++) // Cerrar conexión a todos al cerrar el server
 	{
 		if(IsPlayerConnected(i))
