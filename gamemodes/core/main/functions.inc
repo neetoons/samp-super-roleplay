@@ -1647,7 +1647,7 @@ SetCorrectObjectPos(objectid)
 	SetDynamicObjectRot(objectid, rx, ry, rz);
 }
 
-public OnPlayerEditDynamicObject(playerid, STREAMER_TAG_OBJECT objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
+public OnPlayerEditDynamicObject(playerid, STREAMER_TAG_OBJECT:objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
 	switch(response)
 	{

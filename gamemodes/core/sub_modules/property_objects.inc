@@ -707,7 +707,7 @@ CreateUncreatedPObjectsTds(playerid) {
     PlayerTextDrawSetSelectable(playerid, pUncreatedPObjectsTd[playerid][10], true);
 }
 
-hook OnPlayerSelectDynObject(playerid, STREAMER_TAG_OBJECT objectid, modelid, Float:x, Float:y, Float:z) {
+hook OnPlayerSelectDynObject(playerid, STREAMER_TAG_OBJECT:objectid, modelid, Float:x, Float:y, Float:z) {
     new info[3];
 	Streamer_GetArrayData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_EXTRA_ID, info);
 
@@ -724,7 +724,7 @@ hook OnPlayerSelectDynObject(playerid, STREAMER_TAG_OBJECT objectid, modelid, Fl
     return Y_HOOKS_CONTINUE_RETURN_1;
 }
 
-hook OnPlayerEditDynObject(playerid, STREAMER_TAG_OBJECT objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz) {
+hook OnPlayerEditDynObject(playerid, STREAMER_TAG_OBJECT:objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz) {
     new info[3];
 	Streamer_GetArrayData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_EXTRA_ID, info);
 
