@@ -5115,8 +5115,8 @@ public ResyncPlayer(playerid)
 	{
 		if(IsPlayerStreamedIn(playerid, i))
 		{
-			BS_RPC(bsr, i, 163); // RPC_WorldPlayerRemove
-			BS_RPC(bsa, i, 32); // RPC_WorldPlayerAdd
+			PR_SendRPC(bsr, i, 163); // RPC_WorldPlayerRemove
+			PR_SendRPC(bsa, i, 32); // RPC_WorldPlayerAdd
 		}
 	}
 
