@@ -17,4 +17,4 @@ pawno/*.ini
 *.tar
 samp03svr
 announce
-./compress.sh
+compress.sh
