@@ -791,7 +791,7 @@ CMD:inventario(playerid, params[])
     }
 	return 1;
 }
-alias:inventario("inv");
+alias:inventario("inv")
 
 IsInventoryOpened(playerid) {
     return pInventoryOpened[playerid];

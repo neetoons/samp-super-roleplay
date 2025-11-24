@@ -8933,7 +8933,7 @@ CMD:g(playerid, params[])
 	ProxDetector(playerid, 25.0, str_text, COLOR_FADE1, COLOR_FADE2, COLOR_FADE3, COLOR_FADE4, COLOR_FADE5, 85);
 	return 1;
 }
-alias:g("gritar");
+alias:g("gritar")
 
 CMD:s(playerid, params[])
 {
@@ -8944,7 +8944,7 @@ CMD:s(playerid, params[])
 	ProxDetector(playerid, 5.0, str_text, COLOR_FADE1, COLOR_FADE2, COLOR_FADE3, COLOR_FADE4, COLOR_FADE5, 85);
 	return 1;
 }
-alias:s("susurrar");
+alias:s("susurrar")
 
 CMD:decir(playerid, params[])
 {

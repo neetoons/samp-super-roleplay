@@ -16,6 +16,6 @@
 #endif
 #define helper_cmds_included
 
-flags:muteard(CMD_HELPER);
-flags:desmuteard(CMD_HELPER);
-flags:presolv(CMD_HELPER);
+flags:muteard(CMD_HELPER)
+flags:desmuteard(CMD_HELPER)
+flags:presolv(CMD_HELPER)

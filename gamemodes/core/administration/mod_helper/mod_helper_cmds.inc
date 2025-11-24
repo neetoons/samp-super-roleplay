@@ -17,18 +17,18 @@
 #define mod_helper_cmds_included
 
 
-flags:trabajos(CMD_HELPER_MODERATOR);
-flags:getid(CMD_HELPER_MODERATOR);
-flags:getname(CMD_HELPER_MODERATOR);
-flags:aka(CMD_HELPER_MODERATOR);
-flags:adv(CMD_HELPER_MODERATOR);
-flags:kick(CMD_HELPER_MODERATOR);
-flags:spec(CMD_HELPER_MODERATOR);
-flags:specoff(CMD_HELPER_MODERATOR);
-flags:freeze(CMD_HELPER_MODERATOR);
-flags:unfreeze(CMD_HELPER_MODERATOR);
-flags:jail(CMD_HELPER_MODERATOR);
-flags:unjail(CMD_HELPER_MODERATOR);
-flags:notifica(CMD_HELPER_MODERATOR);
-flags:ls(CMD_HELPER_MODERATOR);
+flags:trabajos(CMD_HELPER_MODERATOR)
+flags:getid(CMD_HELPER_MODERATOR)
+flags:getname(CMD_HELPER_MODERATOR)
+flags:aka(CMD_HELPER_MODERATOR)
+flags:adv(CMD_HELPER_MODERATOR)
+flags:kick(CMD_HELPER_MODERATOR)
+flags:spec(CMD_HELPER_MODERATOR)
+flags:specoff(CMD_HELPER_MODERATOR)
+flags:freeze(CMD_HELPER_MODERATOR)
+flags:unfreeze(CMD_HELPER_MODERATOR)
+flags:jail(CMD_HELPER_MODERATOR)
+flags:unjail(CMD_HELPER_MODERATOR)
+flags:notifica(CMD_HELPER_MODERATOR)
+flags:ls(CMD_HELPER_MODERATOR)
 

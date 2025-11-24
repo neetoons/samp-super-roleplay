@@ -27,7 +27,7 @@ CMD:me(playerid, params[])
 	SendPlayerAction(playerid, params);
 	return 1;
 }
-alias:me("y");
+alias:me("y")
 
 CMD:experiencia(playerid, params[])
 {
@@ -35,14 +35,14 @@ CMD:experiencia(playerid, params[])
 	ShowPlayerSkills(playerid, playerid);
 	return 1;
 }
-alias:experiencia("exp", "skills");
+alias:experiencia("exp", "skills")
 
 CMD:est(playerid, params[])
 {
 	ShowPlayerStats(playerid, playerid);
 	return 1;
 }
-alias:est("estadisticas", "cuenta");
+alias:est("estadisticas", "cuenta")
 
 CMD:web(playerid, params[])
 {
@@ -303,7 +303,7 @@ CMD:pass(playerid, params[])
 	ShowDialog(playerid, DIALOG_CHANGE_PASSWORD);
 	return 1;
 }
-alias:pass("contra", "cpass");
+alias:pass("contra", "cpass")
 
 CMD:gcp(playerid, params[])
 {
@@ -338,7 +338,7 @@ CMD:movil(playerid, params[])
 	ShowDialog(playerid, DIALOG_PHONE);
 	return 1;
 }
-alias:movil("celular", "telefono", "tlf");
+alias:movil("celular", "telefono", "tlf")
 
 CMD:guia(playerid, params[])
 {
@@ -743,7 +743,7 @@ CMD:panel(playerid, params[])
 	ShowDialog(playerid, DIALOG_PLAYER_CONFIG);
 	return 1;
 }
-alias:panel("config", "configuracion", "ajustes");
+alias:panel("config", "configuracion", "ajustes")
 
 CMD:comprarcasa(playerid, params[])
 {
@@ -1869,7 +1869,7 @@ CMD:dimitir(playerid, params[])
 	PLAYER_WORKS[playerid][work][pwork_SET] = false;
 	return 1;
 }
-alias:dimitir("renunciar");
+alias:dimitir("renunciar")
 
 CMD:pagar(playerid, params[])
 {
@@ -2001,7 +2001,7 @@ CMD:aparcar(playerid, params[])
 	SendNotification(playerid, "Has estacionado tu vehículo, cuando sea destruido volverá a aparecer aquí.");
 	return 1;
 }
-alias:aparcar("estacionar");
+alias:aparcar("estacionar")
 
 CMD:luces(playerid, params[])
 {
@@ -2068,7 +2068,7 @@ CMD:motor(playerid, params[])
 	else SendNotification(playerid, "No estás conduciendo ningún vehículo.");
 	return 1;
 }
-alias:motor("arrancar");
+alias:motor("arrancar")
 
 CMD:reparar(playerid, params[]) {
 	if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return SendNotification(playerid, "No estás depie.");
@@ -2403,7 +2403,7 @@ CMD:animaciones(playerid, params[])
 	ShowDialog(playerid, DIALOG_ANIMS);
 	return 1;
 }
-alias:animaciones("anims", "acciones");
+alias:animaciones("anims", "acciones")
 CMD:parar(playerid, params[])
 {
 	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2825,7 +2825,7 @@ CMD:maletero(playerid, params[])
 	ShowDialog(playerid, DIALOG_VEHICLE_BOOT);
 	return 1;
 }
-alias:maletero("baul");
+alias:maletero("baul")
 
 SetWantedPlayerMarkers(playerid)
 {
@@ -2894,7 +2894,7 @@ CMD:nivel(playerid, params[])
 	SendPoliceRadioMessage(-1, -1, message);
 	return 1;
 }
-alias:nivel("cargos", "c");
+alias:nivel("cargos", "c")
 
 CMD:esposar(playerid, params[])
 {
@@ -3068,7 +3068,7 @@ CMD:ref(playerid, params[])
 	SendPoliceRadioMessage(-1, -1, message);
 	return 1;
 }
-alias:ref("refuerzos");
+alias:ref("refuerzos")
 
 CMD:control(playerid, params[])
 {
@@ -3771,7 +3771,7 @@ CMD:darskin(playerid, params[])
 	SendFormatNotification(playerid, "Skin '%s (%d)' cambiado a '%d'.", ACCOUNT_INFO[to_player][ac_NAME], to_player, skin);
     return 1;
 }
-alias:darskin("setskin");
+alias:darskin("setskin")
 
 CMD:setfstyle(playerid, params[])
 {
@@ -3899,7 +3899,7 @@ CMD:revivir(playerid, params[])
 	SendCmdLogToAdmins(playerid, "revivir", params);
 	return 1;
 }
-alias:revivir("revive");
+alias:revivir("revive")
 
 CMD:tuning(playerid, params[])
 {	
@@ -4444,7 +4444,7 @@ CMD:placaex(playerid, params[])
 	}
 	return 1;
 }
-alias:placaex("policiaadmin");
+alias:placaex("policiaadmin")
 
 CMD:vehicles(playerid, params[])
 {
@@ -4477,7 +4477,7 @@ CMD:vehicles(playerid, params[])
 	ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_TABLIST_HEADERS, "Vehiculos", dialog, "OK", "");
 	return 1;
 }
-alias:vehicles("vehiculos");
+alias:vehicles("vehiculos")
 
 CMD:reportar(playerid, params[])
 {
@@ -4632,7 +4632,7 @@ CMD:aka(playerid, params[])
 	MySQL_TQueryInline(srp_db, using inline OnInfoQueryLoad, QUERY_BUFFER);
 	return 1;
 }
-alias:aka("cuentas", "multicuentas");
+alias:aka("cuentas", "multicuentas")
 
 CMD:adv(playerid, params[])
 {
@@ -4655,7 +4655,7 @@ CMD:adv(playerid, params[])
 	SendAdminAd(-1, str);
 	return 1;
 }
-alias:adv("advertencia", "san");
+alias:adv("advertencia", "san")
 
 CMD:kick(playerid, params[])
 {
@@ -4711,7 +4711,7 @@ CMD:spec(playerid, params[])
 	SendCmdLogToAdmins(playerid, "spec", params);
 	return 1;
 }
-alias:spec("specp", "spp");
+alias:spec("specp", "spp")
 
 CMD:specoff(playerid, params[])
 {
@@ -4722,7 +4722,7 @@ CMD:specoff(playerid, params[])
 	PLAYER_TEMP[playerid][pt_TIMERS][3] = SetTimerEx("TogglePlayerControl", 2000, false, "ib", playerid, true);
 	return 1;
 }
-alias:specoff("listo");
+alias:specoff("listo")
 
 CMD:freeze(playerid, params[])
 {
@@ -4734,7 +4734,7 @@ CMD:freeze(playerid, params[])
 	TogglePlayerControllableEx(to_player, false);
 	return 1;
 }
-alias:freeze("congelar");
+alias:freeze("congelar")
 
 CMD:unfreeze(playerid, params[])
 {
@@ -4746,7 +4746,7 @@ CMD:unfreeze(playerid, params[])
 	TogglePlayerControllableEx(to_player, true);
 	return 1;
 }
-alias:unfreeze("descongelar");
+alias:unfreeze("descongelar")
 
 CMD:pest(playerid, params[])
 {
@@ -4857,7 +4857,7 @@ CMD:traerveh(playerid, params[])
     SetVehiclePosEx(to_car, gPos[0] + 2.0, gPos[1], gPos[2]);
     return 1;
 }
-alias:traerveh("mover", "getveh", "traervehiculo", "traerauto", "getcar");
+alias:traerveh("mover", "getveh", "traervehiculo", "traerauto", "getcar")
 
 
 ///	CMD:gotopos( playerid, params[] )
@@ -4882,7 +4882,7 @@ CMD:gotoveh(playerid, params[])
     SetPlayerPosEx(playerid, gPos[0], gPos[1], gPos[2], 0.0, GLOBAL_VEHICLES[to_car][gb_vehicle_INTERIOR], 0);//GLOBAL_VEHICLES[to_car][gb_vehicle_WORLD]);
     return 1;
 }
-alias:gotoveh("irvehiculo", "gotocar", "iracarro");
+alias:gotoveh("irvehiculo", "gotocar", "iracarro")
 
 CMD:duty(playerid)
 {
@@ -4947,7 +4947,7 @@ CMD:goto(playerid, params[])
 	SendCmdLogToAdmins(playerid, "goto", params);
 	return 1;
 }
-alias:goto("ir");
+alias:goto("ir")
 
 CMD:get(playerid, params[])
 {
@@ -4968,7 +4968,7 @@ CMD:get(playerid, params[])
 	SendCmdLogToAdmins(playerid, "get", params);
 	return 1;
 }
-alias:get("traer");
+alias:get("traer")
 
 CMD:unban(playerid, params[])
 {
@@ -5102,7 +5102,7 @@ CMD:cls(playerid,params[])
 	SendCmdLogToAdmins(playerid, "cls", params);
 	return 1;
 }
-alias:cls("log");
+alias:cls("log")
 
 CMD:tban(playerid, params[])
 {	
@@ -5345,7 +5345,7 @@ CMD:deletead(playerid, params[])
 	MySQL_TQueryInline(srp_db, using inline OnShopChecked, QUERY_BUFFER);
 	return 1;
 }
-alias:deletead("borrarad");
+alias:deletead("borrarad")
 
 CMD:settime(playerid, params[])
 {
@@ -5397,7 +5397,7 @@ CMD:givemod(playerid, params[])
 	SendCmdLogToAdmins(playerid, "givemod", params);
 	return 1;
 }
-alias:givemod("staff");
+alias:givemod("staff")
 
 CMD:ac(playerid, params[])
 {
@@ -5419,7 +5419,7 @@ CMD:setthirst(playerid, params[])
 	SendCmdLogToAdmins(playerid, "setthirst", params);
 	return 1;
 }
-alias:setthirst("setsed");
+alias:setthirst("setsed")
 
 CMD:sethunger(playerid, params[])
 {
@@ -5435,7 +5435,7 @@ CMD:sethunger(playerid, params[])
 	SendCmdLogToAdmins(playerid, "sethunger", params);
 	return 1;
 }
-alias:sethunger("sethambre", "sethungry");
+alias:sethunger("sethambre", "sethungry")
 
 CMD:setgas(playerid, params[])
 {
@@ -5470,7 +5470,7 @@ CMD:repairveh(playerid, params[])
 	SendCmdLogToAdmins(playerid, "repairveh", params);
 	return 1;
 }
-alias:repairveh("repararveh");
+alias:repairveh("repararveh")
 
 CMD:sethealth(playerid, params[])
 {
@@ -5486,7 +5486,7 @@ CMD:sethealth(playerid, params[])
 	SendCmdLogToAdmins(playerid, "sethealth", params);
 	return 1;
 }
-alias:sethealth("setvida");
+alias:sethealth("setvida")
 
 CMD:setarmour(playerid, params[])
 {
@@ -5502,7 +5502,7 @@ CMD:setarmour(playerid, params[])
 	SendCmdLogToAdmins(playerid, "setarmour", params);
 	return 1;
 }
-alias:setarmour("setchaleco");
+alias:setarmour("setchaleco")
 
 CMD:setlevel(playerid, params[])
 {
@@ -5690,7 +5690,7 @@ CMD:asay(playerid, params[])
 	SendCmdLogToAdmins(playerid, "asay", params);
 	return 1;
 }
-alias:asay("global");
+alias:asay("global")
 
 CMD:spos(playerid, params[])
 {
@@ -5765,14 +5765,14 @@ CMD:nombre(playerid, params[])
 	ShowDialog(playerid, DIALOG_CHANGE_NAME);
 	return 1;
 }
-alias:nombre("cname");
+alias:nombre("cname")
 
 CMD:correo(playerid, params[])
 {
 	ShowDialog(playerid, DIALOG_CHANGE_EMAIL);
 	return 1;
 }
-alias:correo("email", "mail");
+alias:correo("email", "mail")
 
 CMD:setnametemp(playerid, params[])
 {
@@ -5910,7 +5910,7 @@ CMD:gotoproperty(playerid, params[])
 	SetPlayerPosEx(playerid, PROPERTY_INTERIORS[int_type][property_INT_X], PROPERTY_INTERIORS[int_type][property_INT_Y], PROPERTY_INTERIORS[int_type][property_INT_Z], PROPERTY_INTERIORS[int_type][property_INT_ANGLE], PROPERTY_INTERIORS[int_type][property_INT_INTERIOR], 0, false, true);
 	return 1;
 }
-alias:gotoproperty("ircasa");
+alias:gotoproperty("ircasa")
 
 CMD:setpass(playerid, params[])
 {
