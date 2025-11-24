@@ -79,39 +79,89 @@ Optional plugins:
 #include "..\..\YSI_Server\y_natives"
 #include "..\..\YSI_Server\y_serverdata"
 
-// Unify the two BCrypt plugins in to a single API.
-stock _YSI_gHashID = 0;
+enum E_BCRYPT_PLUGIN_VERSION
+{
+	BCRYPT_PLUGIN_VERSION_NONE = -1,
+	BCRYPT_PLUGIN_VERSION_UNKNOWN,
+	BCRYPT_PLUGIN_VERSION_LASSIR, // A
+	BCRYPT_PLUGIN_VERSION_SREYAS_1, // B
+	BCRYPT_PLUGIN_VERSION_SREYAS_2, // C
+	BCRYPT_PLUGIN_VERSION_SREYAS_3, // D
+	BCRYPT_PLUGIN_VERSION_SREYAS_4 // E
+}
 
-// Plugin version 1.
+// Unify many BCrypt plugins in to a single API.
+stock
+	_YSI_gHashID = 0,
+	_YSI_gLastHash = 0;
+
+// Lassir V1.
 @native("bcrypt_get_hash", .print = false) bool:_YSI_BCryptGetHashA(hash[]);
-@native("bcrypt_check", .print = false) bool:_YSI_BCryptCheckA(const password[], const hash[], const callback[], const format[], ...);
-@native("bcrypt_hash", .print = false) bool:_YSI_BCryptHashA(const password[], cost, const callback[], const format[], ...);
+@native("bcrypt_check", .print = false) bool:_YSI_BCryptCheckA(const password[], const hash[], const callback[], const args[], GLOBAL_TAG_TYPES:...);
+@native("bcrypt_hash", .print = false) bool:_YSI_BCryptHashA(const password[], cost, const callback[], const args[], GLOBAL_TAG_TYPES:...);
 @native("bcrypt_is_equal", .print = false) bool:_YSI_BCryptIsEqualA();
 
-// Plugin version 2.
-@native("bcrypt_get_hash", .print = false) bool:_YSI_BCryptGetHashB(hash[], size);
+// Sreyas V1.
+@native("bcrypt_get_hash", .print = false) bool:_YSI_BCryptGetHashB(hashid, hash[], size);
 @native("bcrypt_verify", .print = false) bool:_YSI_BCryptCheckB(extra, const callback[], const password[], const hash[]);
 @native("bcrypt_hash", .print = false) bool:_YSI_BCryptHashB(extra, const callback[], const password[], cost);
+@native("bcrypt_delete", .print = false) bool:_YSI_BCryptDeleteB(hashid);
 
-stock BCrypt_GetPlugin()
+// // Sreyas V2.  Removed `hashid`.
+// @native("bcrypt_get_hash", .print = false) bool:_YSI_BCryptGetHashC(hash[], size);
+// @native("bcrypt_verify", .print = false) bool:_YSI_BCryptCheckC(extra, const callback[], const password[], const hash[]);
+// @native("bcrypt_hash", .print = false) bool:_YSI_BCryptHashC(extra, const callback[], const password[], cost);
+// @native("bcrypt_set_thread_limit", .print = false) bool:_YSI_BCryptSetThreadLimitC(limit);
+
+// // Sreyas V3.  Added custom hash parameters.
+// @native("bcrypt_get_hash", .print = false) bool:_YSI_BCryptGetHashD(hash[], size);
+// @native("bcrypt_verify", .print = false) bool:_YSI_BCryptCheckD(extra, const callback[], const password[], const hash[]);
+// @native("bcrypt_hash", .print = false) bool:_YSI_BCryptHashD(extra, const callback[], const password[], cost, const args[] = "", GLOBAL_TAG_TYPES:...);
+
+// Sreyas V4.  Added custom verify parameters.  We can use this for all three
+// major plugin versions as the extra parameters are mostly unused by us, and
+// ignored by older plugin versions.
+@native("bcrypt_get_hash", .print = false) bool:_YSI_BCryptGetHashE(hash[], size);
+//@native("bcrypt_verify", .print = false) bool:_YSI_BCryptCheckE(extra, const callback[], const password[], const hash[], const args[] = "", GLOBAL_TAG_TYPES:...);
+@native("bcrypt_hash", .print = false) bool:_YSI_BCryptHashE(extra, const callback[], const password[], cost, const args[], GLOBAL_TAG_TYPES:...);
+
+static stock
+	E_BCRYPT_PLUGIN_VERSION:YSI_g_sBCryptPlugin = BCRYPT_PLUGIN_VERSION_NONE;
+
+/**
+ * <remarks>
+ * Used internally to update knowledge of which plugin version is in use, based
+ * on callback parameters.
+ * </remarks>
+ */
+
+stock BCrypt_SetPlugin(E_BCRYPT_PLUGIN_VERSION:plugin)
 {
-	static plugin = -1;
-	if (plugin == -1)
+	YSI_g_sBCryptPlugin = plugin;
+}
+
+stock E_BCRYPT_PLUGIN_VERSION:BCrypt_GetPlugin()
+{
+	if (YSI_g_sBCryptPlugin == BCRYPT_PLUGIN_VERSION_NONE)
 	{
 		if (Server_HasNative("bcrypt_is_equal"))
 		{
-			plugin = 1;
+			YSI_g_sBCryptPlugin = BCRYPT_PLUGIN_VERSION_LASSIR;
 		}
-		else if (Server_HasNative("bcrypt_verify"))
+		else if (Server_HasNative("bcrypt_delete"))
 		{
-			plugin = 2;
+			YSI_g_sBCryptPlugin = BCRYPT_PLUGIN_VERSION_SREYAS_1;
+		}
+		else if (Server_HasNative("bcrypt_set_thread_limit"))
+		{
+			YSI_g_sBCryptPlugin = BCRYPT_PLUGIN_VERSION_SREYAS_2;
 		}
 		else
 		{
-			Debug_PrintE("Neither BCrypt plugin is loaded.  Load one!")
-			plugin = 0;
+			Debug_Error("No known BCrypt plugin is loaded.  Load Lassir or Sreyas-Sreelal!");
+			YSI_g_sBCryptPlugin = BCRYPT_PLUGIN_VERSION_UNKNOWN;
 		}
 	}
-	return plugin;
+	return YSI_g_sBCryptPlugin;
 }
 

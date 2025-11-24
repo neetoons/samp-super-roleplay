@@ -126,6 +126,20 @@ stock
 #define _YSI_g_sInfoHeader
 
 #if defined YSI_TESTS
+	#if defined YSI_NO_TEST_WARNINGS
+		#pragma warning push
+		#pragma warning disable 203
+		#pragma warning disable 204
+		#pragma warning disable 213
+		#pragma warning disable 214
+		#pragma warning disable 219
+		#pragma warning disable 234
+		#pragma warning disable 239
+		#pragma warning disable 240
+	#endif
 	#include "y_bitmap_tests"
+	#if defined YSI_NO_TEST_WARNINGS
+		#pragma warning pop
+	#endif
 #endif
 

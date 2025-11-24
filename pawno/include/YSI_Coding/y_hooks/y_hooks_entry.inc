@@ -99,6 +99,20 @@ Optional plugins:
 	// Get a new unique ID for the test hooks.
 	#include "..\y_va"
 	#include "..\y_unique\y_unique_entry"
+	#if defined YSI_NO_TEST_WARNINGS
+		#pragma warning push
+		#pragma warning disable 203
+		#pragma warning disable 204
+		#pragma warning disable 213
+		#pragma warning disable 214
+		#pragma warning disable 219
+		#pragma warning disable 234
+		#pragma warning disable 239
+		#pragma warning disable 240
+	#endif
 	#include "y_hooks_tests"
+	#if defined YSI_NO_TEST_WARNINGS
+		#pragma warning pop
+	#endif
 #endif
 

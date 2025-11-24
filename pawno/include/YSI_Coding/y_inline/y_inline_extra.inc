@@ -147,5 +147,5 @@ forward ORM_DeleteInline(ORM:id, Func:cb<>);
 forward ORM_LoadInline(ORM:id, Func:cb<>);
 forward ORM_SaveInline(ORM:id, Func:cb<>);
 forward bool:BCrypt_CheckInline(const password[], const hash[], Func:cb<i>);
-forward BCrypt_HashInline(const password[], cost = 12, {F@_@s, F@_@si}:cb); // Func:cb<s> | Func:cb<si>
+forward BCrypt_HashInline(const password[], cost = 12, {F@_@s, F@_@si}:cb, tag = tagof (cb)); // Func:cb<s> | Func:cb<si>
 

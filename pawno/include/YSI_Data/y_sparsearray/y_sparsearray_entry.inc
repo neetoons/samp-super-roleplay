@@ -256,6 +256,20 @@ stock bool:_Sparse_Exchange(const name[], index, &oldValue)
 #if defined YSI_TESTS
 	#include "..\y_iterate"
 	#include "..\y_bit"
+	#if defined YSI_NO_TEST_WARNINGS
+		#pragma warning push
+		#pragma warning disable 203
+		#pragma warning disable 204
+		#pragma warning disable 213
+		#pragma warning disable 214
+		#pragma warning disable 219
+		#pragma warning disable 234
+		#pragma warning disable 239
+		#pragma warning disable 240
+	#endif
 	#include "y_sparsearray_tests"
+	#if defined YSI_NO_TEST_WARNINGS
+		#pragma warning pop
+	#endif
 #endif
 

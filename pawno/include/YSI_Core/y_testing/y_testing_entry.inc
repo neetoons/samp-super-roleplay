@@ -136,7 +136,7 @@ stock _y@T(GLOBAL_TAG_TYPES:b, tag = tagof (b))
 	return (tag == tagof (Float:)) ? ret1 : ret2;
 }
 
-stock bool:_@yT(a, GLOBAL_TAG_TYPES:b, op, tag = tagof (b))
+stock bool:_yT@(a, GLOBAL_TAG_TYPES:b, op, tag = tagof (b))
 {
 	if (tag == tagof (Float:))
 	{
@@ -185,12 +185,12 @@ stock bool:_@yT(a, GLOBAL_TAG_TYPES:b, op, tag = tagof (b))
 // Just don't do side-effects in assertations!
 // `_EQ` and `_NE` now convert to float and check the values are close-enough.
 // For ints the subtraction will always be whole, so fail or pass correctly.
-#define ASSERT_EQ(%1,%0) Testing_Test(_@yT(J@,(%0),0),_y@T((%0)),STRINGISE__(%1 == %0),(J@=_:(((%0)^(%0))|(%1))))
-#define ASSERT_NE(%1,%0) Testing_Test(_@yT(J@,(%0),1),_y@T((%0)),STRINGISE__(%1 != %0),(J@=_:(((%0)^(%0))|(%1))))
-#define ASSERT_LE(%1,%0) Testing_Test(_@yT(J@,(%0),2),_y@T((%0)),STRINGISE__(%1 <= %0),(J@=_:(((%0)^(%0))|(%1))))
-#define ASSERT_LT(%1,%0) Testing_Test(_@yT(J@,(%0),3),_y@T((%0)),STRINGISE__(%1 <  %0),(J@=_:(((%0)^(%0))|(%1))))
-#define ASSERT_GE(%1,%0) Testing_Test(_@yT(J@,(%0),4),_y@T((%0)),STRINGISE__(%1 >= %0),(J@=_:(((%0)^(%0))|(%1))))
-#define ASSERT_GT(%1,%0) Testing_Test(_@yT(J@,(%0),5),_y@T((%0)),STRINGISE__(%1 >  %0),(J@=_:(((%0)^(%0))|(%1))))
+#define ASSERT_EQ(%1,%0) Testing_Test(_yT@(J@,(%0),0),_y@T((%0)),STRINGISE__(%1 == %0),(J@=_:(((%0)^(%0))|(%1))))
+#define ASSERT_NE(%1,%0) Testing_Test(_yT@(J@,(%0),1),_y@T((%0)),STRINGISE__(%1 != %0),(J@=_:(((%0)^(%0))|(%1))))
+#define ASSERT_LE(%1,%0) Testing_Test(_yT@(J@,(%0),2),_y@T((%0)),STRINGISE__(%1 <= %0),(J@=_:(((%0)^(%0))|(%1))))
+#define ASSERT_LT(%1,%0) Testing_Test(_yT@(J@,(%0),3),_y@T((%0)),STRINGISE__(%1 <  %0),(J@=_:(((%0)^(%0))|(%1))))
+#define ASSERT_GE(%1,%0) Testing_Test(_yT@(J@,(%0),4),_y@T((%0)),STRINGISE__(%1 >= %0),(J@=_:(((%0)^(%0))|(%1))))
+#define ASSERT_GT(%1,%0) Testing_Test(_yT@(J@,(%0),5),_y@T((%0)),STRINGISE__(%1 >  %0),(J@=_:(((%0)^(%0))|(%1))))
 
 // Zeroes.
 #define ASSERT_ZE(%1) Testing_Test(J@==0,"%s%s(%d)",STRINGISE__(%1==0),(J@=_:(%1)))
@@ -629,10 +629,16 @@ stock _Testing_Start(const name[], run = true, const group[] = "", slow = false)
 			TextDrawTextSize(YSI_g_sQuestionTD, 600.0, 50.0),
 			TextDrawSetOutline(YSI_g_sQuestionTD, 0),
 			TextDrawSetShadow(YSI_g_sQuestionTD, 0),
-			TextDrawAlignment(YSI_g_sQuestionTD, TEXT_DRAW_ALIGN:1),
-			TextDrawColor(YSI_g_sQuestionTD, 0xFF7F37FF),
-			TextDrawBackgroundColor(YSI_g_sQuestionTD, 0xFFFFFFFF),
-			TextDrawBoxColor(YSI_g_sQuestionTD, 0x000000AA),
+			TextDrawAlignment(YSI_g_sQuestionTD, TEXT_DRAW_ALIGN:1);
+			#if defined _INC_open_mp
+				TextDrawColour(YSI_g_sQuestionTD, 0xFF7F37FF),
+				TextDrawBackgroundColour(YSI_g_sQuestionTD, 0xFFFFFFFF),
+				TextDrawBoxColour(YSI_g_sQuestionTD, 0x000000AA);
+			#else
+				TextDrawColor(YSI_g_sQuestionTD, 0xFF7F37FF),
+				TextDrawBackgroundColor(YSI_g_sQuestionTD, 0xFFFFFFFF),
+				TextDrawBoxColor(YSI_g_sQuestionTD, 0x000000AA);
+			#endif
 			TextDrawUseBox(YSI_g_sQuestionTD, true),
 			TextDrawSetProportional(YSI_g_sQuestionTD, true),
 			TextDrawSetSelectable(YSI_g_sQuestionTD, false),
@@ -1461,9 +1467,23 @@ static stock y_testing_ReturnHello()
 #include ".\libs\y_testing_c"
 #include ".\libs\y_testing_f"
 
+#if defined YSI_NO_TEST_WARNINGS
+	#pragma warning push
+	#pragma warning disable 203
+	#pragma warning disable 204
+	#pragma warning disable 213
+	#pragma warning disable 214
+	#pragma warning disable 219
+	#pragma warning disable 234
+	#pragma warning disable 239
+	#pragma warning disable 240
+#endif
 #include "..\y_core\y_utils_tests"
 #include "..\y_core\y_als_tests"
 #include "..\y_core\y_cell_tests"
 #include "..\y_core\y_amx_tests"
 #include "..\..\YSI_Coding\y_unique\y_unique_tests"
+#if defined YSI_NO_TEST_WARNINGS
+	#pragma warning pop
+#endif
 

@@ -74,14 +74,20 @@ Optional plugins:
 #if defined YSI_TESTS
 	#pragma option -E-
 
-	#warning ==========================================
-	#warning |                                        |
-	#warning | Using `YSI_TESTS` will produce a huge  |
-	#warning | number of warnings.  However, they're  |
-	#warning |  all in tests and actually test that   |
-	#warning |    warnings are correctly produced.    |
-	#warning |                                        |
-	#warning ==========================================
+	#if !defined YSI_NO_TEST_WARNINGS
+		#warning ==========================================
+		#warning |                                        |
+		#warning | Using `YSI_TESTS` will produce a huge  |
+		#warning | number of warnings.  However, they're  |
+		#warning |  all in tests and actually test that   |
+		#warning |    warnings are correctly produced.    |
+		#warning |                                        |
+		#warning | Disable with:                          |
+		#warning |                                        |
+		#warning |   #define YSI_NO_TEST_WARNINGS         |
+		#warning |                                        |
+		#warning ==========================================
+	#endif
 #endif
 
 #define __COMPILER_NESTED_ELLIPSIS (1)

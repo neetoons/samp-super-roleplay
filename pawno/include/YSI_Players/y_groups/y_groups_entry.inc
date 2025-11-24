@@ -143,7 +143,21 @@ stock _YSI_HAS_y_groups(_do_not_call_me_ever_, _like_never_)
 }
 
 #if defined YSI_TESTS
+	#if defined YSI_NO_TEST_WARNINGS
+		#pragma warning push
+		#pragma warning disable 203
+		#pragma warning disable 204
+		#pragma warning disable 213
+		#pragma warning disable 214
+		#pragma warning disable 219
+		#pragma warning disable 234
+		#pragma warning disable 239
+		#pragma warning disable 240
+	#endif
 	#include "y_groups_tests"
+	#if defined YSI_NO_TEST_WARNINGS
+		#pragma warning pop
+	#endif
 
 	#include "..\..\YSI_Core\y_master"
 #endif

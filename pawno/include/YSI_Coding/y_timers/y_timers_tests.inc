@@ -228,11 +228,26 @@ new Timer:YSI_g_sKillYourself;
 {
 }
 
+#if defined YSI_NO_TEST_WARNINGS
+	#pragma unused _@yTy_timers_syntax2
+#endif
+
 @timer(500, .auto = true) y_timers_syntax3(playerid)
 {
 }
 
 @timer(500, true)y_timers_syntax4()
 {
+}
+
+@timer(100) TimeOverride()
+{
+}
+
+@test(.group = "y_timers") TimeOverride()
+{
+	new time = 10;
+	new Timer:t = defer TimeOverride[_:time * 50]();
+	#pragma unused t
 }
 

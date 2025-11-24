@@ -191,14 +191,42 @@ Optional plugins:
 	#define MASTER 58
 	#include "y_master_entry"
 	// Include the tests.
+	#if defined YSI_NO_TEST_WARNINGS
+		#pragma warning push
+		#pragma warning disable 203
+		#pragma warning disable 204
+		#pragma warning disable 213
+		#pragma warning disable 214
+		#pragma warning disable 219
+		#pragma warning disable 234
+		#pragma warning disable 239
+		#pragma warning disable 240
+	#endif
 	#include "y_master_tests"
+	#if defined YSI_NO_TEST_WARNINGS
+		#pragma warning pop
+	#endif
 	// Pop the master.
 	#include "y_master_entry"
 
 	#define MASTER 57
 	#define YSIM_U_ENABLE
 	#include "y_master_entry"
+	#if defined YSI_NO_TEST_WARNINGS
+		#pragma warning push
+		#pragma warning disable 203
+		#pragma warning disable 204
+		#pragma warning disable 213
+		#pragma warning disable 214
+		#pragma warning disable 219
+		#pragma warning disable 234
+		#pragma warning disable 239
+		#pragma warning disable 240
+	#endif
 	#include "y_master_module_tests"
+	#if defined YSI_NO_TEST_WARNINGS
+		#pragma warning pop
+	#endif
 	#include "y_master_entry"
 #elseif defined YSIM_TEST_MODULE
 	#if YSIM_TEST_MODULE == 1

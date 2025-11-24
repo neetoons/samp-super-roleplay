@@ -273,7 +273,7 @@ public OnPlayerDisconnect(playerid, reason)
 	forward Timers_OnPlayerDisconnect(playerid, reason);
 #endif
 
-stock _y@T:_Timer_I(const func[], interval, {_, _@yT}:action, &result)
+stock _y@T:_Timer_I(const func[], interval, {_, _yT@}:action, &result)
 {
 	Debug_Print3("_Timer_I called");
 	switch (_:action)
@@ -298,7 +298,7 @@ stock _y@T:_Timer_I(const func[], interval, {_, _@yT}:action, &result)
 }
 
 // Attempt to stop or start a task, possibly for a single player.
-stock _y@T:_Timer_D(const func[], interval, const {_, _@yT}:action, who, results[], a[2])
+stock _y@T:_Timer_D(const func[], interval, const {_, _yT@}:action, who, results[], a[2])
 {
 	Debug_Print3("_Timer_D called");
 	switch (_:action)
@@ -625,11 +625,11 @@ stock _Timer_F(Timer:slot = Timer:-1, force = 0)
 // 
 #define PTASK__%0[%1](%2) _F<@yT_>%0(g,p);_F<@yT_>%0(g,p){static s[MAX_PLAYERS]={0,...},a[2];return _Timer_D(#%0,%1,g,p,s,a);}%0(%2);public%0(%2)
 
-#define _yT@%0\32; _yT@
+#define _@yT%0\32; _@yT
 #define @_yT%0\32; @_yT
 #define @yT_%0\32; @yT_
 
-#define _yT@0000%0\32; _yT@0000
+#define _@yT0000%0\32; _@yT0000
 #define @_yT0000%0\32; @_yT0000
 #define @yT_0000%0\32; @yT_0000
 
@@ -667,8 +667,8 @@ stock _Timer_F(Timer:slot = Timer:-1, force = 0)
 
 // Decorator syntax.  We don't have `@task` and `@ptask`, it determines the
 // type automatically from having parameters or not.
-#define @timer(%1)%0(%2) _y@T:_F<@yT_>%0(_@yT:g,p);_y@T:_F<@yT_>%0(_@yT:g,p){static s[MAX_PLAYERS]={0,...},a[2];return _Timer_D(#%0,%1,g,p,s,a);}%0(%2);public %0(%2)
-#define _@yT:g,p);%9(%9){%9;%9_Timer_D(%9,%1,%9);}%0()%9() g,p);_y@T:_F<@yT_>%0(g,p){static s=0;return _Timer_I(#%0,%1,g,s);}%0();public %0()
+#define @timer(%1)%0(%2) _y@T:_F<@yT_>%0(_yT@:g,p);_y@T:_F<@yT_>%0(_yT@:g,p){static s[MAX_PLAYERS]={0,...},a[2];return _Timer_D(#%0,%1,g,p,s,a);}%0(%2);public %0(%2)
+#define _yT@:g,p);%9(%9){%9;%9_Timer_D(%9,%1,%9);}%0()%9() g,p);_y@T:_F<@yT_>%0(g,p){static s=0;return _Timer_I(#%0,%1,g,s);}%0();public %0()
 
 #define _Timer_I(%0,%1,%9,g,s) _Timer_I(%0,%1,g,s)
 #define _Timer_D(%0,%1,%9,g,p,s,a) _Timer_D(%0,%1,g,p,s,a)

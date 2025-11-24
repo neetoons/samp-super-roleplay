@@ -79,8 +79,8 @@ Optional plugins:
 #define YSI_VERSION_RESPO               2
 
 #define YSI_VERSION_MAJOR               5
-#define YSI_VERSION_MINOR               09
-#define YSI_VERSION_BUILD               0982
+#define YSI_VERSION_MINOR               10
+#define YSI_VERSION_BUILD               0006
 
 #define YSI_VERSION                     #YSI_VERSION_MAJOR "." #YSI_VERSION_MINOR "." #YSI_VERSION_BUILD
 
@@ -711,7 +711,7 @@ stock _YSI_ConstMod(const &var, const val)
 #endif
 
 #if defined YSI_YES_MODE_CACHE
-	#include "..\..\YSI_Server\y_thirdpartyinclude\y3_thirdpartyinclude_entry"
+	#include "..\..\YSI_Server\y_thirdpartyinclude\y_thirdpartyinclude_entry"
 #endif
 
 /*-------------------------------------------------------------------------*//**

@@ -3434,6 +3434,10 @@ iterfunc stock static y_iterDecl6(&iterstate, cur) { return cur == -1 ? iterstat
 /* | It tests the lack of "stock" with "iterfunc".                          | */
 /* ========================================================================== */
 
+#if defined YSI_NO_TEST_WARNINGS
+	#pragma unused Iter_Func@y_iterDecl1X
+#endif
+
 /* ========================================================================== */
 /* | THERE IS NOT MEANT TO BE A WARNING ON THIS LINE...                     | */
 /* |          ===                                                           | */
@@ -3446,6 +3450,10 @@ iterfunc stock static y_iterDecl6(&iterstate, cur) { return cur == -1 ? iterstat
 /* ========================================================================== */
 #define iterstart@y_iterDecl2X (cellmin)
 
+#if defined YSI_NO_TEST_WARNINGS
+	#pragma unused Iter_Func@y_iterDecl2X
+#endif
+
 /* ========================================================================== */
 /* | THERE IS NOT MEANT TO BE A WARNING ON THIS LINE...                     | */
 /* |          ===                                                           | */
@@ -3456,6 +3464,10 @@ iterfunc stock static y_iterDecl6(&iterstate, cur) { return cur == -1 ? iterstat
 /* |                                                                        | */
 /* | It tests that "static stock iterfunc" works.  TODO: Fix it.            | */
 /* ========================================================================== */
+
+#if defined YSI_NO_TEST_WARNINGS
+	#pragma unused Iter_Func@y_iterDecl3X
+#endif
 
 static iterfunc stock y_iterDecl4X(cur) { return cur == 0 ? 5 : 0; }
 #define Iterator@y_iterDecl4X iterstart(0)
@@ -3470,6 +3482,10 @@ static iterfunc stock y_iterDecl4X(cur) { return cur == 0 ? 5 : 0; }
 /* |                                                                        | */
 /* | It tests the lack of "stock" with "static iterfunc".                   | */
 /* ========================================================================== */
+
+#if defined YSI_NO_TEST_WARNINGS
+	#pragma unused Iter_Func@y_iterDecl5X
+#endif
 
 iterfunc stock static y_iterDecl6X(&iterstate, cur) { return cur == -1 ? iterstate : -1; }
 #define iterstart@y_iterDecl6X iterstate(-1, 5)

@@ -17,6 +17,10 @@ REMOTE_FUNC__ Float:yrt_335(hi, string:you[], there[], len)
 	return float(hi);
 }
 
+#if defined YSI_NO_TEST_WARNINGS
+	#pragma unused _@yrt_335
+#endif
+
 REMOTE_FUNC__ stock static void:yrt_4(hi)
 {
 	#pragma unused hi
@@ -130,6 +134,10 @@ REMOTE_FUNC__ static stock string:yrt_2b(const hi, string:you[], there[], &other
 		other = hi + 5;
 		return 5.5;
 	}
+
+	#if defined YSI_NO_TEST_WARNINGS
+		#pragma unused _@yrt_55
+	#endif
 
 	@test(.group = "y_remote") y_remote_55()
 	{

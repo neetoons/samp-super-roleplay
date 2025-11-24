@@ -197,7 +197,21 @@ FOREIGN__ Player_ChangeLanguage(playerid, string:code[]);
 	#include "y_users_ini"
 #endif
 #if defined YSI_TESTS
+	#if defined YSI_NO_TEST_WARNINGS
+		#pragma warning push
+		#pragma warning disable 203
+		#pragma warning disable 204
+		#pragma warning disable 213
+		#pragma warning disable 214
+		#pragma warning disable 219
+		#pragma warning disable 234
+		#pragma warning disable 239
+		#pragma warning disable 240
+	#endif
 	#include "y_users_tests"
+	#if defined YSI_NO_TEST_WARNINGS
+		#pragma warning pop
+	#endif
 #endif
 
 #include "..\..\YSI_Core\y_master"

@@ -86,6 +86,20 @@ Optional plugins:
 	// We need more heap space for one test.  Include this to get it without
 	// potentially breaking other tests.
 	#include "..\..\YSI_Coding\y_malloc"
+	#if defined YSI_NO_TEST_WARNINGS
+		#pragma warning push
+		#pragma warning disable 203
+		#pragma warning disable 204
+		#pragma warning disable 213
+		#pragma warning disable 214
+		#pragma warning disable 219
+		#pragma warning disable 234
+		#pragma warning disable 239
+		#pragma warning disable 240
+	#endif
 	#include "y_hashmap_tests"
+	#if defined YSI_NO_TEST_WARNINGS
+		#pragma warning pop
+	#endif
 #endif
 

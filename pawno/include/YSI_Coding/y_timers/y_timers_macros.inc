@@ -93,7 +93,7 @@ Optional plugins:
 #define _YT@CR:%0,%1)%2||| @Yf:@Yg:@Yh:#i#,@Yx:_Timer_B(J@)|||%0|||%1;%2|||
 
 // Define for "DEFER__" with timer, parameters and main function.
-#define TIMER__%0[%1]%3(%2) Timer:_yT@%0(%2)return _Timer_C(O@(#@_yT%0,(I@==-1)?(%1):I@,true,_YT@CR:%2,,)%0|||%0|||(%2)
+#define TIMER__%0[%1]%3(%2) _@yT%0(%2)return _:_Timer_C(O@(#@_yT%0,(I@==-1)?(%1):I@,true,_YT@CR:%2,,)%0|||%0|||(%2)
 
 // Expand additional parameters out to three functions after processing.
 #define @Yx:%0||||||;%1,%2|||%4||| %0));@Yj:@_yT%1(Timer:__r,%2);@Yj:@_yT%1(Timer:__r,%2){_YSI_g_sCurrentTimer=__r,%4(%2),_Timer_F();}%4
@@ -106,18 +106,23 @@ Optional plugins:
 #define @Yj:%0(%5){%1(%8&%2&%3)%9} @Yj:%0(%5){%1(%8:YSI_gMallocMemory[%2]%3)%9}
 #define @Yv&%0& %0
 
-#define DEFER__%0(%1) (J@=1,I@=-1,Timer:_yT@%0(%1))
+#define DEFER__%0(%1) (J@=1,I@=-1,Timer:@Yq:_@yT%0(%1))
 
-#define REPEAT__%0(%1) (J@=0,I@=-1,Timer:_yT@%0(%1))
+#define REPEAT__%0(%1) (J@=0,I@=-1,Timer:@Yq:_@yT%0(%1))
 
 // Detect explicit repeat counts.
-#define J@=0,I@=-1,Timer:_yT@[%4] J@=(%4),I@=-1,Timer:_yT@
+#define J@=0,I@=-1,Timer:@Yq:_@yT[%4] J@=(%4),I@=-1,Timer:@Yq:_@yT
 
 // Custom time.
-#define Timer:%0[%1](%2) I@=%1,Timer:%0(%2)
+#define @Yq:%0[%1](%2) I@=Timer:(%1),Timer:%0(%2)
 
 #define STOP__%0; {_Timer_F((%0),1);}
 
 // `stop` given without a timer ID - kill the current one.
 #define _Timer_F((),1) _Timer_F(_,2)
+
+// Old solution to the `forward` problem.  Now replaced with a new solution.
+// Namely just forgetting about needing `forward` at all and renaming the
+// underlying functions so that old forwards don't error.
+//#define FORWARD_TIMER__%0(%1); forward Timer:_@yT%0(%1);
 

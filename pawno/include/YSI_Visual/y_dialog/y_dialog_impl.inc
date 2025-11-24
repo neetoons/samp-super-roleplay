@@ -106,7 +106,7 @@ stock bool:Dialog_ShowCallback(playerid, {F@_@iiiis, F@_@iis}:callback, DIALOG_S
 {
 	BROADCAST_FUNC__ Dialog_Set(playerid, YSI_DIALOG_ID_1);
 	Indirect_Claim(callback),
-	Indirect_SetMeta(callback, tag),
+	Indirect_SetTag(callback, tag),
 	// Works tag-safely because the compile-time tag check uses `<iiiis>`.
 	YSI_g_sPlayerCallback[playerid] = callback;
 	return bool:ShowPlayerDialog(playerid, YSI_DIALOG_ID_1, style, __const(title), __const(caption), __const(button1), __const(button2));
@@ -196,7 +196,7 @@ HOOK__ OnDialogResponse(p,d,r,l,i[])
 			// we don't free the memory for the callback prematurely.
 			BROADCAST_FUNC__ Dialog_Set(p, -1);
 			// Call the callback.
-			if (Indirect_GetMeta(callback) == _:tagof (F@_@iiiis:))
+			if (Indirect_GetTag(callback) == _:tagof (F@_@iiiis:))
 			{
 				Indirect_Call(_:callback, tagof (F@_@iiiis:), p, YSI_DIALOG_ID_1, r, l, IsNull(i) ? NULL : i);
 			}
