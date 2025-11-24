@@ -8,7 +8,6 @@ Super Roleplay 2
 
 Una gamemode roleplay de SA:MP originalmente escrita y liberada por [Andri1](https://sampforum.blast.hk/member.php?action=profile&uid=106967), ahora mantenida por Neetoons y colaboradores.
 
----
 ## Carácteristicas
 - [Comandos Administrativos](https://github.com/neetoons/samp-super-roleplay/blob/main/docs/admin_commands.md)
 - [Lista de Anticheats](https://github.com/neetoons/samp-super-roleplay/blob/main/docs/anticheats.md)
