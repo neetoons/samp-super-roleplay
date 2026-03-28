@@ -11,20 +11,19 @@
 	Code originally released from: https://sampforum.blast.hk/showthread.php?tid=639431
 
 */
-#if defined admin_cms_included 
+#if defined admin_cms_included
 	#endinput
 #endif
 #define admin_cms_included
 
 
-flags:pm(CMD_ADMINISTRATOR);
-flags:settime(CMD_ADMINISTRATOR);
-flags:setweather(CMD_ADMINISTRATOR);
-flags:sethealth(CMD_ADMINISTRATOR);
-flags:setarmour(CMD_ADMINISTRATOR);
-flags:givemod(CMD_ADMINISTRATOR);
-flags:asay(CMD_ADMINISTRATOR);
-flags:ban(CMD_ADMINISTRATOR);
-flags:say(CMD_ADMINISTRATOR);
-flags:setfdrum(CMD_ADMINISTRATOR);
-
+flags:pm(CMD_ADMINISTRATOR)
+flags:settime(CMD_ADMINISTRATOR)
+flags:setweather(CMD_ADMINISTRATOR)
+flags:sethealth(CMD_ADMINISTRATOR)
+flags:setarmour(CMD_ADMINISTRATOR)
+flags:givemod(CMD_ADMINISTRATOR)
+flags:asay(CMD_ADMINISTRATOR)
+flags:ban(CMD_ADMINISTRATOR)
+flags:say(CMD_ADMINISTRATOR)
+flags:setfdrum(CMD_ADMINISTRATOR)
