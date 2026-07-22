@@ -4,7 +4,6 @@
 
 let
   cfg = config.services.samp-server;
-  pkgs-i686 = import pkgs.path { system = "i686-linux"; };
 
   serverCfg = pkgs.writeText "server.cfg" ''
     echo Executing Server Config...
@@ -362,7 +361,7 @@ in
         ln -sfn ${cfg.package}/plugins ${cfg.dataDir}/plugins
 
         # Symlink server binary
-        ln -sfn ${cfg.package}/samp03svr ${cfg.dataDir}/samp03svr
+        ln -sfn ${cfg.package}/omp-server ${cfg.dataDir}/omp-server
       '';
 
       serviceConfig = {
@@ -373,14 +372,6 @@ in
         StateDirectory = "samp-server";
         ProtectHome = true;
         NoNewPrivileges = true;
-      };
-
-      environment = {
-        LD_LIBRARY_PATH = lib.makeLibraryPath [
-          pkgs-i686.stdenv.cc.cc.lib
-          pkgs-i686.zlib
-          pkgs-i686.glibc
-        ];
       };
     };
 

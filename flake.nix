@@ -1,5 +1,5 @@
 {
-  description = "SA-MP super roleplay server";
+  description = "SA-MP super roleplay server (open.mp based)";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -8,7 +8,7 @@
 
   outputs = { self, nixpkgs, compiler-flake }:
     let
-      supportedSystems = [ "x86_64-linux" "aarch64-linux" ];
+      supportedSystems = [ "x86_64-linux" ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
 
       pkgsFor = system: import nixpkgs {
@@ -16,19 +16,24 @@
         config.allowUnfree = true;
       };
 
-      pkgs-i686For = system: import nixpkgs {
-        system = "i686-linux";
+      open-mp-source = builtins.fetchGit {
+        url = "https://github.com/openmultiplayer/open.mp";
+        rev = "f8058db80410b70f84c9089ec214530ca9784517";
+        submodules = true;
       };
     in
     {
       packages = forAllSystems (system:
         let
           pkgs = pkgsFor system;
-          pkgs-i686 = pkgs-i686For system;
         in {
+          open-mp = pkgs.callPackage ./nix/open-mp.nix {
+            open-mp-src = open-mp-source;
+          };
+
           default = pkgs.callPackage ./nix/package.nix {
             pawncc = compiler-flake.packages.${system}.default;
-            inherit pkgs-i686;
+            open-mp-server = self.packages.${system}.open-mp;
             sourceRoot = ./.;
           };
         }
@@ -44,25 +49,18 @@
       devShells = forAllSystems (system:
         let
           pkgs = pkgsFor system;
-          pkgs-i686 = pkgs-i686For system;
-          glibc_32 = pkgs-i686.glibc;
           pawncc = compiler-flake.packages.${system}.default;
         in {
           default = pkgs.mkShell {
             name = "samp-server-env";
 
             buildInputs = [
-              pkgs.patchelf
-              pkgs-i686.stdenv.cc.cc.lib
-              pkgs-i686.zlib
-              pkgs.libuuid
               pawncc
             ];
 
             shellHook = ''
-              export LD_LIBRARY_PATH="${pkgs-i686.stdenv.cc.cc.lib}/lib:${pkgs-i686.zlib}/lib:$LD_LIBRARY_PATH"
-              export INTERPRETER_32="${glibc_32}/lib/ld-linux.so.2"
-              echo "type patchelf --set-interpreter \$INTERPRETER_32 samp03svr"
+              echo "SA-MP Super Roleplay dev shell"
+              echo "Compile: cd gamemodes && pawncc -Dgamemodes -i../pawno/include -d3 -Z \"-(+\" \"-;+\" srp.pwn"
             '';
           };
         }
