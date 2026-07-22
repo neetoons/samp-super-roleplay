@@ -5,58 +5,50 @@
 let
   cfg = config.services.samp-server;
 
-  serverCfg = pkgs.writeText "server.cfg" ''
-    echo Executing Server Config...
+  configJson = pkgs.writeText "config.json" (builtins.toJSON {
+    name = cfg.hostname;
+    language = cfg.language;
+    announce = cfg.announce;
+    website = cfg.weburl;
 
-    # Server
-    hostname ${cfg.hostname}
-    language ${cfg.language}
-    mapname ${cfg.mapname}
-    weburl ${cfg.weburl}
-    announce ${if cfg.announce then "1" else "0"}
+    network = {
+      port = cfg.port;
+      stream_radius = cfg.streamDistance;
+      stream_rate = cfg.streamRate;
+      cookie_reseed_time = if cfg.connCookies then 300000 else 0;
+    };
 
-    # Console
-    rcon_password ${cfg.rcon.password}
-    rcon ${if cfg.rcon.enable then "1" else "0"}
-    output 1
+    max_players = cfg.maxPlayers;
+    max_bots = cfg.maxNpc;
 
-    # Scripts
-    filterscripts ${lib.concatStringsSep " " cfg.filterscripts}
-    gamemode0 ${cfg.gamemode} ${toString cfg.gamemodeSlots}
-    plugins ${lib.concatStringsSep " " cfg.plugins}
+    game = {
+      lag_compensation_mode = cfg.lagcompMode;
+      mode = cfg.gamemode;
+      map = cfg.mapname;
+    };
 
-    # Browser
-    maxplayers ${toString cfg.maxPlayers}
-    maxnpc ${toString cfg.maxNpc}
+    pawn = {
+      legacy_plugins = cfg.legacyPlugins;
+      main_scripts = [ "${cfg.gamemode} ${toString cfg.gamemodeSlots}" ];
+      side_scripts = map (fs: "filterscripts/${fs}") cfg.filterscripts;
+    };
 
-    # Networking
-    port ${toString cfg.port}
-    conncookies ${if cfg.connCookies then "1" else "0"}
-    sleep 1
+    rcon = {
+      enable = cfg.rcon.enable;
+      password = cfg.rcon.password;
+    };
 
-    # Logging
-    logtimeformat (${cfg.logTimeFormat})
-    chatlogging ${if cfg.chatLogging then "1" else "0"}
-    timestamp ${if cfg.timestamp then "1" else "0"}
-    db_logging ${if cfg.dbLogging then "1" else "0"}
-    db_log_queries ${if cfg.dbLogQueries then "1" else "0"}
+    logging = {
+      enable = true;
+      log_chat = cfg.chatLogging;
+      log_connection_messages = true;
+      log_deaths = true;
+      log_queries = cfg.dbLogQueries;
+      timestamp_format = "[${cfg.logTimeFormat}]";
+    };
 
-    # Client
-    onfoot_rate ${toString cfg.onfootRate}
-    incar_rate ${toString cfg.incarRate}
-    weapon_rate ${toString cfg.weaponRate}
-    lagcompmode ${toString cfg.lagcompMode}
-    stream_distance ${cfg.streamDistance}
-    stream_rate ${toString cfg.streamRate}
-
-    # Profiler
-    long_call_time 0
-    profiler_gamemode main
-    profiler_outputformat html
-    profiler_callgraph 0
-
-    ${cfg.extraConfig}
-  '';
+    sleep = cfg.sleep;
+  });
 
   dbCfg = pkgs.writeText "srp_db.ini" ''
     hostname = ${cfg.database.hostname}
@@ -66,7 +58,6 @@ let
     auto_reconnect = ${if cfg.database.autoReconnect then "true" else "false"}
   '';
 
-  # SQL to set user password on first startup
   dbInitScript = pkgs.writeText "samp-db-init.sql" ''
     ALTER USER '${cfg.database.username}'@'${cfg.database.hostname}' IDENTIFIED BY '${cfg.database.password}';
     FLUSH PRIVILEGES;
@@ -74,13 +65,13 @@ let
 in
 {
   options.services.samp-server = {
-    enable = lib.mkEnableOption "SA-MP server";
+    enable = lib.mkEnableOption "open.mp server";
 
     package = lib.mkOption {
       type = lib.types.package;
       default = self.packages.${pkgs.system}.default;
       defaultText = lib.literalExpression "self.packages.\${pkgs.system}.default";
-      description = "SA-MP server package to use.";
+      description = "open.mp server package to use.";
     };
 
     hostname = lib.mkOption {
@@ -149,20 +140,10 @@ in
       description = "List of filterscript names (without .amx extension).";
     };
 
-    plugins = lib.mkOption {
+    legacyPlugins = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      default = [
-        "crashdetect.so"
-        "streamer.so"
-        "sscanf.so"
-        "mysql.so"
-        "pawncmd.so"
-        "pawnregex.so"
-        "pawnraknet.so"
-        "MapAndreas.so"
-        "PawnPlus.so"
-      ];
-      description = "List of plugin files to load.";
+      default = [];
+      description = "Legacy SA-MP plugins to load from the plugins/ directory.";
     };
 
     rcon = {
@@ -174,8 +155,8 @@ in
 
       password = lib.mkOption {
         type = lib.types.str;
-        default = "";
-        description = "RCON password. Leave empty to disable.";
+        default = "changeme";
+        description = "RCON password.";
       };
     };
 
@@ -188,7 +169,7 @@ in
     logTimeFormat = lib.mkOption {
       type = lib.types.str;
       default = "%d/%m/%Y %H:%M:%S";
-      description = "Log time format.";
+      description = "Log time format (strftime format).";
     };
 
     chatLogging = lib.mkOption {
@@ -197,58 +178,34 @@ in
       description = "Enable chat logging.";
     };
 
-    timestamp = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = "Show timestamps in chat.";
-    };
-
-    dbLogging = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = "Enable database logging.";
-    };
-
     dbLogQueries = lib.mkOption {
       type = lib.types.bool;
       default = false;
       description = "Log individual database queries.";
     };
 
-    onfootRate = lib.mkOption {
-      type = lib.types.ints.positive;
-      default = 40;
-      description = "On-foot sync rate (ms).";
-    };
-
-    incarRate = lib.mkOption {
-      type = lib.types.ints.positive;
-      default = 40;
-      description = "In-car sync rate (ms).";
-    };
-
-    weaponRate = lib.mkOption {
-      type = lib.types.ints.positive;
-      default = 40;
-      description = "Weapon sync rate (ms).";
-    };
-
     lagcompMode = lib.mkOption {
       type = lib.types.int;
       default = 1;
-      description = "Lag compensation mode (0=off, 1=on, 2=full).";
+      description = "Lag compensation mode (0=off, 1=on, 2=position only).";
     };
 
     streamDistance = lib.mkOption {
-      type = lib.types.str;
-      default = "200.0";
-      description = "Streamer distance.";
+      type = lib.types.float;
+      default = 200.0;
+      description = "Streamer distance (50.0-400.0).";
     };
 
     streamRate = lib.mkOption {
       type = lib.types.ints.positive;
       default = 1000;
-      description = "Streamer update rate (ms).";
+      description = "Streamer update rate in ms (500-5000).";
+    };
+
+    sleep = lib.mkOption {
+      type = lib.types.float;
+      default = 5.0;
+      description = "Main thread sleep time in ms. Lower = better sync, higher CPU.";
     };
 
     openFirewall = lib.mkOption {
@@ -258,9 +215,9 @@ in
     };
 
     extraConfig = lib.mkOption {
-      type = lib.types.lines;
-      default = "";
-      description = "Extra lines appended to server.cfg.";
+      type = lib.types.attrs;
+      default = {};
+      description = "Extra attributes merged into config.json.";
     };
 
     dataDir = lib.mkOption {
@@ -270,7 +227,7 @@ in
     };
 
     database = {
-      enable = lib.mkEnableOption "MariaDB database server for SA-MP";
+      enable = lib.mkEnableOption "MariaDB database server";
 
       hostname = lib.mkOption {
         type = lib.types.str;
@@ -336,31 +293,26 @@ in
     };
 
     systemd.services.samp-server = {
-      description = "SA-MP Super Roleplay Server";
+      description = "open.mp Super Roleplay Server";
       after = [ "network.target" ] ++ lib.optional cfg.database.enable "mysql.service";
       wantedBy = [ "multi-user.target" ];
       requires = lib.optional cfg.database.enable "mysql.service";
 
       preStart = ''
-        # Ensure data directory exists
         mkdir -p ${cfg.dataDir}/scriptfiles
         mkdir -p ${cfg.dataDir}/logs
 
-        # Copy scriptfiles if empty
         if [ -z "$(ls -A ${cfg.dataDir}/scriptfiles 2>/dev/null)" ]; then
           cp -r ${cfg.package}/scriptfiles/* ${cfg.dataDir}/scriptfiles/ || true
         fi
 
-        # Symlink server config and database config
-        ln -sf ${serverCfg} ${cfg.dataDir}/server.cfg
+        ln -sf ${configJson} ${cfg.dataDir}/config.json
         ln -sf ${dbCfg} ${cfg.dataDir}/srp_db.ini
 
-        # Symlink gamemodes, filterscripts, plugins
         ln -sfn ${cfg.package}/gamemodes ${cfg.dataDir}/gamemodes
         ln -sfn ${cfg.package}/filterscripts ${cfg.dataDir}/filterscripts
-        ln -sfn ${cfg.package}/plugins ${cfg.dataDir}/plugins
+        ln -sfn ${cfg.package}/components ${cfg.dataDir}/components
 
-        # Symlink server binary
         ln -sfn ${cfg.package}/omp-server ${cfg.dataDir}/omp-server
       '';
 
