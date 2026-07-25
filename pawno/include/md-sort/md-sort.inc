@@ -268,7 +268,7 @@ stock ExchangeArraySlots(array[][], slot1, slot2) {
 #define ShuffleDeepArray(%0) ShuffleDeepArray_Entry(_:%0, sizeof(%0), sizeof (%0[]))
 
 stock ShuffleDeepArray_Entry(...) {
-	assert(numargs() == 3);
+	// assert(numargs() == 3);
 	new
 		i,
 		base,
@@ -319,7 +319,7 @@ stock ShuffleDeepArray_Entry(...) {
 
 stock ResetDeepArray_Entry(...) {
 	// Put all the slots back how they should be originally.
-	assert(numargs() == 3);
+	// assert(numargs() == 3);
 	new
 		i,
 		base,

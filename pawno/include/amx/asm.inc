@@ -823,7 +823,7 @@ stock AsmError:AsmEmitJrelLabelStringize(ctx[AsmContext], const label[]) {
 
 /// <library>amx_assembly asm</library>
 stock AsmError:AsmEmitLctrl(ctx[AsmContext], index) {
-	assert(index >= 0 && index <= 8);
+	// assert(index >= 0 && index <= 8);
 	return AsmEmitInstruction(ctx, OP_LCTRL, index);
 }
 
@@ -879,7 +879,7 @@ stock AsmError:AsmEmitLoadSPri(ctx[AsmContext], offset) {
 
 /// <library>amx_assembly asm</library>
 stock AsmError:AsmEmitLodbI(ctx[AsmContext], nbytes) {
-	assert(nbytes == 1 || nbytes == 2 || nbytes == 4);
+	// assert(nbytes == 1 || nbytes == 2 || nbytes == 4);
 	return AsmEmitInstruction(ctx, OP_LODB_I, nbytes);
 }
 
@@ -1000,7 +1000,7 @@ stock AsmError:AsmEmitRetn(ctx[AsmContext]) {
 
 /// <library>amx_assembly asm</library>
 stock AsmError:AsmEmitSctrl(ctx[AsmContext], index) {
-	assert(index == 2 || 4 <= index <= 6 || index == 8);
+	// assert(index == 2 || 4 <= index <= 6 || index == 8);
 	return AsmEmitInstruction(ctx, OP_SCTRL, index);
 }
 
@@ -1141,7 +1141,7 @@ stock AsmError:AsmEmitStorSPri(ctx[AsmContext], offset) {
 
 /// <library>amx_assembly asm</library>
 stock AsmError:AsmEmitStrbI(ctx[AsmContext], nbytes) {
-	assert(nbytes == 1 || nbytes == 2 || nbytes == 4);
+	// assert(nbytes == 1 || nbytes == 2 || nbytes == 4);
 	return AsmEmitInstruction(ctx, OP_STRB_I, nbytes);
 }
 

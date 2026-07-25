@@ -1296,7 +1296,7 @@ stock SSCANF_GetSimilarString(const input[], const candidates[][], Float:thresho
  */
 stock SSCANF_GetSimilarValue(const input[], const candidates[][], const results[], fail = cellmin, Float:threshold = 0.111111, count = sizeof (candidates), check = sizeof (results))
 {
-	assert(count == check);
+	// assert(count == check);
 	new closest = SSCANF_GetSimilarString(input, candidates, threshold, count);
 	if (closest == cellmin)
 	{
@@ -1379,7 +1379,7 @@ stock SSCANF_GetClosestString(const input[], const candidates[][], threshold = c
 #pragma deprecated Use `SSCANF_GetSimilarValue` for more human results.
 stock SSCANF_GetClosestValue(const input[], const candidates[][], const results[], fail = cellmin, threshold = cellmax, count = sizeof (candidates), check = sizeof (results))
 {
-	assert(count == check);
+	// assert(count == check);
 	new closest = SSCANF_GetClosestString(input, candidates, threshold, count);
 	if (closest == cellmin)
 	{

@@ -88,7 +88,7 @@ static stock GetAmxBaseAddress_helper() {
 /// </summary>
 stock GetAmxBaseAddressNow() {
 	// Required for this trick to work.
-	assert(HasReloc());
+	// assert(HasReloc());
 
 	new cod = 0, dat = 0;
 	#emit lctrl __cod

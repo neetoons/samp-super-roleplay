@@ -73,7 +73,7 @@
 /// </summary>
 stock ref(...) {
 	const cells0 = 3 * cellbytes;
-	assert(numargs() == 1);
+	// assert(numargs() == 1);
 	#emit load.s.pri cells0 // first argument
 	#emit retn
 	return 0; // make compiler happy

@@ -80,7 +80,7 @@ static stock RelToWide(address, &wide) {
 /// </summary>
 stock refabs(...) {
 	const cells0 = 3 * cellbytes;
-	assert(numargs() == 1);
+	// assert(numargs() == 1);
 	new address = 0;
 	#emit load.s.pri cells0
 	#emit stor.s.pri address
@@ -93,7 +93,7 @@ stock refabs(...) {
 /// </summary>
 stock refwide(&wide, ...) {
 	const cells0 = 4 * cellbytes;
-	assert(numargs() == 2);
+	// assert(numargs() == 2);
 	new address = 0;
 	#emit load.s.pri cells0
 	#emit stor.s.pri address

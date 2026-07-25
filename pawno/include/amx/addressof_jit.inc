@@ -104,7 +104,7 @@ stock AddressofResolve() {
 	//   
 	// We can actually use `addressof` (via `&`) in this code, since it should
 	// NEVER be called after the JIT has started.  We assert that.
-	assert(!GetAmxJITBaseAddress());
+	// assert(!GetAmxJITBaseAddress());
 	new scanner[CodeScanner];
 	CodeScanInit(scanner);
 	

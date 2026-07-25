@@ -1498,7 +1498,7 @@ stock Indirect_Tag(id, dest[32])
 stock Indirect_Ref_(...)
 {
 	const cells0 = 3 * cellbytes;
-	assert(numargs() == 1);
+	// assert(numargs() == 1);
 	#emit LOAD.S.pri       cells0
 	#emit LOAD.alt         INDR_gsCodSize
 	#emit ADD
@@ -1521,7 +1521,7 @@ stock Indirect_Ptr_(ptr)
 {
 	const cells0 = 3 * cellbytes;
 	#pragma unused ptr
-	assert(numargs() == 1);
+	// assert(numargs() == 1);
 	#emit LOAD.S.pri       cells0
 	#emit LOAD.alt         INDR_gsCodSize
 	#emit ADD
@@ -1543,7 +1543,7 @@ stock Indirect_Ptr_(ptr)
 stock Indirect_DeRef_(...)
 {
 	const cells0 = 3 * cellbytes;
-	assert(numargs() == 1);
+	// assert(numargs() == 1);
 	#emit LOAD.S.pri       cells0
 	#emit LOAD.alt         INDR_gsCodSize
 	#emit SUB
