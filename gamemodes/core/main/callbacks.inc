@@ -82,7 +82,7 @@ public OnPlayerConnect(playerid)
 
 		if(GetNumberOfPlayersOnThisIP(PLAYER_TEMP[playerid][pt_IP]) > 3)
 		{
-			ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Aviso", "Ha sido expulsado por exceder el m·ximo de conexiones desde una IP.", "Entiendo", "");
+			ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Aviso", "Ha sido expulsado por exceder el mÔøΩximo de conexiones desde una IP.", "Entiendo", "");
 			KickEx(playerid, 500);
 		}
 		else
@@ -220,7 +220,7 @@ public OnPlayerSpawn(playerid)
 			mysql_tquery(srp_db, QUERY_BUFFER);
 		}
 		else {
-			SendNotification(playerid, "Activa la verificaciÛn en dos pasos para poder proteger tu cuenta, utiliza /ayuda verificacion para m·s informaciÛn.");
+			SendNotification(playerid, "Activa la verificaciÔøΩn en dos pasos para poder proteger tu cuenta, utiliza /ayuda verificacion para mÔøΩs informaciÔøΩn.");
 		}
 
 		new now = gettime();
@@ -380,11 +380,11 @@ public OnPlayerSpawn(playerid)
 					if(ACCOUNT_INFO[playerid][ac_VIP]) PI[playerid][ac_POLICE_JAIL_TIME] = 150 * PI[playerid][ac_WANTED_LEVEL];
 					else PI[playerid][ac_POLICE_JAIL_TIME] = 300 * PI[playerid][ac_WANTED_LEVEL];
 					
-					SendNotification(playerid, "Fuiste ingresado en ~r~el centro mÈdico m·s cercano~w~.~n~~n~Espera mientras te recuperas.");
+					SendNotification(playerid, "Fuiste ingresado en ~r~el centro mÔøΩdico mÔøΩs cercano~w~.~n~~n~Espera mientras te recuperas.");
 				}
 				else
 				{
-					SendNotification(playerid, "Fuiste ingresado en ~r~el centro mÈdico m·s cercano~w~.~n~~n~Espera mientras te recuperas.");
+					SendNotification(playerid, "Fuiste ingresado en ~r~el centro mÔøΩdico mÔøΩs cercano~w~.~n~~n~Espera mientras te recuperas.");
 				}
 
 				InterpolateCameraPos(playerid, Hospital_Cameras_Positions[PLAYER_TEMP[playerid][pt_HOSPITAL]][0], Hospital_Cameras_Positions[PLAYER_TEMP[playerid][pt_HOSPITAL]][1], Hospital_Cameras_Positions[PLAYER_TEMP[playerid][pt_HOSPITAL]][2], Hospital_Cameras_Positions[PLAYER_TEMP[playerid][pt_HOSPITAL]][0], Hospital_Cameras_Positions[PLAYER_TEMP[playerid][pt_HOSPITAL]][1], Hospital_Cameras_Positions[PLAYER_TEMP[playerid][pt_HOSPITAL]][2], 1000, CAMERA_CUT);
@@ -405,7 +405,7 @@ public OnPlayerSpawn(playerid)
 			PLAYER_TEMP[playerid][pt_TIME_PASSED_LAST_REP] = gettime() * 1000;
 			PLAYER_TEMP[playerid][pt_TIMERS][2] = SetTimerEx("AddPlayerReputation", ACCOUNT_INFO[playerid][ac_TIME_FOR_REP], false, "i", playerid);
 		}
-		else SendFormatNotification(playerid, "Escribe ~g~/comprarnivel ~w~para subir al nivel ~g~%d ~w~por ~g~%d dÛlares~w~.", ACCOUNT_INFO[playerid][ac_LEVEL] + 1, ACCOUNT_INFO[playerid][ac_LEVEL] * 150); //
+		else SendFormatNotification(playerid, "Escribe ~g~/comprarnivel ~w~para subir al nivel ~g~%d ~w~por ~g~%d dÔøΩlares~w~.", ACCOUNT_INFO[playerid][ac_LEVEL] + 1, ACCOUNT_INFO[playerid][ac_LEVEL] * 150); //
 		
 		if(PI[playerid][ac_PHONE_NUMBER])
 		{
@@ -418,7 +418,7 @@ public OnPlayerSpawn(playerid)
 					{
 						new unreaded_messages;
 						cache_get_value_index_int(0, 0, unreaded_messages);
-						if(unreaded_messages > 0) SendClientMessageEx(playerid, -1, "Tienes {f1f442}%d {FFFFFF}mensajes nuevos en tu /movil desde tu ˙ltima conexiÛn.", unreaded_messages);
+						if(unreaded_messages > 0) SendClientMessageEx(playerid, -1, "Tienes {f1f442}%d {FFFFFF}mensajes nuevos en tu /movil desde tu ÔøΩltima conexiÔøΩn.", unreaded_messages);
 					}
 				}
 				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pmessages SET offline = 0 WHERE to_id = %d;", ACCOUNT_INFO[playerid][ac_ID]);
@@ -460,12 +460,12 @@ public OnPlayerSpawn(playerid)
 				ClearPlayerChat(playerid);
 				if(PI[playerid][ac_WANTED_LEVEL] > 0 || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED)
 				{
-					SendNotification(playerid, "Fuiste ingresado en el centro mÈdico m·s cercano.");
-					SendNotification(playerid, "Cuando te recuperes ser·s llevado a la c·rcel.");
+					SendNotification(playerid, "Fuiste ingresado en el centro mÔøΩdico mÔøΩs cercano.");
+					SendNotification(playerid, "Cuando te recuperes serÔøΩs llevado a la cÔøΩrcel.");
 				}
 				else
 				{
-					SendNotification(playerid, "Fuiste ingresado en el centro mÈdico m·s cercano.");
+					SendNotification(playerid, "Fuiste ingresado en el centro mÔøΩdico mÔøΩs cercano.");
 					SendNotification(playerid, "Espera mientras te recuperas.");
 				}
 				
@@ -555,7 +555,7 @@ hook OnPlayerDeath(playerid, killerid, reason)
 		{
 			if(IsPlayerInSafeZone(killerid))
 			{
-				SendClientMessage(killerid, -1, "Est·s en una zona segura, la policÌa ha sido avisada del homicidio.");
+				SendClientMessage(killerid, -1, "EstÔøΩs en una zona segura, la policÔøΩa ha sido avisada del homicidio.");
 				
 				new level = PI[killerid][ac_WANTED_LEVEL] + 3;
 				if(level > 6) level = 6;
@@ -566,7 +566,7 @@ hook OnPlayerDeath(playerid, killerid, reason)
 				GetPlayerZones(killerid, city, zone);
 
 				new message[145];
-				format(message, sizeof message, "{"#PRIMARY_COLOR"}[Central policÌa] {FFFFFF}%s ha causado un asesinato en {"#PRIMARY_COLOR"}%s, %s.", PLAYER_TEMP[killerid][pt_RP_NAME], city, zone);
+				format(message, sizeof message, "{"#PRIMARY_COLOR"}[Central policÔøΩa] {FFFFFF}%s ha causado un asesinato en {"#PRIMARY_COLOR"}%s, %s.", PLAYER_TEMP[killerid][pt_RP_NAME], city, zone);
 				SendPoliceRadioMessage(-1, -1, message);
 				
 				PLAYER_TEMP[killerid][pt_LAST_SAFE_ZONE_WARNING] = gettime();
@@ -624,12 +624,12 @@ hook OnPlayerDeath(playerid, killerid, reason)
 		{
 			if(PLAYER_TEMP[playerid][pt_TRASH_DRIVER])
 			{
-				SendClientMessage(TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_PASSENGER_ID], -1, "{"#SILVER_COLOR"}El trabajo se ha cancelado porque tu compaÒero ha dejado de trabajar.");
+				SendClientMessage(TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_PASSENGER_ID], -1, "{"#SILVER_COLOR"}El trabajo se ha cancelado porque tu compaÔøΩero ha dejado de trabajar.");
 				CancelTrashWork(playerid, TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_PASSENGER_ID], PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID]);
 			}
 			if(PLAYER_TEMP[playerid][pt_TRASH_PASSENGER])
 			{
-				SendClientMessage(TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_DRIVER_ID], -1, "{"#SILVER_COLOR"}El trabajo se ha cancelado porque tu compaÒero ha dejado de trabajar.");
+				SendClientMessage(TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_DRIVER_ID], -1, "{"#SILVER_COLOR"}El trabajo se ha cancelado porque tu compaÔøΩero ha dejado de trabajar.");
 				CancelTrashWork(TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_DRIVER_ID], playerid, PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID]);
 			}
 		}
@@ -697,7 +697,7 @@ public OnSecureLoginCheckCode(index, response_code, data[]) {
 		mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "INSERT INTO player_secure_login (ip, id_player) VALUES ('%e', %d);", PLAYER_TEMP[index][pt_IP], ACCOUNT_INFO[index][ac_ID]);
 		mysql_tquery(srp_db, QUERY_BUFFER);
 
-		SendNotification(index, "Se ha confirmado el inicio de sesiÛn.");
+		SendNotification(index, "Se ha confirmado el inicio de sesiÔøΩn.");
 		LoginPlayer(index);
 	}
 	else {
@@ -710,7 +710,7 @@ public OnSecureLoginCheckCode(index, response_code, data[]) {
 
 public OnPlayerRequestClass(playerid, classid)
 {
-	if(PLAYER_TEMP[playerid][pt_GAME_STATE] == GAME_STATE_CONNECTED) // ReciÈn conectado
+	if(PLAYER_TEMP[playerid][pt_GAME_STATE] == GAME_STATE_CONNECTED) // ReciÔøΩn conectado
 	{
 		PlayAudioStreamForPlayer(playerid, Intro_Audios[random(sizeof Intro_Audios)]);
 		
@@ -761,17 +761,17 @@ public OnPlayerRequestClass(playerid, classid)
 								format(dialog, sizeof dialog, 
 									
 									"\
-										Esta IP o cuenta est· expulsada temporalmente, detalles:\n\
+										Esta IP o cuenta estÔøΩ expulsada temporalmente, detalles:\n\
 										\n\
 										Tu nombre: %s\n\
 										\n\
 										Nombre: %s\n\
 										Expulsado por: %d\n\
-										Fecha expulsiÛn: %s\n\
-										RazÛn: %s\n\
+										Fecha expulsiÔøΩn: %s\n\
+										RazÔøΩn: %s\n\
 										\n\
 										Fecha actual: %s\n\
-										Fecha readmisiÛn: %s\n\
+										Fecha readmisiÔøΩn: %s\n\
 										\n\
 									",
 									
@@ -791,14 +791,14 @@ public OnPlayerRequestClass(playerid, classid)
 							format(dialog, sizeof dialog, 
 								
 								"\
-									Esta IP o cuenta est· expulsada permanentemente, detalles:\n\
+									Esta IP o cuenta estÔøΩ expulsada permanentemente, detalles:\n\
 									\n\
 									Tu nombre: %s\n\
 									\n\
 									Nombre: %s\n\
 									Expulsado por: %d\n\
-									Fecha expulsiÛn: %s\n\
-									RazÛn: %s\n\
+									Fecha expulsiÔøΩn: %s\n\
+									RazÔøΩn: %s\n\
 									\n\
 								",
 								
@@ -847,9 +847,9 @@ public OnPlayerRequestClass(playerid, classid)
 									SetPlayerMyWeather(playerid, Intro_Info[intro][intro_info_WEATHER]);
 									SetPlayerMyTime(playerid, Intro_Info[intro][intro_info_HOUR], 0);
 
-									if(!PI[playerid][ac_CONFIG_SECURE_LOGIN] && strcmp(PLAYER_TEMP[playerid][pt_IP], ACCOUNT_INFO[playerid][ac_IP])) // La IP actual no es la misma IP de la ˙ltima conexiÛn
+									if(!PI[playerid][ac_CONFIG_SECURE_LOGIN] && strcmp(PLAYER_TEMP[playerid][pt_IP], ACCOUNT_INFO[playerid][ac_IP])) // La IP actual no es la misma IP de la ÔøΩltima conexiÔøΩn
 									{
-										SendNotification(playerid, "Tu direcciÛn IP ha cambiado desde tu ˙ltima conexiÛn.");
+										SendNotification(playerid, "Tu direcciÔøΩn IP ha cambiado desde tu ÔøΩltima conexiÔøΩn.");
 									}
 									ShowDialog(playerid, DIALOG_LOGIN);
 								}
@@ -892,7 +892,7 @@ public OnPlayerRequestClass(playerid, classid)
 	return 0;
 }
 
-public OnPlayerRequestSpawn(playerid) // Intentar 'spawnear' mediante la selecciÛn de skin << spawn >>
+public OnPlayerRequestSpawn(playerid) // Intentar 'spawnear' mediante la selecciÔøΩn de skin << spawn >>
 {
 	if(PLAYER_TEMP[playerid][pt_GAME_STATE] == GAME_STATE_CONNECTED) CallLocalFunction("OnPlayerRequestClass", "dd", playerid, 0);
     return 0;
@@ -958,7 +958,7 @@ hook OnPlayerText(playerid, text[])
 				}
 			}
 		}
-		SendNotification(playerid, "C·lmate."); 
+		SendNotification(playerid, "CÔøΩlmate."); 
 		return 0; 
 	}
 	PLAYER_TEMP[playerid][pt_ANTIFLOOD_TALK] = GetTickCount();
@@ -982,10 +982,10 @@ hook OnPlayerText(playerid, text[])
 		GetPlayerZones(playerid, city, zone);
 			
 		new message[145];
-		format(message, sizeof message, "{"#PRIMARY_COLOR"}[Central policÌa] {FFFFFF}Reporte {"#SILVER_COLOR"}[%s (%d), gps: %s, %s]: {FFFFFF}%s", PLAYER_TEMP[playerid][pt_POLICE_CALL_NAME_STR], playerid, city, zone, text);
+		format(message, sizeof message, "{"#PRIMARY_COLOR"}[Central policÔøΩa] {FFFFFF}Reporte {"#SILVER_COLOR"}[%s (%d), gps: %s, %s]: {FFFFFF}%s", PLAYER_TEMP[playerid][pt_POLICE_CALL_NAME_STR], playerid, city, zone, text);
 		SendPoliceRadioMessage(-1, -1, message);
 
-		SendNotification(playerid, "Operadora: su peticiÛn fue enviada, en breve una patrulla acudir·.");
+		SendNotification(playerid, "Operadora: su peticiÔøΩn fue enviada, en breve una patrulla acudirÔøΩ.");
 		SendNotification(playerid, "{"#PRIMARY_COLOR"}Llamada finalizada.");
 		return 0;
 	}
@@ -1014,8 +1014,8 @@ hook OnPlayerText(playerid, text[])
 	
 	if(PLAYER_TEMP[playerid][pt_PLAYER_PHONE_CALL_STATE] == CALL_STATE_ESTABLISHED)
 	{
-		format(str_text, 145, "%s dice (por telÈfono): %s", PLAYER_TEMP[playerid][pt_RP_NAME], text);
-		SendClientMessageEx(PLAYER_TEMP[playerid][pt_PLAYER_PHONE_CALL_PLAYERID], -1, "{"#SILVER_COLOR"}TelÈfono: %s: %s", convertPhoneNumber(PLAYER_TEMP[playerid][pt_PLAYER_PHONE_CALL_PLAYERID], PI[playerid][ac_PHONE_NUMBER]), text);
+		format(str_text, 145, "%s dice (por telÔøΩfono): %s", PLAYER_TEMP[playerid][pt_RP_NAME], text);
+		SendClientMessageEx(PLAYER_TEMP[playerid][pt_PLAYER_PHONE_CALL_PLAYERID], -1, "{"#SILVER_COLOR"}TelÔøΩfono: %s: %s", convertPhoneNumber(PLAYER_TEMP[playerid][pt_PLAYER_PHONE_CALL_PLAYERID], PI[playerid][ac_PHONE_NUMBER]), text);
 	}
 	else
 	{
@@ -1045,7 +1045,7 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
 				{
 					if(TERRITORIES[index][territory_WAR])
 					{
-						SendFormatNotification(playerid, "Este territorio est· siendo atacado por la banda ~r~'%s'~w~.",CREW_INFO[ TERRITORIES[index][territory_ATTACKER_CREW_INDEX] ][crew_NAME]);
+						SendFormatNotification(playerid, "Este territorio estÔøΩ siendo atacado por la banda ~r~'%s'~w~.",CREW_INFO[ TERRITORIES[index][territory_ATTACKER_CREW_INDEX] ][crew_NAME]);
 						
 						new r, g, b, a;
 						HexToRGBA(CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_COLOR], r, g, b, a);
@@ -1075,7 +1075,7 @@ public OnPlayerLeaveDynamicArea(playerid, areaid)
 			{
 				if(PLAYER_TEMP[playerid][pt_WORKING_IN] == WORK_LUMBERJACK)
 				{
-					SendNotification(playerid, "Has abandonado el trabajo de leÒador porque te has alejado demasiado de la zona.");
+					SendNotification(playerid, "Has abandonado el trabajo de leÔøΩador porque te has alejado demasiado de la zona.");
 					CallLocalFunction("EndPlayerJob", "iib", playerid, PLAYER_TEMP[playerid][pt_WORKING_IN], true);
 				}
 			}
@@ -1144,7 +1144,7 @@ public OnPlayerEnterDynamicCP(playerid, checkpointid)
 			if(WORK_VEHICLES[vehicleid][work_vehicle_WORK] != WORK_TRUCK) return 1;
 			if(TRUCK_VEHICLE[vehicleid][truck_vehicle_DELIVERED]) return 1;
 			if(TRUCK_VEHICLE[vehicleid][truck_vehicle_UNLOADING]) return 1;
-			if(TRUCK_VEHICLE[vehicleid][truck_vehicle_DRIVER_USER_ID] != ACCOUNT_INFO[playerid][ac_ID]) return SendNotification(playerid, "Solo aceptaremos la carga del conductor de este camiÛn.");
+			if(TRUCK_VEHICLE[vehicleid][truck_vehicle_DRIVER_USER_ID] != ACCOUNT_INFO[playerid][ac_ID]) return SendNotification(playerid, "Solo aceptaremos la carga del conductor de este camiÔøΩn.");
 			
 			DestroyDynamicCP(PLAYER_TEMP[playerid][pt_TRUCK_CHECKPOINT]);
 			PLAYER_TEMP[playerid][pt_TRUCK_CHECKPOINT] = INVALID_STREAMER_ID;
@@ -1178,7 +1178,7 @@ public OnPlayerEnterDynamicCP(playerid, checkpointid)
 			if(WORK_VEHICLES[vehicleid][work_vehicle_WORK] != WORK_TRUCK) return 1;
 			if(!TRUCK_VEHICLE[vehicleid][truck_vehicle_DELIVERED]) return 1;
 			if(TRUCK_VEHICLE[vehicleid][truck_vehicle_UNLOADING]) return 1;
-			if(TRUCK_VEHICLE[vehicleid][truck_vehicle_DRIVER_USER_ID] != ACCOUNT_INFO[playerid][ac_ID]) return SendNotification(playerid, "Solo le pagaremos al conductor que entregÛ la mercancÌa.");
+			if(TRUCK_VEHICLE[vehicleid][truck_vehicle_DRIVER_USER_ID] != ACCOUNT_INFO[playerid][ac_ID]) return SendNotification(playerid, "Solo le pagaremos al conductor que entregÔøΩ la mercancÔøΩa.");
 			
 			DestroyDynamicCP(PLAYER_TEMP[playerid][pt_TRUCK_CHECKPOINT]);
 			PLAYER_TEMP[playerid][pt_TRUCK_CHECKPOINT] = INVALID_STREAMER_ID;
@@ -1212,7 +1212,7 @@ public OnPlayerEnterDynamicCP(playerid, checkpointid)
 			if(!PLAYER_TEMP[playerid][pt_TRASH_PASSENGER]) return 1;
 			
 			new driver = TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_DRIVER_ID];
-			SendClientMessage(driver, -1, "{"#SILVER_COLOR"}Espera mientras tu compaÒero recoge la basura.");
+			SendClientMessage(driver, -1, "{"#SILVER_COLOR"}Espera mientras tu compaÔøΩero recoge la basura.");
 			
 			new Float:offset = floatdiv(PLAYER_WORKS[playerid][WORK_TRASH][pwork_LEVEL], 10);
 			if(offset > 30.0) offset = 30.0;
@@ -1253,12 +1253,12 @@ public OnPlayerEnterDynamicCP(playerid, checkpointid)
 			}
 			
 			GivePlayerCash(playerid, money + driver_work_extra_payment, true, false);
-			SendFormatNotification(playerid, "Trabajo finalizado, has ganado ~g~%s dÛlares~w~.", number_format_thousand(money + driver_work_extra_payment));
+			SendFormatNotification(playerid, "Trabajo finalizado, has ganado ~g~%s dÔøΩlares~w~.", number_format_thousand(money + driver_work_extra_payment));
 			PLAYER_WORKS[playerid][WORK_TRASH][pwork_LEVEL] ++;
 			AddPlayerJobPoints(playerid, WORK_TRASH);
 			
 			GivePlayerCash(TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_PASSENGER_ID], money + passenger_work_extra_payment, true, false);
-			SendFormatNotification(TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_PASSENGER_ID], "Trabajo finalizado, has ganado ~g~%s dÛlares~w~.", number_format_thousand(money + passenger_work_extra_payment));
+			SendFormatNotification(TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_PASSENGER_ID], "Trabajo finalizado, has ganado ~g~%s dÔøΩlares~w~.", number_format_thousand(money + passenger_work_extra_payment));
 			PLAYER_WORKS[ TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_PASSENGER_ID] ][WORK_TRASH][pwork_LEVEL] ++;
 			AddPlayerJobPoints(TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_PASSENGER_ID], WORK_TRASH);
 			
@@ -1321,7 +1321,7 @@ public OnPlayerEnterDynamicCP(playerid, checkpointid)
 			
 			new vehicleid = GetPlayerVehicleID(playerid);
 			if(!PIZZA_VEHICLE[vehicleid][pizza_vehicle_STARTED]) return 1;
-			if(PIZZA_VEHICLE[vehicleid][pizza_vehicle_DRIVER_AID] != ACCOUNT_INFO[playerid][ac_ID]) return SendNotification(playerid, "Solo le pagaremos al conductor que realizÛ el trabajo.");
+			if(PIZZA_VEHICLE[vehicleid][pizza_vehicle_DRIVER_AID] != ACCOUNT_INFO[playerid][ac_ID]) return SendNotification(playerid, "Solo le pagaremos al conductor que realizÔøΩ el trabajo.");
 		
 			new work_extra_payment;
 			if(work_info[WORK_PIZZA][work_info_EXTRA_PAY] > 0 && work_info[WORK_PIZZA][work_info_EXTRA_PAY_EXP] > 0)
@@ -1335,7 +1335,7 @@ public OnPlayerEnterDynamicCP(playerid, checkpointid)
 			PLAYER_WORKS[playerid][WORK_PIZZA][pwork_LEVEL] ++;
 			new money = (PLAYER_TEMP[playerid][pt_DELIVERED_PIZZAS] * 200) + work_extra_payment;
 			GivePlayerCash(playerid, money, true, false);
-			SendFormatNotification(playerid, "Gracias por tu trabajo, has repartido %d pizzas y has ganado ~g~%s dÛlares~w~.", PLAYER_TEMP[playerid][pt_DELIVERED_PIZZAS], number_format_thousand(money));
+			SendFormatNotification(playerid, "Gracias por tu trabajo, has repartido %d pizzas y has ganado ~g~%s dÔøΩlares~w~.", PLAYER_TEMP[playerid][pt_DELIVERED_PIZZAS], number_format_thousand(money));
 			
 			CallLocalFunction("EndPlayerJob", "iib", playerid, PLAYER_TEMP[playerid][pt_WORKING_IN], true);
 		}
@@ -1352,7 +1352,7 @@ public OnPlayerEditAttachedObject(playerid, response, index, modelid, boneid, Fl
     {
         if(fScaleX >= 1.5 || fScaleY >= 1.5 || fScaleZ >= 1.5)
 	    {
-	        SendNotification(playerid, "El tamaÒo del accesorio es demasiado grande.");
+	        SendNotification(playerid, "El tamaÔøΩo del accesorio es demasiado grande.");
 			
 			RemovePlayerAttachedObject(playerid, PLAYER_TEMP[playerid][pt_SELECTED_TOY_SLOT]);
 			if(PLAYER_TOYS[playerid][ PLAYER_TEMP[playerid][pt_SELECTED_TOY_SLOT] ][player_toy_ATTACHED])
@@ -1380,7 +1380,7 @@ public OnPlayerEditAttachedObject(playerid, response, index, modelid, boneid, Fl
 	    }
         if((fOffsetX >= 0.6 || -0.6 >= fOffsetX) || (fOffsetY >= 0.6 || -0.6 >= fOffsetY) || (fOffsetZ >= 0.6 || -0.6 >= fOffsetZ))
         {
-            SendNotification(playerid, "La posiciÛn del objeto est· demasiado lejos de ti.");
+            SendNotification(playerid, "La posiciÔøΩn del objeto estÔøΩ demasiado lejos de ti.");
 			
 			RemovePlayerAttachedObject(playerid, PLAYER_TEMP[playerid][pt_SELECTED_TOY_SLOT]);
 			if(PLAYER_TOYS[playerid][ PLAYER_TEMP[playerid][pt_SELECTED_TOY_SLOT] ][player_toy_ATTACHED])
@@ -1446,7 +1446,7 @@ public OnPlayerEditAttachedObject(playerid, response, index, modelid, boneid, Fl
 			);
 		}
 		
-        SendNotification(playerid, "Has cancelado la ediciÛn.");
+        SendNotification(playerid, "Has cancelado la ediciÔøΩn.");
     }
     return 1;
 }
@@ -1460,10 +1460,8 @@ public OnDatabaseConnected_Timer()
 
 ConnectDatabase()
 {
-	//mysql
+	//	mysql
 	print("[MySQL] Conectando a la base de datos...");
-	mysql_log(ERROR | WARNING);
-	//mysql_log(NONE);
 
 	//srp_db
 	srp_db = mysql_connect_file("srp_db.ini");
@@ -1493,7 +1491,7 @@ public OnQueryError(errorid, const error[], const callback[], const query[], MyS
 {
 	switch(errorid) 
 	{
-		case CR_SERVER_GONE_ERROR: printf("[MySQL] [ERROR]: Se ha perdido la conexiÛn con el servidor (%d)", _:handle);
+		case CR_SERVER_GONE_ERROR: printf("[MySQL] [ERROR]: Se ha perdido la conexiÔøΩn con el servidor (%d)", _:handle);
 		case ER_SYNTAX_ERROR: printf("[MySQL] [ERROR]: Syntax error, query: %s (%d)", query, _:handle);
 		default: printf("[MySQL] [ERROR] errorid: %d, error: %s, callback: %s, query: %s, handle: %d", errorid, error, callback, query, _:handle);
 	}
@@ -1664,7 +1662,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 		{
 			if(PI[playerid][ac_GENDER] == -1)
 			{
-				SendNotification(playerid, "Antes de continuar debes optar por un gÈnero para tu personaje.");
+				SendNotification(playerid, "Antes de continuar debes optar por un gÔøΩnero para tu personaje.");
 				SelectTextDrawEx(playerid, 0xe8d08fFF);
 				return 1;
 			}
@@ -1709,7 +1707,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 		}
 		else if(playertextid == PlayerTextdraws[playerid][ptextdraw_REGISTER_SKIN][7]) // Siguiente ropa
 		{
-			if(PI[playerid][ac_GENDER] == -1) return SendNotification(playerid, "Debes optar por un gÈnero antes de cambiar de ropa.");
+			if(PI[playerid][ac_GENDER] == -1) return SendNotification(playerid, "Debes optar por un gÔøΩnero antes de cambiar de ropa.");
 			
 			if(PLAYER_TEMP[playerid][pt_REGISTER_SELECTED_SKIN] == (sizeof(Intro_Skins[]) - 1)) PLAYER_TEMP[playerid][pt_REGISTER_SELECTED_SKIN] = 0;			
 			else PLAYER_TEMP[playerid][pt_REGISTER_SELECTED_SKIN] ++;
@@ -1724,7 +1722,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 		}
 		else if(playertextid == PlayerTextdraws[playerid][ptextdraw_REGISTER_SKIN][8]) // Anterior ropa
 		{
-			if(PI[playerid][ac_GENDER] == -1) return SendNotification(playerid, "Debes optar por un gÈnero antes de cambiar de ropa.");
+			if(PI[playerid][ac_GENDER] == -1) return SendNotification(playerid, "Debes optar por un gÔøΩnero antes de cambiar de ropa.");
 			
 			if(PLAYER_TEMP[playerid][pt_REGISTER_SELECTED_SKIN] == 0) PLAYER_TEMP[playerid][pt_REGISTER_SELECTED_SKIN] = sizeof(Intro_Skins[]) - 1;
 			else PLAYER_TEMP[playerid][pt_REGISTER_SELECTED_SKIN] --;
@@ -2044,13 +2042,13 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				if(!ACCOUNT_INFO[playerid][ac_VIP] && slot >= MAX_NU_TOYS)
 				{
 					PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
-					SendFormatNotification(playerid, "°Los jugadores ~y~VIP ~w~pueden tener hasta %d accesorios! Usa ~y~/ayuda ~w~si quieres ser ~y~VIP~w~.", MAX_SU_TOYS);
+					SendFormatNotification(playerid, "ÔøΩLos jugadores ~y~VIP ~w~pueden tener hasta %d accesorios! Usa ~y~/ayuda ~w~si quieres ser ~y~VIP~w~.", MAX_SU_TOYS);
 					return 1;
 				}
 				if(slot == -1)
 				{
 					PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
-					SendNotification(playerid, "No tienes m·s espacio para accesorios, elimina alguno si quieres comprar otro.");
+					SendNotification(playerid, "No tienes mÔøΩs espacio para accesorios, elimina alguno si quieres comprar otro.");
 					ClosePlayerToysMenu(playerid);
 					return 1;
 				}
@@ -2060,7 +2058,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 					format(PLAYER_TOYS[playerid][slot][player_toy_NAME], 24, "%s", Toys_Shop[ PLAYER_TEMP[playerid][pt_TOYS_SHOP_TOY_SELECTED] ][shop_toy_model]);
 					PLAYER_TOYS[playerid][slot][player_toy_ATTACHED] = false;
 					PLAYER_TOYS[playerid][slot][player_toy_MODELID] = Toys_Shop[ PLAYER_TEMP[playerid][pt_TOYS_SHOP_TOY_SELECTED] ][shop_toy_modelid];
-					PLAYER_TOYS[playerid][slot][player_toy_BONE] = -1; // Sin utilizar a˙n
+					PLAYER_TOYS[playerid][slot][player_toy_BONE] = -1; // Sin utilizar aÔøΩn
 					PLAYER_TOYS[playerid][slot][player_toy_OFFSET_X] = 0.0;
 					PLAYER_TOYS[playerid][slot][player_toy_OFFSET_Y] = 0.0;
 					PLAYER_TOYS[playerid][slot][player_toy_OFFSET_Z] = 0.0;
@@ -2120,7 +2118,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 					if(ACCOUNT_INFO[playerid][ac_LEVEL] < 2) return SendNotification(playerid, "Debes ser al menos nivel 2 para publicar anuncios.");
 					
 					new interval = GetTickDiff(GetTickCount(), PLAYER_TEMP[playerid][pt_ANTIFLOOD_SHOP]);
-					if(interval < 500) return SendNotification(playerid, "C·lmate.");
+					if(interval < 500) return SendNotification(playerid, "CÔøΩlmate.");
 					PLAYER_TEMP[playerid][pt_ANTIFLOOD_SHOP] = GetTickCount();
 					
 					inline OnShopChecked()
@@ -2133,7 +2131,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 								new total_ads;
 								cache_get_value_index_int(0, 0, total_ads);
 
-								if(total_ads >= MAX_ADS_PER_PLAYER) SendFormatNotification(playerid, "No puedes publicar m·s de %d anuncios, borra alguno.", MAX_ADS_PER_PLAYER);
+								if(total_ads >= MAX_ADS_PER_PLAYER) SendFormatNotification(playerid, "No puedes publicar mÔøΩs de %d anuncios, borra alguno.", MAX_ADS_PER_PLAYER);
 								else
 								{
 									HidePlayerShop(playerid);
@@ -2168,7 +2166,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				case PLAYER_SHOP_STATE_MY_ADS: // Atras
 				{
 					new interval = GetTickDiff(GetTickCount(), PLAYER_TEMP[playerid][pt_ANTIFLOOD_SHOP]);
-					if(interval < 500) return SendNotification(playerid, "C·lmate.");
+					if(interval < 500) return SendNotification(playerid, "CÔøΩlmate.");
 					PLAYER_TEMP[playerid][pt_ANTIFLOOD_SHOP] = GetTickCount();
 					
 					PLAYER_TEMP[playerid][pt_DIALOG_DB_PAGE] = 0;
@@ -2186,7 +2184,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				case PLAYER_SHOP_STATE_ALL: // Siguiente
 				{
 					new interval = GetTickDiff(GetTickCount(), PLAYER_TEMP[playerid][pt_ANTIFLOOD_SHOP]);
-					if(interval < 500) return SendNotification(playerid, "C·lmate.");
+					if(interval < 500) return SendNotification(playerid, "CÔøΩlmate.");
 					PLAYER_TEMP[playerid][pt_ANTIFLOOD_SHOP] = GetTickCount();
 
 					inline OnCountQueryLoad()
@@ -2211,7 +2209,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				case PLAYER_SHOP_STATE_MY_ADS: // Siguiente
 				{
 					new interval = GetTickDiff(GetTickCount(), PLAYER_TEMP[playerid][pt_ANTIFLOOD_SHOP]);
-					if(interval < 500) return SendNotification(playerid, "C·lmate.");
+					if(interval < 500) return SendNotification(playerid, "CÔøΩlmate.");
 					PLAYER_TEMP[playerid][pt_ANTIFLOOD_SHOP] = GetTickCount();
 					
 					inline OnCountQueryLoad()
@@ -2244,7 +2242,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				case PLAYER_SHOP_STATE_ALL: // Anterior
 				{
 					new interval = GetTickDiff(GetTickCount(), PLAYER_TEMP[playerid][pt_ANTIFLOOD_SHOP]);
-					if(interval < 500) return SendNotification(playerid, "C·lmate.");
+					if(interval < 500) return SendNotification(playerid, "CÔøΩlmate.");
 					PLAYER_TEMP[playerid][pt_ANTIFLOOD_SHOP] = GetTickCount();
 					
 					inline OnCountQueryLoad()
@@ -2269,7 +2267,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				case PLAYER_SHOP_STATE_MY_ADS: // Anterior
 				{
 					new interval = GetTickDiff(GetTickCount(), PLAYER_TEMP[playerid][pt_ANTIFLOOD_SHOP]);
-					if(interval < 500) return SendNotification(playerid, "C·lmate.");
+					if(interval < 500) return SendNotification(playerid, "CÔøΩlmate.");
 					PLAYER_TEMP[playerid][pt_ANTIFLOOD_SHOP] = GetTickCount();
 					
 					inline OnCountQueryLoad()
@@ -2292,7 +2290,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 					mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT COUNT(id) FROM shop WHERE id_player = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 					MySQL_TQueryInline(srp_db,  using inline OnCountQueryLoad, QUERY_BUFFER);
 				}
-				case PLAYER_SHOP_STATE_AD: // Atr·s
+				case PLAYER_SHOP_STATE_AD: // AtrÔøΩs
 				{
 					if(PLAYER_TEMP[playerid][pt_SHOP_COME_FROM_MY_ADS])
 					{
@@ -2456,7 +2454,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		
 		if(IsPlayerInRangeOfPoint(playerid, 1.0, 253.280288, 76.219017, 1003.640625) || IsPlayerInRangeOfPoint(playerid, 1.0, 266.547180, 119.652816, 1004.617187) || IsPlayerInRangeOfPoint(playerid, 1.0, 217.816406, 187.667922, 1003.031250))
 		{
-			if(!PLAYER_WORKS[playerid][WORK_POLICE][pwork_SET]) return SendNotification(playerid, "No eres policÌa.");
+			if(!PLAYER_WORKS[playerid][WORK_POLICE][pwork_SET]) return SendNotification(playerid, "No eres policÔøΩa.");
 			if(PLAYER_TEMP[playerid][pt_WORKING_IN] != WORK_NONE && PLAYER_TEMP[playerid][pt_WORKING_IN] != WORK_POLICE)
 			{
 				SendFormatNotification(playerid, "Tienes que dejar de estar de servicio como %s primero.", work_info[ PLAYER_TEMP[playerid][pt_WORKING_IN] ][work_info_NAME]);
@@ -2471,7 +2469,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 		if((IsPlayerInRangeOfPoint(playerid, 2.0, 219.244018, 69.982215, 1005.039062) || IsPlayerInRangeOfPoint(playerid, 2.0, 262.945587, 109.785270, 1004.617187) || IsPlayerInRangeOfPoint(playerid, 2.0, 222.683914, 186.956054, 1003.031250)) && PLAYER_WORKS[playerid][WORK_POLICE][pwork_SET])
 		{
-			if(!PLAYER_WORKS[playerid][WORK_POLICE][pwork_SET]) return SendNotification(playerid, "No eres policÌa.");
+			if(!PLAYER_WORKS[playerid][WORK_POLICE][pwork_SET]) return SendNotification(playerid, "No eres policÔøΩa.");
 
 			ShowDialog(playerid, DIALOG_POLICE_SHOP);
 			return 1;
@@ -2537,7 +2535,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 							if(IsDynamicObjectMoving(San_Andreas_Barriers[i][barrier_OBJECT_ID]) && !San_Andreas_Barriers[i][barrier_CLOSING]) break;
 							if(San_Andreas_Barriers[i][barrier_PRICE] > 0) {
 								if(GivePlayerCash(playerid, -San_Andreas_Barriers[i][barrier_PRICE], false, true)) {
-									SendFormatNotification(playerid, "Has pagado el peaje por ~y~%s ~w~dÛlares.", number_format_thousand(San_Andreas_Barriers[i][barrier_PRICE]));
+									SendFormatNotification(playerid, "Has pagado el peaje por ~y~%s ~w~dÔøΩlares.", number_format_thousand(San_Andreas_Barriers[i][barrier_PRICE]));
 								}
 								else {
 									SendNotification(playerid, "No tienes suficiente dinero para pagar el peaje.");
@@ -2588,7 +2586,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				{
 					if(IsPlayerInRangeOfPoint(playerid, 1.5, 1208.744140, -34.261119, 1000.953125) || IsPlayerInRangeOfPoint(playerid, 1.5, 1213.738037, -33.667881, 1000.953125))
                     {
-                        if(PI[playerid][ac_CASH] <= 25) return SendNotification(playerid, "Digamos que no tienes mucho dinero como para estar gast·ndotelo en esto...");
+                        if(PI[playerid][ac_CASH] <= 25) return SendNotification(playerid, "Digamos que no tienes mucho dinero como para estar gastÔøΩndotelo en esto...");
 						
 						if(GivePlayerCash(playerid, -random(25), false, true)) {
 							ApplyAnimation(playerid, "STRIP", RandomPayStripAnimations[random(sizeof(RandomPayStripAnimations))], 4.1, 0, 0, 0, 0, 0);
@@ -2643,7 +2641,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				{
 					if(PLAYER_TEMP[playerid][pt_PLAYER_LUMBERJACK_TREE] == -1)
 					{
-						if(PLAYER_TEMP[playerid][pt_PLAYER_CARRYING_TREE]) return SendClientMessage(playerid,-1, "{"#SILVER_COLOR"}Lleva la leÒa cortada al punto marcado para talar m·s ·rboles.");
+						if(PLAYER_TEMP[playerid][pt_PLAYER_CARRYING_TREE]) return SendClientMessage(playerid,-1, "{"#SILVER_COLOR"}Lleva la leÔøΩa cortada al punto marcado para talar mÔøΩs ÔøΩrboles.");
 						
 						for(new i = 0; i != sizeof LUMBER_TREES; i ++)
 						{
@@ -2662,7 +2660,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 									SetPlayerArmedWeapon(playerid, 0);
 									
 									new label_str[256];
-									format(label_str, sizeof label_str, "{f46530}¡rbol (%d)\n\n{FFFFFF}Talando... {"#SILVER_COLOR"}(%.1f%%)", PLAYER_TEMP[playerid][pt_PLAYER_LUMBERJACK_TREE], 0.0);
+									format(label_str, sizeof label_str, "{f46530}ÔøΩrbol (%d)\n\n{FFFFFF}Talando... {"#SILVER_COLOR"}(%.1f%%)", PLAYER_TEMP[playerid][pt_PLAYER_LUMBERJACK_TREE], 0.0);
 									UpdateDynamic3DTextLabelText(LUMBER_TREES[ PLAYER_TEMP[playerid][pt_PLAYER_LUMBERJACK_TREE] ][lumber_tree_LABEL], -1, label_str);
 									SetPlayerKeyPress(playerid, minrand(30, 50));
 								}
@@ -2701,8 +2699,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				if(!GLOBAL_VEHICLES[vehicleid][gb_vehicle_PARAMS_ENGINE]) {
 					if(GLOBAL_VEHICLES[vehicleid][gb_vehicle_TYPE] == VEHICLE_TYPE_WORK)
 					{
-						if(TRUCK_VEHICLE[vehicleid][truck_vehicle_LOADING]) return SendNotification(playerid, "Debes esperar a que se cargue el vehÌculo para arrancar.");
-						if(TRUCK_VEHICLE[vehicleid][truck_vehicle_UNLOADING]) return SendNotification(playerid, "Debes esperar a que se descargue el vehÌculo para arrancar.");
+						if(TRUCK_VEHICLE[vehicleid][truck_vehicle_LOADING]) return SendNotification(playerid, "Debes esperar a que se cargue el vehÔøΩculo para arrancar.");
+						if(TRUCK_VEHICLE[vehicleid][truck_vehicle_UNLOADING]) return SendNotification(playerid, "Debes esperar a que se descargue el vehÔøΩculo para arrancar.");
 					}
 					
 					if(PLAYER_TEMP[playerid][pt_IN_TUNING_GARAGE]) return SendNotification(playerid, "Termina primero.");
@@ -2715,13 +2713,13 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					GLOBAL_VEHICLES[vehicleid][gb_vehicle_PARAMS_ENGINE] = 0;
 					UpdateVehicleParams(vehicleid);
 					
-					if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID]) Auto_SendPlayerAction(playerid, "ha detenido su vehÌculo.");
-					else Auto_SendPlayerAction(playerid, "ha detenido el vehÌculo.");
+					if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID]) Auto_SendPlayerAction(playerid, "ha detenido su vehÔøΩculo.");
+					else Auto_SendPlayerAction(playerid, "ha detenido el vehÔøΩculo.");
 				}
 				else
 				{
 					if(PLAYER_VEHICLES[vehicleid][player_vehicle_VALID] && PLAYER_VEHICLES[vehicleid][player_vehicle_CLAMP] > 0) {
-						SendNotification(playerid, "El vehÌculo tiene un cepo y no puede arrancar.");
+						SendNotification(playerid, "El vehÔøΩculo tiene un cepo y no puede arrancar.");
 						return 1;
 					}
 					SendNotification(playerid, "Encendiendo...");
@@ -2749,7 +2747,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					{
 						PLAYER_TEMP[playerid][pt_HOSPITAL] = GetNearestHospitalForPlayer(playerid);
 				
-						if(info[2] == 1) // Est· en el Pickup Interior y quiere ir al exterior
+						if(info[2] == 1) // EstÔøΩ en el Pickup Interior y quiere ir al exterior
 						{
 							ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_NORMAL;
 							PI[playerid][ac_LOCAL_INTERIOR] = 0;
@@ -2760,7 +2758,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 							FreezePlayer(playerid);
 							CallLocalFunction("OnPlayerExitInterior", "ii", playerid, info[1]);
 						}
-						else if(info[2] == 2) // Est· en el Pickup Exterior y quiere ir al interior
+						else if(info[2] == 2) // EstÔøΩ en el Pickup Exterior y quiere ir al interior
 						{
 							if(ENTER_EXIT[info[1]][ee_TIME_OPEN] == 0 && ENTER_EXIT[info[1]][ee_TIME_CLOSE] == 0) // 24 horas
 							{
@@ -2785,8 +2783,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 									if(ENTER_EXIT[info[1]][ee_INTERIOR_TYPE] == INTERIOR_CLUB) PlayAudioStreamForPlayerEx(playerid, "https://www.dropbox.com/s/yeuwio26i7y00ly/striptease.mp3?dl=1");							
 								}
 								else {
-									if(ENTER_EXIT[info[1]][ee_TIME_OPEN] == -1 && ENTER_EXIT[info[1]][ee_TIME_CLOSE] == -1) SendFormatNotification(playerid, "~r~%s abrir· prÛximamente.", ENTER_EXIT[info[1]][ee_NAME]);
-									else SendFormatNotification(playerid, "~r~%s ~w~est· cerrado, su horario es: ~r~%02d:00h ~w~- ~r~%02d:00h~w~.", ENTER_EXIT[info[1]][ee_NAME], ENTER_EXIT[info[1]][ee_TIME_OPEN], ENTER_EXIT[info[1]][ee_TIME_CLOSE]);
+									if(ENTER_EXIT[info[1]][ee_TIME_OPEN] == -1 && ENTER_EXIT[info[1]][ee_TIME_CLOSE] == -1) SendFormatNotification(playerid, "~r~%s abrirÔøΩ prÔøΩximamente.", ENTER_EXIT[info[1]][ee_NAME]);
+									else SendFormatNotification(playerid, "~r~%s ~w~estÔøΩ cerrado, su horario es: ~r~%02d:00h ~w~- ~r~%02d:00h~w~.", ENTER_EXIT[info[1]][ee_NAME], ENTER_EXIT[info[1]][ee_TIME_OPEN], ENTER_EXIT[info[1]][ee_TIME_CLOSE]);
 								}
 							}
 						}
@@ -2796,7 +2794,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					{
 						PLAYER_TEMP[playerid][pt_HOSPITAL] = GetNearestHospitalForPlayer(playerid);
 						
-						if(info[2] == 1) // Est· en el Pickup Interior y quiere ir al exterior
+						if(info[2] == 1) // EstÔøΩ en el Pickup Interior y quiere ir al exterior
 						{
 							ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_NORMAL;
 							PI[playerid][ac_LOCAL_INTERIOR] = 0;
@@ -2806,7 +2804,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 							StopAudioStreamForPlayer(playerid);
 							FreezePlayer(playerid);
 						}
-						else if(info[2] == 2) // Est· en el Pickup Exterior y quiere ir al interior
+						else if(info[2] == 2) // EstÔøΩ en el Pickup Exterior y quiere ir al interior
 						{
 							if(PROPERTY_INFO[info[1]][property_POLICE_FORCED] && (PLAYER_WORKS[playerid][WORK_POLICE][pwork_SET] && PLAYER_TEMP[playerid][pt_WORKING_IN] == WORK_POLICE)) {
 								new Float:z_pos = PROPERTY_INTERIORS[ PROPERTY_INFO[info[1]][property_ID_INTERIOR] ][property_INT_Z];
@@ -2815,7 +2813,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 								FreezePlayer(playerid);
 								return 1;
 							}
-							if(!PROPERTY_INFO[info[1]][property_SOLD]) return SendNotification(playerid, "Esta propiedad est· en venta.");
+							if(!PROPERTY_INFO[info[1]][property_SOLD]) return SendNotification(playerid, "Esta propiedad estÔøΩ en venta.");
 							if(PROPERTY_INFO[info[1]][property_CREW])
 							{
 								if(!PI[playerid][ac_CREW]) return SendFormatNotification(playerid, "Solo miembros de la banda pueden entrar.");
@@ -2848,11 +2846,11 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 									if(gettime() < PLAYER_TEMP[playerid][pt_ANTIFLOOD_KNOCK_PROPERTY] + 10) return SendNotification(playerid, "Espera para volver a tocar, si no te quieren abrir, vete.");
 									
 									new owner_playerid = GetOwnerIntProperty(PROPERTY_INFO[info[1]][property_ID]);
-									if(owner_playerid == -1) return SendNotification(playerid, "Esta no es tu propiedad y el dueÒo no est· dentro para dejarte entrar.");
+									if(owner_playerid == -1) return SendNotification(playerid, "Esta no es tu propiedad y el dueÔøΩo no estÔøΩ dentro para dejarte entrar.");
 									
 									PLAYER_TEMP[playerid][pt_ANTIFLOOD_KNOCK_PROPERTY] = gettime();
 									PLAYER_TEMP[owner_playerid][pt_KNOCK_PLAYER_ID] = playerid;
-									SendFormatNotification(owner_playerid, "~b~%s ~w~est· tocando la puerta, para dejarle entrar ve a la puerta y usa ~b~/puerta~w~.", PLAYER_TEMP[playerid][pt_RP_NAME]);
+									SendFormatNotification(owner_playerid, "~b~%s ~w~estÔøΩ tocando la puerta, para dejarle entrar ve a la puerta y usa ~b~/puerta~w~.", PLAYER_TEMP[playerid][pt_RP_NAME]);
 									SendNotification(playerid, "Has tocado en la puerta, espera para que te abran o vete.");
 								}
 							}
@@ -3188,7 +3186,7 @@ public HealthUp(playerid)
 			if(price < 0) price = 0;
 		}
 
-		SendFormatNotification(playerid, "El coste de los servicios mÈdicos ofrecidos es de ~r~%s dÛlares~w~.", number_format_thousand(price));
+		SendFormatNotification(playerid, "El coste de los servicios mÔøΩdicos ofrecidos es de ~r~%s dÔøΩlares~w~.", number_format_thousand(price));
 		GivePlayerCash(playerid, -price, false, true);
 		PlayerTextDrawHide(playerid, PlayerTextdraws[playerid][ptextdraw_HOSPITAL][0]);
 		PlayerTextDrawHide(playerid, PlayerTextdraws[playerid][ptextdraw_HOSPITAL][1]);
@@ -3244,7 +3242,7 @@ public HungryThirstDown(playerid)
 		{
 			if(PI[playerid][ac_WANTED_LEVEL] == 1)
 			{
-				SendFormatNotification(playerid, "Has perdido de vista a la policÌa.");
+				SendFormatNotification(playerid, "Has perdido de vista a la policÔøΩa.");
 				SetPlayerWantedLevelEx(playerid, 0);
 			}
 			else SetPlayerWantedLevelEx(playerid, PI[playerid][ac_WANTED_LEVEL] - 1);
@@ -3262,7 +3260,7 @@ public HungryThirstDown(playerid)
 		
 		if(PI[playerid][ac_THIRST] <= 1.0 || PI[playerid][ac_HEALTH] <= 0.5)
 		{
-			SendNotification(playerid, "Te has desmayado por deshidrataciÛn.");
+			SendNotification(playerid, "Te has desmayado por deshidrataciÔøΩn.");
 			SetPlayerHealthEx(playerid, 0.0);
 			PI[playerid][ac_THIRST] = 75.0;
 			return 1;
@@ -3272,7 +3270,7 @@ public HungryThirstDown(playerid)
 		
 		if(!PLAYER_TEMP[playerid][pt_THIRST_MESSAGE])
 		{
-			SendNotification(playerid, "Tienes sed, si no bebes agua pronto acabar·s muriendo.");
+			SendNotification(playerid, "Tienes sed, si no bebes agua pronto acabarÔøΩs muriendo.");
 			PLAYER_TEMP[playerid][pt_THIRST_MESSAGE] = true;
 		}
 	}
@@ -3293,7 +3291,7 @@ public HungryThirstDown(playerid)
 		
 		if(!PLAYER_TEMP[playerid][pt_HUNGRY_MESSAGE])
 		{
-			SendNotification(playerid, "Tienes hambre, si no comes nada pronto acabar·s muriendo.");
+			SendNotification(playerid, "Tienes hambre, si no comes nada pronto acabarÔøΩs muriendo.");
 			PLAYER_TEMP[playerid][pt_HUNGRY_MESSAGE] = true;
 		}
 	}
@@ -3369,7 +3367,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		GLOBAL_VEHICLES[vehicleid][gb_vehicle_OCCUPIED] = true;
 		if(PI[playerid][ac_DRIVE_LICENSE_POINTS] == 0 && !PLAYER_TEMP[playerid][pt_DL_EXAM] && VEHICLE_INFO[ GLOBAL_VEHICLES[vehicleid][gb_vehicle_MODELID] - 400][vehicle_info_NORMAL_SPEEDO])
 		{
-			SendNotification(playerid, "Est·s conduciendo sin licencia de conducciÛn, la policÌa podrÌa multarte.");
+			SendNotification(playerid, "EstÔøΩs conduciendo sin licencia de conducciÔøΩn, la policÔøΩa podrÔøΩa multarte.");
 		}
 		if(GLOBAL_VEHICLES[vehicleid][gb_vehicle_PARAMS_DOORS] && VEHICLE_INFO[ GLOBAL_VEHICLES[vehicleid][gb_vehicle_MODELID] - 400][vehicle_info_DRIVER_DOOR]) //cerrado
 		{
@@ -3415,12 +3413,12 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 			{
 				PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] = vehicleid;
 				new pvehicles = CountPlayerVehicles(playerid);
-				if(pvehicles >= MAX_SU_VEHICLES) return SendFormatNotification(playerid, "No puedes comprar m·s vehÌculos, el lÌmite es %d.", MAX_SU_VEHICLES);
+				if(pvehicles >= MAX_SU_VEHICLES) return SendFormatNotification(playerid, "No puedes comprar mÔøΩs vehÔøΩculos, el lÔøΩmite es %d.", MAX_SU_VEHICLES);
 				if(!ACCOUNT_INFO[playerid][ac_VIP])
 				{
 					if(pvehicles >= MAX_NU_VEHICLES)
 					{
-						SendFormatNotification(playerid, "°Los jugadores ~y~VIP ~w~pueden tener hasta %d vehÌculos! Usa ~y~/ayuda ~w~si quieres ser ~y~VIP~w~.", MAX_SU_VEHICLES);
+						SendFormatNotification(playerid, "ÔøΩLos jugadores ~y~VIP ~w~pueden tener hasta %d vehÔøΩculos! Usa ~y~/ayuda ~w~si quieres ser ~y~VIP~w~.", MAX_SU_VEHICLES);
 						return 1;
 					}
 				}
@@ -3522,7 +3520,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 						{
 							if(TRUCK_VEHICLE[vehicleid][truck_vehicle_DRIVER_USER_ID] != ACCOUNT_INFO[playerid][ac_ID])
 							{
-								SendNotification(playerid, "No eres el conductor de este vehÌculo.");
+								SendNotification(playerid, "No eres el conductor de este vehÔøΩculo.");
 								RemovePlayerFromVehicle(playerid);
 								return 1;
 							}
@@ -3536,7 +3534,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 						{
 							if(TRASH_VEHICLES[vehicleid][trash_vehicle_DRIVER_ID] != playerid)
 							{
-								SendNotification(playerid, "No eres el conductor de este camiÛn.");
+								SendNotification(playerid, "No eres el conductor de este camiÔøΩn.");
 								RemovePlayerFromVehicle(playerid);
 								return 1;
 							}
@@ -3547,7 +3545,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 						{
 							if(PLAYER_TEMP[playerid][pt_TRASH_DRIVER] || PLAYER_TEMP[playerid][pt_TRASH_PASSENGER])
 							{
-								SendNotification(playerid, "Ya est·s trabajando con otro compaÒero.");
+								SendNotification(playerid, "Ya estÔøΩs trabajando con otro compaÔøΩero.");
 								RemovePlayerFromVehicle(playerid);
 								return 1;
 							}
@@ -3556,7 +3554,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 							PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] = vehicleid;
 							TRASH_VEHICLES[vehicleid][trash_vehicle_DRIVER_ID] = playerid;
 							
-							if(TRASH_VEHICLES[vehicleid][trash_vehicle_PASSENGER_ID] == INVALID_PLAYER_ID) SendNotification(playerid, "Necesitas un compaÒero para empezar con el trabajo.");
+							if(TRASH_VEHICLES[vehicleid][trash_vehicle_PASSENGER_ID] == INVALID_PLAYER_ID) SendNotification(playerid, "Necesitas un compaÔøΩero para empezar con el trabajo.");
 							else
 							{
 								new route = random(MAX_ROUTES);
@@ -3599,7 +3597,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 							
 							if(!PLAYER_TEMP[playerid][pt_PIZZA_PROCCESS])
 							{
-								SendNotification(playerid, "Ya has repartido todas las pizzas, vuelve a la pizzerÌa para cobrar.");
+								SendNotification(playerid, "Ya has repartido todas las pizzas, vuelve a la pizzerÔøΩa para cobrar.");
 								SetPlayer_Pizza_Checkpoint(playerid, -1);
 							}
 							else
@@ -3623,7 +3621,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 							PLAYER_TEMP[playerid][pt_PIZZA_PROCCESS] = PIZZA_VEHICLE[vehicleid][pizza_vehicle_PIZZAS];
 							PLAYER_TEMP[playerid][pt_DELIVERED_PIZZAS] = 0;
 							
-							SendFormatNotification(playerid, "Esta moto tiene %d pizzas, repartelas todas y vuelve a la pizzerÌa para cobrar.", PIZZA_VEHICLE[vehicleid][pizza_vehicle_PIZZAS]);
+							SendFormatNotification(playerid, "Esta moto tiene %d pizzas, repartelas todas y vuelve a la pizzerÔøΩa para cobrar.", PIZZA_VEHICLE[vehicleid][pizza_vehicle_PIZZAS]);
 							SetPlayer_Pizza_Checkpoint(playerid, PIZZA_VEHICLE[vehicleid][pizza_vehicle_PIZZA_POINT]);
 						}
 					}
@@ -3638,7 +3636,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				PLAYER_TEMP[playerid][pt_WANT_TAXI] = false;
 				DisablePlayerTaxiMark(playerid);
 				
-				SendNotification(playerid, "Tu taxi se ha cancelado porque te has subido a un vehÌculo.");
+				SendNotification(playerid, "Tu taxi se ha cancelado porque te has subido a un vehÔøΩculo.");
 			}
 		}
     }
@@ -3705,14 +3703,14 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				{
 					if(!PLAYER_WORKS[playerid][WORK_TRASH][pwork_SET])
 					{
-						SendFormatNotification(playerid, "Necesitas ser %s para poder conducir este vehÌculo.", work_info[ WORK_VEHICLES[vehicleid][work_vehicle_WORK] ][work_info_NAME]);
+						SendFormatNotification(playerid, "Necesitas ser %s para poder conducir este vehÔøΩculo.", work_info[ WORK_VEHICLES[vehicleid][work_vehicle_WORK] ][work_info_NAME]);
 						RemovePlayerFromVehicle(playerid);
 						return 1;
 					}
 					
 					if(PLAYER_TEMP[playerid][pt_WORKING_IN] != WORK_TRASH)
 					{
-						SendNotification(playerid, "No est·s de servicio como basurero, ve a vestirte en el puesto de la entrada del vertedero.");
+						SendNotification(playerid, "No estÔøΩs de servicio como basurero, ve a vestirte en el puesto de la entrada del vertedero.");
 						RemovePlayerFromVehicle(playerid);
 						return 1;
 					}
@@ -3721,7 +3719,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 					{
 						if(TRASH_VEHICLES[vehicleid][trash_vehicle_PASSENGER_ID] != playerid)
 						{
-							SendNotification(playerid, "No eres el acompaÒante de este camiÛn.");
+							SendNotification(playerid, "No eres el acompaÔøΩante de este camiÔøΩn.");
 							RemovePlayerFromVehicle(playerid);
 							return 1;
 						}
@@ -3732,7 +3730,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 					{
 						if(PLAYER_TEMP[playerid][pt_TRASH_DRIVER] || PLAYER_TEMP[playerid][pt_TRASH_PASSENGER])
 						{
-							SendNotification(playerid, "Ya est·s trabajando con otro compaÒero.");
+							SendNotification(playerid, "Ya estÔøΩs trabajando con otro compaÔøΩero.");
 							RemovePlayerFromVehicle(playerid);
 							return 1;
 						}
@@ -3741,7 +3739,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 						PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] = vehicleid;
 						TRASH_VEHICLES[vehicleid][trash_vehicle_PASSENGER_ID] = playerid;
 						
-						if(TRASH_VEHICLES[vehicleid][trash_vehicle_DRIVER_ID] == INVALID_PLAYER_ID) SendNotification(playerid, "Necesitas un compaÒero para empezar con el trabajo.");
+						if(TRASH_VEHICLES[vehicleid][trash_vehicle_DRIVER_ID] == INVALID_PLAYER_ID) SendNotification(playerid, "Necesitas un compaÔøΩero para empezar con el trabajo.");
 						else
 						{
 							new route = random(MAX_ROUTES);
@@ -3776,7 +3774,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				PLAYER_TEMP[playerid][pt_WANT_TAXI] = false;
 				DisablePlayerTaxiMark(playerid);
 				
-				SendNotification(playerid, "Tu taxi se ha cancelado porque te has subido a un vehÌculo.");
+				SendNotification(playerid, "Tu taxi se ha cancelado porque te has subido a un vehÔøΩculo.");
 			}
 		}
 	}
@@ -3853,7 +3851,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 										
 								if(distance > 20.0)
 								{
-									SendNotification(playerid, "Vuelve a subir a la moto, a˙n est·s muy lejos del cliente.");
+									SendNotification(playerid, "Vuelve a subir a la moto, aÔøΩn estÔøΩs muy lejos del cliente.");
 									if(IsValidDynamicActor(PLAYER_TEMP[playerid][pt_PIZZA_ACTOR]))
 									{
 										DestroyDynamicActor(PLAYER_TEMP[playerid][pt_PIZZA_ACTOR]);
@@ -3900,7 +3898,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 									DestroyDynamicCP(PLAYER_TEMP[playerid][pt_PIZZA_CHECKPOINT]);
 									PLAYER_TEMP[playerid][pt_PIZZA_CHECKPOINT] = INVALID_STREAMER_ID;
 								}
-								SendNotification(playerid, "Vuelve a subir a la moto y ve a la pizzerÌa para cobrar.");
+								SendNotification(playerid, "Vuelve a subir a la moto y ve a la pizzerÔøΩa para cobrar.");
 							}
 						}
 					}
@@ -3942,11 +3940,11 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				}
 				PLAYER_WORKS[driver][WORK_TAXI][pwork_LEVEL] ++;
 				
-				SendFormatNotification(driver, "Has ganado ~g~%s dÛlares~w~ con este viaje.", number_format_thousand(TAXI_METER_VEHICLE[ PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID] ][veh_taxi_meter_PAYMENT] + work_extra_payment));
+				SendFormatNotification(driver, "Has ganado ~g~%s dÔøΩlares~w~ con este viaje.", number_format_thousand(TAXI_METER_VEHICLE[ PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID] ][veh_taxi_meter_PAYMENT] + work_extra_payment));
 				GivePlayerCash(driver, TAXI_METER_VEHICLE[ PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID] ][veh_taxi_meter_PAYMENT] + work_extra_payment, true, false);
 				GivePlayerCash(playerid, -TAXI_METER_VEHICLE[ PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID] ][veh_taxi_meter_PAYMENT], true, true);
 				
-				SendFormatNotification(playerid, "El taxi te costÛ %s$.", number_format_thousand(TAXI_METER_VEHICLE[ PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID] ][veh_taxi_meter_PAYMENT]));
+				SendFormatNotification(playerid, "El taxi te costÔøΩ %s$.", number_format_thousand(TAXI_METER_VEHICLE[ PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID] ][veh_taxi_meter_PAYMENT]));
 				ResetVehicleTaxiMeter(PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID]);
 				HidePlayerTaxiMeter(playerid);
 				UpdatePlayerTaxiMeterTextdraws(driver);
@@ -3976,7 +3974,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				{
 					if(TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_PASSENGER_ID] == playerid)
 					{
-						if(TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_CP] >= TRASH_OBJECTS[ TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_ROUTE] ][trash_route_OBJECTS]) SendNotification(playerid, "Sube al camiÛn para volver al vertedero y recibir la paga.");
+						if(TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_CP] >= TRASH_OBJECTS[ TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_ROUTE] ][trash_route_OBJECTS]) SendNotification(playerid, "Sube al camiÔøΩn para volver al vertedero y recibir la paga.");
 						else
 						{
 							new cp = TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_CP];
@@ -3989,7 +3987,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 														TRASH_OBJECTS[ route ][trash_object_Z][ cp ]
 													);
 							
-							if(distance > 10.0) SendNotification(playerid, "Vuelve a subir al camiÛn, a˙n est·s demasiado lejos del punto de recogida.");
+							if(distance > 10.0) SendNotification(playerid, "Vuelve a subir al camiÔøΩn, aÔøΩn estÔøΩs demasiado lejos del punto de recogida.");
 							else
 							{
 								if(IsPlayerInDynamicCP(playerid, PLAYER_TEMP[playerid][pt_TRASH_CHECKPOINT]))
@@ -3999,7 +3997,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 									if(!PLAYER_TEMP[playerid][pt_TRASH_PASSENGER]) return 1;
 									
 									new driver = TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_DRIVER_ID];
-									SendClientMessage(driver, -1, "{"#SILVER_COLOR"}Espera mientras tu compaÒero recoge la basura.");
+									SendClientMessage(driver, -1, "{"#SILVER_COLOR"}Espera mientras tu compaÔøΩero recoge la basura.");
 									
 									new Float:offset = floatdiv(PLAYER_WORKS[playerid][WORK_TRASH][pwork_LEVEL], 10);
 									if(offset > 30.0) offset = 30.0;
@@ -4018,7 +4016,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 									PLAYER_TEMP[playerid][pt_TIMERS][10] = SetTimerEx("RecycleUp", 1000, false, "i", playerid);
 									return 1;
 								}
-								SendNotification(playerid, "Recoge la basura y vuelve al camiÛn para continuar.");
+								SendNotification(playerid, "Recoge la basura y vuelve al camiÔøΩn para continuar.");
 							}
 						}
 					}
@@ -4079,7 +4077,7 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 	{
 		if(WORK_VEHICLES[vehicleid][work_vehicle_WORK] != WORK_MEDIC)
 		{
-			SendNotification(playerid, "~r~Estando de servicio como mÈdico solo puedes llevar ambulancias.");
+			SendNotification(playerid, "~r~Estando de servicio como mÔøΩdico solo puedes llevar ambulancias.");
 			RemovePlayerFromVehicle(playerid);
 			SetPlayerPos(playerid, sx, sy, sz);
 			return 1;
@@ -4096,7 +4094,7 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 				return 1;
 			}
 			PLAYER_TEMP[playerid][pt_CJ_WARNINGS] ++;
-			SendFormatNotification(playerid, "~w~No puedes robar vehÌculos asÌ, congelado 5 segundos, aviso ~r~%d/5~w~.", PLAYER_TEMP[playerid][pt_CJ_WARNINGS]);
+			SendFormatNotification(playerid, "~w~No puedes robar vehÔøΩculos asÔøΩ, congelado 5 segundos, aviso ~r~%d/5~w~.", PLAYER_TEMP[playerid][pt_CJ_WARNINGS]);
 			RemovePlayerFromVehicle(playerid);
 			SetPlayerPos(playerid, sx, sy, sz);
 
@@ -4112,14 +4110,14 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 		{
 			if(!PLAYER_WORKS[playerid][ WORK_VEHICLES[vehicleid][work_vehicle_WORK] ][pwork_SET])
 			{
-				SendFormatNotification(playerid, "Necesitas ser ~r~%s~w~ para poder conducir este vehÌculo.", work_info[ WORK_VEHICLES[vehicleid][work_vehicle_WORK] ][work_info_NAME]);
+				SendFormatNotification(playerid, "Necesitas ser ~r~%s~w~ para poder conducir este vehÔøΩculo.", work_info[ WORK_VEHICLES[vehicleid][work_vehicle_WORK] ][work_info_NAME]);
 				RemovePlayerFromVehicle(playerid);
 				SetPlayerPos(playerid, sx, sy, sz);
 				return 1;
 			}
 			if(GLOBAL_VEHICLES[vehicleid][gb_vehicle_VIP] && !ACCOUNT_INFO[playerid][ac_VIP])
 			{
-				SendNotification(playerid, "Necesitas adquirir membresÌa VIP para usar este vehÌculo. (/ayuda > membresÌa VIP)");
+				SendNotification(playerid, "Necesitas adquirir membresÔøΩa VIP para usar este vehÔøΩculo. (/ayuda > membresÔøΩa VIP)");
 				RemovePlayerFromVehicle(playerid);
 				SetPlayerPos(playerid, sx, sy, sz);
 				return 1;
@@ -4137,7 +4135,7 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 			{
 				if(PLAYER_TEMP[playerid][pt_WORKING_IN] != WORK_VEHICLES[vehicleid][work_vehicle_WORK])
 				{
-					SendFormatNotification(playerid, "Necesitas estar de servicio de ~r~%s~w~ para poder conducir este vehÌculo.", work_info[ WORK_VEHICLES[vehicleid][work_vehicle_WORK] ][work_info_NAME]);
+					SendFormatNotification(playerid, "Necesitas estar de servicio de ~r~%s~w~ para poder conducir este vehÔøΩculo.", work_info[ WORK_VEHICLES[vehicleid][work_vehicle_WORK] ][work_info_NAME]);
 					RemovePlayerFromVehicle(playerid);
 					SetPlayerPos(playerid, sx, sy, sz);
 					return 1;
@@ -4146,7 +4144,7 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 			
 			if(WORK_VEHICLES[vehicleid][work_vehicle_EXP] > PLAYER_WORKS[playerid][ WORK_VEHICLES[vehicleid][work_vehicle_WORK] ][pwork_LEVEL])
 			{
-				SendFormatNotification(playerid, "Necesitas m·s experiencia en este trabajo para llevar este vehÌculo. ~r~(%d/%d)", PLAYER_WORKS[playerid][ WORK_VEHICLES[vehicleid][work_vehicle_WORK] ][pwork_LEVEL], WORK_VEHICLES[vehicleid][work_vehicle_EXP]);
+				SendFormatNotification(playerid, "Necesitas mÔøΩs experiencia en este trabajo para llevar este vehÔøΩculo. ~r~(%d/%d)", PLAYER_WORKS[playerid][ WORK_VEHICLES[vehicleid][work_vehicle_WORK] ][pwork_LEVEL], WORK_VEHICLES[vehicleid][work_vehicle_EXP]);
 				RemovePlayerFromVehicle(playerid);
 				SetPlayerPos(playerid, sx, sy, sz);
 				return 1;
@@ -4169,7 +4167,7 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 		{
 			if(!PLAYER_WORKS[playerid][WORK_TRASH][pwork_SET])
 			{
-				SendFormatNotification(playerid, "Necesitas ser %s para poder entrar a este vehÌculo.", work_info[ WORK_VEHICLES[vehicleid][work_vehicle_WORK] ][work_info_NAME]);
+				SendFormatNotification(playerid, "Necesitas ser %s para poder entrar a este vehÔøΩculo.", work_info[ WORK_VEHICLES[vehicleid][work_vehicle_WORK] ][work_info_NAME]);
 				RemovePlayerFromVehicle(playerid);
 				SetPlayerPos(playerid, sx, sy, sz);
 				return 1;
@@ -4177,7 +4175,7 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 			
 			if(PLAYER_TEMP[playerid][pt_WORKING_IN] != WORK_VEHICLES[vehicleid][work_vehicle_WORK])
 			{
-				SendFormatNotification(playerid, "Necesitas estar de servicio como %s para poder conducir este vehÌculo.", work_info[ WORK_VEHICLES[vehicleid][work_vehicle_WORK] ][work_info_NAME]);
+				SendFormatNotification(playerid, "Necesitas estar de servicio como %s para poder conducir este vehÔøΩculo.", work_info[ WORK_VEHICLES[vehicleid][work_vehicle_WORK] ][work_info_NAME]);
 				RemovePlayerFromVehicle(playerid);
 				SetPlayerPos(playerid, sx, sy, sz);
 				return 1;
@@ -4289,7 +4287,7 @@ public OnVehicleDeath(vehicleid, killerid)
 			{
 				if(PI[playerid][ac_PHONE_NUMBER])
 				{
-					new message[64]; format(message, sizeof message, "VehÌculo de sustituciÛn entregado en ˙lt. estacionamiento.");
+					new message[64]; format(message, sizeof message, "VehÔøΩculo de sustituciÔøΩn entregado en ÔøΩlt. estacionamiento.");
 					RegisterPhoneMessage(0, ACCOUNT_INFO[playerid][ac_ID], message);
 					if(PI[playerid][ac_PHONE_STATE] == PHONE_STATE_ON)
 					{
@@ -4401,8 +4399,8 @@ public OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_
 forward StartVehicleEngine(playerid, vehicleid);
 public StartVehicleEngine(playerid, vehicleid)
 {
-	if(GLOBAL_VEHICLES[vehicleid][gb_vehicle_STATE] == VEHICLE_STATE_DAMAGED) return Auto_SendPlayerAction(playerid, "intentÛ arrancar el vehÌculo pero el motor est· daÒado.");
-	if(GLOBAL_VEHICLES[vehicleid][gb_vehicle_GAS] <= 0.1) return Auto_SendPlayerAction(playerid, "intentÛ arrancar el vehÌculo pero no tiene gasolina.");
+	if(GLOBAL_VEHICLES[vehicleid][gb_vehicle_STATE] == VEHICLE_STATE_DAMAGED) return Auto_SendPlayerAction(playerid, "intentÔøΩ arrancar el vehÔøΩculo pero el motor estÔøΩ daÔøΩado.");
+	if(GLOBAL_VEHICLES[vehicleid][gb_vehicle_GAS] <= 0.1) return Auto_SendPlayerAction(playerid, "intentÔøΩ arrancar el vehÔøΩculo pero no tiene gasolina.");
 	
 	GLOBAL_VEHICLES[vehicleid][gb_vehicle_PARAMS_ENGINE] = 1;
 	UpdateVehicleParams(vehicleid);
@@ -4416,8 +4414,8 @@ public StartVehicleEngine(playerid, vehicleid)
 		DetachTrailerFromVehicle(vehicleid);
 	}
 	
-	if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID]) Auto_SendPlayerAction(playerid, "ha arrancado su vehÌculo.");
-	else Auto_SendPlayerAction(playerid, "ha arrancado el vehÌculo.");
+	if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID]) Auto_SendPlayerAction(playerid, "ha arrancado su vehÔøΩculo.");
+	else Auto_SendPlayerAction(playerid, "ha arrancado el vehÔøΩculo.");
 
 	SendNotification(playerid, "~h~~g~Encendido");
 	return 1;
@@ -4427,8 +4425,8 @@ public OnEnterExitModShop(playerid, enterexit, interiorid)
     if(enterexit) // Entra
     {
 		SendClientMessage(playerid, -1, " ");
-		SendNotification(playerid, "Solo puedes tunear vehÌculos en el mec·nico, b˙scalo con el /GPS.");
-		SendClientMessage(playerid, -1, "{ffff35}[ATENCION] {"#SILVER_COLOR"}Si realizas alguna modificaciÛn al vehÌculo en este garaje ser·s expulsado.");
+		SendNotification(playerid, "Solo puedes tunear vehÔøΩculos en el mecÔøΩnico, bÔøΩscalo con el /GPS.");
+		SendClientMessage(playerid, -1, "{ffff35}[ATENCION] {"#SILVER_COLOR"}Si realizas alguna modificaciÔøΩn al vehÔøΩculo en este garaje serÔøΩs expulsado.");
     }
 	else
 	{
@@ -4513,7 +4511,7 @@ public TruckUnLoadUp(playerid, vehicleid)
 	TRUCK_VEHICLE[vehicleid][truck_vehicle_UNLOADING] = false;
 	TRUCK_VEHICLE[vehicleid][truck_vehicle_DELIVERED] = true;
 	
-	SendNotification(playerid, "La mercancÌa ha sido entregada, regresa al punto de partida para cobrar.");
+	SendNotification(playerid, "La mercancÔøΩa ha sido entregada, regresa al punto de partida para cobrar.");
 	SetPlayerTruckCheckpoint(playerid, vehicleid);
 	return 1;
 }
@@ -4605,7 +4603,7 @@ public OnPlayerEnterDynamicRaceCP(playerid, checkpointid)
 					if(vhealth >= 800.0)
 					{
 						PI[playerid][ac_DRIVE_LICENSE_POINTS] = 12;
-						SendNotification(playerid, "°Felicidades! te has sacado el carnet de conducir, cuentas con 12 puntos.");
+						SendNotification(playerid, "ÔøΩFelicidades! te has sacado el carnet de conducir, cuentas con 12 puntos.");
 					}
 					else SendNotification(playerid, "No has superado el examen.");
 
@@ -4682,10 +4680,10 @@ public RecycleUp(playerid)
 	TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_CP] ++;
 	if(TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_CP] >= TRASH_OBJECTS[ TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_ROUTE] ][trash_route_OBJECTS])
 	{
-		SendNotification(playerid, "Sube al camiÛn para volver al vertedero y recibir la paga.");
-		SendNotification(driver, "Espera a que se suba tu compaÒero y vuelve al vertedero para recibir la paga.");
+		SendNotification(playerid, "Sube al camiÔøΩn para volver al vertedero y recibir la paga.");
+		SendNotification(driver, "Espera a que se suba tu compaÔøΩero y vuelve al vertedero para recibir la paga.");
 	}
-	else SendNotification(playerid, "Sube al camiÛn y sigue con la ruta.");
+	else SendNotification(playerid, "Sube al camiÔøΩn y sigue con la ruta.");
 
 	SetPlayerTrashCheckpoint(driver, PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID]);
 	SetPlayerTrashCheckpoint(playerid, PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID]);
@@ -4730,12 +4728,12 @@ public ContinueTreeAnimation(playerid, tree, Float:rotation)
 	info[0] = CHECKPOINT_TYPE_LUMBERJACK;
 	Streamer_SetArrayData(STREAMER_TYPE_CP, PLAYER_TEMP[playerid][pt_LUMBERJACK_CHECKPOINT], E_STREAMER_EXTRA_ID, info);
 	
-	SendNotification(playerid, "Ve a llevar la leÒa al punto marcado para recibir la paga.");
+	SendNotification(playerid, "Ve a llevar la leÔøΩa al punto marcado para recibir la paga.");
 	
 	
 	LUMBER_TREES[ tree ][lumber_tree_GROW_COUNTER] = 90;
 	new label_str[256];
-	format(label_str, sizeof label_str, "{f46530}¡rbol (%d)\n\n{"#SILVER_COLOR"}(%s)", tree, TimeConvert(LUMBER_TREES[ tree ][lumber_tree_GROW_COUNTER]));
+	format(label_str, sizeof label_str, "{f46530}ÔøΩrbol (%d)\n\n{"#SILVER_COLOR"}(%s)", tree, TimeConvert(LUMBER_TREES[ tree ][lumber_tree_GROW_COUNTER]));
 	UpdateDynamic3DTextLabelText(LUMBER_TREES[ tree ][lumber_tree_LABEL], -1, label_str);
 	
 	LUMBER_TREES[ tree ][lumber_tree_STATE] = LUMBER_TREE_STATE_CUTTED;
@@ -4755,7 +4753,7 @@ public GrowTreeUp(tree)
 	{
 		LUMBER_TREES[ tree ][lumber_tree_GROW_COUNTER] --;
 		new label_str[256];
-		format(label_str, sizeof label_str, "{f46530}¡rbol (%d)\n\n{"#SILVER_COLOR"}(%s)", tree, TimeConvert(LUMBER_TREES[ tree ][lumber_tree_GROW_COUNTER]));
+		format(label_str, sizeof label_str, "{f46530}ÔøΩrbol (%d)\n\n{"#SILVER_COLOR"}(%s)", tree, TimeConvert(LUMBER_TREES[ tree ][lumber_tree_GROW_COUNTER]));
 		UpdateDynamic3DTextLabelText(LUMBER_TREES[ tree ][lumber_tree_LABEL], -1, label_str);
 		
 		KillTimer(LUMBER_TREES[ tree ][lumber_tree_GROW_TIMER]);
@@ -4768,7 +4766,7 @@ public GrowTreeUp(tree)
 	LUMBER_TREES[ tree ][lumber_tree_STATE] = LUMBER_TREE_STATE_NORMAL;
 
 	new label_str[256];
-	format(label_str, sizeof label_str, "{f46530}¡rbol (%d)\n\n{FFFFFF}Pulsa {f9d834}~k~~CONVERSATION_NO~ {FFFFFF}para talar el ·rbol.", tree);
+	format(label_str, sizeof label_str, "{f46530}ÔøΩrbol (%d)\n\n{FFFFFF}Pulsa {f9d834}~k~~CONVERSATION_NO~ {FFFFFF}para talar el ÔøΩrbol.", tree);
 	UpdateDynamic3DTextLabelText(LUMBER_TREES[ tree ][lumber_tree_LABEL], -1, label_str);
 	return 1;
 }
@@ -4993,7 +4991,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float: amount, weaponid, bodypart
 
 				TextDrawShowForPlayer(playerid, Textdraws[textdraw_COMBAT_MODE]);
 
-				SendNotification(playerid, "Has entrado en modo de combate. Saldr·s de este modo en ~r~2 minutos~w~.~n~~n~Si te desconectas, perder·s todas tus armas, y en caso de tener cargos ir·s a prisiÛn.");
+				SendNotification(playerid, "Has entrado en modo de combate. SaldrÔøΩs de este modo en ~r~2 minutos~w~.~n~~n~Si te desconectas, perderÔøΩs todas tus armas, y en caso de tener cargos irÔøΩs a prisiÔøΩn.");
 			}
 		}
 
@@ -5010,7 +5008,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float: amount, weaponid, bodypart
 
 				TextDrawShowForPlayer(damagedid, Textdraws[textdraw_COMBAT_MODE]);
 
-				SendNotification(damagedid, "Has entrado en modo de combate. Saldr·s de este modo en ~r~2 minutos~w~.~n~~n~Si te desconectas, perder·s todas tus armas, y en caso de tener cargos ir·s a prisiÛn.");
+				SendNotification(damagedid, "Has entrado en modo de combate. SaldrÔøΩs de este modo en ~r~2 minutos~w~.~n~~n~Si te desconectas, perderÔøΩs todas tus armas, y en caso de tener cargos irÔøΩs a prisiÔøΩn.");
 			}
 		}
 	}
@@ -5021,7 +5019,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float: amount, weaponid, bodypart
 		{
 			if(IsPlayerInSafeZone(playerid))
 			{
-				SendNotification(playerid, "Est·s en una zona segura, la policÌa ha sido avisada de la agresiÛn.");
+				SendNotification(playerid, "EstÔøΩs en una zona segura, la policÔøΩa ha sido avisada de la agresiÔøΩn.");
 				
 				new city[45], zone[45];
 				GetPlayerZones(playerid, city, zone);
@@ -5029,7 +5027,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float: amount, weaponid, bodypart
 				if(!PI[playerid][ac_WANTED_LEVEL]) SetPlayerWantedLevelEx(playerid, 1);
 
 				new message[145];
-				format(message, sizeof message, "{"#PRIMARY_COLOR"}[Central policÌa] {FFFFFF}%s est· causando disturbios en {"#PRIMARY_COLOR"}%s, %s.", PLAYER_TEMP[playerid][pt_RP_NAME], city, zone);
+				format(message, sizeof message, "{"#PRIMARY_COLOR"}[Central policÔøΩa] {FFFFFF}%s estÔøΩ causando disturbios en {"#PRIMARY_COLOR"}%s, %s.", PLAYER_TEMP[playerid][pt_RP_NAME], city, zone);
 				SendPoliceRadioMessage(-1, -1, message);
 				
 				PLAYER_TEMP[playerid][pt_LAST_SAFE_ZONE_WARNING] = gettime();
@@ -5056,13 +5054,13 @@ public OnPlayerSelectDynamicObject(playerid, STREAMER_TAG_OBJECT:objectid, model
 			if(!PLAYER_WORKS[playerid][WORK_POLICE][pwork_SET])
 			{
 				CancelEdit(playerid);
-				SendNotification(playerid, "No eres policÌa.");
+				SendNotification(playerid, "No eres policÔøΩa.");
 				return 1;
 			}
 			if(PLAYER_TEMP[playerid][pt_WORKING_IN] != WORK_POLICE)
 			{
 				CancelEdit(playerid);
-				SendNotification(playerid, "No est·s de servicio como policÌa.");
+				SendNotification(playerid, "No estÔøΩs de servicio como policÔøΩa.");
 				return 1;
 			}
 			if(PLAYER_WORKS[playerid][WORK_POLICE][pwork_LEVEL] < 8)
@@ -5215,25 +5213,25 @@ public StartPlayerJob(playerid, work, vehicleid)
 		{
 			if(TRUCK_VEHICLE[vehicleid][truck_vehicle_LOADED])
 			{
-				if(TRUCK_VEHICLE[vehicleid][truck_vehicle_DELIVERED]) SendNotification(playerid, "El camiÛn ya ha entregado la mercancÌa, ve al punto de partida para cobrar.");
-				else SendNotification(playerid, "Ve a entregar la mercancÌa al punto marcado.");
+				if(TRUCK_VEHICLE[vehicleid][truck_vehicle_DELIVERED]) SendNotification(playerid, "El camiÔøΩn ya ha entregado la mercancÔøΩa, ve al punto de partida para cobrar.");
+				else SendNotification(playerid, "Ve a entregar la mercancÔøΩa al punto marcado.");
 				
 				SetPlayerTruckCheckpoint(playerid, vehicleid);
 			}
-			else SendNotification(playerid, "Para comenzar a trabajar carga el camiÛn en la zona indicada con una flecha amarilla.");
+			else SendNotification(playerid, "Para comenzar a trabajar carga el camiÔøΩn en la zona indicada con una flecha amarilla.");
 		}
 		case WORK_HARVESTER:
 		{
 			PLAYER_TEMP[playerid][pt_HARVERT_PROCCESS] = 0;
 			SendNotification(playerid, "Ve hasta los puntos de control para completar el trabajo.");
-			SendNotification(playerid, "Si te bajas de la cosechadora se cancelar· el trabajo.");
+			SendNotification(playerid, "Si te bajas de la cosechadora se cancelarÔøΩ el trabajo.");
 			Set_HARVEST_Checkpoint(playerid);
 		}
 		case WORK_FUMIGATOR:
 		{	
 			PLAYER_TEMP[playerid][pt_FUMIGATOR_PROCCESS] = 0;
 			SendNotification(playerid, "Ve hasta los puntos de control para completar el trabajo.");
-			SendNotification(playerid, "Si te bajas del aviÛn se cancelar· el trabajo.");
+			SendNotification(playerid, "Si te bajas del aviÔøΩn se cancelarÔøΩ el trabajo.");
 			Set_FUMIGATOR_Checkpoint(playerid);
 			
 			GLOBAL_VEHICLES[vehicleid][gb_vehicle_PARAMS_ENGINE] = 1;
@@ -5249,7 +5247,7 @@ public StartPlayerJob(playerid, work, vehicleid)
 			RemovePlayerAttachedObject(playerid, 9);
 			SetPlayerAttachedObject(playerid, 9, 341, 1, -0.172999, -0.165, -0.053999, 0.0, -7.599999, -9.6);
 			
-			SendClientMessage(playerid,-1, "{"#SILVER_COLOR"}Los ·rboles que puedes talar est·n repartidos por la zona, si te alejas demasiado el trabajo se cancelar·.");
+			SendClientMessage(playerid,-1, "{"#SILVER_COLOR"}Los ÔøΩrboles que puedes talar estÔøΩn repartidos por la zona, si te alejas demasiado el trabajo se cancelarÔøΩ.");
 		}
 		case WORK_TRASH:
 		{
@@ -5270,7 +5268,7 @@ public StartPlayerJob(playerid, work, vehicleid)
 		case WORK_POLICE:
 		{
 			new label_str[128];
-			format(label_str, sizeof label_str, "%s | N∫%d | %c. %s", POLICE_RANKS[ PLAYER_WORKS[playerid][WORK_POLICE][pwork_LEVEL] ], PI[playerid][ac_PLACA_PD], PLAYER_TEMP[playerid][pt_FIRST_NAME][0], PLAYER_TEMP[playerid][pt_SUB_NAME]);
+			format(label_str, sizeof label_str, "%s | NÔøΩ%d | %c. %s", POLICE_RANKS[ PLAYER_WORKS[playerid][WORK_POLICE][pwork_LEVEL] ], PI[playerid][ac_PLACA_PD], PLAYER_TEMP[playerid][pt_FIRST_NAME][0], PLAYER_TEMP[playerid][pt_SUB_NAME]);
 			
 			if(IsValidDynamic3DTextLabel(PLAYER_TEMP[playerid][pt_POLICE_LABEL]))
 			{
@@ -5293,7 +5291,7 @@ public StartPlayerJob(playerid, work, vehicleid)
 			}
 			PLAYER_TEMP[playerid][pt_PIZZA_PROCCESS] = 0;
 			PLAYER_TEMP[playerid][pt_DELIVERED_PIZZAS] = 0;
-			SendNotification(playerid, "Para comenzar a repartir s˙bete a una moto de la pizzerÌa.");
+			SendNotification(playerid, "Para comenzar a repartir sÔøΩbete a una moto de la pizzerÔøΩa.");
 		}
 		case WORK_MEDIC:
 		{
@@ -5394,12 +5392,12 @@ public EndPlayerJob(playerid, work, bool:changeskin)
 				{
 					if(PLAYER_TEMP[playerid][pt_TRASH_DRIVER])
 					{
-						SendClientMessage(TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_PASSENGER_ID], -1, "{"#SILVER_COLOR"}El trabajo se ha cancelado porque tu compaÒero ha dejado de trabajar.");
+						SendClientMessage(TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_PASSENGER_ID], -1, "{"#SILVER_COLOR"}El trabajo se ha cancelado porque tu compaÔøΩero ha dejado de trabajar.");
 						CancelTrashWork(playerid, TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_PASSENGER_ID], PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID]);
 					}
 					if(PLAYER_TEMP[playerid][pt_TRASH_PASSENGER])
 					{
-						SendClientMessage(TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_DRIVER_ID], -1, "{"#SILVER_COLOR"}El trabajo se ha cancelado porque tu compaÒero ha dejado de trabajar.");
+						SendClientMessage(TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_DRIVER_ID], -1, "{"#SILVER_COLOR"}El trabajo se ha cancelado porque tu compaÔøΩero ha dejado de trabajar.");
 						CancelTrashWork(TRASH_VEHICLES[ PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID] ][trash_vehicle_DRIVER_ID], playerid, PLAYER_TEMP[playerid][pt_TRASH_VEHICLE_ID]);
 					}
 				}
@@ -5664,7 +5662,7 @@ public OnPlayerEditObject(playerid, playerobject, objectid, response, Float:fX, 
 					UpdateVehicleAttachedObject(PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID], PLAYER_TEMP[playerid][pt_TUNING_EDIT_SLOT]);
 					Streamer_Update(playerid);
 					
-					SendNotification(playerid, "Has cancelado la ediciÛn.");
+					SendNotification(playerid, "Has cancelado la ediciÔøΩn.");
 					ShowDialog(playerid, DIALOG_VOBJECT_OBJECT);
 				}
 				case EDIT_RESPONSE_FINAL:
@@ -5684,7 +5682,7 @@ public OnPlayerEditObject(playerid, playerobject, objectid, response, Float:fX, 
 							(VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][ PLAYER_TEMP[playerid][pt_TUNING_EDIT_SLOT] ][vobject_OFFSET][2] >= v_size[2] || -v_size[2] >= VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][ PLAYER_TEMP[playerid][pt_TUNING_EDIT_SLOT] ][vobject_OFFSET][2])
 						)
 					{
-						SendNotification(playerid, "La posiciÛn del objeto est· demasiado lejos del vehÌculo.");
+						SendNotification(playerid, "La posiciÔøΩn del objeto estÔøΩ demasiado lejos del vehÔøΩculo.");
 						VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][ PLAYER_TEMP[playerid][pt_TUNING_EDIT_SLOT] ][vobject_OFFSET][0] = PLAYER_TEMP[playerid][pt_OLD_EDIT_VOBJECT_POS][0];
 						VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][ PLAYER_TEMP[playerid][pt_TUNING_EDIT_SLOT] ][vobject_OFFSET][1] = PLAYER_TEMP[playerid][pt_OLD_EDIT_VOBJECT_POS][1];
 						VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][ PLAYER_TEMP[playerid][pt_TUNING_EDIT_SLOT] ][vobject_OFFSET][2] = PLAYER_TEMP[playerid][pt_OLD_EDIT_VOBJECT_POS][2];
@@ -5748,7 +5746,7 @@ public OnPlayerCommandReceived(playerid, cmd[], params[], flags)
 		SendNotification(playerid, "Ahora no puedes usar comandos.");
 		return 0;
 	}
-	if(PLAYER_TEMP[playerid][pt_SELECT_TEXTDRAW]) { SendNotification(playerid, "Ahora no puedes usar comandos, pulsa 'ESCAPE' para cerrar el men˙."); return 0; }
+	if(PLAYER_TEMP[playerid][pt_SELECT_TEXTDRAW]) { SendNotification(playerid, "Ahora no puedes usar comandos, pulsa 'ESCAPE' para cerrar el menÔøΩ."); return 0; }
 	
 	
 	new interval = GetTickDiff(GetTickCount(), PLAYER_TEMP[playerid][pt_ANTIFLOOD_COMMANDS]);
@@ -5772,7 +5770,7 @@ public OnPlayerCommandReceived(playerid, cmd[], params[], flags)
 				}
 			}
 		}
-		SendNotification(playerid, "C·lmate."); 
+		SendNotification(playerid, "CÔøΩlmate."); 
 		return 0; 
 	}
 	
@@ -5809,7 +5807,7 @@ public OnPlayerCommandPerformed(playerid, cmd[], params[], result, flags)
 { 
     if(result == -1) 
     { 
-		SendFormatNotification(playerid, "El comando ~r~\"%s\"~w~ no existe.~n~~n~Utiliza el comando ~r~\"/ayuda\"~w~ para ver informaciÛn sobre el servidor.", cmd);
+		SendFormatNotification(playerid, "El comando ~r~\"%s\"~w~ no existe.~n~~n~Utiliza el comando ~r~\"/ayuda\"~w~ para ver informaciÔøΩn sobre el servidor.", cmd);
         return 0;
     }
     return 1; 
@@ -5830,9 +5828,9 @@ public OnPlayerDownloadedSong(index, response_code, data[])
 			format(url, 128, ""DOWNLOADED_YT_PATH"%s.mp3", PLAYER_TEMP[index][pt_VIDEO_ID]);
 			PlayMp3(index, url, PLAYER_TEMP[index][pt_VIDEO_NAME]);
 		}
-		else SendClientMessage(index, -1, "{"#SILVER_COLOR"}Esta canciÛn no se puede reproducir.");
+		else SendClientMessage(index, -1, "{"#SILVER_COLOR"}Esta canciÔøΩn no se puede reproducir.");
 	}
-	else SendClientMessage(index, -1, "{"#SILVER_COLOR"}Hubo un problema con el servidor de descarga, intÈntelo de nuevo m·s tarde.");
+	else SendClientMessage(index, -1, "{"#SILVER_COLOR"}Hubo un problema con el servidor de descarga, intÔøΩntelo de nuevo mÔøΩs tarde.");
 	
 	PLAYER_TEMP[index][pt_PLAYER_WAITING_MP3_HTTP] = false;
 	return 1;
@@ -5953,7 +5951,7 @@ public ResetCombat(damagedid)
 
 	TextDrawHideForPlayer(damagedid, Textdraws[textdraw_COMBAT_MODE]);
 	
-	SendNotification(damagedid, "Ya no est·s en combate.");
+	SendNotification(damagedid, "Ya no estÔøΩs en combate.");
 	return 1;
 }
 
@@ -6024,7 +6022,7 @@ hook OnPlayerKeyPressFinish(playerid) {
 				case PLANT_TYPE_CRACK: PI[playerid][ac_SEED_CRACK] += plant_info[ PLAYER_TEMP[playerid][pt_PLANTING_PLANT_SELECTED] ][plant_info_SEEDS];
 			}
 
-			SendNotification(playerid, "No queda espacio para m·s plantas, te hemos devuelto las semillas. Prueba mùs tarde.");
+			SendNotification(playerid, "No queda espacio para mÔøΩs plantas, te hemos devuelto las semillas. Prueba mÔøΩs tarde.");
 			return 1;
 		}
 
@@ -6061,7 +6059,7 @@ hook OnPlayerKeyPressFinish(playerid) {
 
 		PLAYER_WORKS[playerid][WORK_FARMER][pwork_LEVEL] ++;
 		AddPlayerJobPoints(playerid, WORK_FARMER);
-		SendNotification(playerid, "Ahora espera a que la planta crezca, si pasan m·s de ~r~5 minutos~w~ despuÈs de que la planta haya crecido se destruir·.");
+		SendNotification(playerid, "Ahora espera a que la planta crezca, si pasan mÔøΩs de ~r~5 minutos~w~ despuÔøΩs de que la planta haya crecido se destruirÔøΩ.");
 		Streamer_Update(playerid);
 		return Y_HOOKS_BREAK_RETURN_1;
 	}
@@ -6090,7 +6088,7 @@ hook OnPlayerKeyPress(playerid, Float:percentage) {
 		SetPlayerArmedWeapon(playerid, 9);
 		
 		new label_str[256];
-		format(label_str, sizeof label_str, "{f46530}¡rbol (%d)\n\n{FFFFFF}Talando... {"#SILVER_COLOR"}(%.1f%%)", tree, percentage);
+		format(label_str, sizeof label_str, "{f46530}ÔøΩrbol (%d)\n\n{FFFFFF}Talando... {"#SILVER_COLOR"}(%.1f%%)", tree, percentage);
 		UpdateDynamic3DTextLabelText(LUMBER_TREES[ tree ][lumber_tree_LABEL], -1, label_str);
 		
 		KillTimer(PLAYER_TEMP[playerid][pt_TIMERS][11]);
