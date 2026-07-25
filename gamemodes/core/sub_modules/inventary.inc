@@ -424,7 +424,7 @@ SeedPlayerInventory(playerid) {
 
     if(PI[playerid][ac_PHONE_NUMBER] && counter < MAX_INVENTORY_ITEMS) {
         pInventoryItems[playerid][0][counter][pinv_VALID] = true;
-        format(pInventoryItems[playerid][0][counter][pinv_NAME], 64, "Teléfono (%s)", number_format_thousand(PI[playerid][ac_PHONE_NUMBER]));
+        format(pInventoryItems[playerid][0][counter][pinv_NAME], 64, "TelÃ©fono (%s)", number_format_thousand(PI[playerid][ac_PHONE_NUMBER]));
         pInventoryItems[playerid][0][counter][pinv_MODELID] = 18868;
         pInventoryItems[playerid][0][counter][pinv_MDL_RX] = 90.0;
         pInventoryItems[playerid][0][counter][pinv_MDL_RY] = 0.0;
@@ -463,7 +463,7 @@ SeedPlayerInventory(playerid) {
 
     if(PI[playerid][ac_PHONE_RESOLVER] && counter < MAX_INVENTORY_ITEMS) {
         pInventoryItems[playerid][0][counter][pinv_VALID] = true;
-        format(pInventoryItems[playerid][0][counter][pinv_NAME], 64, "Guía telefónica");
+        format(pInventoryItems[playerid][0][counter][pinv_NAME], 64, "GuÃ­a telefÃ³nica");
         pInventoryItems[playerid][0][counter][pinv_MODELID] = 1239;
         pInventoryItems[playerid][0][counter][pinv_MDL_RX] = 0.0;
         pInventoryItems[playerid][0][counter][pinv_MDL_RY] = 0.0;
@@ -489,7 +489,7 @@ SeedPlayerInventory(playerid) {
 
     if(PI[playerid][ac_MECHANIC_PIECES] && counter < MAX_INVENTORY_ITEMS) {
         pInventoryItems[playerid][0][counter][pinv_VALID] = true;
-        format(pInventoryItems[playerid][0][counter][pinv_NAME], 64, "Piezas de mecánico (%s)", number_format_thousand(PI[playerid][ac_MECHANIC_PIECES]));
+        format(pInventoryItems[playerid][0][counter][pinv_NAME], 64, "Piezas de mecÃ¡nico (%s)", number_format_thousand(PI[playerid][ac_MECHANIC_PIECES]));
         pInventoryItems[playerid][0][counter][pinv_MODELID] = 1020;
         pInventoryItems[playerid][0][counter][pinv_MDL_RX] = 0.0;
         pInventoryItems[playerid][0][counter][pinv_MDL_RY] = 0.0;
@@ -501,7 +501,7 @@ SeedPlayerInventory(playerid) {
 
     if(PI[playerid][ac_FUEL_DRUM] && counter < MAX_INVENTORY_ITEMS) {
         pInventoryItems[playerid][0][counter][pinv_VALID] = true;
-        format(pInventoryItems[playerid][0][counter][pinv_NAME], 64, "Bidón de gasolina (%s Litros)", number_format_thousand(PI[playerid][ac_FUEL_DRUM]));
+        format(pInventoryItems[playerid][0][counter][pinv_NAME], 64, "BidÃ³n de gasolina (%s Litros)", number_format_thousand(PI[playerid][ac_FUEL_DRUM]));
         pInventoryItems[playerid][0][counter][pinv_MODELID] = 1650;
         pInventoryItems[playerid][0][counter][pinv_MDL_RX] = 0.0;
         pInventoryItems[playerid][0][counter][pinv_MDL_RY] = 0.0;
@@ -633,7 +633,7 @@ SeedPlayerInventory(playerid) {
 
     if(PI[playerid][ac_MECHANIC_KITS] && counter < MAX_INVENTORY_ITEMS) {
         pInventoryItems[playerid][0][counter][pinv_VALID] = true;
-        format(pInventoryItems[playerid][0][counter][pinv_NAME], 64, "Kits de reparación (%s)", number_format_thousand(PI[playerid][ac_MECHANIC_KITS]));
+        format(pInventoryItems[playerid][0][counter][pinv_NAME], 64, "Kits de reparaciÃ³n (%s)", number_format_thousand(PI[playerid][ac_MECHANIC_KITS]));
         pInventoryItems[playerid][0][counter][pinv_MODELID] = 19921;
         pInventoryItems[playerid][0][counter][pinv_MDL_RX] = 0.0;
         pInventoryItems[playerid][0][counter][pinv_MDL_RY] = 0.0;
@@ -823,7 +823,7 @@ OnPlayerClickInventoryItem(playerid, section, index) {
         }
     }
     else {
-        SendClientMessageEx(playerid, -1, "{"#RED_COLOR"}Espacio vacío.");
+        SendClientMessageEx(playerid, -1, "{"#RED_COLOR"}Espacio vacÃ­o.");
     }
 }
 

@@ -45,50 +45,50 @@ ShowPlayerMessage(playerid, message[],tiempo = 5000)
 	{
 		switch(message[pos])
 		{
-			case '‡': message[pos] = 151;
-			case '·': message[pos] = 152;
-			case '‚': message[pos] = 153;
-			case '‰': message[pos] = 154;
-			case '¿': message[pos] = 128;
-			case '¡': message[pos] = 129;
-			case '¬': message[pos] = 130;
-			case 'ƒ': message[pos] = 131;
-			case 'Ë': message[pos] = 157;
-			case 'È': message[pos] = 158;
-			case 'Í': message[pos] = 159;
-			case 'Î': message[pos] = 160;
-			case '»': message[pos] = 134;
-			case '…': message[pos] = 135;
-			case ' ': message[pos] = 136;
-			case 'À': message[pos] = 137;
-			case 'Ï': message[pos] = 161;
-			case 'Ì': message[pos] = 162;
-			case 'Ó': message[pos] = 163;
-			case 'Ô': message[pos] = 164;
-			case 'Ã': message[pos] = 138;
-			case 'Õ': message[pos] = 139;
-			case 'Œ': message[pos] = 140;
-			case 'œ': message[pos] = 141;
-			case 'Ú': message[pos] = 165;
-			case 'Û': message[pos] = 166;
-			case 'Ù': message[pos] = 167;
-			case 'ˆ': message[pos] = 168;
-			case '“': message[pos] = 142;
-			case '”': message[pos] = 143;
-			case '‘': message[pos] = 144;
-			case '÷': message[pos] = 145;
-			case '˘': message[pos] = 169;
-			case '˙': message[pos] = 170;
-			case '˚': message[pos] = 171;
-			case '¸': message[pos] = 172;
-			case 'Ÿ': message[pos] = 146;
-			case '⁄': message[pos] = 147;
-			case '€': message[pos] = 148;
-			case '‹': message[pos] = 149;
-			case 'Ò': message[pos] = 174;
-			case '—': message[pos] = 173;
-			case '°': message[pos] = 64;
-			case 'ø': message[pos] = 175;
+			case '√†': message[pos] = 151;
+			case '√°': message[pos] = 152;
+			case '√¢': message[pos] = 153;
+			case '√§': message[pos] = 154;
+			case '√Ä': message[pos] = 128;
+			case '√Å': message[pos] = 129;
+			case '√Ç': message[pos] = 130;
+			case '√Ñ': message[pos] = 131;
+			case '√®': message[pos] = 157;
+			case '√©': message[pos] = 158;
+			case '√™': message[pos] = 159;
+			case '√´': message[pos] = 160;
+			case '√à': message[pos] = 134;
+			case '√â': message[pos] = 135;
+			case '√ä': message[pos] = 136;
+			case '√ã': message[pos] = 137;
+			case '√¨': message[pos] = 161;
+			case '√≠': message[pos] = 162;
+			case '√Æ': message[pos] = 163;
+			case '√Ø': message[pos] = 164;
+			case '√å': message[pos] = 138;
+			case '√ç': message[pos] = 139;
+			case '√é': message[pos] = 140;
+			case '√è': message[pos] = 141;
+			case '√≤': message[pos] = 165;
+			case '√≥': message[pos] = 166;
+			case '√¥': message[pos] = 167;
+			case '√∂': message[pos] = 168;
+			case '√í': message[pos] = 142;
+			case '√ì': message[pos] = 143;
+			case '√î': message[pos] = 144;
+			case '√ñ': message[pos] = 145;
+			case '√π': message[pos] = 169;
+			case '√∫': message[pos] = 170;
+			case '√ª': message[pos] = 171;
+			case '√º': message[pos] = 172;
+			case '√ô': message[pos] = 146;
+			case '√ö': message[pos] = 147;
+			case '√õ': message[pos] = 148;
+			case '√ú': message[pos] = 149;
+			case '√±': message[pos] = 174;
+			case '√ë': message[pos] = 173;
+			case '¬°': message[pos] = 64;
+			case '¬ø': message[pos] = 175;
 			case '`': message[pos] = 177;
 			case '&': message[pos] = 38;
 			default:  message[pos] = message[pos];
@@ -229,13 +229,13 @@ CreatePropertyInfo(i, pid, pname[], cid, cname[])
 		format(PROPERTY_INFO[i][property_NAME], 24, "Propiedad %d", PROPERTY_INFO[i][property_ID]);
 		if(PROPERTY_INFO[i][property_VIP_LEVEL])
 		{
-			if(PROPERTY_INFO[i][property_EXTRA]) format(label_str, sizeof label_str, "{"#PRIMARY_COLOR"}MembresÌa VIP requerida\n\n{FFFFFF}Propiedad {"#PRIMARY_COLOR"}#%d {FFFFFF}est· en venta\n\nInterior: {"#PRIMARY_COLOR"}%d\n{FFFFFF}Coste: {"#PRIMARY_COLOR"}%d "SERVER_COIN"\n{FFFFFF}Nivel necesario: {"#PRIMARY_COLOR"}%d\n{FFFFFF}Usa {"#PRIMARY_COLOR"}/ayuda {FFFFFF}para ver como adquirirla.", PROPERTY_INFO[i][property_ID], PROPERTY_INFO[i][property_ID_INTERIOR], PROPERTY_INFO[i][property_EXTRA], PROPERTY_INFO[i][property_LEVEL]);
-			else format(label_str, sizeof label_str, "{"#PRIMARY_COLOR"}MembresÌa VIP requerida\n\n{FFFFFF}Propiedad {"#PRIMARY_COLOR"}#%d {FFFFFF}est· en venta\n\nInterior: {"#PRIMARY_COLOR"}%d\n{FFFFFF}Precio: {"#PRIMARY_COLOR"}%s$\n{FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\n{FFFFFF}Usa {"#PRIMARY_COLOR"}/ayuda {FFFFFF}para ver como adquirirla.", PROPERTY_INFO[i][property_ID], PROPERTY_INFO[i][property_ID_INTERIOR], number_format_thousand(PROPERTY_INFO[i][property_PRICE]), PROPERTY_INFO[i][property_LEVEL]);
+			if(PROPERTY_INFO[i][property_EXTRA]) format(label_str, sizeof label_str, "{"#PRIMARY_COLOR"}Membres√≠a VIP requerida\n\n{FFFFFF}Propiedad {"#PRIMARY_COLOR"}#%d {FFFFFF}est√° en venta\n\nInterior: {"#PRIMARY_COLOR"}%d\n{FFFFFF}Coste: {"#PRIMARY_COLOR"}%d "SERVER_COIN"\n{FFFFFF}Nivel necesario: {"#PRIMARY_COLOR"}%d\n{FFFFFF}Usa {"#PRIMARY_COLOR"}/ayuda {FFFFFF}para ver como adquirirla.", PROPERTY_INFO[i][property_ID], PROPERTY_INFO[i][property_ID_INTERIOR], PROPERTY_INFO[i][property_EXTRA], PROPERTY_INFO[i][property_LEVEL]);
+			else format(label_str, sizeof label_str, "{"#PRIMARY_COLOR"}Membres√≠a VIP requerida\n\n{FFFFFF}Propiedad {"#PRIMARY_COLOR"}#%d {FFFFFF}est√° en venta\n\nInterior: {"#PRIMARY_COLOR"}%d\n{FFFFFF}Precio: {"#PRIMARY_COLOR"}%s$\n{FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\n{FFFFFF}Usa {"#PRIMARY_COLOR"}/ayuda {FFFFFF}para ver como adquirirla.", PROPERTY_INFO[i][property_ID], PROPERTY_INFO[i][property_ID_INTERIOR], number_format_thousand(PROPERTY_INFO[i][property_PRICE]), PROPERTY_INFO[i][property_LEVEL]);
 		}
 		else
 		{
-			if(PROPERTY_INFO[i][property_EXTRA]) format(label_str, sizeof label_str, "{FFFFFF}Propiedad {"#PRIMARY_COLOR"}#%d {FFFFFF}est· en venta\n\nInterior: {"#PRIMARY_COLOR"}%d\n{FFFFFF}Coste: {"#PRIMARY_COLOR"}%d "SERVER_COIN"\n{FFFFFF}Nivel necesario: {"#PRIMARY_COLOR"}%d\n{FFFFFF}Usa {"#PRIMARY_COLOR"}/ayuda {FFFFFF}para ver como adquirirla.", PROPERTY_INFO[i][property_ID], PROPERTY_INFO[i][property_ID_INTERIOR], PROPERTY_INFO[i][property_EXTRA], PROPERTY_INFO[i][property_LEVEL]);
-			else format(label_str, sizeof label_str, "{FFFFFF}Propiedad {"#PRIMARY_COLOR"}#%d {FFFFFF}est· en venta\n\nInterior: {"#PRIMARY_COLOR"}%d\n{FFFFFF}Precio: {"#PRIMARY_COLOR"}%s$\n{FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\n{FFFFFF}Usa {"#PRIMARY_COLOR"}/ayuda {FFFFFF}para ver como adquirirla.", PROPERTY_INFO[i][property_ID], PROPERTY_INFO[i][property_ID_INTERIOR], number_format_thousand(PROPERTY_INFO[i][property_PRICE]), PROPERTY_INFO[i][property_LEVEL]);
+			if(PROPERTY_INFO[i][property_EXTRA]) format(label_str, sizeof label_str, "{FFFFFF}Propiedad {"#PRIMARY_COLOR"}#%d {FFFFFF}est√° en venta\n\nInterior: {"#PRIMARY_COLOR"}%d\n{FFFFFF}Coste: {"#PRIMARY_COLOR"}%d "SERVER_COIN"\n{FFFFFF}Nivel necesario: {"#PRIMARY_COLOR"}%d\n{FFFFFF}Usa {"#PRIMARY_COLOR"}/ayuda {FFFFFF}para ver como adquirirla.", PROPERTY_INFO[i][property_ID], PROPERTY_INFO[i][property_ID_INTERIOR], PROPERTY_INFO[i][property_EXTRA], PROPERTY_INFO[i][property_LEVEL]);
+			else format(label_str, sizeof label_str, "{FFFFFF}Propiedad {"#PRIMARY_COLOR"}#%d {FFFFFF}est√° en venta\n\nInterior: {"#PRIMARY_COLOR"}%d\n{FFFFFF}Precio: {"#PRIMARY_COLOR"}%s$\n{FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\n{FFFFFF}Usa {"#PRIMARY_COLOR"}/ayuda {FFFFFF}para ver como adquirirla.", PROPERTY_INFO[i][property_ID], PROPERTY_INFO[i][property_ID_INTERIOR], number_format_thousand(PROPERTY_INFO[i][property_PRICE]), PROPERTY_INFO[i][property_LEVEL]);
 		}
 	}
 	
@@ -243,7 +243,7 @@ CreatePropertyInfo(i, pid, pname[], cid, cname[])
 
 	new Float:z_pos = PROPERTY_INTERIORS[ PROPERTY_INFO[i][property_ID_INTERIOR] ][property_INT_Z];
 	if(PROPERTY_INFO[i][property_DIS_DEFAULT_INTERIOR]) z_pos += PROPERTY_EMPTY_INTERIOR_Z_OFFSET;
-	PROPERTY_INFO[i][property_INT_LABEL_ID] = CreateDynamic3DTextLabel("Presiona {"#PRIMARY_COLOR"}~k~~CONVERSATION_YES~ {FFFFFF}para salir\n\nEscribe {"#PRIMARY_COLOR"}/casa {FFFFFF}para m·s opciones", 0xFFFFFFFF, PROPERTY_INTERIORS[ PROPERTY_INFO[i][property_ID_INTERIOR] ][property_INT_X], PROPERTY_INTERIORS[ PROPERTY_INFO[i][property_ID_INTERIOR] ][property_INT_Y], z_pos + 0.25, 3.0, .testlos = true, .worldid = PROPERTY_INFO[i][property_ID], .interiorid = PROPERTY_INTERIORS[ PROPERTY_INFO[i][property_ID_INTERIOR] ][property_INT_INTERIOR]);
+	PROPERTY_INFO[i][property_INT_LABEL_ID] = CreateDynamic3DTextLabel("Presiona {"#PRIMARY_COLOR"}~k~~CONVERSATION_YES~ {FFFFFF}para salir\n\nEscribe {"#PRIMARY_COLOR"}/casa {FFFFFF}para m√°s opciones", 0xFFFFFFFF, PROPERTY_INTERIORS[ PROPERTY_INFO[i][property_ID_INTERIOR] ][property_INT_X], PROPERTY_INTERIORS[ PROPERTY_INFO[i][property_ID_INTERIOR] ][property_INT_Y], z_pos + 0.25, 3.0, .testlos = true, .worldid = PROPERTY_INFO[i][property_ID], .interiorid = PROPERTY_INTERIORS[ PROPERTY_INFO[i][property_ID_INTERIOR] ][property_INT_INTERIOR]);
 
 	PROPERTY_INFO[i][property_EXT_PICKUP_ID] = CreateDynamicPickup(pickup_modelid, 1, PROPERTY_INFO[i][property_EXT_X], PROPERTY_INFO[i][property_EXT_Y], PROPERTY_INFO[i][property_EXT_Z], 0, PROPERTY_INFO[i][property_EXT_INTERIOR]);
 	PROPERTY_INFO[i][property_INT_PICKUP_ID] = CreateDynamicPickup(0, 1, PROPERTY_INTERIORS[ PROPERTY_INFO[i][property_ID_INTERIOR] ][property_INT_X], PROPERTY_INTERIORS[ PROPERTY_INFO[i][property_ID_INTERIOR] ][property_INT_Y], z_pos, PROPERTY_INFO[i][property_ID], PROPERTY_INTERIORS[ PROPERTY_INFO[i][property_ID_INTERIOR] ][property_INT_INTERIOR]);
@@ -399,8 +399,8 @@ EditPlayerToy(playerid)
 		PLAYER_TOYS[playerid][ PLAYER_TEMP[playerid][pt_SELECTED_TOY_SLOT] ][player_toy_COLOR_2]
 	);
 	
-	SendNotification(playerid, "Ajusta el accesorio y haz clic en el icono de guardar, si pulsas ~r~'ESCAPE' ~w~no se guardar· la configuraciÛn.");
-	SendNotification(playerid, "~w~MantÈn presionado ~r~'ESPACIO' ~w~para mover la c·mara.");
+	SendNotification(playerid, "Ajusta el accesorio y haz clic en el icono de guardar, si pulsas ~r~'ESCAPE' ~w~no se guardar√° la configuraci√≥n.");
+	SendNotification(playerid, "~w~Mant√©n presionado ~r~'ESPACIO' ~w~para mover la c√°mara.");
 	EditAttachedObject(playerid, PLAYER_TEMP[playerid][pt_SELECTED_TOY_SLOT]);
 	return 1;
 }
@@ -469,7 +469,7 @@ LoadPlayerCrewInfo(playerid)
 			PI[playerid][ac_CREW] = 0;
 			PI[playerid][ac_CREW_RANK] = 0;
 			PLAYER_TEMP[playerid][pt_CREW_INDEX] = 0;
-			SendNotification(playerid, "La banda a la que pertenecÌas ya no existe.");
+			SendNotification(playerid, "La banda a la que pertenec√≠as ya no existe.");
 
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET crew = NULL WHERE id = %d;", ACCOUNT_INFO[playerid][ac_ID]);
 			mysql_tquery(srp_db, QUERY_BUFFER);
@@ -574,7 +574,7 @@ public TruckLoadUp(playerid, vehicleid)
 	TRUCK_VEHICLE[vehicleid][truck_vehicle_LOADING] = false;
 	TRUCK_VEHICLE[vehicleid][truck_vehicle_DELIVERED] = false;
 	
-	SendClientMessage(playerid,-1, "{"#SILVER_COLOR"}El camiÛn ha sido cargado, dirÌgite al checkpoint para entregar la mercancÌa.");
+	SendClientMessage(playerid,-1, "{"#SILVER_COLOR"}El cami√≥n ha sido cargado, dir√≠gite al checkpoint para entregar la mercanc√≠a.");
 	SetPlayerTruckCheckpoint(playerid, vehicleid);
 	return 1;
 }
@@ -690,7 +690,7 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid)
 			return 1;
 		}
 		
-		if(PLAYER_TEMP[playerid][pt_CLOTHING_SHOP] != -1) // Tiene abierto el men˙ de ropa
+		if(PLAYER_TEMP[playerid][pt_CLOTHING_SHOP] != -1) // Tiene abierto el men√∫ de ropa
 		{
 			ClosePlayerClothingMenu(playerid);
 			ExitPlayerWardrobe(playerid);
@@ -714,7 +714,7 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid)
 		{
 			if(clickedid == Textdraws[textdraw_SHOP_ARTICLES_BOX][i])
 			{
-				if(!PLAYER_TEMP[playerid][pt_SHOP_ARTICLE_ID][i]) return SendNotification(playerid, "Este anuncio ya no est· disponible.");
+				if(!PLAYER_TEMP[playerid][pt_SHOP_ARTICLE_ID][i]) return SendNotification(playerid, "Este anuncio ya no est√° disponible.");
 				
 				inline OnShopChecked()
 				{
@@ -727,9 +727,9 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid)
 							PLAYER_TEMP[playerid][pt_SHOP_STATE] = PLAYER_SHOP_STATE_AD;
 							UpdatePlayerShop(playerid);
 						}
-						else SendNotification(playerid, "Este anuncio ya no est· disponible.");
+						else SendNotification(playerid, "Este anuncio ya no est√° disponible.");
 					}
-					else SendNotification(playerid, "Este anuncio ya no est· disponible.");
+					else SendNotification(playerid, "Este anuncio ya no est√° disponible.");
 				}
 				mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id FROM shop WHERE id = %d;", PLAYER_TEMP[playerid][pt_SHOP_ARTICLE_ID][i]);
 				MySQL_TQueryInline(srp_db,  using inline OnShopChecked, QUERY_BUFFER);
@@ -747,12 +747,12 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid)
 			if(!ACCOUNT_INFO[playerid][ac_VIP] && slot >= MAX_NU_VOBJECTS)
 			{
 				PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
-				SendFormatNotification(playerid, "°Los jugadores ~y~VIP ~w~pueden tener hasta %d objetos en vehÌculos! Usa ~y~/ayuda ~w~si quieres ser ~y~VIP.", MAX_SU_VOBJECTS);
+				SendFormatNotification(playerid, "¬°Los jugadores ~y~VIP ~w~pueden tener hasta %d objetos en veh√≠culos! Usa ~y~/ayuda ~w~si quieres ser ~y~VIP.", MAX_SU_VOBJECTS);
 				return 1;
 			}
 			if(slot == -1)
 			{
-				SendNotification(playerid, "No hay m·s espacio para objetos en este vehÌculo.");
+				SendNotification(playerid, "No hay m√°s espacio para objetos en este veh√≠culo.");
 				return 1;
 			}
 			
@@ -775,8 +775,8 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid)
 				RegisterNewVehicleObject(PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID], slot);
 				CancelPlayerTuningShop(playerid);
 				
-				SendNotification(playerid, "Ajusta el objeto y haz clic en el icono de guardar, si pulsas ~r~'ESCAPE' ~w~no se guardar· la configuraciÛn.");
-				SendNotification(playerid, "MantÈn presionado ~r~'W' ~w~para mover la c·mara.");
+				SendNotification(playerid, "Ajusta el objeto y haz clic en el icono de guardar, si pulsas ~r~'ESCAPE' ~w~no se guardar√° la configuraci√≥n.");
+				SendNotification(playerid, "Mant√©n presionado ~r~'W' ~w~para mover la c√°mara.");
 				EditVehicleObject(playerid, PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID], slot);
 			}
 			return 1;
@@ -1229,12 +1229,12 @@ PlayerPayday(playerid)
 
 	strcat(dialog_header, "\n{FF6746}____ [ PAGA DEL GOBIERNO ] ____\n");
 
-	format(dialog_string, sizeof dialog_string, "{FFFFFF}Paga del gobierno: {FFFF7F}%s dÛlares\n", number_format_thousand(money));
+	format(dialog_string, sizeof dialog_string, "{FFFFFF}Paga del gobierno: {FFFF7F}%s d√≥lares\n", number_format_thousand(money));
 	strcat(dialog_header, dialog_string);
 	
 	if(!ACCOUNT_INFO[playerid][ac_VIP])
 	{
-		strcat(dialog_header, "\n\n{FF6746}____ [ VEHÕCULOS ] ____\n");
+		strcat(dialog_header, "\n\n{FF6746}____ [ VEH√çCULOS ] ____\n");
 
 		for(new i = 0, j = GetVehiclePoolSize(); i <= j; i ++)
 		{
@@ -1244,7 +1244,7 @@ PlayerPayday(playerid)
 			new veh_money = VEHICLE_INFO[GLOBAL_VEHICLES[i][gb_vehicle_MODELID] - 400][vehicle_info_PRICE] / 100;
 			money -= veh_money;
 			
-			format(dialog_string, sizeof dialog_string, "{FFFFFF}Seguro del vehÌculo %s: {FF6746}-%s dÛlares\n", VEHICLE_INFO[GLOBAL_VEHICLES[i][gb_vehicle_MODELID] - 400][vehicle_info_NAME], number_format_thousand(veh_money));
+			format(dialog_string, sizeof dialog_string, "{FFFFFF}Seguro del veh√≠culo %s: {FF6746}-%s d√≥lares\n", VEHICLE_INFO[GLOBAL_VEHICLES[i][gb_vehicle_MODELID] - 400][vehicle_info_NAME], number_format_thousand(veh_money));
 			strcat(dialog_header, dialog_string);
 		}
 
@@ -1261,7 +1261,7 @@ PlayerPayday(playerid)
 				new property_money = PROPERTY_INFO[i][property_PRICE_BASE] / 200;
 				money -= property_money;
 				
-				format(dialog_string, sizeof dialog_string, "{FFFFFF}Seguro de la propiedad %s: {FF6746}-%s dÛlares\n", PROPERTY_INFO[i][property_NAME], number_format_thousand(property_money));
+				format(dialog_string, sizeof dialog_string, "{FFFFFF}Seguro de la propiedad %s: {FF6746}-%s d√≥lares\n", PROPERTY_INFO[i][property_NAME], number_format_thousand(property_money));
 			}
 			strcat(dialog_header, dialog_string);
 		}
@@ -1280,7 +1280,7 @@ PlayerPayday(playerid)
 
 		strcat(dialog_header, "\n\n{FF6746}____ [ TRABAJOS ] ____\n");
 		
-		format(dialog_string, sizeof dialog_string, "{FFFFFF}Paga por ser policÌa: {FFFF7F}%s dÛlares\n", number_format_thousand(work_payment));
+		format(dialog_string, sizeof dialog_string, "{FFFFFF}Paga por ser polic√≠a: {FFFF7F}%s d√≥lares\n", number_format_thousand(work_payment));
 		strcat(dialog_header, dialog_string);
 	}
 
@@ -1297,8 +1297,8 @@ PlayerPayday(playerid)
 
 			strcat(dialog_header, "\n\n{FF6746}____ [ TERRITORIOS ] ____\n");
 
-			if(territories > 0) format(dialog_string, sizeof dialog_string, "{FFFFFF}Paga por territorios en posesiÛn (%d): {FFFF7F}%d dÛlares\n", territories, territories * 70);
-			if(graffitis > 0) format(dialog_string, sizeof dialog_string, "{FFFFFF}Paga por graffitis (%d): {FFFF7F}%d dÛlares\n", graffitis, graffitis * 40);
+			if(territories > 0) format(dialog_string, sizeof dialog_string, "{FFFFFF}Paga por territorios en posesi√≥n (%d): {FFFF7F}%d d√≥lares\n", territories, territories * 70);
+			if(graffitis > 0) format(dialog_string, sizeof dialog_string, "{FFFFFF}Paga por graffitis (%d): {FFFF7F}%d d√≥lares\n", graffitis, graffitis * 40);
 			strcat(dialog_header, dialog_string);
 		}
 	}
@@ -1311,8 +1311,8 @@ PlayerPayday(playerid)
 
 	strcat(dialog_header, "\n\n{FF6746}____ [ RESUMEN ] ____\n");
 
-	if(money > 0) format(dialog_string, sizeof dialog_string, "{FFFFFF}Has ganado: {FFFF7F}%s dÛlares", number_format_thousand(money));
-	else format(dialog_string, sizeof dialog_string, "{FFFFFF}Has perdido: {FF6746}%s dÛlares", number_format_thousand(money));
+	if(money > 0) format(dialog_string, sizeof dialog_string, "{FFFFFF}Has ganado: {FFFF7F}%s d√≥lares", number_format_thousand(money));
+	else format(dialog_string, sizeof dialog_string, "{FFFFFF}Has perdido: {FF6746}%s d√≥lares", number_format_thousand(money));
 	
 	strcat(dialog_header, dialog_string);
 	
@@ -1397,7 +1397,7 @@ Crew_RequestHelp(playerid, crew_id)
 				}
 			}
 		}
-		format(crew_message, sizeof crew_message, "{%06x}[Banda] {FFFFFF}%s est· pidiendo refuerzos en %s, %s.", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_COLOR] >>> 8, PLAYER_TEMP[playerid][pt_RP_NAME], city, zone);
+		format(crew_message, sizeof crew_message, "{%06x}[Banda] {FFFFFF}%s est√° pidiendo refuerzos en %s, %s.", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_COLOR] >>> 8, PLAYER_TEMP[playerid][pt_RP_NAME], city, zone);
 		SendMessageToCrewMembers(crew_id, -1, crew_message);
 
 		PLAYER_TEMP[playerid][pt_CREW_HELP] = true;
@@ -1463,20 +1463,20 @@ ShowPlayerStats(playerid, pid)
 	else format(next_rep, sizeof next_rep, "/comprarnivel");
 	
 	new caption[48], dialog[445 + (27 * sizeof(work_info))];
-	format(caption, sizeof caption, "EstadÌsticas de %s", PLAYER_TEMP[pid][pt_RP_NAME]);
+	format(caption, sizeof caption, "Estad√≠sticas de %s", PLAYER_TEMP[pid][pt_RP_NAME]);
 	
 	format(dialog, sizeof dialog,
 		
 		"\
 			ID: %d\n\
 			Nombre: %s\n\
-			Correo electrÛnico: %s\n\
+			Correo electr√≥nico: %s\n\
 			Fecha registro: %s\n\
-			⁄lt. conexiÛn: %s\n\
+			√ölt. conexi√≥n: %s\n\
 			Tiempo jugando: %.1f horas\n\
 			Nivel: %d\n\
-			ReputaciÛn: %d/%d\n\
-			Siguiente reputaciÛn: %s\n\
+			Reputaci√≥n: %d/%d\n\
+			Siguiente reputaci√≥n: %s\n\
 			Trabajo(s): %s\n\
 			Banda: %s\n\
 			Dinero: %s$\n\
@@ -1484,7 +1484,7 @@ ShowPlayerStats(playerid, pid)
 			Monedas "SERVER_COIN": %d\n\
 			VIP: %s\n\
 			\n\
-			Para estadÌsticas de tus trabajos utiliza /exp.\n\
+			Para estad√≠sticas de tus trabajos utiliza /exp.\n\
 			Para ver tus pertenencias usa /inv o pulsa N.\n\
 			\n\
 		",
@@ -1524,7 +1524,7 @@ getPlayerVip(playerid)
 {
 	new vip[16];
 	if(!ACCOUNT_INFO[playerid][ac_VIP]) vip = "No";
-	else format(vip, sizeof vip, "SÌ, VIP (%d)", ACCOUNT_INFO[playerid][ac_VIP]);
+	else format(vip, sizeof vip, "S√≠, VIP (%d)", ACCOUNT_INFO[playerid][ac_VIP]);
 	return vip;
 }
 
@@ -1662,13 +1662,13 @@ public OnPlayerEditDynamicObject(playerid, STREAMER_TAG_OBJECT:objectid, respons
 					if(!PLAYER_WORKS[playerid][WORK_POLICE][pwork_SET])
 					{
 						CancelEdit(playerid);
-						SendNotification(playerid, "No eres policÌa.");
+						SendNotification(playerid, "No eres polic√≠a.");
 						return 1;
 					}
 					if(PLAYER_TEMP[playerid][pt_WORKING_IN] != WORK_POLICE)
 					{
 						CancelEdit(playerid);
-						SendNotification(playerid, "No est·s de servicio como policÌa.");
+						SendNotification(playerid, "No est√°s de servicio como polic√≠a.");
 						return 1;
 					}
 					if(PLAYER_WORKS[playerid][WORK_POLICE][pwork_LEVEL] < 8)
@@ -1698,14 +1698,14 @@ public OnPlayerEditDynamicObject(playerid, STREAMER_TAG_OBJECT:objectid, respons
 					if(!PLAYER_WORKS[playerid][WORK_POLICE][pwork_SET])
 					{
 						CancelEdit(playerid);
-						SendNotification(playerid, "No eres policÌa.");
+						SendNotification(playerid, "No eres polic√≠a.");
 						SetCorrectObjectPos(objectid);
 						return 1;
 					}
 					if(PLAYER_TEMP[playerid][pt_WORKING_IN] != WORK_POLICE)
 					{
 						CancelEdit(playerid);
-						SendNotification(playerid, "No est·s de servicio como policÌa.");
+						SendNotification(playerid, "No est√°s de servicio como polic√≠a.");
 						SetCorrectObjectPos(objectid);
 						return 1;
 					}
@@ -2156,7 +2156,7 @@ UpdatePlayerShop(playerid)
 			
 			PlayerTextDrawSetString(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_BUTTONS][0], "_");
 			PlayerTextDrawSetString(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_BUTTONS][1], "_");
-			PlayerTextDrawSetString(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_BUTTONS][2], "Atròs");
+			PlayerTextDrawSetString(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_BUTTONS][2], "AtrÀús");
 			PlayerTextDrawSetString(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_BUTTONS][3], "Siguiente");
 			PlayerTextDrawSetString(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_BUTTONS][4], "Anterior");
 
@@ -2305,15 +2305,15 @@ UpdatePlayerShop(playerid)
 						PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLE_MODELID]);
 						TextDrawShowForPlayer(playerid, Textdraws[textdraw_SHOP_ARTICLE_BOX]);
 						
-						format(td_str, sizeof td_str, "Art¢culo_n|_%d (%s)", id, date);
+						format(td_str, sizeof td_str, "Art¬¢culo_n|_%d (%s)", id, date);
 						PlayerTextDrawSetString(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLE_NUMBER], td_str);
 						PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLE_NUMBER]);
 						
 						switch(type)
 						{
-							case SHOP_ARTICLE_TYPE_PROPERTY: format(td_str, sizeof td_str, "Producto:_Propiedad~n~Precio:_%s$~n~~n~Descripci¶n:~n~%s~n~~n~Tlf:_%d_(%s)~n~%s", number_format_thousand(price), text, phone_number, connected ? "online" : "offline", name);
-							case SHOP_ARTICLE_TYPE_VEHICLE: format(td_str, sizeof td_str, "Producto:_Veh¢culo~n~Precio:_%s$~n~~n~Descripci¶n:~n~%s~n~~n~Tlf:_%d_(%s)~n~%s", number_format_thousand(price), text, phone_number, connected ? "online" : "offline", name);
-							case SHOP_ARTICLE_TYPE_OTHER: format(td_str, sizeof td_str, "Producto:_Otros~n~Precio:_%s$~n~~n~Descripci¶n:~n~%s~n~~n~Tlf:_%d_(%s)~n~%s", number_format_thousand(price), text, phone_number, connected ? "online" : "offline", name);
+							case SHOP_ARTICLE_TYPE_PROPERTY: format(td_str, sizeof td_str, "Producto:_Propiedad~n~Precio:_%s$~n~~n~Descripci¬¶n:~n~%s~n~~n~Tlf:_%d_(%s)~n~%s", number_format_thousand(price), text, phone_number, connected ? "online" : "offline", name);
+							case SHOP_ARTICLE_TYPE_VEHICLE: format(td_str, sizeof td_str, "Producto:_Veh¬¢culo~n~Precio:_%s$~n~~n~Descripci¬¶n:~n~%s~n~~n~Tlf:_%d_(%s)~n~%s", number_format_thousand(price), text, phone_number, connected ? "online" : "offline", name);
+							case SHOP_ARTICLE_TYPE_OTHER: format(td_str, sizeof td_str, "Producto:_Otros~n~Precio:_%s$~n~~n~Descripci¬¶n:~n~%s~n~~n~Tlf:_%d_(%s)~n~%s", number_format_thousand(price), text, phone_number, connected ? "online" : "offline", name);
 						}
 						PlayerTextDrawSetString(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLE_INFO], td_str);
 						PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLE_INFO]);
@@ -2323,7 +2323,7 @@ UpdatePlayerShop(playerid)
 						PlayerTextDrawSetString(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_BUTTONS][1], "_");
 						PlayerTextDrawSetString(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_BUTTONS][2], "_");
 						PlayerTextDrawSetString(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_BUTTONS][3], "_");
-						PlayerTextDrawSetString(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_BUTTONS][4], "Atròs");
+						PlayerTextDrawSetString(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_BUTTONS][4], "AtrÀús");
 						PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_BUTTONS][4]);
 						
 						if(ACCOUNT_INFO[playerid][ac_ID] == id_player)
@@ -2345,13 +2345,13 @@ UpdatePlayerShop(playerid)
 					}
 					else
 					{
-						SendNotification(playerid, "Este anuncio ya no est· disponible.");
+						SendNotification(playerid, "Este anuncio ya no est√° disponible.");
 						PLAYER_TEMP[playerid][pt_SHOP_STATE] = PLAYER_SHOP_STATE_ALL;
 					}
 				}
 				else
 				{
-					SendNotification(playerid, "Este anuncio ya no est· disponible.");
+					SendNotification(playerid, "Este anuncio ya no est√° disponible.");
 					PLAYER_TEMP[playerid][pt_SHOP_STATE] = PLAYER_SHOP_STATE_ALL;
 				}
 
@@ -2773,15 +2773,15 @@ StartTerritoryAttack(crew_index, territory_index, time)
 	if(TERRITORIES[territory_index][territory_OCCUPIED])
 	{
 		CREW_INFO[ TERRITORIES[territory_index][territory_CREW_INDEX] ][crew_FIGHTING] = true;
-		format(message, sizeof message, "{"#PRIMARY_COLOR"}[BANDAS] {FFFFFF}La banda '%s' est· atacando un territorio de la banda '%s' en %s.", CREW_INFO[crew_index][crew_NAME], CREW_INFO[ TERRITORIES[territory_index][territory_CREW_INDEX] ][crew_NAME], TERRITORIES[territory_index][territory_NAME]);
+		format(message, sizeof message, "{"#PRIMARY_COLOR"}[BANDAS] {FFFFFF}La banda '%s' est√° atacando un territorio de la banda '%s' en %s.", CREW_INFO[crew_index][crew_NAME], CREW_INFO[ TERRITORIES[territory_index][territory_CREW_INDEX] ][crew_NAME], TERRITORIES[territory_index][territory_NAME]);
 	}
 	else
 	{
-		format(message, sizeof message, "{"#PRIMARY_COLOR"}[BANDAS] {FFFFFF}La banda '%s' est· atacando un territorio en %s.", CREW_INFO[crew_index][crew_NAME], TERRITORIES[territory_index][territory_NAME]);
+		format(message, sizeof message, "{"#PRIMARY_COLOR"}[BANDAS] {FFFFFF}La banda '%s' est√° atacando un territorio en %s.", CREW_INFO[crew_index][crew_NAME], TERRITORIES[territory_index][territory_NAME]);
 	}
 
 	new message_police[145];
-	format(message_police, sizeof message_police, "{"#PRIMARY_COLOR"}[Central policÌa] {FFFFFF}La banda '%s' est· atacando un territorio en %s.", CREW_INFO[crew_index][crew_NAME], TERRITORIES[territory_index][territory_NAME]);
+	format(message_police, sizeof message_police, "{"#PRIMARY_COLOR"}[Central polic√≠a] {FFFFFF}La banda '%s' est√° atacando un territorio en %s.", CREW_INFO[crew_index][crew_NAME], TERRITORIES[territory_index][territory_NAME]);
 	
 	for(new i = 0, j = GetPlayerPoolSize(); i <= j; i++)
 	{
@@ -2933,7 +2933,7 @@ UpdateEconomy(type = -1)
 						label_str, 
 							sizeof label_str, 
 							"\
-								{"#PRIMARY_COLOR"}MembresÌa VIP requerida\n\
+								{"#PRIMARY_COLOR"}Membres√≠a VIP requerida\n\
 								\n\
 								{"#PRIMARY_COLOR"}%s\n\n\
 								{FFFFFF}Coste: {"#PRIMARY_COLOR"}%d "SERVER_COIN"\n\
@@ -2948,7 +2948,7 @@ UpdateEconomy(type = -1)
 						label_str, 
 							sizeof label_str, 
 							"\
-								{"#PRIMARY_COLOR"}MembresÌa VIP requerida\n\
+								{"#PRIMARY_COLOR"}Membres√≠a VIP requerida\n\
 								\n\
 								{"#PRIMARY_COLOR"}%s\n\n\
 								{FFFFFF}Precio: {"#PRIMARY_COLOR"}%s$\n\
@@ -3041,7 +3041,7 @@ UpdateEconomy(type = -1)
 								label_str, 
 									sizeof label_str, 
 									"\
-										{"#PRIMARY_COLOR"}MembresÌa VIP requerida\n\
+										{"#PRIMARY_COLOR"}Membres√≠a VIP requerida\n\
 										\n\
 										{"#PRIMARY_COLOR"}%s\n\n\
 										{FFFFFF}Coste: {"#PRIMARY_COLOR"}%d "SERVER_COIN"\n\
@@ -3056,7 +3056,7 @@ UpdateEconomy(type = -1)
 								label_str, 
 									sizeof label_str, 
 									"\
-										{"#PRIMARY_COLOR"}MembresÌa VIP requerida\n\
+										{"#PRIMARY_COLOR"}Membres√≠a VIP requerida\n\
 										\n\
 										{"#PRIMARY_COLOR"}%s\n\n\
 										{FFFFFF}Precio: {"#PRIMARY_COLOR"}%s$\n\
@@ -3461,7 +3461,7 @@ TextureCountryFlag(objectid, index, country)
 			font_size		= 55;
 			text_alignment	= 1;
 		}
-		case 9: // EspaÒa
+		case 9: // Espa√±a
 		{
 			text_flag		= "{c60b1e}ggg\n{ffc400}ggg\n{c60b1e}ggg";
 			material_size	= 60;
@@ -3581,7 +3581,7 @@ TextureCountryFlag(objectid, index, country)
 			font_size		= 55;
 			text_alignment	= 1;
 		}
-		case 24: // MÈxico
+		case 24: // M√©xico
 		{
 			text_flag		= "{006847}g{ffffff}g{ce1126}g\n{006847}g{ffffff}g{ce1126}g\n{006847}g{ffffff}g{ce1126}g";
 			material_size	= 60;
@@ -3597,7 +3597,7 @@ TextureCountryFlag(objectid, index, country)
 			font_size		= 55;
 			text_alignment	= 1;
 		}
-		case 26: // Panam·
+		case 26: // Panam√°
 		{
 			text_flag		= "{ffffff}g{d21034}g\n{0067c6}g{ffffff}g";
 			material_size	= 60;
@@ -3613,7 +3613,7 @@ TextureCountryFlag(objectid, index, country)
 			font_size		= 55;
 			text_alignment	= 1;
 		}
-		case 28: // Per˙
+		case 28: // Per√∫
 		{
 			text_flag		= "{e30000}g{ffffff}g{e30000}g\n{e30000}g{ffffff}g{e30000}g\n{e30000}g{ffffff}g{e30000}g";
 			material_size	= 60;
@@ -3865,50 +3865,50 @@ FixTextDrawString(message[], bool:space = false) {
 	{
 		switch(message[pos])
 		{
-			case '‡': message[pos] = 151;
-			case '·': message[pos] = 152;
-			case '‚': message[pos] = 153;
-			case '‰': message[pos] = 154;
-			case '¿': message[pos] = 128;
-			case '¡': message[pos] = 129;
-			case '¬': message[pos] = 130;
-			case 'ƒ': message[pos] = 131;
-			case 'Ë': message[pos] = 157;
-			case 'È': message[pos] = 158;
-			case 'Í': message[pos] = 159;
-			case 'Î': message[pos] = 160;
-			case '»': message[pos] = 134;
-			case '…': message[pos] = 135;
-			case ' ': message[pos] = 136;
-			case 'À': message[pos] = 137;
-			case 'Ï': message[pos] = 161;
-			case 'Ì': message[pos] = 162;
-			case 'Ó': message[pos] = 163;
-			case 'Ô': message[pos] = 164;
-			case 'Ã': message[pos] = 138;
-			case 'Õ': message[pos] = 139;
-			case 'Œ': message[pos] = 140;
-			case 'œ': message[pos] = 141;
-			case 'Ú': message[pos] = 165;
-			case 'Û': message[pos] = 166;
-			case 'Ù': message[pos] = 167;
-			case 'ˆ': message[pos] = 168;
-			case '“': message[pos] = 142;
-			case '”': message[pos] = 143;
-			case '‘': message[pos] = 144;
-			case '÷': message[pos] = 145;
-			case '˘': message[pos] = 169;
-			case '˙': message[pos] = 170;
-			case '˚': message[pos] = 171;
-			case '¸': message[pos] = 172;
-			case 'Ÿ': message[pos] = 146;
-			case '⁄': message[pos] = 147;
-			case '€': message[pos] = 148;
-			case '‹': message[pos] = 149;
-			case 'Ò': message[pos] = 174;
-			case '—': message[pos] = 173;
-			case '°': message[pos] = 64;
-			case 'ø': message[pos] = 175;
+			case '√†': message[pos] = 151;
+			case '√°': message[pos] = 152;
+			case '√¢': message[pos] = 153;
+			case '√§': message[pos] = 154;
+			case '√Ä': message[pos] = 128;
+			case '√Å': message[pos] = 129;
+			case '√Ç': message[pos] = 130;
+			case '√Ñ': message[pos] = 131;
+			case '√®': message[pos] = 157;
+			case '√©': message[pos] = 158;
+			case '√™': message[pos] = 159;
+			case '√´': message[pos] = 160;
+			case '√à': message[pos] = 134;
+			case '√â': message[pos] = 135;
+			case '√ä': message[pos] = 136;
+			case '√ã': message[pos] = 137;
+			case '√¨': message[pos] = 161;
+			case '√≠': message[pos] = 162;
+			case '√Æ': message[pos] = 163;
+			case '√Ø': message[pos] = 164;
+			case '√å': message[pos] = 138;
+			case '√ç': message[pos] = 139;
+			case '√é': message[pos] = 140;
+			case '√è': message[pos] = 141;
+			case '√≤': message[pos] = 165;
+			case '√≥': message[pos] = 166;
+			case '√¥': message[pos] = 167;
+			case '√∂': message[pos] = 168;
+			case '√í': message[pos] = 142;
+			case '√ì': message[pos] = 143;
+			case '√î': message[pos] = 144;
+			case '√ñ': message[pos] = 145;
+			case '√π': message[pos] = 169;
+			case '√∫': message[pos] = 170;
+			case '√ª': message[pos] = 171;
+			case '√º': message[pos] = 172;
+			case '√ô': message[pos] = 146;
+			case '√ö': message[pos] = 147;
+			case '√õ': message[pos] = 148;
+			case '√ú': message[pos] = 149;
+			case '√±': message[pos] = 174;
+			case '√ë': message[pos] = 173;
+			case '¬°': message[pos] = 64;
+			case '¬ø': message[pos] = 175;
 			case '`': message[pos] = 177;
 			case '&': message[pos] = 38;
 			case ' ': {
@@ -3969,7 +3969,7 @@ SetPlayerVip(playerid, vip_level, price_coin = 0, days = 30)
 				if(rows)
 				{
 					cache_get_value_index(0, 0, ACCOUNT_INFO[playerid][ac_VIP_EXPIRE_DATE]);
-					SendClientMessageEx(playerid, -1, "{"#PRIMARY_COLOR"}°Felicidades! {FFFFFF}Has comprado VIP (%d) por %d dÌas, fecha de caducidad: %s.", ACCOUNT_INFO[playerid][ac_VIP], days, ACCOUNT_INFO[playerid][ac_VIP_EXPIRE_DATE]);
+					SendClientMessageEx(playerid, -1, "{"#PRIMARY_COLOR"}¬°Felicidades! {FFFFFF}Has comprado VIP (%d) por %d d√≠as, fecha de caducidad: %s.", ACCOUNT_INFO[playerid][ac_VIP], days, ACCOUNT_INFO[playerid][ac_VIP_EXPIRE_DATE]);
 					SendClientMessage(playerid, -1, "Puedes utilizar {"#PRIMARY_COLOR"}/vip {FFFFFF}para ver el tiempo restante o renovar.");
 					UnlockPlayerVehicles(playerid);
 					if(GetPlayerSkin(playerid) == PI[playerid][ac_SKIN]) SetPlayerToys(playerid);
@@ -3999,9 +3999,9 @@ UpdateUnnocupiedPropertyLabel(index)
 				label_str, 
 				sizeof label_str, 
 				"\
-					{"#PRIMARY_COLOR"}MembresÌa VIP requerida\n\
+					{"#PRIMARY_COLOR"}Membres√≠a VIP requerida\n\
 					\n\
-					{FFFFFF}Propiedad {"#PRIMARY_COLOR"}#%d {FFFFFF}est· en venta\n\n\
+					{FFFFFF}Propiedad {"#PRIMARY_COLOR"}#%d {FFFFFF}est√° en venta\n\n\
 					Interior: {"#PRIMARY_COLOR"}%d\n\
 					{FFFFFF}Coste: {"#PRIMARY_COLOR"}%d "SERVER_COIN"\n\
 					{FFFFFF}Nivel necesario: {"#PRIMARY_COLOR"}%d\n\
@@ -4016,9 +4016,9 @@ UpdateUnnocupiedPropertyLabel(index)
 				label_str, 
 				sizeof label_str, 
 				"\
-					{"#PRIMARY_COLOR"}MembresÌa VIP requerida\n\
+					{"#PRIMARY_COLOR"}Membres√≠a VIP requerida\n\
 					\n\
-					{FFFFFF}Propiedad {"#PRIMARY_COLOR"}#%d {FFFFFF}est· en venta\n\n\
+					{FFFFFF}Propiedad {"#PRIMARY_COLOR"}#%d {FFFFFF}est√° en venta\n\n\
 					Interior: {"#PRIMARY_COLOR"}%d\n\
 					{FFFFFF}Precio: {"#PRIMARY_COLOR"}%s$\n\
 					{FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\n\
@@ -4036,7 +4036,7 @@ UpdateUnnocupiedPropertyLabel(index)
 				label_str, 
 				sizeof label_str, 
 				"\
-					{FFFFFF}Propiedad {"#PRIMARY_COLOR"}#%d {FFFFFF}est· en venta\n\n\
+					{FFFFFF}Propiedad {"#PRIMARY_COLOR"}#%d {FFFFFF}est√° en venta\n\n\
 					Interior: {"#PRIMARY_COLOR"}%d\n\
 					{FFFFFF}Coste: {"#PRIMARY_COLOR"}%d "SERVER_COIN"\n\
 					{FFFFFF}Nivel necesario: {"#PRIMARY_COLOR"}%d\n\
@@ -4051,7 +4051,7 @@ UpdateUnnocupiedPropertyLabel(index)
 				label_str, 
 				sizeof label_str, 
 				"\
-					{FFFFFF}Propiedad {"#PRIMARY_COLOR"}#%d {FFFFFF}est· en venta\n\n\
+					{FFFFFF}Propiedad {"#PRIMARY_COLOR"}#%d {FFFFFF}est√° en venta\n\n\
 					Interior: {"#PRIMARY_COLOR"}%d\n\
 					{FFFFFF}Precio: {"#PRIMARY_COLOR"}%s$\n\
 					{FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\n\
@@ -4132,12 +4132,12 @@ PlayMp3(playerid, url[], song_name[])
 				if( (ACCOUNT_INFO[i][ac_STATE] == ROLEPLAY_STATE_OWN_PROPERTY || ACCOUNT_INFO[i][ac_STATE] == ROLEPLAY_STATE_GUEST_PROPERTY) && PI[i][ac_LOCAL_INTERIOR] == PI[playerid][ac_LOCAL_INTERIOR])
 				{
 					PlayAudioStreamForPlayerEx(i, url);
-					SendFormatNotification(i, "~b~Reproduciendo '%s'~n~~n~~w~Utiliza ~r~/stop ~w~para parar la m˙sica.", song_name);
+					SendFormatNotification(i, "~b~Reproduciendo '%s'~n~~n~~w~Utiliza ~r~/stop ~w~para parar la m√∫sica.", song_name);
 				}
 			}
 		}
 		PLAYER_TEMP[playerid][pt_MUSIC_FOR_PROPERTY] = false;
-		Auto_SendPlayerAction(playerid, "pone m˙sica en su propiedad.");
+		Auto_SendPlayerAction(playerid, "pone m√∫sica en su propiedad.");
 	}
 	else if(PLAYER_TEMP[playerid][pt_MUSIC_FOR_VEHICLE])
 	{
@@ -4150,14 +4150,14 @@ PlayMp3(playerid, url[], song_name[])
 					if(GetPlayerVehicleID(playerid) == GetPlayerVehicleID(i))
 					{
 						PlayAudioStreamForPlayerEx(i, url);
-						SendFormatNotification(i, "~b~Reproduciendo '%s'~n~~n~~w~Utiliza ~r~/stop ~w~para parar la m˙sica.", song_name);
+						SendFormatNotification(i, "~b~Reproduciendo '%s'~n~~n~~w~Utiliza ~r~/stop ~w~para parar la m√∫sica.", song_name);
 					}
 				}
 			}
 		}
 		PLAYER_TEMP[playerid][pt_MUSIC_FOR_VEHICLE] = false;
-		if(PLAYER_VEHICLES[ GetPlayerVehicleID(playerid) ][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID]) Auto_SendPlayerAction(playerid, "pone m˙sica en su vehÌculo.");
-		else Auto_SendPlayerAction(playerid, "pone m˙sica en el vehÌculo.");
+		if(PLAYER_VEHICLES[ GetPlayerVehicleID(playerid) ][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID]) Auto_SendPlayerAction(playerid, "pone m√∫sica en su veh√≠culo.");
+		else Auto_SendPlayerAction(playerid, "pone m√∫sica en el veh√≠culo.");
 	}
 	else if(PLAYER_TEMP[playerid][pt_MUSIC_FOR_SPEAKERS])
 	{
@@ -4180,13 +4180,13 @@ PlayMp3(playerid, url[], song_name[])
 		}
 		PLAYER_TEMP[playerid][pt_SPEAKERS_TIME] = gettime();
 		PLAYER_TEMP[playerid][pt_MUSIC_FOR_SPEAKERS] = false;
-		Auto_SendPlayerAction(playerid, "pone m˙sica de su MP3 en los altavoces.");
+		Auto_SendPlayerAction(playerid, "pone m√∫sica de su MP3 en los altavoces.");
 	}
 	else
 	{
 		PlayAudioStreamForPlayerEx(playerid, url);
-		SendFormatNotification(playerid, "Reproduciendo ~g~'%s' ~w~usa ~g~/stop ~w~para parar la m˙sica.", song_name);
-		Auto_SendPlayerAction(playerid, "escucha m˙sica de su MP3 en sus auriculares.");
+		SendFormatNotification(playerid, "Reproduciendo ~g~'%s' ~w~usa ~g~/stop ~w~para parar la m√∫sica.", song_name);
+		Auto_SendPlayerAction(playerid, "escucha m√∫sica de su MP3 en sus auriculares.");
 	}
 	return 1;
 }
@@ -4386,7 +4386,7 @@ LoginPlayer(playerid) {
 	SetPlayerInterior(playerid, PI[playerid][ac_INTERIOR]);
 	
 	PLAYER_TEMP[playerid][pt_BAD_LOGIN_ATTEMP] = 0;
-	SendClientMessageEx(playerid, 0xB09CA9FF, "> Bienvenido de vuelta, %s. Tu ˙ltima conexiÛn fue el %s.", PLAYER_TEMP[playerid][pt_RP_NAME], ACCOUNT_INFO[playerid][ac_LAST_CONNECTION]);
+	SendClientMessageEx(playerid, 0xB09CA9FF, "> Bienvenido de vuelta, %s. Tu √∫ltima conexi√≥n fue el %s.", PLAYER_TEMP[playerid][pt_RP_NAME], ACCOUNT_INFO[playerid][ac_LAST_CONNECTION]);
     TogglePlayerSpectatingEx(playerid, false);
 	TogglePlayerControllableEx(playerid, true);
 }
@@ -5008,7 +5008,7 @@ stock TimeConvertExAsText(sec, bool:lastMinute = false)
 	TimeConvertEx(sec, days, hours, minutes, seconds);
 
 	if(days) {
-		format(auxString, sizeof auxString, "%d dÌas", days);
+		format(auxString, sizeof auxString, "%d d√≠as", days);
 		strcat(string, auxString);
 	}
 
@@ -5041,7 +5041,7 @@ ProxDetector(playerid, Float:radi, string[], col1, col2, col3, col4, col5, div =
 		format(line1_str, div + 1, "%s", string);
 		if(strlen(string) > div)
 		{
-			format(line2_str, sizeof line2_str, "ó %s", string[div]);
+			format(line2_str, sizeof line2_str, "‚Äî %s", string[div]);
 			line2_used = true;
 		}
 	}
@@ -5394,7 +5394,7 @@ ShowPlayerSkills(playerid, pid)
 	strcat(dialog, line_str);
 	
 	new neccessary_rep = PI[pid][ac_LEVEL] * REP_MULTIPLIER;
-	format(line_str, sizeof line_str, "{"#SILVER_COLOR"}ReputaciÛn: {"#PRIMARY_COLOR"}%d/%d\n", PI[pid][ac_REP], neccessary_rep);
+	format(line_str, sizeof line_str, "{"#SILVER_COLOR"}Reputaci√≥n: {"#PRIMARY_COLOR"}%d/%d\n", PI[pid][ac_REP], neccessary_rep);
 	strcat(dialog, line_str);
 	
 	new Float:hours;
@@ -5701,7 +5701,7 @@ EndPhoneCall(playerid)
 		}
 		case CALL_STATE_INCOMING_CALL:
 		{
-			SendClientMessage(to_playerid, -1, "{"#SILVER_COLOR"}No respondieron el telÈfono...");
+			SendClientMessage(to_playerid, -1, "{"#SILVER_COLOR"}No respondieron el tel√©fono...");
 			KillTimer(PLAYER_TEMP[to_playerid][pt_TIMERS][6]);
 			
 			PLAYER_TEMP[to_playerid][pt_PLAYER_IN_CALL] = false;
@@ -6921,7 +6921,7 @@ CreatePlayerTextDraws(playerid)
 	PlayerTextDrawSetShadow(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][5], 0);
 	PlayerTextDrawSetSelectable(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][5], true);
 	
-	PlayerTextdraws[playerid][ptextdraw_TRUCK_LOAD][0] = CreatePlayerTextDraw(playerid, 320.000000, 317.000000, "Cargando_camiÛn...");
+	PlayerTextdraws[playerid][ptextdraw_TRUCK_LOAD][0] = CreatePlayerTextDraw(playerid, 320.000000, 317.000000, "Cargando_cami√≥n...");
 	PlayerTextDrawLetterSize(playerid, PlayerTextdraws[playerid][ptextdraw_TRUCK_LOAD][0], 0.255666, 1.176888);
 	PlayerTextDrawAlignment(playerid, PlayerTextdraws[playerid][ptextdraw_TRUCK_LOAD][0], 2);
 	PlayerTextDrawColor(playerid, PlayerTextdraws[playerid][ptextdraw_TRUCK_LOAD][0], -1);
@@ -7617,16 +7617,16 @@ CMD:cachear(playerid, params[])
 {
 	if(!PI[playerid][ac_CREW]) return SendNotification(playerid, "No formas parte de una banda.");
 	if(sscanf(params, "u", params[0])) return SendNotification(playerid, "Error: /cachear [playerid/nombre]");
-	if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return SendNotification(playerid, "No est·s de pie.");
+	if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return SendNotification(playerid, "No est√°s de pie.");
 	
-	if(!IsPlayerConnected(params[0])) return SendNotification(playerid, "El jugador no est· conectado.");
+	if(!IsPlayerConnected(params[0])) return SendNotification(playerid, "El jugador no est√° conectado.");
 	new Float:pos[3]; GetPlayerPos(params[0], pos[0], pos[1], pos[2]);
-	if(!IsPlayerInRangeOfPoint(playerid, 2.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "Este jugador no est· cerca tuya.");
-	if(ACCOUNT_INFO[params[0]][ac_STATE] != ROLEPLAY_STATE_CRACK) return SendNotification(playerid, "El jugador no est· abatido.");
+	if(!IsPlayerInRangeOfPoint(playerid, 2.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "Este jugador no est√° cerca tuya.");
+	if(ACCOUNT_INFO[params[0]][ac_STATE] != ROLEPLAY_STATE_CRACK) return SendNotification(playerid, "El jugador no est√° abatido.");
 	if(GetPlayerState(params[0]) != PLAYER_STATE_ONFOOT) return SendNotification(playerid, "Para revisar a esta persona tiene que estar de pie.");
 	
 	new dialog[95 * 15], line_str[95];
-	format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Arma\t{"#BLUE_COLOR"}MuniciÛn\t{"#SILVER_COLOR"}Slot\n");
+	format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Arma\t{"#BLUE_COLOR"}Munici√≥n\t{"#SILVER_COLOR"}Slot\n");
 	
 	for(new i = 0; i < sizeof PLAYER_WEAPONS[]; i ++)
 	{
@@ -7641,14 +7641,14 @@ CMD:cachear(playerid, params[])
 	ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_TABLIST_HEADERS, line_str, dialog, "Continuar", "Cerrar");
 	
 	new action[64];
-	format(action, sizeof action, "cachea r·pidamente a %s.", PLAYER_TEMP[params[0]][pt_RP_NAME]);
+	format(action, sizeof action, "cachea r√°pidamente a %s.", PLAYER_TEMP[params[0]][pt_RP_NAME]);
 	Auto_SendPlayerAction(playerid, action);
 	return 1;
 }
 
 CMD:morir(playerid, params[])
 {
-	if(ACCOUNT_INFO[playerid][ac_STATE] != ROLEPLAY_STATE_CRACK) return SendNotification(playerid, "No est·s malherido");
+	if(ACCOUNT_INFO[playerid][ac_STATE] != ROLEPLAY_STATE_CRACK) return SendNotification(playerid, "No est√°s malherido");
 	
 	new now = gettime();
 	if(now < PLAYER_TEMP[playerid][pt_DEATH_TIME] + 30)
@@ -7659,7 +7659,7 @@ CMD:morir(playerid, params[])
 	}
 
 	SetPlayerHealthEx(playerid, 0.0);
-	Auto_SendPlayerAction(playerid, "ha elegido la salida r·pida.");
+	Auto_SendPlayerAction(playerid, "ha elegido la salida r√°pida.");
 	return 1;
 }
 
@@ -7763,15 +7763,15 @@ FormatDialogStrings()
 		"\
 			Servidor: "SERVER_NAME"\n\
 			Web/foro: "SERVER_WEBSITE"\n\
-			VersiÛn: "SERVER_VERSION"\n\
-			Fecha versiÛn: "VERSION_DATE"\n\
+			Versi√≥n: "SERVER_VERSION"\n\
+			Fecha versi√≥n: "VERSION_DATE"\n\
 			\n\
 			"SERVER_NAME" es un servidor Roleplay nuevo por lo que actualmente\n\
 			se encuentra desarrollo, puedes dejar tus sugerencias en el foro.\n\
-			Actualmente al ser una versiÛn inicial puede contener fallos.\n\
+			Actualmente al ser una versi√≥n inicial puede contener fallos.\n\
 			\n\
 			\n\
-			ProgramaciÛn:\n\
+			Programaci√≥n:\n\
 			adri1\n\
 		"
 	);
@@ -7836,7 +7836,7 @@ SanAndreas()
 	LoadIntroData();
 	
 	//Mina
-	CreateDynamic3DTextLabel("{"#PRIMARY_COLOR"}Herramientas de minerÌa\n{FFFFFF}3 productos disponibles.\nPresiona H para comprar.", 0xFFFFFFAA, 626.2347,116.3636,8.0031, 10);
+	CreateDynamic3DTextLabel("{"#PRIMARY_COLOR"}Herramientas de miner√≠a\n{FFFFFF}3 productos disponibles.\nPresiona H para comprar.", 0xFFFFFFAA, 626.2347,116.3636,8.0031, 10);
 	CreateDynamic3DTextLabel("{"#PRIMARY_COLOR"}Procesadora\n{FFFFFF}Presiona ALT para soltar los minerales.", 0xFFFFFFAA, 594.7598,-41.0603,791.2190-2.0, 15);
 	CreateDynamic3DTextLabel("{"#PRIMARY_COLOR"}Procesadora\n{FFFFFF}Presiona ALT para soltar los minerales.", 0xFFFFFFAA, 566.8312,-41.2121,791.2190-2.0, 15);
 	CreateDynamic3DTextLabel("{"#PRIMARY_COLOR"}Procesadora\n{FFFFFF}Presiona ALT para soltar los minerales.", 0xFFFFFFAA, 509.5341,-36.8747,790.7587-2.0, 15);
@@ -7853,7 +7853,7 @@ SanAndreas()
 	//Putis
     CreateDynamic3DTextLabel("Pulsa {"#PRIMARY_COLOR"}'F' {FFFFFF}para soltar unos cuantos billetes.", 0xFFFFFFFF, 1208.744140, -34.261119, 1000.953125, 5.0, .testlos = true, .worldid = 0, .interiorid = 3);
     CreateDynamic3DTextLabel("Pulsa {"#PRIMARY_COLOR"}'F' {FFFFFF}para soltar unos cuantos billetes.", 0xFFFFFFFF, 1213.738037, -33.667881, 1000.953125, 5.0, .testlos = true, .worldid = 0, .interiorid = 3);
-	CreateDynamic3DTextLabel("Escribe {"#PRIMARY_COLOR"}/bebida {FFFFFF}para comprar bebida alcohÛlica.", 0xFFFFFFFF, 1207.234375, -29.231435, 1000.953125, 5.0, .testlos = true, .worldid = 0, .interiorid = 3);
+	CreateDynamic3DTextLabel("Escribe {"#PRIMARY_COLOR"}/bebida {FFFFFF}para comprar bebida alcoh√≥lica.", 0xFFFFFFFF, 1207.234375, -29.231435, 1000.953125, 5.0, .testlos = true, .worldid = 0, .interiorid = 3);
 
 	Club_Strippers_Actor[0] = CreateDynamicActor(246, 1209.416503, -36.272216, 1001.484375, 17.0, .worldid = 0, .interiorid = 3);
     Club_Strippers_Actor[1] = CreateDynamicActor(87, 1215.355712, -33.439422, 1001.382812, 85.3, .worldid = 0, .interiorid = 3);
@@ -7875,7 +7875,7 @@ SanAndreas()
 	
 	//Tuning
 	CreateDynamicMapIcon(263.592102, 22.960014, 2.170951, 63, -1, 0, 0);
-	CreateDynamic3DTextLabel("Usa {"#PRIMARY_COLOR"}/tuning {FFFFFF}para tunear tu vehÌculo", 0xFFFFFFFF, 263.592102, 22.960014, 2.170951, 10.0, .testlos = true, .worldid = 0, .interiorid = 0);
+	CreateDynamic3DTextLabel("Usa {"#PRIMARY_COLOR"}/tuning {FFFFFF}para tunear tu veh√≠culo", 0xFFFFFFFF, 263.592102, 22.960014, 2.170951, 10.0, .testlos = true, .worldid = 0, .interiorid = 0);
 	
 	//3d texts armarios
 	for(new i = 0; i < sizeof PROPERTY_CLOSET_POS; i++)
@@ -7901,7 +7901,7 @@ SanAndreas()
 	}
 	
 	// 3D Texts Bank
-	for(new i = 0; i < sizeof Bank_Interior_Positions; i++) CreateDynamic3DTextLabel("Banco\nPresiona {FF7373} [ H ] {FFFFFF}para realizar una operaciÛn", 0xFFFFFFFF, Bank_Interior_Positions[i][bank_X], Bank_Interior_Positions[i][bank_Y], Bank_Interior_Positions[i][bank_Z] + 0.25, 10.0, .testlos = true, .worldid = Bank_Interior_Positions[i][bank_WORLD], .interiorid = Bank_Interior_Positions[i][bank_INTERIOR]);
+	for(new i = 0; i < sizeof Bank_Interior_Positions; i++) CreateDynamic3DTextLabel("Banco\nPresiona {FF7373} [ H ] {FFFFFF}para realizar una operaci√≥n", 0xFFFFFFFF, Bank_Interior_Positions[i][bank_X], Bank_Interior_Positions[i][bank_Y], Bank_Interior_Positions[i][bank_Z] + 0.25, 10.0, .testlos = true, .worldid = Bank_Interior_Positions[i][bank_WORLD], .interiorid = Bank_Interior_Positions[i][bank_INTERIOR]);
 	for(new i = 0; i < sizeof BUY_PROPERTIES_SITES; i++) CreateDynamic3DTextLabel("Escribe {"#PRIMARY_COLOR"}/comprarcasa [ID] {FFFFFF}para comprar una propiedad", 0xFFFFFFFF, BUY_PROPERTIES_SITES[i][site_X], BUY_PROPERTIES_SITES[i][site_Y], BUY_PROPERTIES_SITES[i][site_Z] + 0.25, 10.0, .testlos = true, .worldid = BUY_PROPERTIES_SITES[i][site_WORLD], .interiorid = BUY_PROPERTIES_SITES[i][site_INTERIOR]);
 	
 	//Cajeros
@@ -7912,7 +7912,7 @@ SanAndreas()
 		ATM_BANK[i][atm_X] += (-0.5 * floatsin(-(ATM_BANK[i][atm_RZ] - 90.0), degrees));
 		ATM_BANK[i][atm_Y] += (-0.5 * floatcos(-(ATM_BANK[i][atm_RZ] - 90.0), degrees));
 		CreateDynamicMapIcon(ATM_BANK[i][atm_X], ATM_BANK[i][atm_Y], ATM_BANK[i][atm_Z], 52, -1, 0, 0);
-		CreateDynamic3DTextLabel("Cajero autom·tico\nPresiona {FF7373} [ H ] {FFFFFF}para realizar operaciones", 0xFFFFFFFF, ATM_BANK[i][atm_X], ATM_BANK[i][atm_Y], ATM_BANK[i][atm_Z] + 0.25, 10.0, .testlos = true, .worldid = 0, .interiorid = 0);
+		CreateDynamic3DTextLabel("Cajero autom√°tico\nPresiona {FF7373} [ H ] {FFFFFF}para realizar operaciones", 0xFFFFFFFF, ATM_BANK[i][atm_X], ATM_BANK[i][atm_Y], ATM_BANK[i][atm_Z] + 0.25, 10.0, .testlos = true, .worldid = 0, .interiorid = 0);
 	
 		new atm_pickup_id = CreateDynamicPickup(0, 1, ATM_BANK[i][atm_X], ATM_BANK[i][atm_Y], ATM_BANK[i][atm_Z] + 0.10, 0, 0), info[3];
 		info[0] = PICKUP_TYPE_ATM;
@@ -7991,7 +7991,7 @@ SanAndreas()
 					label_str, 
 						sizeof label_str, 
 						"\
-							{"#PRIMARY_COLOR"}MembresÌa VIP requerida\n\
+							{"#PRIMARY_COLOR"}Membres√≠a VIP requerida\n\
 							\n\
 							{"#PRIMARY_COLOR"}%s\n\n\
 							{FFFFFF}Coste: {"#PRIMARY_COLOR"}%d "SERVER_COIN"\n\
@@ -8006,7 +8006,7 @@ SanAndreas()
 					label_str, 
 						sizeof label_str, 
 						"\
-							{"#PRIMARY_COLOR"}MembresÌa VIP requerida\n\
+							{"#PRIMARY_COLOR"}Membres√≠a VIP requerida\n\
 							\n\
 							{"#PRIMARY_COLOR"}%s\n\n\
 							{FFFFFF}Precio: {"#PRIMARY_COLOR"}%s$\n\
@@ -8057,9 +8057,9 @@ SanAndreas()
 	}
 	
 	//Notario
-	CreateDynamic3DTextLabel("Presiona {FF7373}[ H ] {FFFFFF}para vender\nalguna propiedad o vehÌculo", 0xFFFFFFFF, -474.596282, 289.679107, 2004.584960, 10.0, .testlos = true, .interiorid = 20);
+	CreateDynamic3DTextLabel("Presiona {FF7373}[ H ] {FFFFFF}para vender\nalguna propiedad o veh√≠culo", 0xFFFFFFFF, -474.596282, 289.679107, 2004.584960, 10.0, .testlos = true, .interiorid = 20);
 	//Grua
-	CreateDynamic3DTextLabel("Presiona {FF7373}[ H ] {FFFFFF}para solicitar\nel servicio de gr˙a a un vehÌculo", 0xFFFFFFFF, -508.645385, 322.147644, 2004.585937, 10.0, .testlos = true, .interiorid = 20);
+	CreateDynamic3DTextLabel("Presiona {FF7373}[ H ] {FFFFFF}para solicitar\nel servicio de gr√∫a a un veh√≠culo", 0xFFFFFFFF, -508.645385, 322.147644, 2004.585937, 10.0, .testlos = true, .interiorid = 20);
 	
 	
 	//San Andreas Vehicles
@@ -8135,10 +8135,10 @@ SanAndreas()
 
 		new label_str[256];
 		
-		if(San_Andreas_Barriers[i][barrier_PRICE] > 0) format(label_str, sizeof label_str, "{FF7373}Peaje\n\n{FFFFFF}Toca el {FF7373}claxÛn {FFFFFF}para pagar {FF7373}%s$", number_format_thousand(San_Andreas_Barriers[i][barrier_PRICE]));
+		if(San_Andreas_Barriers[i][barrier_PRICE] > 0) format(label_str, sizeof label_str, "{FF7373}Peaje\n\n{FFFFFF}Toca el {FF7373}clax√≥n {FFFFFF}para pagar {FF7373}%s$", number_format_thousand(San_Andreas_Barriers[i][barrier_PRICE]));
 		else {
-			if(San_Andreas_Barriers[i][barrier_VEHICLE_TYPE]) format(label_str, sizeof label_str, "{FF7373}%c%s\n\n{FFFFFF}Toca el {FF7373}claxÛn {FFFFFF}para que te abran", toupper(work_info[ San_Andreas_Barriers[i][barrier_VEHICLE_TYPE_IN] ][work_info_NAME][0]), work_info[ San_Andreas_Barriers[i][barrier_VEHICLE_TYPE_IN] ][work_info_NAME][1]);
-			else format(label_str, sizeof label_str, "{FFFFFF}Toca el {FF7373}claxÛn {FFFFFF}para que te abran");
+			if(San_Andreas_Barriers[i][barrier_VEHICLE_TYPE]) format(label_str, sizeof label_str, "{FF7373}%c%s\n\n{FFFFFF}Toca el {FF7373}clax√≥n {FFFFFF}para que te abran", toupper(work_info[ San_Andreas_Barriers[i][barrier_VEHICLE_TYPE_IN] ][work_info_NAME][0]), work_info[ San_Andreas_Barriers[i][barrier_VEHICLE_TYPE_IN] ][work_info_NAME][1]);
+			else format(label_str, sizeof label_str, "{FFFFFF}Toca el {FF7373}clax√≥n {FFFFFF}para que te abran");
 		}
 
 		CreateDynamic3DTextLabel(label_str, 0xFFFFFFFF, San_Andreas_Barriers[i][barrier_X], San_Andreas_Barriers[i][barrier_Y], San_Andreas_Barriers[i][barrier_Z] + 1.5, 15.0, .worldid = San_Andreas_Barriers[i][barrier_WORLD], .interiorid = San_Andreas_Barriers[i][barrier_INTERIOR], .testlos = true);
@@ -8204,11 +8204,11 @@ SanAndreas()
 	//Carga camioneros
 	for(new i = 0; i != sizeof LoadTrucksPoints; i ++)
 	{
-		CreateDynamic3DTextLabel("Usa {"#PRIMARY_COLOR"}/cargar {FFFFFF}para cargar el camiÛn", 0xFFFFFFFF, LoadTrucksPoints[i][0], LoadTrucksPoints[i][1], LoadTrucksPoints[i][2], 10.0, .testlos = true, .interiorid = 0);
+		CreateDynamic3DTextLabel("Usa {"#PRIMARY_COLOR"}/cargar {FFFFFF}para cargar el cami√≥n", 0xFFFFFFFF, LoadTrucksPoints[i][0], LoadTrucksPoints[i][1], LoadTrucksPoints[i][2], 10.0, .testlos = true, .interiorid = 0);
 		CreateDynamicPickup(19135, 1, LoadTrucksPoints[i][0], LoadTrucksPoints[i][1], LoadTrucksPoints[i][2], -1, 0);
 	}
 
-	//Mec·nico
+	//Mec√°nico
 	Mechanic_Areas[0] = CreateDynamicRectangle(1808.799194, -1450.352661, 1837.703979, -1414.697753, 0, 0);
 	Streamer_SetArrayData(STREAMER_TYPE_AREA, Mechanic_Areas[0], E_STREAMER_EXTRA_ID, { AREA_TYPE_MECHANIC });
 
@@ -8216,12 +8216,12 @@ SanAndreas()
 		CreateDynamic3DTextLabel("Usa {"#PRIMARY_COLOR"}/mecanico {FFFFFF}para empezar a trabajar\no para dejar de trabajar", 0xFFFFFFFF, MechanicStartWorkingCoords[i][0], MechanicStartWorkingCoords[i][1], MechanicStartWorkingCoords[i][2], 5.0, .testlos = true, .interiorid = 0);
 
 	for(new i; i != sizeof MechanicBuyPiecesCoords; i++)
-		CreateDynamic3DTextLabel("Piezas de mec·nico\nEscribe {"#PRIMARY_COLOR"}/piezas [cantidad] {FFFFFF}para comprar piezas\nPrecio de pieza: {"#PRIMARY_COLOR"}50$", 0xFFFFFFFF, MechanicBuyPiecesCoords[i][0], MechanicBuyPiecesCoords[i][1], MechanicBuyPiecesCoords[i][2], 5.0, .testlos = true, .interiorid = 0);
+		CreateDynamic3DTextLabel("Piezas de mec√°nico\nEscribe {"#PRIMARY_COLOR"}/piezas [cantidad] {FFFFFF}para comprar piezas\nPrecio de pieza: {"#PRIMARY_COLOR"}50$", 0xFFFFFFFF, MechanicBuyPiecesCoords[i][0], MechanicBuyPiecesCoords[i][1], MechanicBuyPiecesCoords[i][2], 5.0, .testlos = true, .interiorid = 0);
 
 	for(new i; i != sizeof MechanicBuyKitsCoords; i++)
-		CreateDynamic3DTextLabel("Kits de reparaciÛn\n\nEscribe {"#PRIMARY_COLOR"}/kit {FFFFFF}para comprar un kit de reparaciÛn\nPrecio del kit: {"#PRIMARY_COLOR"}1.000$", 0xFFFFFFFF, MechanicBuyKitsCoords[i][0], MechanicBuyKitsCoords[i][1], MechanicBuyKitsCoords[i][2], 5.0, .testlos = true, .interiorid = 0);
+		CreateDynamic3DTextLabel("Kits de reparaci√≥n\n\nEscribe {"#PRIMARY_COLOR"}/kit {FFFFFF}para comprar un kit de reparaci√≥n\nPrecio del kit: {"#PRIMARY_COLOR"}1.000$", 0xFFFFFFFF, MechanicBuyKitsCoords[i][0], MechanicBuyKitsCoords[i][1], MechanicBuyKitsCoords[i][2], 5.0, .testlos = true, .interiorid = 0);
 
-	//LeÒador
+	//Le√±ador
 	CreateDynamicPickup(19793, 1, -527.670349, -97.338562, 63.176174, 0, 0);
 	CreateDynamic3DTextLabel("Usa {"#PRIMARY_COLOR"}/talar {FFFFFF}para empezar a trabajar\no para dejar de trabajar", 0xFFFFFFFF, -527.670349, -97.338562, 63.176174, 5.0, .testlos = true, .worldid = 0, .interiorid = 0);
 
@@ -8234,7 +8234,7 @@ SanAndreas()
 	CreateDynamic3DTextLabel("Usa {"#PRIMARY_COLOR"}/medico {FFFFFF}para empezar a trabajar\no para dejar de trabajar", 0xFFFFFFFF, -2029.751342, -114.503044, 1035.171875, 5.0, .testlos = true, .interiorid = 3);
 
 	for(new i; i != sizeof MedicalBuyKitsCoords; i++)
-		CreateDynamic3DTextLabel("Botiquines\n\nEscribe {"#PRIMARY_COLOR"}/botiquin {FFFFFF}para comprar un botiquÌn\nPrecio del botiquÌn: {"#PRIMARY_COLOR"}5.000$", 0xFFFFFFFF, MedicalBuyKitsCoords[i][0], MedicalBuyKitsCoords[i][1], MedicalBuyKitsCoords[i][2], 5.0, .testlos = true);
+		CreateDynamic3DTextLabel("Botiquines\n\nEscribe {"#PRIMARY_COLOR"}/botiquin {FFFFFF}para comprar un botiqu√≠n\nPrecio del botiqu√≠n: {"#PRIMARY_COLOR"}5.000$", 0xFFFFFFFF, MedicalBuyKitsCoords[i][0], MedicalBuyKitsCoords[i][1], MedicalBuyKitsCoords[i][2], 5.0, .testlos = true);
 
 	//mercado
 	CreateDynamicActor(179, 2120.724853, -2000.400268, 7.984375, 130.0, true, 100.0, 0, 0);
@@ -8272,14 +8272,14 @@ SanAndreas()
 	CreateTrashCheckpoint(2, 1440, -2328.98047, -2704.17358, 44.41791,   6.17998, 5.88000, 340.20822);
 	CreateTrashCheckpoint(2, 1440, -2601.78345, -2334.39746, 10.50614,   0.00000, 0.00000, 41.64481);
 	
-	//LeÒador arboles
+	//Le√±ador arboles
 	Lumberjack_Area = CreateDynamicRectangle(-613.953796, -209.777252, -381.961181, -6.355076, 0, 0);
 	for(new i = 0; i != sizeof LUMBER_TREES; i ++)
 	{
 		LUMBER_TREES[i][lumber_tree_OBJECT_ID] = CreateDynamicObject(LUMBER_TREES[i][lumber_tree_MODELID], LUMBER_TREES[i][lumber_tree_X], LUMBER_TREES[i][lumber_tree_Y], LUMBER_TREES[i][lumber_tree_Z], LUMBER_TREES[i][lumber_tree_RX], LUMBER_TREES[i][lumber_tree_RY], LUMBER_TREES[i][lumber_tree_RZ], 0, 0);
 		
 		new label_str[256];
-		format(label_str, sizeof label_str, "{f46530}¡rbol (%d)\n\n{FFFFFF}Pulsa {f9d834}~k~~CONVERSATION_NO~ {FFFFFF}para talar el ·rbol.", i);
+		format(label_str, sizeof label_str, "{f46530}√Årbol (%d)\n\n{FFFFFF}Pulsa {f9d834}~k~~CONVERSATION_NO~ {FFFFFF}para talar el √°rbol.", i);
 		LUMBER_TREES[i][lumber_tree_LABEL] = CreateDynamic3DTextLabel(label_str, 0xFFFFFFFF, LUMBER_TREES[i][lumber_tree_X], LUMBER_TREES[i][lumber_tree_Y], LUMBER_TREES[i][lumber_tree_Z] + 1.5, 5.0, .testlos = false, .worldid = 0, .interiorid = 0);
 	}
 	
@@ -8328,9 +8328,9 @@ stock IsVehicleDrivingForward(vehicleid)
 
 CreateTrashCheckpoint(route, modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
-	if(route >= MAX_ROUTES) return print("---> LÌmite superado en array 'TRASH_OBJECTS, route' en la funciÛn 'CreateTrashCheckpoint'.");
+	if(route >= MAX_ROUTES) return print("---> L√≠mite superado en array 'TRASH_OBJECTS, route' en la funci√≥n 'CreateTrashCheckpoint'.");
 	if(!TRASH_OBJECTS[route][trash_route_VALID]) TRASH_OBJECTS[route][trash_route_VALID] = true;
-	if(TRASH_OBJECTS[route][trash_route_OBJECTS] >= MAX_OBJECTS_PER_ROUTE) return print("---> LÌmite superado en array 'TRASH_OBJECTS, objects' en la funciÛn 'CreateTrashCheckpoint'.");
+	if(TRASH_OBJECTS[route][trash_route_OBJECTS] >= MAX_OBJECTS_PER_ROUTE) return print("---> L√≠mite superado en array 'TRASH_OBJECTS, objects' en la funci√≥n 'CreateTrashCheckpoint'.");
 
 	if(TRASH_OBJECTS[route][trash_route_OBJECTS] == 0) TRASH_OBJECTS[route][trash_route_DISTANCE] = GetDistanceBetweenPoints3D(x, y, z, obtain_work_coords[WORK_TRASH][obtain_work_X], obtain_work_coords[WORK_TRASH][obtain_work_Y], obtain_work_coords[WORK_TRASH][obtain_work_Z]);
 	else
@@ -8864,16 +8864,16 @@ CMD:examen(playerid, params[])
 		{
 			if(IsPlayerInRangeOfPoint(playerid, 1.5, 1063.718994, -343.093566, 2797.699951))
 			{
-				if(PLAYER_TEMP[playerid][pt_DL_EXAM]) SendNotification(playerid, "Ya est·s en el examen, sal afuera y toma un vehÌculo para empezar con el examen.");
+				if(PLAYER_TEMP[playerid][pt_DL_EXAM]) SendNotification(playerid, "Ya est√°s en el examen, sal afuera y toma un veh√≠culo para empezar con el examen.");
 				else
 				{
-					if(PI[playerid][ac_DRIVE_LICENSE_POINTS] > 6) SendNotification(playerid, "Tienes m·s de 6 puntos del carnet, no te hace falta hacer el examen.");
+					if(PI[playerid][ac_DRIVE_LICENSE_POINTS] > 6) SendNotification(playerid, "Tienes m√°s de 6 puntos del carnet, no te hace falta hacer el examen.");
 					else
 					{
 						if(GivePlayerCash(playerid, -1750, false, true)) {
 							PLAYER_TEMP[playerid][pt_DL_EXAM] = true;
 							PLAYER_TEMP[playerid][pt_DL_EXAM_PROCCESS] = 0;
-							SendNotification(playerid, "Para comenzar con el examen subete a un vehÌculo de la autoescuela, est·n en el aparcamiento.");
+							SendNotification(playerid, "Para comenzar con el examen subete a un veh√≠culo de la autoescuela, est√°n en el aparcamiento.");
 						}
 						else SendNotification(playerid, "No tienes suficiente dinero.");
 					}
@@ -8883,7 +8883,7 @@ CMD:examen(playerid, params[])
 		}
 	}
 	
-	SendNotification(playerid, "No est·s en el lugar adecuado.");
+	SendNotification(playerid, "No est√°s en el lugar adecuado.");
 	return 1;
 }
 
@@ -8908,7 +8908,7 @@ CMD:bebida(playerid, params[])
 		}
 	}
 	
-	SendNotification(playerid, "No est·s en el lugar adecuado.");
+	SendNotification(playerid, "No est√°s en el lugar adecuado.");
 	return 1;
 }
 
@@ -8921,7 +8921,7 @@ CMD:duda(playerid, params[])
 	if(PI[playerid][ac_MUTE] > gettime())
 	{
 		new seconds = PI[playerid][ac_MUTE] - gettime();
-		SendFormatNotification(playerid, "Est·s silenciado en el canal de dudas por %s minutos.", TimeConvert(seconds));
+		SendFormatNotification(playerid, "Est√°s silenciado en el canal de dudas por %s minutos.", TimeConvert(seconds));
 		return 1;
 	}
 	if(!ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL])
@@ -8958,7 +8958,7 @@ CMD:g(playerid, params[])
 	if(isnull(params)) return SendNotification(playerid, "~r~Modo de uso: ~w~/gritar [TEXTO]");
 	
 	new str_text[190];
-	format(str_text, 190, "%s grita: °%s!", PLAYER_TEMP[playerid][pt_RP_NAME], params);
+	format(str_text, 190, "%s grita: ¬°%s!", PLAYER_TEMP[playerid][pt_RP_NAME], params);
 	ProxDetector(playerid, 25.0, str_text, COLOR_FADE1, COLOR_FADE2, COLOR_FADE3, COLOR_FADE4, COLOR_FADE5, 85);
 	return 1;
 }
@@ -9019,19 +9019,19 @@ CMD:do(playerid, params[])
 CMD:entrar(playerid, params[])
 {
 	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
-	if(PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID] == 0) return SendNotification(playerid, "No est·s en el lugar adecuado.");
+	if(PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID] == 0) return SendNotification(playerid, "No est√°s en el lugar adecuado.");
 		
 	new info[3];
 	
 	new Float:pos[3];
 	Streamer_GetArrayData(STREAMER_TYPE_PICKUP, PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID], E_STREAMER_EXTRA_ID, info);
-	if(info[0] == PICKUP_TYPE_NONE) return SendNotification(playerid, "No est·s en el lugar adecuado.");
+	if(info[0] == PICKUP_TYPE_NONE) return SendNotification(playerid, "No est√°s en el lugar adecuado.");
 
 	Streamer_GetFloatData(STREAMER_TYPE_PICKUP, PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID], E_STREAMER_X, pos[0]);
 	Streamer_GetFloatData(STREAMER_TYPE_PICKUP, PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID], E_STREAMER_Y, pos[1]);
 	Streamer_GetFloatData(STREAMER_TYPE_PICKUP, PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID], E_STREAMER_Z, pos[2]);
 
-	if(!IsPlayerInRangeOfPoint(playerid, 1.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "No est·s en el lugar adecuado.");
+	if(!IsPlayerInRangeOfPoint(playerid, 1.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "No est√°s en el lugar adecuado.");
 
 	switch(info[0])
 	{
@@ -9039,7 +9039,7 @@ CMD:entrar(playerid, params[])
 		{
 			PLAYER_TEMP[playerid][pt_HOSPITAL] = GetNearestHospitalForPlayer(playerid);
 	
-			if(info[2] == 2) // Est· en el Pickup Exterior y quiere ir al interior
+			if(info[2] == 2) // Est√° en el Pickup Exterior y quiere ir al interior
 			{
 				if(ENTER_EXIT[info[1]][ee_TIME_OPEN] == 0 && ENTER_EXIT[info[1]][ee_TIME_CLOSE] == 0) // 24 horas
 				{
@@ -9064,18 +9064,18 @@ CMD:entrar(playerid, params[])
 						if(ENTER_EXIT[info[1]][ee_INTERIOR_TYPE] == INTERIOR_CLUB) PlayAudioStreamForPlayerEx(playerid, "https://www.dropbox.com/s/yeuwio26i7y00ly/striptease.mp3?dl=1");							
 					}
 					else {
-						if(ENTER_EXIT[info[1]][ee_TIME_OPEN] == -1 && ENTER_EXIT[info[1]][ee_TIME_CLOSE] == -1) SendFormatNotification(playerid, "~r~%s ~w~abrir· prÛximamente.", ENTER_EXIT[info[1]][ee_NAME]);
-						else SendFormatNotification(playerid, "~r~%s ~w~est· cerrado, su horario es: ~r~%02d:00h ~w~- ~r~%02d:00h~w~.", ENTER_EXIT[info[1]][ee_NAME], ENTER_EXIT[info[1]][ee_TIME_OPEN], ENTER_EXIT[info[1]][ee_TIME_CLOSE]);
+						if(ENTER_EXIT[info[1]][ee_TIME_OPEN] == -1 && ENTER_EXIT[info[1]][ee_TIME_CLOSE] == -1) SendFormatNotification(playerid, "~r~%s ~w~abrir√° pr√≥ximamente.", ENTER_EXIT[info[1]][ee_NAME]);
+						else SendFormatNotification(playerid, "~r~%s ~w~est√° cerrado, su horario es: ~r~%02d:00h ~w~- ~r~%02d:00h~w~.", ENTER_EXIT[info[1]][ee_NAME], ENTER_EXIT[info[1]][ee_TIME_OPEN], ENTER_EXIT[info[1]][ee_TIME_CLOSE]);
 					}
 				}
 			}
-			else SendNotification(playerid, "No est·s en el lugar adecuado.");
+			else SendNotification(playerid, "No est√°s en el lugar adecuado.");
 		}
 		case PICKUP_TYPE_PROPERTY:
 		{
 			PLAYER_TEMP[playerid][pt_HOSPITAL] = GetNearestHospitalForPlayer(playerid);
 			
-			if(info[2] == 2) // Est· en el Pickup Exterior y quiere ir al interior
+			if(info[2] == 2) // Est√° en el Pickup Exterior y quiere ir al interior
 			{
 				if(PROPERTY_INFO[info[1]][property_POLICE_FORCED] && (PLAYER_WORKS[playerid][WORK_POLICE][pwork_SET] && PLAYER_TEMP[playerid][pt_WORKING_IN] == WORK_POLICE)) {
 					new Float:z_pos = PROPERTY_INTERIORS[ PROPERTY_INFO[info[1]][property_ID_INTERIOR] ][property_INT_Z];
@@ -9084,7 +9084,7 @@ CMD:entrar(playerid, params[])
 					FreezePlayer(playerid);
 					return 1;
 				}
-				if(!PROPERTY_INFO[info[1]][property_SOLD]) return SendNotification(playerid, "Esta propiedad est· en venta.");
+				if(!PROPERTY_INFO[info[1]][property_SOLD]) return SendNotification(playerid, "Esta propiedad est√° en venta.");
 				if(PROPERTY_INFO[info[1]][property_CREW])
 				{
 					if(!PI[playerid][ac_CREW]) return SendFormatNotification(playerid, "Solo miembros de la banda pueden entrar.");
@@ -9117,39 +9117,39 @@ CMD:entrar(playerid, params[])
 						if(gettime() < PLAYER_TEMP[playerid][pt_ANTIFLOOD_KNOCK_PROPERTY] + 10) return SendNotification(playerid, "Espera para volver a tocar, si no te quieren abrir, vete.");
 						
 						new owner_playerid = GetOwnerIntProperty(PROPERTY_INFO[info[1]][property_ID]);
-						if(owner_playerid == -1) return SendNotification(playerid, "Esta no es tu propiedad y el dueÒo no est· dentro para dejarte entrar.");
+						if(owner_playerid == -1) return SendNotification(playerid, "Esta no es tu propiedad y el due√±o no est√° dentro para dejarte entrar.");
 						
 						PLAYER_TEMP[playerid][pt_ANTIFLOOD_KNOCK_PROPERTY] = gettime();
 						PLAYER_TEMP[owner_playerid][pt_KNOCK_PLAYER_ID] = playerid;
-						SendFormatNotification(owner_playerid, "~b~%s ~w~est· tocando la puerta, para dejarle entrar ve a la puerta y usa ~b~/puerta~w~.", PLAYER_TEMP[playerid][pt_RP_NAME]);
+						SendFormatNotification(owner_playerid, "~b~%s ~w~est√° tocando la puerta, para dejarle entrar ve a la puerta y usa ~b~/puerta~w~.", PLAYER_TEMP[playerid][pt_RP_NAME]);
 						SendNotification(playerid, "Has tocado en la puerta, espera para que te abran o vete.");
 					}
 				}
 			}
-			else SendNotification(playerid, "No est·s en el lugar adecuado.");
+			else SendNotification(playerid, "No est√°s en el lugar adecuado.");
 		}
-		default: SendNotification(playerid, "No est·s en el lugar adecuado.");
+		default: SendNotification(playerid, "No est√°s en el lugar adecuado.");
 	}
 	return 1;
 }
 
 CMD:puerta(playerid, params[])
 {
-	if(ACCOUNT_INFO[playerid][ac_STATE] != ROLEPLAY_STATE_OWN_PROPERTY) return SendNotification(playerid, "No est·s en el lugar adecuado.");
-	if(PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID] == 0) return SendNotification(playerid, "No est·s en el lugar adecuado.");
+	if(ACCOUNT_INFO[playerid][ac_STATE] != ROLEPLAY_STATE_OWN_PROPERTY) return SendNotification(playerid, "No est√°s en el lugar adecuado.");
+	if(PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID] == 0) return SendNotification(playerid, "No est√°s en el lugar adecuado.");
 		
 	new info[3];
 	Streamer_GetArrayData(STREAMER_TYPE_PICKUP, PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID], E_STREAMER_EXTRA_ID, info);
-	if(info[0] != PICKUP_TYPE_PROPERTY) return SendNotification(playerid, "No est·s en el lugar adecuado.");
+	if(info[0] != PICKUP_TYPE_PROPERTY) return SendNotification(playerid, "No est√°s en el lugar adecuado.");
 	
 	new Float:pos[3]; 
 	Streamer_GetFloatData(STREAMER_TYPE_PICKUP, PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID], E_STREAMER_X, pos[0]);
 	Streamer_GetFloatData(STREAMER_TYPE_PICKUP, PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID], E_STREAMER_Y, pos[1]);
 	Streamer_GetFloatData(STREAMER_TYPE_PICKUP, PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID], E_STREAMER_Z, pos[2]);
 	
-	if(!IsPlayerInRangeOfPoint(playerid, 1.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "No est·s en el lugar adecuado.");
+	if(!IsPlayerInRangeOfPoint(playerid, 1.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "No est√°s en el lugar adecuado.");
 	
-	if(info[2] == 1) // Est· en el Pickup Interior
+	if(info[2] == 1) // Est√° en el Pickup Interior
 	{
 		if(PROPERTY_INFO[info[1]][property_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
 		{
@@ -9169,9 +9169,9 @@ CMD:puerta(playerid, params[])
 			SetPlayerPosEx(PLAYER_TEMP[playerid][pt_KNOCK_PLAYER_ID], PROPERTY_INTERIORS[ PROPERTY_INFO[info[1]][property_ID_INTERIOR] ][property_INT_X], PROPERTY_INTERIORS[ PROPERTY_INFO[info[1]][property_ID_INTERIOR] ][property_INT_Y], z_pos, PROPERTY_INTERIORS[ PROPERTY_INFO[info[1]][property_ID_INTERIOR] ][property_INT_ANGLE], PROPERTY_INTERIORS[ PROPERTY_INFO[info[1]][property_ID_INTERIOR] ][property_INT_INTERIOR], PROPERTY_INFO[info[1]][property_ID], false /*PROPERTY_INTERIORS[ PROPERTY_INFO[info[1]][property_ID_INTERIOR] ][property_INT_FREEZE], true*/);
 			FreezePlayer(PLAYER_TEMP[playerid][pt_KNOCK_PLAYER_ID]);
 		}
-		else SendNotification(playerid, "No est·s en el lugar adecuado.");
+		else SendNotification(playerid, "No est√°s en el lugar adecuado.");
 	}
-	else SendNotification(playerid, "No est·s en el lugar adecuado.");
+	else SendNotification(playerid, "No est√°s en el lugar adecuado.");
 	return 1;
 }
 
@@ -9180,7 +9180,7 @@ CMD:puerta(playerid, params[])
 CMD:echar(playerid, params[])
 {
 	if(sscanf(params, "u", params[0])) return SendNotification(playerid, "~r~Modo de uso: ~w~/echar [PlayerID/Nombre]");
-	if(!IsPlayerConnected(params[0])) return SendNotification(playerid, "El jugador no est· conectado.");
+	if(!IsPlayerConnected(params[0])) return SendNotification(playerid, "El jugador no est√° conectado.");
 	if(playerid == params[0]) return SendNotification(playerid, "No te eches a ti mismo.");
 	
 	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_OWN_PROPERTY)
@@ -9200,7 +9200,7 @@ CMD:echar(playerid, params[])
 			SendFormatNotification(params[0], "~r~%s ~w~te ha echado de su propiedad.", PLAYER_TEMP[playerid][pt_RP_NAME]);
 			SendFormatNotification(playerid, "Has echado a ~r~%s ~w~de tu propiedad.", PLAYER_TEMP[params[0]][pt_RP_NAME]);
 		}
-		else SendNotification(playerid, "Este jugador no est· en tu propiedad.");
+		else SendNotification(playerid, "Este jugador no est√° en tu propiedad.");
 		return 1;
 	}
 
@@ -9208,19 +9208,19 @@ CMD:echar(playerid, params[])
 	{
 		new vehicleid = GetPlayerVehicleID(playerid);
 		
-		if(!PLAYER_VEHICLES[vehicleid][player_vehicle_VALID]) return SendNotification(playerid, "Este no es t˙ vehÌculo.");
-		if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] != ACCOUNT_INFO[playerid][ac_ID]) return SendNotification(playerid, "Este no es t˙ vehÌculo.");
-		if(GetPlayerVehicleID(params[0]) != vehicleid) return SendNotification(playerid, "Este jugador no est· en tu vehÌculo.");
+		if(!PLAYER_VEHICLES[vehicleid][player_vehicle_VALID]) return SendNotification(playerid, "Este no es t√∫ veh√≠culo.");
+		if(PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] != ACCOUNT_INFO[playerid][ac_ID]) return SendNotification(playerid, "Este no es t√∫ veh√≠culo.");
+		if(GetPlayerVehicleID(params[0]) != vehicleid) return SendNotification(playerid, "Este jugador no est√° en tu veh√≠culo.");
 		
 		RemovePlayerFromVehicle(params[0]);
 		
 		new action[64];
-		format(action, sizeof action, "ha echado a %s de su vehÌculo.", PLAYER_TEMP[ params[0] ][pt_RP_NAME]);
+		format(action, sizeof action, "ha echado a %s de su veh√≠culo.", PLAYER_TEMP[ params[0] ][pt_RP_NAME]);
 		Auto_SendPlayerAction(playerid, action);
 		return 1;
 	}
 	
-	SendNotification(playerid, "No est·s en tu propiedad o en tu vehÌculo.");
+	SendNotification(playerid, "No est√°s en tu propiedad o en tu veh√≠culo.");
 	return 1;
 }
 
@@ -9228,25 +9228,25 @@ CMD:echar(playerid, params[])
 CMD:salir(playerid, params[])
 {	
 	if(ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
-	if(PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID] == 0) return SendNotification(playerid, "No est·s en el lugar adecuado.");
+	if(PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID] == 0) return SendNotification(playerid, "No est√°s en el lugar adecuado.");
 		
 	new info[3];
 	
 	new Float:pos[3];
 	Streamer_GetArrayData(STREAMER_TYPE_PICKUP, PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID], E_STREAMER_EXTRA_ID, info);
-	if(info[0] == PICKUP_TYPE_NONE) return SendNotification(playerid, "No est·s en el lugar adecuado.");
+	if(info[0] == PICKUP_TYPE_NONE) return SendNotification(playerid, "No est√°s en el lugar adecuado.");
 
 	Streamer_GetFloatData(STREAMER_TYPE_PICKUP, PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID], E_STREAMER_X, pos[0]);
 	Streamer_GetFloatData(STREAMER_TYPE_PICKUP, PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID], E_STREAMER_Y, pos[1]);
 	Streamer_GetFloatData(STREAMER_TYPE_PICKUP, PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID], E_STREAMER_Z, pos[2]);
 
-	if(!IsPlayerInRangeOfPoint(playerid, 1.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "No est·s en el lugar adecuado.");
+	if(!IsPlayerInRangeOfPoint(playerid, 1.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "No est√°s en el lugar adecuado.");
 
 	switch(info[0])
 	{
 		case PICKUP_TYPE_ENTER_EXIT:
 		{
-			if(info[2] == 1) // Est· en el Pickup Interior y quiere ir al exterior
+			if(info[2] == 1) // Est√° en el Pickup Interior y quiere ir al exterior
 			{
 				ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_NORMAL;
 				PI[playerid][ac_LOCAL_INTERIOR] = 0;
@@ -9257,11 +9257,11 @@ CMD:salir(playerid, params[])
 				FreezePlayer(playerid);
 				CallLocalFunction("OnPlayerExitInterior", "ii", playerid, info[1]);
 			}
-			else SendNotification(playerid, "No est·s en el lugar adecuado.");
+			else SendNotification(playerid, "No est√°s en el lugar adecuado.");
 		}
 		case PICKUP_TYPE_PROPERTY:
 		{
-			if(info[2] == 1) // Est· en el Pickup Interior y quiere ir al exterior
+			if(info[2] == 1) // Est√° en el Pickup Interior y quiere ir al exterior
 			{
 				ACCOUNT_INFO[playerid][ac_STATE] = ROLEPLAY_STATE_NORMAL;
 				PI[playerid][ac_LOCAL_INTERIOR] = 0;
@@ -9271,9 +9271,9 @@ CMD:salir(playerid, params[])
 				StopAudioStreamForPlayer(playerid);
 				FreezePlayer(playerid);
 			}
-			else SendNotification(playerid, "No est·s en el lugar adecuado.");
+			else SendNotification(playerid, "No est√°s en el lugar adecuado.");
 		}
-		default: SendNotification(playerid, "No est·s en el lugar adecuado.");
+		default: SendNotification(playerid, "No est√°s en el lugar adecuado.");
 	}
 	return 1;
 }
@@ -9341,7 +9341,7 @@ public OnPlayerSongFound(index, response_code, data[])
 				counter ++;
 			}
 			
-			if(counter == 0) return SendClientMessage(index, -1, "{"#SILVER_COLOR"}No se encontrÛ ning˙n resultado para tu b˙squeda.");
+			if(counter == 0) return SendClientMessage(index, -1, "{"#SILVER_COLOR"}No se encontr√≥ ning√∫n resultado para tu b√∫squeda.");
 			
 			new dialog_title[50], dialog[120 * MAX_RESULTS], dialog_counter;
 			
@@ -9361,7 +9361,7 @@ public OnPlayerSongFound(index, response_code, data[])
 		}
 		else SendClientMessage(index, -1, "{"#SILVER_COLOR"}El resultado obtenido no puede ser comprendido.");
 	}
-	else SendClientMessage(index, -1, "{"#SILVER_COLOR"}La b˙squeda fallÛ, intÈntelo de nuevo m·s tarde.");
+	else SendClientMessage(index, -1, "{"#SILVER_COLOR"}La b√∫squeda fall√≥, int√©ntelo de nuevo m√°s tarde.");
 	
 	PLAYER_TEMP[index][pt_PLAYER_WAITING_MP3_HTTP] = false;
 	return 1;
@@ -9944,7 +9944,7 @@ LoadEnterExits()
 		ENTER_EXIT[total_enterexits][ee_ID] = total_enterexits + 1;
 
 		if(ENTER_EXIT[total_enterexits][ee_TIME_OPEN] == 0 && ENTER_EXIT[total_enterexits][ee_TIME_CLOSE] == 0) format(label_str, sizeof label_str, "{FF7373}%s\n{FFFFFF}Presiona {FF7373}[ Y ] {FFFFFF}para entrar", ENTER_EXIT[total_enterexits][ee_NAME]);
-		else if(ENTER_EXIT[total_enterexits][ee_TIME_OPEN] == -1 && ENTER_EXIT[total_enterexits][ee_TIME_CLOSE] == -1) format(label_str, sizeof label_str, "{FF7373}%s\n{"#SILVER_COLOR"}PR”XIMA APERTURA", ENTER_EXIT[total_enterexits][ee_NAME]);
+		else if(ENTER_EXIT[total_enterexits][ee_TIME_OPEN] == -1 && ENTER_EXIT[total_enterexits][ee_TIME_CLOSE] == -1) format(label_str, sizeof label_str, "{FF7373}%s\n{"#SILVER_COLOR"}PR√ìXIMA APERTURA", ENTER_EXIT[total_enterexits][ee_NAME]);
 		else format(label_str, sizeof label_str, "{FF7373}%s\n\n{FFFFFF}Horario: {FF7373}%02d:00h {FFFFFF}- {FF7373}%02d:00h\n\n{FFFFFF}Presiona {FF7373}[ Y ] {FFFFFF}para entrar", ENTER_EXIT[total_enterexits][ee_NAME], ENTER_EXIT[total_enterexits][ee_TIME_OPEN], ENTER_EXIT[total_enterexits][ee_TIME_CLOSE]);
 		
 		ENTER_EXIT[total_enterexits][ee_INT_LABEL_ID] = CreateDynamic3DTextLabel("{FF7373}Salida\n{FFFFFF}Presiona {FF7373}[ Y ] {FFFFFF}para salir", 0xFFFFFFFF, ENTER_EXIT[total_enterexits][ee_INT_X], ENTER_EXIT[total_enterexits][ee_INT_Y], ENTER_EXIT[total_enterexits][ee_INT_Z] + 0.25, 10.0, .testlos = true, .worldid = ENTER_EXIT[total_enterexits][ee_INT_WORLD], .interiorid = ENTER_EXIT[total_enterexits][ee_INT_INTERIOR]);
@@ -9967,9 +9967,9 @@ LoadEnterExits()
 		Streamer_SetArrayData(STREAMER_TYPE_PICKUP, ENTER_EXIT[total_enterexits][ee_EXT_PICKUP_ID], E_STREAMER_EXTRA_ID, info);
 		ENTER_EXIT[total_enterexits][ee_MAIN_ACTOR] = CreateInteriorActor(ENTER_EXIT[total_enterexits][ee_INTERIOR_TYPE], ENTER_EXIT[total_enterexits][ee_INT_WORLD], ENTER_EXIT[total_enterexits][ee_INT_INTERIOR]);
 
-		//textdraw intimidaciÛn
+		//textdraw intimidaci√≥n
 		if(ENTER_EXIT[total_enterexits][ee_ROBBABLE]) {
-			ENTER_EXIT[total_enterexits][ee_TEXTDRAW] = TextDrawCreate(320.000000, 406.000000, "IntimidaciÛn:_0.00%%");
+			ENTER_EXIT[total_enterexits][ee_TEXTDRAW] = TextDrawCreate(320.000000, 406.000000, "Intimidaci√≥n:_0.00%%");
 			TextDrawLetterSize(ENTER_EXIT[total_enterexits][ee_TEXTDRAW], 0.286000, 1.276444);
 			TextDrawAlignment(ENTER_EXIT[total_enterexits][ee_TEXTDRAW], 2);
 			TextDrawColor(ENTER_EXIT[total_enterexits][ee_TEXTDRAW], -76);
@@ -10000,7 +10000,7 @@ LoadProperties()
 			{
 				if(i >= MAX_PROPERTIES)
 				{
-					printf("---> LÌmite superado en array 'PROPERTY_INFO' al intentar cargar de la base de datos.");
+					printf("---> L√≠mite superado en array 'PROPERTY_INFO' al intentar cargar de la base de datos.");
 					break;
 				}
 
@@ -10114,7 +10114,7 @@ LoadCrews()
 			{
 				if(i >= MAX_CREWS)
 				{
-					printf("---> LÌmite superado en array 'CREW_INFO' al intentar cargar de la base de datos.");
+					printf("---> L√≠mite superado en array 'CREW_INFO' al intentar cargar de la base de datos.");
 					break;
 				}
 
@@ -10195,7 +10195,7 @@ LoadGangZones()
 			{
 				if(i >= MAX_TERRITORIES)
 				{
-					printf("---> LÌmite superado en array 'TERRITORIES' al intentar cargar de la base de datos.");
+					printf("---> L√≠mite superado en array 'TERRITORIES' al intentar cargar de la base de datos.");
 					break;
 				}
 
@@ -10931,10 +10931,10 @@ CMD:basurero(playerid, params[])
 		return 1;
 	}
 	
-	if(GetPlayerVirtualWorld(playerid) != 0) return SendNotification(playerid, "No est·s en el lugar adecuado.");
-	if(GetPlayerInterior(playerid) != 0) return SendNotification(playerid, "No est·s en el lugar adecuado.");
-	if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return SendNotification(playerid, "No est·s depie.");
-	if(!IsPlayerInRangeOfPoint(playerid, 1.0, -1906.577514, -1756.457519, 22.079319)) return SendNotification(playerid, "No est·s en el lugar adecuado.");
+	if(GetPlayerVirtualWorld(playerid) != 0) return SendNotification(playerid, "No est√°s en el lugar adecuado.");
+	if(GetPlayerInterior(playerid) != 0) return SendNotification(playerid, "No est√°s en el lugar adecuado.");
+	if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return SendNotification(playerid, "No est√°s depie.");
+	if(!IsPlayerInRangeOfPoint(playerid, 1.0, -1906.577514, -1756.457519, 22.079319)) return SendNotification(playerid, "No est√°s en el lugar adecuado.");
 	
 	if(!PLAYER_TEMP[playerid][pt_WORKING_IN]) CallLocalFunction("StartPlayerJob", "iii", playerid, WORK_TRASH, INVALID_VEHICLE_ID);
 	else CallLocalFunction("EndPlayerJob", "iib", playerid, PLAYER_TEMP[playerid][pt_WORKING_IN], true);
@@ -11028,7 +11028,7 @@ CancelLumberjackWork(playerid)
 		LUMBER_TREES[ PLAYER_TEMP[playerid][pt_PLAYER_LUMBERJACK_TREE] ][lumber_tree_STATE] = LUMBER_TREE_STATE_NORMAL;
 		
 		new label_str[256];
-		format(label_str, sizeof label_str, "{f46530}¡rbol (%d)\n\n{FFFFFF}Pulsa {f9d834}~k~~CONVERSATION_NO~ {FFFFFF}para talar el ·rbol.", PLAYER_TEMP[playerid][pt_PLAYER_LUMBERJACK_TREE]);
+		format(label_str, sizeof label_str, "{f46530}√Årbol (%d)\n\n{FFFFFF}Pulsa {f9d834}~k~~CONVERSATION_NO~ {FFFFFF}para talar el √°rbol.", PLAYER_TEMP[playerid][pt_PLAYER_LUMBERJACK_TREE]);
 		UpdateDynamic3DTextLabelText(LUMBER_TREES[ PLAYER_TEMP[playerid][pt_PLAYER_LUMBERJACK_TREE] ][lumber_tree_LABEL], -1, label_str);
 	}
 	
@@ -11075,7 +11075,7 @@ ShowPlayerInventory(playerid, pid)
 	
 	if(PI[pid][ac_DRIVE_LICENSE_POINTS])
 	{
-		format(line_str, sizeof line_str, "Licencia de conducir: {"#SILVER_COLOR"}sÌ, %d puntos\n", PI[pid][ac_DRIVE_LICENSE_POINTS]);
+		format(line_str, sizeof line_str, "Licencia de conducir: {"#SILVER_COLOR"}s√≠, %d puntos\n", PI[pid][ac_DRIVE_LICENSE_POINTS]);
 		strcat(dialog, line_str);
 	}
 	else
@@ -11086,7 +11086,7 @@ ShowPlayerInventory(playerid, pid)
 
 	if(PI[pid][ac_PHONE_NUMBER])
 	{
-		format(line_str, sizeof line_str, "TelÈfono {"#SILVER_COLOR"}(%d)\n", PI[pid][ac_PHONE_NUMBER]);
+		format(line_str, sizeof line_str, "Tel√©fono {"#SILVER_COLOR"}(%d)\n", PI[pid][ac_PHONE_NUMBER]);
 		strcat(dialog, line_str);
 	}
 	
@@ -11107,7 +11107,7 @@ ShowPlayerInventory(playerid, pid)
 	if(PI[pid][ac_GPS]) strcat(dialog, "GPS\n");
 	if(PI[pid][ac_Maso]) strcat(dialog, "Masa\n");
 	if(PI[pid][ac_MP3]) strcat(dialog, "Reproductor MP3\n");
-	if(PI[pid][ac_PHONE_RESOLVER]) strcat(dialog, "GuÌa telefÛnica\n");
+	if(PI[pid][ac_PHONE_RESOLVER]) strcat(dialog, "Gu√≠a telef√≥nica\n");
 	if(PI[pid][ac_SPEAKERS]) strcat(dialog, "Altavoces\n");
 	
 	new player_weapons = CountPlayerWeapons(pid);
@@ -11120,13 +11120,13 @@ ShowPlayerInventory(playerid, pid)
 	
 	if(PI[pid][ac_MECHANIC_PIECES] > 0)
 	{
-		format(line_str, sizeof line_str, "Piezas de mec·nico {"#SILVER_COLOR"}(%s)\n", number_format_thousand(PI[pid][ac_MECHANIC_PIECES]));
+		format(line_str, sizeof line_str, "Piezas de mec√°nico {"#SILVER_COLOR"}(%s)\n", number_format_thousand(PI[pid][ac_MECHANIC_PIECES]));
 		strcat(dialog, line_str);
 	}
 	
 	if(PI[pid][ac_FUEL_DRUM] > 0)
 	{
-		format(line_str, sizeof line_str, "BidÛn de gasolina {"#SILVER_COLOR"}(%d Litros)\n", PI[pid][ac_FUEL_DRUM]);
+		format(line_str, sizeof line_str, "Bid√≥n de gasolina {"#SILVER_COLOR"}(%d Litros)\n", PI[pid][ac_FUEL_DRUM]);
 		strcat(dialog, line_str);
 	}
 	
@@ -11168,7 +11168,7 @@ ShowPlayerInventory(playerid, pid)
 
 	if(PI[pid][ac_MECHANIC_KITS] > 0)
 	{
-		format(line_str, sizeof line_str, "Kits de reparaciÛn (%d)\n", PI[pid][ac_MECHANIC_KITS]);
+		format(line_str, sizeof line_str, "Kits de reparaci√≥n (%d)\n", PI[pid][ac_MECHANIC_KITS]);
 		strcat(dialog, line_str);
 	}
 

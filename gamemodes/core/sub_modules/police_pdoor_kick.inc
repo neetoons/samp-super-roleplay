@@ -24,28 +24,28 @@ new
     pPoliceForcingPDoor[MAX_PLAYERS] = {-1, ...};
 
 CMD:allanar(playerid, params[]) {
-	if(!PLAYER_WORKS[playerid][WORK_POLICE][pwork_SET]) return SendNotification(playerid, "No eres policÌa.");
-	if(PLAYER_TEMP[playerid][pt_WORKING_IN] != WORK_POLICE) return SendNotification(playerid, "No est·s de servicio como policÌa.");
+	if(!PLAYER_WORKS[playerid][WORK_POLICE][pwork_SET]) return SendNotification(playerid, "No eres polic√≠a.");
+	if(PLAYER_TEMP[playerid][pt_WORKING_IN] != WORK_POLICE) return SendNotification(playerid, "No est√°s de servicio como polic√≠a.");
 	if(PLAYER_WORKS[playerid][WORK_POLICE][pwork_LEVEL] < 3) return SendFormatNotification(playerid, "Tienes que ser %s para poder hacer esto.", POLICE_RANKS[3]);
 
-	if(PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID] == 0) return SendNotification(playerid, "No est·s en el lugar adecuado.");
-    if(pPoliceForcingPDoor[playerid] != -1) return SendNotification(playerid, "Est·s forzado una puerta ahora.");
+	if(PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID] == 0) return SendNotification(playerid, "No est√°s en el lugar adecuado.");
+    if(pPoliceForcingPDoor[playerid] != -1) return SendNotification(playerid, "Est√°s forzado una puerta ahora.");
 		
 	new info[3];
 	
 	new Float:pos[3];
 	Streamer_GetArrayData(STREAMER_TYPE_PICKUP, PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID], E_STREAMER_EXTRA_ID, info);
-	if(info[0] != PICKUP_TYPE_PROPERTY) return SendNotification(playerid, "No est·s en el lugar adecuado.");
+	if(info[0] != PICKUP_TYPE_PROPERTY) return SendNotification(playerid, "No est√°s en el lugar adecuado.");
 
 	Streamer_GetFloatData(STREAMER_TYPE_PICKUP, PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID], E_STREAMER_X, pos[0]);
 	Streamer_GetFloatData(STREAMER_TYPE_PICKUP, PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID], E_STREAMER_Y, pos[1]);
 	Streamer_GetFloatData(STREAMER_TYPE_PICKUP, PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID], E_STREAMER_Z, pos[2]);
 
-	if(!IsPlayerInRangeOfPoint(playerid, 1.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "No est·s en el lugar adecuado.");
+	if(!IsPlayerInRangeOfPoint(playerid, 1.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "No est√°s en el lugar adecuado.");
 
 	new propertyIndex = info[1];
-	if(PROPERTY_INFO[propertyIndex][property_POLICE_FORCING]) return SendNotification(playerid, "La puerta ya est· siendo forzada.");
-    if(PROPERTY_INFO[propertyIndex][property_POLICE_FORCED]) return SendNotification(playerid, "La puerta ya est· abierta.");
+	if(PROPERTY_INFO[propertyIndex][property_POLICE_FORCING]) return SendNotification(playerid, "La puerta ya est√° siendo forzada.");
+    if(PROPERTY_INFO[propertyIndex][property_POLICE_FORCED]) return SendNotification(playerid, "La puerta ya est√° abierta.");
 
 	PROPERTY_INFO[propertyIndex][property_POLICE_FORCING] = true;
     ApplyAnimation(playerid, "POLICE", "Door_Kick", 4.1, 1, 0, 0, 1, 0, 1);

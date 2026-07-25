@@ -1,7 +1,7 @@
 #include <YSI_Coding\y_hooks>
 
 #define RESET_JOBS_EMPLOYEES_RECORD 48 //horas
-#define MAX_JOBS_TOP_EMPLOYEES 8 //aparecerán X empleados en el top (en la pizarra y a quienes se les entrega premio)
+#define MAX_JOBS_TOP_EMPLOYEES 8 //aparecerÃ¡n X empleados en el top (en la pizarra y a quienes se les entrega premio)
 #define JOBS_RECORD_UPDATE_INTERVAL 300000 //comprobar cada 5 mins
 
 enum E_JobsRecordsBoards {
@@ -110,7 +110,7 @@ LoadPlayerWorksPoints(playerid) {
                 
                 PlayerWorksPoints[playerid][work][pworksPoints_POINTS] = points;
                 if(last_prize > 0) {
-                    SendFormatNotification(playerid, "~g~¡Felicidades! ~w~Has ganado ~y~%s$ ~w~como premio por el esfuerzo realizado en tu trabajo de ~y~%s.",
+                    SendFormatNotification(playerid, "~g~Â¡Felicidades! ~w~Has ganado ~y~%s$ ~w~como premio por el esfuerzo realizado en tu trabajo de ~y~%s.",
                         number_format_thousand(last_prize),
                         work_info[work][work_info_NAME]
                     );
@@ -235,7 +235,7 @@ public OnJobsRecordsRequestUpdate() {
                                     mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET coins = %d WHERE id = %d;", PI[playerid][ac_COINS], ACCOUNT_INFO[playerid][ac_ID]);
                                     mysql_tquery(srp_db, QUERY_BUFFER);
 
-                                    SendFormatNotification(playerid, "~g~¡Felicidades! ~w~Has quedado en el puesto ~y~n|%d ~w~de mejores empleados en el trabajo de ~y~%s y has recibido ~y~%s$ ~w~ y ~g~%d "SERVER_COIN" ~w~como premio.",
+                                    SendFormatNotification(playerid, "~g~Â¡Felicidades! ~w~Has quedado en el puesto ~y~n|%d ~w~de mejores empleados en el trabajo de ~y~%s y has recibido ~y~%s$ ~w~ y ~g~%d "SERVER_COIN" ~w~como premio.",
                                         j + 1,
                                         work_info[i][work_info_NAME],
                                         number_format_thousand(currentPrize),
@@ -243,7 +243,7 @@ public OnJobsRecordsRequestUpdate() {
                                     );
                                 }
                                 else {
-                                    SendFormatNotification(playerid, "~g~¡Felicidades! ~w~Has quedado en el puesto ~y~n|%d ~w~de mejores empleados en el trabajo de ~y~%s y has recibido ~y~%s$ ~w~como premio.",
+                                    SendFormatNotification(playerid, "~g~Â¡Felicidades! ~w~Has quedado en el puesto ~y~n|%d ~w~de mejores empleados en el trabajo de ~y~%s y has recibido ~y~%s$ ~w~como premio.",
                                         j + 1,
                                         work_info[i][work_info_NAME],
                                         number_format_thousand(currentPrize)

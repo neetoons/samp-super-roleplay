@@ -43,16 +43,16 @@ new work_info[][work_info_info] =
 	{WORK_TYPE_NONE, 0, "ninguno",					false, 0, 0, 0,			0, 0, 0, 0},
 	{WORK_TYPE_NORMAL, 1, "taxista",				false, 0, 0, 0,			0, 0, 0, 0},
 	{WORK_TYPE_NORMAL, 1, "camionero",				false, 0, 50, 1300,		100000, 20000, 3000, 2},
-	{WORK_TYPE_NORMAL, 3, "mec·nico",				true, 0, 0, 0,			100000, 20000, 3000, 1},
+	{WORK_TYPE_NORMAL, 3, "mec√°nico",				true, 0, 0, 0,			100000, 20000, 3000, 1},
 	{WORK_TYPE_NORMAL, 1, "cosechador",				false, 20, 30, 800,		20000, 3000, 1000, 0},
 	{WORK_TYPE_NORMAL, 4, "fumigador",				false, 20, 30, 800,		20000, 3000, 1000, 0},
 	{WORK_TYPE_NORMAL, 1, "basurero", 				true, 60, 50, 2000,		20000, 3000, 1000, 0},
-	{WORK_TYPE_NORMAL, 1, "leÒador",				false, 10, 100, 100,	20000, 3000, 1000, 0},
+	{WORK_TYPE_NORMAL, 1, "le√±ador",				false, 10, 100, 100,	20000, 3000, 1000, 0},
 	{WORK_TYPE_NORMAL, 5, "agricultor",				false, 0, 0, 0,			100000, 20000, 3000, 1},
-	{WORK_TYPE_FAMILY, 0, "policÌa",				true, 1000, 1, 0,		0, 0, 0, 0},
+	{WORK_TYPE_FAMILY, 0, "polic√≠a",				true, 1000, 1, 0,		0, 0, 0, 0},
 	{WORK_TYPE_NORMAL, 1, "pizzero",				true, 60, 20, 800,		0, 0, 0, 0},
-	{WORK_TYPE_NORMAL, 5, "mÈdico",					true, 60, 50, 2000,		0, 0, 0, 0},
-	{WORK_TYPE_NORMAL, 1, "almacÈn",				false, 10, 100, 100,	100000, 20000, 3000, 1},
+	{WORK_TYPE_NORMAL, 5, "m√©dico",					true, 60, 50, 2000,		0, 0, 0, 0},
+	{WORK_TYPE_NORMAL, 1, "almac√©n",				false, 10, 100, 100,	100000, 20000, 3000, 1},
 	{WORK_TYPE_NORMAL, 6, "repartidor",				false, 0, 50, 1300,		100000, 20000, 3000, 3},
 	{WORK_TYPE_NORMAL, 1, "minero",				false, 0, 50, 1300,		100000, 20000, 3000, 3}
 };
@@ -94,12 +94,12 @@ new Float:obtain_work_coords[][obtain_work_coords_info] =
 	{true, true, -372.126922, -1435.706298, 25.726562, 0,	true, 61, -372.126922, -1435.706298, 25.726562}, //Cosechador
 	{true, true, -1342.295898, -2195.076660, 23.591030, 0, true, 61, -1342.295898, -2195.076660, 23.591030}, //Fumigador
 	{true, true, -1884.997314, -1636.733642, 21.750000, 0, true, 61, -1884.997314, -1636.733642, 21.750000}, //Basurero
-	{true, true, -532.029846, -97.514228, 63.296875, 0, true, 61, -532.029846, -97.514228, 63.296875}, //leÒador
+	{true, true, -532.029846, -97.514228, 63.296875, 0, true, 61, -532.029846, -97.514228, 63.296875}, //le√±ador
 	{true, true, 1564.864257, 23.255302, 24.164062, 0, true, 61, 1564.864257, 23.255302, 24.164062},
 	{true, true, -510.972015, 324.242736, 2004.585937, 20,	false, 0, 1480.966918, -1772.065673, 18.795755}, // policia
 	{true, true, 377.902313, -119.416114, 1001.492187, 5, false, 0, 2105.485107, -1806.400878, 13.554687},
 	{true, true, -2033.237304, -117.411125, 1035.171875, 3,	false, 0, 0.0, 0.0, 0.0},
-	{true, true, 1944.000366, -1481.420776, 1394.125244, 11, true, 61, -1058.164306, -652.747924, 32.007812}, //almacÈn
+	{true, true, 1944.000366, -1481.420776, 1394.125244, 11, true, 61, -1058.164306, -652.747924, 32.007812}, //almac√©n
 	{true, true, -1014.827697, -594.402160, 32.382198, 0, true, 61, -1014.827697, -594.402160, 32.382198}, //repartidor
 	{true, true, 583.2664,192.2517,20.8174, 0, true, 61, 583.2664,192.2517,20.8174} //minero
 };
