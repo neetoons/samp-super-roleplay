@@ -29,7 +29,7 @@
         #define PACK_PLUGIN_VERSION(%0,%1,%2) (((%0) << 16) | ((%1) << 8) | (%2))
     #endif
 
-    #define PAWNCMD_VERSION PACK_PLUGIN_VERSION(3, 4, 0)
+    #define PAWNCMD_VERSION PACK_PLUGIN_VERSION(3, 5, 0)
     #define PAWNCMD_INCLUDE_VERSION PAWNCMD_VERSION // backward compatibility
 
     #if !defined __cplusplus
@@ -46,6 +46,8 @@
         native PC_GetFlags(const cmd[]);
         native PC_RenameCommand(const cmd[], const newname[]);
         native PC_CommandExists(const cmd[]);
+        native PC_SetDescription(const cmd[], const description[]);
+        native PC_GetDescription(const cmd[], dest[], maxlength = sizeof dest);
         native PC_DeleteCommand(const cmd[]);
 
         native CmdArray:PC_GetCommandArray();
@@ -82,8 +84,21 @@
             public pc_flags_%0() \
                 PC_SetFlags(#%0, %1);
 
+        #define description:%0(%1) \
+            forward pc_desc_%0(); \
+            public pc_desc_%0() \
+                PC_SetDescription(#%0, %1);
+        
+        #define desc:%0(%1) \
+            forward pc_desc_%0(); \
+            public pc_desc_%0() \
+                PC_SetDescription(#%0, %1);
+
         #define CMD cmd
         #define COMMAND cmd
+        #define CMDD:%0(%1)(%2) \
+            desc:%0(%2) \
+            CMD:%0(%1)
 
         #define callcmd::%0(%1) \
             pc_cmd_%0(%1)
