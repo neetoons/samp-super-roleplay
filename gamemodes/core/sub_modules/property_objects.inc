@@ -22,7 +22,8 @@
 #define UNCREATED_POBJECTS_PER_PAGE 6
 #define TEXTURES_WEBPAGE "textures.xyin.ws"
 
-new List:PropertyObjects[MAX_PROPERTIES];
+new PropertyObjects_Count[MAX_PROPERTIES];
+new PropertyObjects_Data[MAX_PROPERTIES][MAX_SU_PROPERTY_OBJECTS];
 
 new
     PlayerText:pUncreatedPObjectsTd[MAX_PLAYERS][11] = {{PlayerText:INVALID_TEXT_DRAW, ...}, ...},
@@ -39,7 +40,7 @@ new
 
 hook OnScriptInit() {
     for(new i = 0; i < MAX_PROPERTIES; i ++) {
-        PropertyObjects[i] = list_new();
+        PropertyObjects_Count[i] = 0;
     }
 }
 
@@ -115,7 +116,8 @@ CreatePropertyFurnitureObject(bool:update, property_index, id_object, id_propert
         SetDynamicObjectMaterial(objectid, 3, texture_modelid, texture_txdname, texture_texturename, texture_color);
     }
     
-    list_add(PropertyObjects[property_index], objectid);
+    PropertyObjects_Data[property_index][PropertyObjects_Count[property_index]] = objectid;
+    PropertyObjects_Count[property_index] ++;
 
     if(update) {
         UpdatePObjectDB(id_object, 1, modelid, x, y, z, rx, ry, rz, texture0, texture1, texture2, texture3);
@@ -168,12 +170,12 @@ RegisterPropertyObject(property_index, id_property, modelid, create = 0, Float:x
 }
 
 DeletePropertyObjects(property_index, bool:db_delete = true) {
-    for_list(i : PropertyObjects[property_index])
+    for(new _i = 0; _i < PropertyObjects_Count[property_index]; _i ++)
     {
-        new objectid = iter_get(i);
+        new objectid = PropertyObjects_Data[property_index][_i];
         DestroyDynamicObject(objectid);
     }
-    list_clear(PropertyObjects[property_index]);
+    PropertyObjects_Count[property_index] = 0;
 
     if(db_delete) {
         mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "DELETE FROM property_objects WHERE id_property = %d;", PROPERTY_INFO[property_index][property_ID]);
@@ -183,14 +185,19 @@ DeletePropertyObjects(property_index, bool:db_delete = true) {
 
 DeletePropertyObject(property_index, id_object, objectid, bool:uncreate = false) {
     new index = -1;
-    for(new i = 0; i < list_size(PropertyObjects[property_index]); i ++) {
-        if(list_get(PropertyObjects[property_index], i) == objectid) {
+    for(new i = 0; i < PropertyObjects_Count[property_index]; i ++) {
+        if(PropertyObjects_Data[property_index][i] == objectid) {
             index = i;
             break;
         }
     }
 
-    if(index != -1) list_remove(PropertyObjects[property_index], index);
+    if(index != -1) {
+        for(new j = index; j < PropertyObjects_Count[property_index] - 1; j ++) {
+            PropertyObjects_Data[property_index][j] = PropertyObjects_Data[property_index][j + 1];
+        }
+        PropertyObjects_Count[property_index] --;
+    }
     DestroyDynamicObject(objectid);
     
     if(uncreate) {
@@ -844,14 +851,19 @@ UpdatePObjectTexture(id_object, objectid, materialindex, modelid, txdname[], tex
 
 DeletePObjectTexture(property_index, id_object, objectid, materialindex, bool:menuDialogWhenCreate = false, forplayerid = INVALID_PLAYER_ID) {
     new index = -1;
-    for(new i = 0; i < list_size(PropertyObjects[property_index]); i ++) {
-        if(list_get(PropertyObjects[property_index], i) == objectid) {
+    for(new i = 0; i < PropertyObjects_Count[property_index]; i ++) {
+        if(PropertyObjects_Data[property_index][i] == objectid) {
             index = i;
             break;
         }
     }
 
-    if(index != -1) list_remove(PropertyObjects[property_index], index);
+    if(index != -1) {
+        for(new j = index; j < PropertyObjects_Count[property_index] - 1; j ++) {
+            PropertyObjects_Data[property_index][j] = PropertyObjects_Data[property_index][j + 1];
+        }
+        PropertyObjects_Count[property_index] --;
+    }
     DestroyDynamicObject(objectid);
     UpdatePObjectDB_Texture(id_object, materialindex);
 
@@ -907,9 +919,9 @@ DeletePObjectTexture(property_index, id_object, objectid, materialindex, bool:me
 }
 
 hook OnDefaultPFurChanged(index) {
-    for_list(i : PropertyObjects[index])
+    for(new _i = 0; _i < PropertyObjects_Count[index]; _i ++)
     {
-        new objectid = iter_get(i);
+        new objectid = PropertyObjects_Data[index][_i];
 
         new Float:z_pos;
         Streamer_GetFloatData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_Z, z_pos);

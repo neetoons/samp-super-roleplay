@@ -52,8 +52,7 @@ L1:
 
 #if DEBUG_MODE != 0
 	#pragma option -d3
-	#include <crashdetect>
-#else
+	#else
 	#pragma option -O1
 #endif
 
@@ -81,12 +80,9 @@ L1:
 #include <streamer>
 #include <sscanf2>
 #include <Pawn.CMD>
-#include <Pawn.Regex>
 #include <Pawn.RakNet>
 #include <mapandreas>
 #include <interpolate_weather>
-#define PP_SYNTAX_FOR_LIST
-#include <PawnPlus>
 
 /*
 

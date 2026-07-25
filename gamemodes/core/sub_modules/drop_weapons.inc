@@ -32,10 +32,11 @@ enum _:E_DroppedWeapons {
     Float:dw_Z
 };
 
-new List:DroppedWeapons;
+new DroppedWeapons_Count;
+new DroppedWeapons_Data[MAX_DROPPED_WEAPONS][E_DroppedWeapons];
 
 hook OnScriptInit() {
-    DroppedWeapons = list_new();
+    DroppedWeapons_Count = 0;
 }
 
 hook OnPlayerDeath(playerid, killerid, reason) {
@@ -59,7 +60,8 @@ hook OnPlayerDeath(playerid, killerid, reason) {
             format(label_str, sizeof label_str, "{FF7373}%s\n{FFFFFF}Presiona {FF7373}[ H ] {FFFFFF}para recoger el objeto", WEAPON_INFO[weaponid][weapon_info_NAME]);
             weaponInfo[dw_LABELID] = CreateDynamic3DTextLabel(label_str, 0xFFFFFFFF, weaponInfo[dw_X], weaponInfo[dw_Y], weaponInfo[dw_Z] - 0.7, 5.0, .testlos = true, .interiorid = weaponInfo[dw_INTERIOR], .worldid = weaponInfo[dw_WORLD]);
 
-            list_add_arr(DroppedWeapons, weaponInfo);
+            DroppedWeapons_Data[DroppedWeapons_Count] = weaponInfo;
+            DroppedWeapons_Count ++;
         }   
     }
 }
@@ -68,9 +70,9 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
     if(newkeys &  KEY_CTRL_BACK)
 	{
         if(ACCOUNT_INFO[playerid][ac_STATE] != ROLEPLAY_STATE_CRACK && ACCOUNT_INFO[playerid][ac_STATE] != ROLEPLAY_STATE_JAIL) {
-            for(new i = 0; i < list_size(DroppedWeapons); i ++) {
+            for(new i = 0; i < DroppedWeapons_Count; i ++) {
                 new weaponInfo[E_DroppedWeapons];
-                list_get_arr(DroppedWeapons, i, weaponInfo);
+                weaponInfo = DroppedWeapons_Data[i];
 
                 if(GetPlayerInterior(playerid) == weaponInfo[dw_INTERIOR] && GetPlayerVirtualWorld(playerid) == weaponInfo[dw_WORLD] && IsPlayerInRangeOfPoint(playerid, 1.0, weaponInfo[dw_X], weaponInfo[dw_Y], weaponInfo[dw_Z])) {
                     if(ACCOUNT_INFO[playerid][ac_LEVEL] < 3) SendNotification(playerid, "Deber ser nivel 3 o superior para poder recoger armas del suelo.");
@@ -83,7 +85,10 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
                             ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.1, 0, 1, 1, 0, 0, 1);
                             DestroyDynamicObject(weaponInfo[dw_OBJECTID]);
                             DestroyDynamic3DTextLabel(weaponInfo[dw_LABELID]);
-                            list_remove(DroppedWeapons, i);
+                            for(new j = i; j < DroppedWeapons_Count - 1; j ++) {
+                            DroppedWeapons_Data[j] = DroppedWeapons_Data[j + 1];
+                        }
+                        DroppedWeapons_Count --;
 
                             GivePlayerWeaponEx(playerid, weaponInfo[dw_WEAPONID], weaponInfo[dw_AMMO]);
                             RegisterNewPlayerWeapon(playerid, weapon_slot);

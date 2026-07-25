@@ -5102,18 +5102,49 @@ NearbyMessage(Float:pos_x, Float:pos_y, Float:pos_z, current_int, current_vw, Fl
 
 IsValidRPName(const string[])
 {
-	new Regex:reg_exp = Regex_New("[A-Z][a-z]+_[A-Z][a-z]{1,3}[A-Z]?[a-z]*");
-	new result = Regex_Check(string, reg_exp);
-	Regex_Delete(reg_exp);
-	return result;
+	new len = strlen(string);
+	if(len < 3) return 0;
+	if(string[0] < 'A' || string[0] > 'Z') return 0;
+	new pos = 1;
+	while(pos < len && string[pos] >= 'a' && string[pos] <= 'z') pos++;
+	if(pos >= len || string[pos] != '_') return 0;
+	pos++;
+	if(pos >= len || string[pos] < 'A' || string[pos] > 'Z') return 0;
+	pos++;
+	if(pos >= len || string[pos] < 'a' || string[pos] > 'z') return 0;
+	pos++;
+	while(pos < len && string[pos] >= 'a' && string[pos] <= 'z') pos++;
+	if(pos < len && string[pos] >= 'A' && string[pos] <= 'Z') pos++;
+	while(pos < len && string[pos] >= 'a' && string[pos] <= 'z') pos++;
+	return pos == len;
 }
 
 IsValidEmail(const string[])
 {
-	new Regex:reg_exp = Regex_New("[a-zA-Z0-9_\\.]+@([a-zA-Z0-9\\-]+\\.)+[a-zA-Z]{2,4}"); 
-	new result = Regex_Check(string, reg_exp); 
-	Regex_Delete(reg_exp); 
-	return result; 
+	new len = strlen(string);
+	if(len < 5) return 0;
+	new pos = 0, at_found = 0, dot_after_at = 0;
+	while(pos < len) {
+		new c = string[pos];
+		if(c == '@') {
+			if(at_found) return 0;
+			at_found = 1;
+		} else if(c == '.' && at_found) {
+			dot_after_at = 1;
+		} else if(c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9' || c == '_' || c == '.') {
+			// valid char
+		} else {
+			return 0;
+		}
+		pos++;
+	}
+	if(!at_found || !dot_after_at) return 0;
+	new last_dot = -1;
+	for(new i = len - 1; i >= 0; i--) {
+		if(string[i] == '.') { last_dot = i; break; }
+	}
+	if(last_dot == -1 || len - last_dot - 1 < 2 || len - last_dot - 1 > 4) return 0;
+	return 1;
 }
 
 /*
@@ -5946,8 +5977,7 @@ public UpdatePlayer_GPS_Map(playerid)
 									if(PLAYER_TEMP[i][pt_INTERIOR_INDEX] == -1)
 									{
 										printf("[debug] Player id %d tiene interior index -1 estando en ROLEPLAY_STATE_INTERIOR");
-										PrintBacktrace();
-										continue;
+											continue;
 									}
 									player_pos[0] = ENTER_EXIT[ PLAYER_TEMP[i][pt_INTERIOR_INDEX] ][ee_EXT_X];
 									player_pos[1] = ENTER_EXIT[ PLAYER_TEMP[i][pt_INTERIOR_INDEX] ][ee_EXT_Y];
@@ -5957,8 +5987,7 @@ public UpdatePlayer_GPS_Map(playerid)
 									if(PLAYER_TEMP[i][pt_PROPERTY_INDEX] == -1)
 									{
 										printf("[debug] Player id %d tiene property index -1 estando en pt_PROPERTY_INDEX");
-										PrintBacktrace();
-										continue;
+											continue;
 									}
 									player_pos[0] = PROPERTY_INFO[ PLAYER_TEMP[i][pt_PROPERTY_INDEX] ][property_EXT_X];
 									player_pos[1] = PROPERTY_INFO[ PLAYER_TEMP[i][pt_PROPERTY_INDEX] ][property_EXT_Y];

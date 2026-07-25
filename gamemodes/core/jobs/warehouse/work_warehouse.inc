@@ -25,7 +25,8 @@ enum _:E_WarehouseOrders {
     worder_STATE
 };
 
-new List:Warehouse_CurrentOrders;
+new Warehouse_CurrentOrders_Count;
+new Warehouse_CurrentOrders_Data[MAX_WAREHOUSE_ORDERS][E_WarehouseOrders];
 
 new Float:Warehouse_PickUpPoints[][3] = {
     {1884.125854, -1497.201293, 1395.599365},
@@ -86,7 +87,7 @@ new
 
 hook OnScriptInit() {
     Warehouse_AreaId = CreateDynamicRectangle(1847.117065, -1564.247436, 1975.150146, -1428.235595, 0, WAREHOUSE_INTERIOR);
-    Warehouse_CurrentOrders = list_new();
+    Warehouse_CurrentOrders_Count = 0;
 
     CreateDynamic3DTextLabel("{FFFFFF}Presiona {FF7373}[ H ] {FFFFFF}para ver los pedidos disponibles", 0xFFFFFFFF, Warehouse_OrdersCoords[0], Warehouse_OrdersCoords[1], Warehouse_OrdersCoords[2], 10.0, .testlos = true, .interiorid = WAREHOUSE_INTERIOR);
 
@@ -202,7 +203,7 @@ hook OnPlayerLeaveDynArea(playerid, areaid)
 
 SeedWarehouseOrders(amount = -1) {
     if(amount == -1) {
-        amount = MAX_WAREHOUSE_ORDERS - list_size(Warehouse_CurrentOrders);
+        amount = MAX_WAREHOUSE_ORDERS - Warehouse_CurrentOrders_Count;
     }
 
     if(amount > 0) {
@@ -210,7 +211,7 @@ SeedWarehouseOrders(amount = -1) {
         getDateTime(date);
 
         for(new i = 0; i < amount; i ++) {
-            if(list_size(Warehouse_CurrentOrders) >= MAX_WAREHOUSE_ORDERS) {
+            if(Warehouse_CurrentOrders_Count >= MAX_WAREHOUSE_ORDERS) {
                 break;
             }
 
@@ -219,7 +220,8 @@ SeedWarehouseOrders(amount = -1) {
             format(order[worder_DATE], 24, "%s", date);
             order[worder_PRODUCTS] = minrand(1, 5);
             order[worder_STATE] = WORDER_STATUS_NONE;
-            list_add_arr(Warehouse_CurrentOrders, order);
+            Warehouse_CurrentOrders_Data[Warehouse_CurrentOrders_Count] = order;
+            Warehouse_CurrentOrders_Count ++;
             WarehouseOrderNum ++;
         }
         SaveInfoVars();
@@ -248,13 +250,13 @@ UpdateWarehouseOrdersTds() {
     }
 
     new Float:currentY = 173.0;
-    for(new i = 0; i < list_size(Warehouse_CurrentOrders); i ++) {
+    for(new i = 0; i < Warehouse_CurrentOrders_Count; i ++) {
         if(i >= MAX_WAREHOUSE_ORDERS_TD) {
             break;
         }
 
         new order[E_WarehouseOrders], string[128];
-        list_get_arr(Warehouse_CurrentOrders, i, order);
+        order = Warehouse_CurrentOrders_Data[i];
         
         Warehouse_OrdersTd[i][0] = TextDrawCreate(320.000000, currentY, "box");
         TextDrawLetterSize(Warehouse_OrdersTd[i][0], 0.000000, 1.000000);
@@ -367,11 +369,11 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid) {
                 if(pWarehouseCurrentOrder[playerid] > 0) SendNotification(playerid, "Ahora mismo estás atendiendo un pedido.");
                 else {
                     new order[E_WarehouseOrders];
-                    list_get_arr(Warehouse_CurrentOrders, i, order);
+                    order = Warehouse_CurrentOrders_Data[i];
                     if(order[worder_STATE] == WORDER_STATUS_NONE) {
                         pWarehouseCurrentOrder[playerid] = order[worder_ID];
                         order[worder_STATE] = WORDER_STATUS_PROCESS;
-                        list_set_arr(Warehouse_CurrentOrders, i, order);
+                        Warehouse_CurrentOrders_Data[i] = order;
                         
                         new string[128];
                         format(string, sizeof string, "%s", GetWOrderStateTdName(order[worder_STATE]));
@@ -392,9 +394,9 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid) {
 }
 
 GetOrderIndexByOrderId(id) {
-    for(new i = 0; i < list_size(Warehouse_CurrentOrders); i ++) {
+    for(new i = 0; i < Warehouse_CurrentOrders_Count; i ++) {
         new tmpOrder[E_WarehouseOrders];
-        list_get_arr(Warehouse_CurrentOrders, i, tmpOrder);
+        tmpOrder = Warehouse_CurrentOrders_Data[i];
         if(tmpOrder[worder_ID] == id) {
             return i;
         }
@@ -462,12 +464,12 @@ hook OnPlayerEnterDynamicCP(playerid, checkpointid)
             new orderIndex = GetOrderIndexByOrderId(pWarehouseCurrentOrder[playerid]);
             if(orderIndex != -1) {
                 new order[E_WarehouseOrders];
-                list_get_arr(Warehouse_CurrentOrders, orderIndex, order);
+                order = Warehouse_CurrentOrders_Data[orderIndex];
 
                 pWarehouseCurrentProduct[playerid] ++;
                 if(pWarehouseCurrentProduct[playerid] >= order[worder_PRODUCTS]) {
                     order[worder_STATE] = WORDER_STATUS_COMPLETED;
-                    list_set_arr(Warehouse_CurrentOrders, orderIndex, order);
+                    Warehouse_CurrentOrders_Data[orderIndex] = order;
 
                     new string[128];
                     format(string, sizeof string, "%s", GetWOrderStateTdName(order[worder_STATE]));
@@ -511,10 +513,10 @@ hook EndPlayerJob(playerid, work, bool:changeskin) {
             new orderIndex = GetOrderIndexByOrderId(pWarehouseCurrentOrder[playerid]);
             if(orderIndex != -1) {
                 new order[E_WarehouseOrders];
-                list_get_arr(Warehouse_CurrentOrders, orderIndex, order);
+                order = Warehouse_CurrentOrders_Data[orderIndex];
                 if(order[worder_STATE] != WORDER_STATUS_COMPLETED) {
                     order[worder_STATE] = WORDER_STATUS_NONE;
-                    list_set_arr(Warehouse_CurrentOrders, orderIndex, order);
+                    Warehouse_CurrentOrders_Data[orderIndex] = order;
 
                     new string[128];
                     format(string, sizeof string, "%s", GetWOrderStateTdName(order[worder_STATE]));
@@ -540,9 +542,12 @@ hook OnDynamicObjectMoved(objectid) {
         new orderIndex = GetOrderIndexByOrderId(info[1]);
         if(orderIndex != -1) {
             new order[E_WarehouseOrders];
-            list_get_arr(Warehouse_CurrentOrders, orderIndex, order);
+            order = Warehouse_CurrentOrders_Data[orderIndex];
             if(order[worder_STATE] == WORDER_STATUS_COMPLETED) {
-                list_remove(Warehouse_CurrentOrders, orderIndex);
+                for(new j = orderIndex; j < Warehouse_CurrentOrders_Count - 1; j ++) {
+                    Warehouse_CurrentOrders_Data[j] = Warehouse_CurrentOrders_Data[j + 1];
+                }
+                Warehouse_CurrentOrders_Count --;
                 UpdateWarehouseOrdersTds();
             }
         }

@@ -42,11 +42,12 @@ enum _:E_Graffitis {
     graffiti_OBJECTID
 };
 
-new List:Graffitis[MAX_TERRITORIES];
+new Graffitis_Count[MAX_TERRITORIES];
+new Graffitis_Data[MAX_TERRITORIES][MAX_GRAFFITI_PER_ZONE][E_Graffitis];
 
 hook OnScriptInit() {
     for(new i = 0; i < MAX_TERRITORIES; i ++) {
-        Graffitis[i] = list_new();
+        Graffitis_Count[i] = 0;
     }
 }
 
@@ -99,7 +100,7 @@ hook OnTerritoriesLoaded() {
 }
 
 CountGraffitisInZone(index) {
-    return list_size(Graffitis[index]);
+    return Graffitis_Count[index];
 }
 
 
@@ -139,7 +140,8 @@ CreateGraffitiFromInfo(id, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:
 
         info[graffiti_OBJECTID] = objectid;
 
-        list_add_arr(Graffitis[territoryIndex], info);
+        Graffitis_Data[territoryIndex][Graffitis_Count[territoryIndex]] = info;
+        Graffitis_Count[territoryIndex] ++;
         return objectid;
     }
     return INVALID_STREAMER_ID;
@@ -148,9 +150,9 @@ CreateGraffitiFromInfo(id, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:
 hook OnCrewDeleted(crewId) {
     for(new i = 0; i < MAX_TERRITORIES; i ++) {
         new bool:delete = false;
-        for(new j = 0; j < list_size(Graffitis[i]); j ++) {
+        for(new j = 0; j < Graffitis_Count[i]; j ++) {
             new info[E_Graffitis];
-            list_get_arr(Graffitis[i], j, info);
+            info = Graffitis_Data[i][j];
             if(info[graffiti_ID_CREW] == crewId) {
                 DestroyDynamicObject(info[graffiti_OBJECTID]);
                 delete = true;
@@ -158,7 +160,7 @@ hook OnCrewDeleted(crewId) {
         }
 
         if(delete) {
-            list_clear(Graffitis[i]);
+            Graffitis_Count[i] = 0;
         }
     }
 
@@ -176,12 +178,12 @@ hook OnCrewLeftTerritory(crewId, crewIndex, territoryId, territoryIndex) {
 }
 
 ClearTerritoryGraffitis(territoryId, territoryIndex) {
-    for(new i = 0; i < list_size(Graffitis[territoryIndex]); i ++) {
+    for(new i = 0; i < Graffitis_Count[territoryIndex]; i ++) {
         new info[E_Graffitis];
-        list_get_arr(Graffitis[territoryIndex], i, info);
+        info = Graffitis_Data[territoryIndex][i];
         DestroyDynamicObject(info[graffiti_OBJECTID]);
     }
-    list_clear(Graffitis[territoryIndex]);
+    Graffitis_Count[territoryIndex] = 0;
 
     mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "DELETE FROM graffiti WHERE id_territory = %d;", territoryId);
     mysql_tquery(srp_db, QUERY_BUFFER);
@@ -190,9 +192,9 @@ ClearTerritoryGraffitis(territoryId, territoryIndex) {
 CMD:graffiti(playerid, params[]) {
     if(!PI[playerid][ac_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
 	if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_GRAFFITI]) return SendNotification(playerid, "No tienes permiso para crear o borrar graffitis.");
-	if(PLAYER_TEMP[playerid][pt_LAST_TERRITORY] == INVALID_STREAMER_ID) return SendNotification(playerid, "No estás en un territorio de tu banda.");
-	if(!IsPlayerInDynamicArea(playerid, TERRITORIES[ PLAYER_TEMP[playerid][pt_LAST_TERRITORY] ][territory_AREA])) return SendNotification(playerid, "No estás en un territorio de tu banda.");
-	if(TERRITORIES[ PLAYER_TEMP[playerid][pt_LAST_TERRITORY] ][territory_CREW_ID] != PI[playerid][ac_CREW]) return SendNotification(playerid, "No estás en un territorio de tu banda.");			
+	if(PLAYER_TEMP[playerid][pt_LAST_TERRITORY] == INVALID_STREAMER_ID) return SendNotification(playerid, "No estï¿½s en un territorio de tu banda.");
+	if(!IsPlayerInDynamicArea(playerid, TERRITORIES[ PLAYER_TEMP[playerid][pt_LAST_TERRITORY] ][territory_AREA])) return SendNotification(playerid, "No estï¿½s en un territorio de tu banda.");
+	if(TERRITORIES[ PLAYER_TEMP[playerid][pt_LAST_TERRITORY] ][territory_CREW_ID] != PI[playerid][ac_CREW]) return SendNotification(playerid, "No estï¿½s en un territorio de tu banda.");			
     if(ACCOUNT_INFO[playerid][ac_LEVEL] < 6) return SendNotification(playerid, "Debes ser nivel 6 o superior para usar los graffitis.");
 	
 	PLAYER_TEMP[playerid][pt_PLAYER_TERRITORY_PRO] = PLAYER_TEMP[playerid][pt_LAST_TERRITORY];
@@ -212,7 +214,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                 switch(listitem) {
                     case 0: {
                         new territoryIndex = PLAYER_TEMP[playerid][pt_PLAYER_TERRITORY_PRO];
-                        if(CountGraffitisInZone(territoryIndex) >= MAX_GRAFFITI_PER_ZONE) SendNotification(playerid, "No se pueden crear más graffitis en este territorio.");
+                        if(CountGraffitisInZone(territoryIndex) >= MAX_GRAFFITI_PER_ZONE) SendNotification(playerid, "No se pueden crear mï¿½s graffitis en este territorio.");
                         else {
                             new Float:pos[3], Float:angle, interior = GetPlayerInterior(playerid), world = GetPlayerVirtualWorld(playerid);
                             GetPlayerPos(playerid, pos[0], pos[1], pos[2]);
@@ -269,10 +271,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                             mysql_tquery(srp_db, QUERY_BUFFER);
 
                             new ginfo[E_Graffitis];
-                            list_get_arr(Graffitis[territoryIndex], index, ginfo);
+                            ginfo = Graffitis_Data[territoryIndex][index];
                             DestroyDynamicObject(ginfo[graffiti_OBJECTID]);
 
-                            list_remove(Graffitis[territoryIndex], index);
+                            for(new _j = index; _j < Graffitis_Count[territoryIndex] - 1; _j ++) {
+                                Graffitis_Data[territoryIndex][_j] = Graffitis_Data[territoryIndex][_j + 1];
+                            }
+                            Graffitis_Count[territoryIndex] --;
                             SendNotification(playerid, "Se ha eliminado el graffiti.");
                         }
                     }
@@ -286,17 +291,17 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                     case 0: { //texto
                         PLAYER_TEMP[playerid][pt_DIALOG_RESPONDED] = false;
                         PLAYER_TEMP[playerid][pt_DIALOG_ID] = DIALOG_GRAFFITI_ETEXT_TEXT;
-                        ShowPlayerDialog(playerid, DIALOG_GRAFFITI_ETEXT_TEXT, DIALOG_STYLE_INPUT, "Graffiti", "Introduce el nuevo texto:", "Continuar", "Atrás");
+                        ShowPlayerDialog(playerid, DIALOG_GRAFFITI_ETEXT_TEXT, DIALOG_STYLE_INPUT, "Graffiti", "Introduce el nuevo texto:", "Continuar", "Atrï¿½s");
                     }
                     case 1: { //fuente
                         PLAYER_TEMP[playerid][pt_DIALOG_RESPONDED] = false;
                         PLAYER_TEMP[playerid][pt_DIALOG_ID] = DIALOG_GRAFFITI_ETEXT_FONT;
-                        ShowPlayerDialog(playerid, DIALOG_GRAFFITI_ETEXT_FONT, DIALOG_STYLE_INPUT, "Graffiti", "Introduce la nueva fuente:", "Continuar", "Atrás");
+                        ShowPlayerDialog(playerid, DIALOG_GRAFFITI_ETEXT_FONT, DIALOG_STYLE_INPUT, "Graffiti", "Introduce la nueva fuente:", "Continuar", "Atrï¿½s");
                     }
-                    case 2: { //tamaño
+                    case 2: { //tamaï¿½o
                         PLAYER_TEMP[playerid][pt_DIALOG_RESPONDED] = false;
                         PLAYER_TEMP[playerid][pt_DIALOG_ID] = DIALOG_GRAFFITI_ETEXT_SIZE;
-                        ShowPlayerDialog(playerid, DIALOG_GRAFFITI_ETEXT_SIZE, DIALOG_STYLE_INPUT, "Graffiti", "Introduce el nuevo tamaño de letra:", "Continuar", "Atrás");
+                        ShowPlayerDialog(playerid, DIALOG_GRAFFITI_ETEXT_SIZE, DIALOG_STYLE_INPUT, "Graffiti", "Introduce el nuevo tamaï¿½o de letra:", "Continuar", "Atrï¿½s");
                     }
                     case 3: { //negrita
                         new info[4];
@@ -308,10 +313,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                         new index = GetGraffitiIndexById(territoryIndex, graffitiId);
                         if(index != -1) {
                             new ginfo[E_Graffitis];
-                            list_get_arr(Graffitis[territoryIndex], index, ginfo);
+                            ginfo = Graffitis_Data[territoryIndex][index];
 
                             ginfo[graffiti_FONT_BOLD] = !ginfo[graffiti_FONT_BOLD];
-                            list_set_arr(Graffitis[territoryIndex], index, ginfo);
+                            Graffitis_Data[territoryIndex][index] = ginfo;
                             UpdateGraffitiText(ginfo);
 
                             mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE graffiti SET font_bold = %d WHERE id = %d;", ginfo[graffiti_FONT_BOLD], ginfo[graffiti_ID]);
@@ -331,7 +336,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
                         PLAYER_TEMP[playerid][pt_DIALOG_RESPONDED] = false;
                         PLAYER_TEMP[playerid][pt_DIALOG_ID] = DIALOG_GRAFFITI_ETEXT_COLOR;
-                        ShowPlayerDialog(playerid, DIALOG_GRAFFITI_ETEXT_COLOR, DIALOG_STYLE_LIST, "Graffiti", string, "Continuar", "Atrás");
+                        ShowPlayerDialog(playerid, DIALOG_GRAFFITI_ETEXT_COLOR, DIALOG_STYLE_LIST, "Graffiti", string, "Continuar", "Atrï¿½s");
                     }
                 }
             }
@@ -340,7 +345,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
         case DIALOG_GRAFFITI_ETEXT_TEXT: {
             if(response) {
                 new value[128];
-                if(sscanf(inputtext, "s[128]", value)) return SendNotification(playerid, "Valor no válido.");
+                if(sscanf(inputtext, "s[128]", value)) return SendNotification(playerid, "Valor no vï¿½lido.");
 
                 new info[4];
                 Streamer_GetArrayData(STREAMER_TYPE_OBJECT, PLAYER_TEMP[playerid][pt_SELECTED_GRAFFITI], E_STREAMER_EXTRA_ID, info);
@@ -351,10 +356,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                 new index = GetGraffitiIndexById(territoryIndex, graffitiId);
                 if(index != -1) {
                     new ginfo[E_Graffitis];
-                    list_get_arr(Graffitis[territoryIndex], index, ginfo);
+                    ginfo = Graffitis_Data[territoryIndex][index];
 
                     format(ginfo[graffiti_TEXT], sizeof value, "%s", value);
-                    list_set_arr(Graffitis[territoryIndex], index, ginfo);
+                    Graffitis_Data[territoryIndex][index] = ginfo;
                     UpdateGraffitiText(ginfo);
 
                     mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE graffiti SET text = '%e' WHERE id = %d;", ginfo[graffiti_TEXT], ginfo[graffiti_ID]);
@@ -367,7 +372,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
         case DIALOG_GRAFFITI_ETEXT_FONT: {
             if(response) {
                 new value[24];
-                if(sscanf(inputtext, "s[24]", value)) return SendNotification(playerid, "Valor no válido.");
+                if(sscanf(inputtext, "s[24]", value)) return SendNotification(playerid, "Valor no vï¿½lido.");
 
                 new info[4];
                 Streamer_GetArrayData(STREAMER_TYPE_OBJECT, PLAYER_TEMP[playerid][pt_SELECTED_GRAFFITI], E_STREAMER_EXTRA_ID, info);
@@ -378,10 +383,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                 new index = GetGraffitiIndexById(territoryIndex, graffitiId);
                 if(index != -1) {
                     new ginfo[E_Graffitis];
-                    list_get_arr(Graffitis[territoryIndex], index, ginfo);
+                    ginfo = Graffitis_Data[territoryIndex][index];
 
                     format(ginfo[graffiti_FONT], sizeof value, "%s", value);
-                    list_set_arr(Graffitis[territoryIndex], index, ginfo);
+                    Graffitis_Data[territoryIndex][index] = ginfo;
                     UpdateGraffitiText(ginfo);
 
                     mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE graffiti SET font = '%e' WHERE id = %d;", ginfo[graffiti_FONT], ginfo[graffiti_ID]);
@@ -394,8 +399,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
         case DIALOG_GRAFFITI_ETEXT_SIZE: {
             if(response) {
                 new value;
-                if(sscanf(inputtext, "d", value)) return SendNotification(playerid, "Valor no válido.");
-                if(value <= 0 || value > 200) return SendNotification(playerid, "Valor no válido.");
+                if(sscanf(inputtext, "d", value)) return SendNotification(playerid, "Valor no vï¿½lido.");
+                if(value <= 0 || value > 200) return SendNotification(playerid, "Valor no vï¿½lido.");
 
                 new info[4];
                 Streamer_GetArrayData(STREAMER_TYPE_OBJECT, PLAYER_TEMP[playerid][pt_SELECTED_GRAFFITI], E_STREAMER_EXTRA_ID, info);
@@ -406,10 +411,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                 new index = GetGraffitiIndexById(territoryIndex, graffitiId);
                 if(index != -1) {
                     new ginfo[E_Graffitis];
-                    list_get_arr(Graffitis[territoryIndex], index, ginfo);
+                    ginfo = Graffitis_Data[territoryIndex][index];
 
                     ginfo[graffiti_FONT_SIZE] = value;
-                    list_set_arr(Graffitis[territoryIndex], index, ginfo);
+                    Graffitis_Data[territoryIndex][index] = ginfo;
                     UpdateGraffitiText(ginfo);
 
                     mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE graffiti SET font_size = %d WHERE id = %d;", ginfo[graffiti_FONT_SIZE], ginfo[graffiti_ID]);
@@ -432,10 +437,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                 new index = GetGraffitiIndexById(territoryIndex, graffitiId);
                 if(index != -1) {
                     new ginfo[E_Graffitis];
-                    list_get_arr(Graffitis[territoryIndex], index, ginfo);
+                    ginfo = Graffitis_Data[territoryIndex][index];
 
                     ginfo[graffiti_FONT_COLOR] = value;
-                    list_set_arr(Graffitis[territoryIndex], index, ginfo);
+                    Graffitis_Data[territoryIndex][index] = ginfo;
                     UpdateGraffitiText(ginfo);
 
                     mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE graffiti SET font_color = %d WHERE id = %d;", ginfo[graffiti_FONT_COLOR], ginfo[graffiti_ID]);
@@ -483,7 +488,7 @@ hook OnPlayerEditDynObject(playerid, STREAMER_TAG_OBJECT:objectid, response, Flo
                 SetDynamicObjectPos(objectid, pos[0], pos[1], pos[2]);
                 SetDynamicObjectRot(objectid, rot[0], rot[1], rot[2]);
 
-                SendNotification(playerid, "Has cancelado la edición y el objeto a vuelto a su posición anterior.");
+                SendNotification(playerid, "Has cancelado la ediciï¿½n y el objeto a vuelto a su posiciï¿½n anterior.");
                 ShowDialog(playerid, DIALOG_GRAFFITI_EDIT);
             }
             case EDIT_RESPONSE_FINAL: {
@@ -493,7 +498,7 @@ hook OnPlayerEditDynObject(playerid, STREAMER_TAG_OBJECT:objectid, response, Flo
                 mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE graffiti SET x = %f, y = %f, z = %f, rx = %f, ry = %f, rz = %f WHERE id = %d;", x, y, z, rx, ry, rz, info[3]);
                 mysql_tquery(srp_db, QUERY_BUFFER);
 
-                SendNotification(playerid, "La posición del graffiti se ha actualizado correctamente.");
+                SendNotification(playerid, "La posiciï¿½n del graffiti se ha actualizado correctamente.");
                 ShowDialog(playerid, DIALOG_GRAFFITI_EDIT);
             }
         }
@@ -503,9 +508,9 @@ hook OnPlayerEditDynObject(playerid, STREAMER_TAG_OBJECT:objectid, response, Flo
 }
 
 GetGraffitiIndexById(territoryIndex, graffitiId) {
-    for(new i = 0; i < list_size(Graffitis[territoryIndex]); i ++) {
+    for(new i = 0; i < Graffitis_Count[territoryIndex]; i ++) {
         new ginfo[E_Graffitis];
-        list_get_arr(Graffitis[territoryIndex], i, ginfo);
+        ginfo = Graffitis_Data[territoryIndex][i];
         if(ginfo[graffiti_ID] == graffitiId) {
             return i;
         }
@@ -523,20 +528,20 @@ ShowEditGraffitiTextDialog(playerid) {
     new index = GetGraffitiIndexById(territoryIndex, graffitiId);
     if(index != -1) {
         new ginfo[E_Graffitis];
-        list_get_arr(Graffitis[territoryIndex], index, ginfo);
+        ginfo = Graffitis_Data[territoryIndex][index];
 
         PLAYER_TEMP[playerid][pt_DIALOG_RESPONDED] = false;
         PLAYER_TEMP[playerid][pt_DIALOG_ID] = DIALOG_GRAFFITI_TEXT_OPTIONS;
 
         new string[512];
         format(string, sizeof string, "\
-            Parámetro\tValor\n\
+            Parï¿½metro\tValor\n\
             Texto\t'%s'\n\
             Fuente\t'%s'\n\
-            Tamaño\t%d\n\
+            Tamaï¿½o\t%d\n\
             Negrita\t%s\n\
             Color\t{%06x}%d\n\
-        ", ginfo[graffiti_TEXT], ginfo[graffiti_FONT], ginfo[graffiti_FONT_SIZE], ginfo[graffiti_FONT_BOLD] == 0 ? "no" : "sí", ARGBToRGBA(ginfo[graffiti_FONT_COLOR]) >>> 8, ginfo[graffiti_FONT_COLOR]);
+        ", ginfo[graffiti_TEXT], ginfo[graffiti_FONT], ginfo[graffiti_FONT_SIZE], ginfo[graffiti_FONT_BOLD] == 0 ? "no" : "sï¿½", ARGBToRGBA(ginfo[graffiti_FONT_COLOR]) >>> 8, ginfo[graffiti_FONT_COLOR]);
         ShowPlayerDialog(playerid, DIALOG_GRAFFITI_TEXT_OPTIONS, DIALOG_STYLE_TABLIST_HEADERS, "Graffiti", string, "Continuar", "Cerrar");
     }
 }
@@ -548,9 +553,9 @@ UpdateGraffitiText(const ginfo[E_Graffitis]) {
 CountCrewGraffitis(crewId) {
     new count = 0;
     for(new i = 0; i < MAX_TERRITORIES; i ++) {
-        for(new j = 0; j < list_size(Graffitis[i]); j ++) {
+        for(new j = 0; j < Graffitis_Count[i]; j ++) {
             new info[E_Graffitis];
-            list_get_arr(Graffitis[i], j, info);
+            info = Graffitis_Data[i][j];
             if(info[graffiti_ID_CREW] == crewId) {
                 count ++;
             }
