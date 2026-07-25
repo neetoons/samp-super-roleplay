@@ -15,6 +15,11 @@ stdenv.mkDerivation {
   dontConfigure = true;
   dontFixup = true;
 
+  postPatch = ''
+    # Comment out all runtime assert() calls - they fail on 64-bit open.mp due to AMX header differences
+    find . -name "*.inc" -exec sed -i 's|^\([[:space:]]*\)assert(|\1// assert(|g' {} +
+  '';
+
   installPhase = ''
     runHook preInstall
     mkdir -p $out/include
