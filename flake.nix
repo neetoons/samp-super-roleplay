@@ -15,26 +15,46 @@
         inherit system;
         config.allowUnfree = true;
       };
-
-      open-mp-source = builtins.fetchGit {
-        url = "https://github.com/openmultiplayer/open.mp";
-        rev = "f8058db80410b70f84c9089ec214530ca9784517";
-        submodules = true;
-      };
     in
     {
       packages = forAllSystems (system:
         let
           pkgs = pkgsFor system;
         in {
-          open-mp = pkgs.callPackage ./nix/open-mp.nix {
-            open-mp-src = open-mp-source;
+          open-mp = pkgs.callPackage ./nix/open-mp.nix {};
+
+          sscanf = pkgs.callPackage ./nix/plugins/sscanf.nix {};
+          streamer = pkgs.callPackage ./nix/plugins/streamer.nix {};
+          mysql = pkgs.callPackage ./nix/plugins/mysql.nix {
+            log-core = pkgs.callPackage ./nix/samp-log-core.nix {};
           };
+          omp-mapandreas = pkgs.callPackage ./nix/plugins/omp-mapandreas.nix {};
+          omp-pawncmd = pkgs.callPackage ./nix/plugins/omp-pawncmd.nix {};
+          omp-pawnraknet = pkgs.callPackage ./nix/plugins/omp-pawnraknet.nix {};
+          omp-streamer = pkgs.callPackage ./nix/plugins/omp-streamer.nix {};
+          ysi = pkgs.callPackage ./nix/plugins/ysi.nix {};
 
           default = pkgs.callPackage ./nix/package.nix {
             pawncc = compiler-flake.packages.${system}.default;
             open-mp-server = self.packages.${system}.open-mp;
-            sourceRoot = ./.;
+            ysi = self.packages.${system}.ysi;
+            plugins = {
+              inherit (self.packages.${system})
+                sscanf mysql;
+            };
+            components = {
+              inherit (self.packages.${system})
+                omp-mapandreas omp-pawncmd omp-pawnraknet omp-streamer;
+            };
+            src = pkgs.lib.fileset.toSource {
+              root = ./.;
+              fileset = pkgs.lib.fileset.unions [
+                ./gamemodes
+                ./filterscripts
+                ./scriptfiles
+                ./pawno
+              ];
+            };
           };
         }
       );
@@ -49,23 +69,21 @@
       devShells = forAllSystems (system:
         let
           pkgs = pkgsFor system;
-          pawncc = compiler-flake.packages.${system}.default;
         in {
           default = pkgs.mkShell {
             name = "samp-server-env";
-
             buildInputs = [
-              pawncc
+              compiler-flake.packages.${system}.default
+              self.packages.${system}.ysi
             ];
-
             shellHook = ''
               echo "SA-MP Super Roleplay dev shell"
-              echo "Compile: cd gamemodes && pawncc -Dgamemodes -i../pawno/include -d3 -Z \"-(+\" \"-;+\" srp.pwn"
+              echo "Compile: cd gamemodes && pawncc -Dgamemodes -i../pawno/include -i${self.packages.${system}.ysi}/include -d3 -Z \"-(+\" \"-;+\" srp.pwn"
             '';
           };
         }
       );
 
-      nixosModules.default = import ./nix/module.nix { inherit self; };
+      nixosModules.default = import ./nix/module.nix;
     };
 }

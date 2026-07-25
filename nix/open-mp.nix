@@ -8,17 +8,23 @@
 , ghc_filesystem
 , sqlite
 , writeText
-, open-mp-src
 }:
 
 let
   pinned = import ./pinned.nix { stdenv = clangStdenv; inherit fetchFromGitHub writeText; };
+
+  src = fetchFromGitHub {
+    owner = "openmultiplayer"; repo = "open.mp";
+    rev = "f8058db80410b70f84c9089ec214530ca9784517";
+    hash = "sha256-Z+g88j115gdxCvQSOia4Gp6rsHgY+2nZ2imgZ4fL6x8=";
+    fetchSubmodules = true;
+  };
 in
 clangStdenv.mkDerivation {
   pname = "open-mp-server";
   version = "1.5.8";
 
-  src = open-mp-src;
+  inherit src;
 
   nativeBuildInputs = [
     cmake
@@ -70,6 +76,9 @@ clangStdenv.mkDerivation {
     mkdir -p $out/bin
     mkdir -p $out/lib/open-mp/components
     cp -r Output/RelWithDebInfo/Server/* $out/bin/
+    for so in $out/bin/components/*.so; do
+      [ -f "$so" ] && install -Dm755 "$so" "$out/lib/open-mp/components/$(basename "$so")"
+    done
     runHook postInstall
   '';
 
