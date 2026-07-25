@@ -1,5 +1,3 @@
-{ self }:
-
 { config, lib, pkgs, ... }:
 
 let
@@ -25,6 +23,10 @@ let
       lag_compensation_mode = cfg.lagcompMode;
       mode = cfg.gamemode;
       map = cfg.mapname;
+    };
+
+    artwork = {
+      enable = false;
     };
 
     pawn = {
@@ -59,7 +61,10 @@ let
   '';
 
   dbInitScript = pkgs.writeText "samp-db-init.sql" ''
-    ALTER USER '${cfg.database.username}'@'${cfg.database.hostname}' IDENTIFIED BY '${cfg.database.password}';
+    CREATE USER IF NOT EXISTS '${cfg.database.username}'@'localhost' IDENTIFIED BY '${cfg.database.password}';
+    CREATE USER IF NOT EXISTS '${cfg.database.username}'@'%' IDENTIFIED BY '${cfg.database.password}';
+    GRANT ALL PRIVILEGES ON ${cfg.database.name}.* TO '${cfg.database.username}'@'localhost';
+    GRANT ALL PRIVILEGES ON ${cfg.database.name}.* TO '${cfg.database.username}'@'%';
     FLUSH PRIVILEGES;
   '';
 in
@@ -69,8 +74,6 @@ in
 
     package = lib.mkOption {
       type = lib.types.package;
-      default = self.packages.${pkgs.system}.default;
-      defaultText = lib.literalExpression "self.packages.\${pkgs.system}.default";
       description = "open.mp server package to use.";
     };
 
@@ -140,11 +143,14 @@ in
       description = "List of filterscript names (without .amx extension).";
     };
 
-    legacyPlugins = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
-      default = [];
-      description = "Legacy SA-MP plugins to load from the plugins/ directory.";
-    };
+      legacyPlugins = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [
+          "sscanf"
+          "mysql"
+        ];
+        description = "Legacy SA-MP plugins to load from the plugins/ directory.";
+      };
 
     rcon = {
       enable = lib.mkOption {
@@ -231,7 +237,7 @@ in
 
       hostname = lib.mkOption {
         type = lib.types.str;
-        default = "localhost";
+        default = "127.0.0.1";
         description = "MariaDB/MySQL server hostname.";
       };
 
@@ -278,16 +284,8 @@ in
         }
       ];
       initialScript = dbInitScript;
-      ensureUsers = [
-        {
-          name = cfg.database.username;
-          ensurePermissions = {
-            "${cfg.database.name}.*" = "ALL PRIVILEGES";
-          };
-        }
-      ];
       settings.mysqld = {
-        bind-address = cfg.database.hostname;
+        bind-address = "127.0.0.1";
         port = cfg.database.port;
       };
     };
@@ -300,20 +298,21 @@ in
 
       preStart = ''
         mkdir -p ${cfg.dataDir}/scriptfiles
+        mkdir -p ${cfg.dataDir}/scriptfiles/YSI/fixes
+        mkdir -p ${cfg.dataDir}/scriptfiles/YSI/temp
         mkdir -p ${cfg.dataDir}/logs
 
         if [ -z "$(ls -A ${cfg.dataDir}/scriptfiles 2>/dev/null)" ]; then
-          cp -r ${cfg.package}/scriptfiles/* ${cfg.dataDir}/scriptfiles/ || true
+          cp -r ${cfg.package}/share/samp/scriptfiles/* ${cfg.dataDir}/scriptfiles/ || true
         fi
 
         ln -sf ${configJson} ${cfg.dataDir}/config.json
         ln -sf ${dbCfg} ${cfg.dataDir}/srp_db.ini
 
-        ln -sfn ${cfg.package}/gamemodes ${cfg.dataDir}/gamemodes
-        ln -sfn ${cfg.package}/filterscripts ${cfg.dataDir}/filterscripts
-        ln -sfn ${cfg.package}/components ${cfg.dataDir}/components
-
-        ln -sfn ${cfg.package}/omp-server ${cfg.dataDir}/omp-server
+        ln -sfn ${cfg.package}/share/samp/gamemodes ${cfg.dataDir}/gamemodes
+        ln -sfn ${cfg.package}/share/samp/filterscripts ${cfg.dataDir}/filterscripts
+        ln -sfn ${cfg.package}/share/samp/components ${cfg.dataDir}/components
+        ln -sfn ${cfg.package}/share/samp/plugins ${cfg.dataDir}/plugins
       '';
 
       serviceConfig = {
