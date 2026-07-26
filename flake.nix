@@ -84,6 +84,9 @@
         }
       );
 
-      nixosModules.default = import ./nix/module.nix;
+      nixosModules.default = { ... }: {
+        _module.args.self = self;
+        imports = [ ./nix/module.nix ];
+      };
     };
 }

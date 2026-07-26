@@ -1,6 +1,10 @@
-{ config, lib, pkgs, ... }:
-
-let
+{
+  config,
+  lib,
+  pkgs,
+  self,
+  ...
+}: let
   cfg = config.services.samp-server;
 
   configJson = pkgs.writeText "config.json" (builtins.toJSON {
@@ -13,7 +17,10 @@ let
       port = cfg.port;
       stream_radius = cfg.streamDistance;
       stream_rate = cfg.streamRate;
-      cookie_reseed_time = if cfg.connCookies then 300000 else 0;
+      cookie_reseed_time =
+        if cfg.connCookies
+        then 300000
+        else 0;
     };
 
     max_players = cfg.maxPlayers;
@@ -31,7 +38,7 @@ let
 
     pawn = {
       legacy_plugins = cfg.legacyPlugins;
-      main_scripts = [ "${cfg.gamemode} ${toString cfg.gamemodeSlots}" ];
+      main_scripts = ["${cfg.gamemode} ${toString cfg.gamemodeSlots}"];
       side_scripts = map (fs: "filterscripts/${fs}") cfg.filterscripts;
     };
 
@@ -57,23 +64,29 @@ let
     username = ${cfg.database.username}
     database = ${cfg.database.name}
     password = ${cfg.database.password}
-    auto_reconnect = ${if cfg.database.autoReconnect then "true" else "false"}
+    auto_reconnect = ${
+      if cfg.database.autoReconnect
+      then "true"
+      else "false"
+    }
   '';
 
   dbInitScript = pkgs.writeText "samp-db-init.sql" ''
     CREATE USER IF NOT EXISTS '${cfg.database.username}'@'localhost' IDENTIFIED BY '${cfg.database.password}';
+    ALTER USER '${cfg.database.username}'@'localhost' IDENTIFIED BY '${cfg.database.password}';
     CREATE USER IF NOT EXISTS '${cfg.database.username}'@'%' IDENTIFIED BY '${cfg.database.password}';
+    ALTER USER '${cfg.database.username}'@'%' IDENTIFIED BY '${cfg.database.password}';
     GRANT ALL PRIVILEGES ON ${cfg.database.name}.* TO '${cfg.database.username}'@'localhost';
     GRANT ALL PRIVILEGES ON ${cfg.database.name}.* TO '${cfg.database.username}'@'%';
     FLUSH PRIVILEGES;
   '';
-in
-{
+in {
   options.services.samp-server = {
     enable = lib.mkEnableOption "open.mp server";
 
     package = lib.mkOption {
       type = lib.types.package;
+      default = self.packages.${pkgs.system}.default;
       description = "open.mp server package to use.";
     };
 
@@ -139,18 +152,18 @@ in
 
     filterscripts = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      default = [ "maps" ];
+      default = ["maps"];
       description = "List of filterscript names (without .amx extension).";
     };
 
-      legacyPlugins = lib.mkOption {
-        type = lib.types.listOf lib.types.str;
-        default = [
-          "sscanf"
-          "mysql"
-        ];
-        description = "Legacy SA-MP plugins to load from the plugins/ directory.";
-      };
+    legacyPlugins = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [
+        "sscanf"
+        "mysql"
+      ];
+      description = "Legacy SA-MP plugins to load from the plugins/ directory.";
+    };
 
     rcon = {
       enable = lib.mkOption {
@@ -249,7 +262,7 @@ in
 
       username = lib.mkOption {
         type = lib.types.str;
-        default = "root";
+        default = "srp";
         description = "Database username.";
       };
 
@@ -292,8 +305,8 @@ in
 
     systemd.services.samp-server = {
       description = "open.mp Super Roleplay Server";
-      after = [ "network.target" ] ++ lib.optional cfg.database.enable "mysql.service";
-      wantedBy = [ "multi-user.target" ];
+      after = ["network.target"] ++ lib.optional cfg.database.enable "mysql.service";
+      wantedBy = ["multi-user.target"];
       requires = lib.optional cfg.database.enable "mysql.service";
 
       preStart = ''
@@ -327,8 +340,8 @@ in
     };
 
     networking.firewall = lib.mkIf cfg.openFirewall {
-      allowedTCPPorts = [ cfg.port ];
-      allowedUDPPorts = [ cfg.port ];
+      allowedTCPPorts = [cfg.port];
+      allowedUDPPorts = [cfg.port];
     };
   };
 }
