@@ -170,8 +170,7 @@ stdenv.mkDerivation {
       fi
     '') (builtins.attrNames components))}
 
-    makeWrapper $BASE/omp-server $out/bin/samp-server \
-      --chdir "$BASE"
+    makeWrapper $BASE/omp-server $out/bin/samp-server
 
     runHook postInstall
   '';
