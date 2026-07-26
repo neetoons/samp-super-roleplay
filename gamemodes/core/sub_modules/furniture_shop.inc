@@ -45,10 +45,10 @@ enum E_FurnitureTypesInfo {
 
 new FurnitureTypesInfo[][E_FurnitureTypesInfo] = {
     {"Dormitorio", 1956.232055, -1817.076171, 1252.489990, 1955.514160, -1816.458862, 1252.168212},
-    {"BaÃ±o", 1933.197875, -1714.829589, 1252.328735, 1933.881835, -1715.493774, 1252.026977},
+    {"Baño", 1933.197875, -1714.829589, 1252.328735, 1933.881835, -1715.493774, 1252.026977},
     {"Cocina", 1953.703247, -1738.496704, 1252.050659, 1953.227416, -1737.662963, 1251.770629},
-    {"SalÃ³n / comedor", 1955.580444, -1712.746093, 1251.999389, 1954.951416, -1713.470214, 1251.716552},
-    {"DecoraciÃ³n", 1934.992553, -1743.235717, 1252.032104, 1935.613891, -1743.970581, 1251.760131},
+    {"Salón / comedor", 1955.580444, -1712.746093, 1251.999389, 1954.951416, -1713.470214, 1251.716552},
+    {"Decoración", 1934.992553, -1743.235717, 1252.032104, 1935.613891, -1743.970581, 1251.760131},
     {"Puertas", 1933.297485, -1737.081054, 1252.086669, 1933.906494, -1736.344238, 1251.793090},
     {"Paredes", 1933.297485, -1737.081054, 1252.086669, 1933.906494, -1736.344238, 1251.793090},
     {"Otros", 1933.297485, -1737.081054, 1252.086669, 1933.906494, -1736.344238, 1251.793090} 
@@ -627,12 +627,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
         if(response) {
             new property_index = PLAYER_TEMP[playerid][pt_PLAYER_GPS_SELECTED_PROPERTY][listitem];
             new limit = ACCOUNT_INFO[playerid][ac_VIP] ? MAX_SU_PROPERTY_OBJECTS : MAX_NU_PROPERTY_OBJECTS;
-            if(CountPropertyObjects(PROPERTY_INFO[property_index][property_ID]) >= limit) SendNotification(playerid, "No puedes aÃ±adir mÃ¡s muebles a esta propiedad.");
+            if(CountPropertyObjects(PROPERTY_INFO[property_index][property_ID]) >= limit) SendNotification(playerid, "No puedes añadir más muebles a esta propiedad.");
             else {
                 new objectIndex = GetCurrentFurnitureObjectIndex(playerid);
                 if(GivePlayerCash(playerid, -FurnitureObjectsInfo[objectIndex][foi_PRICE], true, true)) {
                     RegisterPropertyObject(property_index, PROPERTY_INFO[property_index][property_ID], FurnitureObjectsInfo[objectIndex][foi_MODELID]);
-                    SendNotification(playerid, "~g~Â¡El mueble serÃ¡ entregado en tu propiedad! ~w~Puedes seguir comprando o presionar ~y~'ESC' ~w~para salir.");
+                    SendNotification(playerid, "~g~¡El mueble será entregado en tu propiedad! ~w~Puedes seguir comprando o presionar ~y~'ESC' ~w~para salir.");
                 }
                 else SendNotification(playerid, "No tienes suficiente dinero para comprar este mueble.");
             }
@@ -670,7 +670,7 @@ UpdatePlayerFurnitureShop(playerid, bool:camera = true) {
     InterpolatePCameraToFurType(playerid);
 
     new string[128];
-    format(string, sizeof string, "CategorÃ­a_(%d/%d)", pFurnitureShopCurrentType[playerid] + 1, sizeof(FurnitureTypesInfo));
+    format(string, sizeof string, "Categoría_(%d/%d)", pFurnitureShopCurrentType[playerid] + 1, sizeof(FurnitureTypesInfo));
     FixTextDrawString(string);
     PlayerTextDrawSetString(playerid, pFurnitureShopTd[playerid][1], string);
     
@@ -729,7 +729,7 @@ UpdatePlayerFurnitureShop(playerid, bool:camera = true) {
         FixTextDrawString(string);
         PlayerTextDrawSetString(playerid, pFurnitureShopTd[playerid][5], string);
     
-        format(string, sizeof string, "categorÃ­a_vacÃ­a");
+        format(string, sizeof string, "categoría_vacía");
         FixTextDrawString(string);
         PlayerTextDrawSetString(playerid, pFurnitureShopTd[playerid][8], string);
 
@@ -909,8 +909,8 @@ InterpolatePCameraToFurType(playerid) {
 }
 
 CMD:muebles(playerid, params[]) {
-    if(!IsPlayerInRangeOfPoint(playerid, 1.0, FurnitureShopBuyPos[0], FurnitureShopBuyPos[1], FurnitureShopBuyPos[2])) return SendNotification(playerid, "No estÃ¡s en el lugar adecuado.");
-    if(pFurnitureShopOpened[playerid]) return SendNotification(playerid, "Ya estÃ¡s viendo los muebles.");
+    if(!IsPlayerInRangeOfPoint(playerid, 1.0, FurnitureShopBuyPos[0], FurnitureShopBuyPos[1], FurnitureShopBuyPos[2])) return SendNotification(playerid, "No estás en el lugar adecuado.");
+    if(pFurnitureShopOpened[playerid]) return SendNotification(playerid, "Ya estás viendo los muebles.");
 
     CreatePlayerFurnitureShop(playerid);
     return 1;

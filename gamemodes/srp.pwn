@@ -12,7 +12,7 @@
 
 */
 
-// Compilaci√≥n
+// CompilaciÛn
 #pragma option -(+
 #pragma option -;+
 #pragma warning disable 239, 203
@@ -44,9 +44,9 @@ L1:
 
 /*
  * Modos de debug:
- *  - 0: No saldr√° ning√∫n mensaje de debug ni en la consola ni en el juego.
- *  - 1: Saldr√°n mensajes de debug solamente en la consola.
- *  - 2: Saldr√°n mensajes de debug en la consola y en el juego.
+ *  - 0: No saldr· ning˙n mensaje de debug ni en la consola ni en el juego.
+ *  - 1: Saldr·n mensajes de debug solamente en la consola.
+ *  - 2: Saldr·n mensajes de debug en la consola y en el juego.
 */
 #define DEBUG_MODE 2
 
@@ -103,8 +103,8 @@ L1:
 /* Config */
 #define SERVER_NAME			"Super Roleplay"
 #define SERVER_SHORT_NAME	"Super"
-#define SERVER_GAMEMODE		"SRP2 "SERVER_VERSION" - Roleplay espa√±ol"
-#define SERVER_LANGUAGE		"Espa√±ol - Spanish"
+#define SERVER_GAMEMODE		"SRP2 "SERVER_VERSION" - Roleplay espaÒol"
+#define SERVER_LANGUAGE		"EspaÒol - Spanish"
 #define SERVER_WEBSITE		"yourwebsite"
 #define SERVER_HOSTNAME 	"Super Roleplay 2"
 #define SERVER_COIN			"Coins"
@@ -363,7 +363,7 @@ public OnGameModeExit()
 	mysql_close(srp_db);
 	/*
      * Pendiente por borrar o cambiar, esto me parece que es innecesario
-	for(new i, j = GetPlayerPoolSize(); i <= j; i++) // Cerrar conexi√≥n a todos al cerrar el server
+	for(new i, j = GetPlayerPoolSize(); i <= j; i++) // Cerrar conexiÛn a todos al cerrar el server
 	{
 		if(IsPlayerConnected(i))
 		{

@@ -121,7 +121,7 @@ StartShopAttack(crew_index, enter_exit_index)
     }
 
     new message[145];
-	format(message, sizeof message, "IntimidaciÃ³n:_%.2f%%", ENTER_EXIT[enter_exit_index][ee_ROBBERY_PROGRESS]);
+	format(message, sizeof message, "Intimidación:_%.2f%%", ENTER_EXIT[enter_exit_index][ee_ROBBERY_PROGRESS]);
     FixTextDrawString(message);
 	TextDrawSetString(ENTER_EXIT[enter_exit_index][ee_TEXTDRAW], message);
 
@@ -178,7 +178,7 @@ public UpdateShopAttack(crew_index, enter_exit_index) {
 
         new message_police[145], city[45], zone[45];
         GetPointZone(ENTER_EXIT[enter_exit_index][ee_EXT_X], ENTER_EXIT[enter_exit_index][ee_EXT_Y], city, zone);
-        format(message_police, sizeof message_police, "{"#PRIMARY_COLOR"}[Central policÃ­a] {FFFFFF}La banda '%s' ha atracado una tienda en {"#PRIMARY_COLOR"}%s, %s.", CREW_INFO[crew_index][crew_NAME], city, zone);
+        format(message_police, sizeof message_police, "{"#PRIMARY_COLOR"}[Central policía] {FFFFFF}La banda '%s' ha atracado una tienda en {"#PRIMARY_COLOR"}%s, %s.", CREW_INFO[crew_index][crew_NAME], city, zone);
         
         for(new i = 0, j = GetPlayerPoolSize(); i <= j; i++)
         {
@@ -218,7 +218,7 @@ public UpdateShopAttack(crew_index, enter_exit_index) {
     new message[145], Float:progress = ENTER_EXIT[enter_exit_index][ee_ROBBERY_PROGRESS];
     if(progress > 100.0) 
     progress = 100.0;
-	format(message, sizeof message, "IntimidaciÃ³n:_%.2f%%", progress);
+	format(message, sizeof message, "Intimidación:_%.2f%%", progress);
     FixTextDrawString(message);
 	TextDrawSetString(ENTER_EXIT[enter_exit_index][ee_TEXTDRAW], message);
     return 1;

@@ -76,12 +76,12 @@ enum e_WOOD
  w_mina,
  w_tipo,
 	w_nivel,
-	w_object,					// Objeto de √°rbol
-	w_zone,						// √Årea de corte de madera
+	w_object,					// Objeto de ·rbol
+	w_zone,						// ¡rea de corte de madera
 	bool:w_use,
 	bool:w_drop,
 	w_count,
-	w_time,						// Tiempo en minutos despu√©s de que aparece un nuevo mineral.
+	w_time,						// Tiempo en minutos despuÈs de que aparece un nuevo mineral.
 	Float:RocaX,
 	Float:RocaY,
 	Float:RocaZ,
@@ -343,17 +343,17 @@ enum Truck_Content_Info
 }
 new Truck_Contents[][Truck_Content_Info] =
 {
-	{0, "Productos agr√≠colas", 950, -185.473693, -280.008880, 1.603357},
+	{0, "Productos agrÌcolas", 950, -185.473693, -280.008880, 1.603357},
 	{0, "Productos industriales", 1250, 2168.514404, -2275.264892, 13.128628},
-	{0, "Madera y le√±a", 1700, -2096.593017, -2243.229492, 30.352083},
+	{0, "Madera y leÒa", 1700, -2096.593017, -2243.229492, 30.352083},
 	{0, "Ropa y complementos", 1975, 2834.454833, 958.061462, 10.479191},
 	{25, "Productos de limpieza", 2250, 2524.153076, 2816.919189, 10.547390},
 	{50, "Productos de pesca", 2760, -1789.979858, 1421.842895, 6.914581},
-	{50, "Productos qu√≠micos", 3560, -1862.919433, -202.232727, 18.125516},
-	{80, "Productos tecnol√≥gicos", 3850, 1039.057983, 2132.961425, 10.547390}
+	{50, "Productos quÌmicos", 3560, -1862.919433, -202.232727, 18.125516},
+	{80, "Productos tecnolÛgicos", 3850, 1039.057983, 2132.961425, 10.547390}
 };
 
-/* Mec√°nico */
+/* Mec·nico */
 new Float:MechanicStartWorkingCoords[1][3] =
 {
 	{1833.056762, -1443.123413, 13.593692}
@@ -368,7 +368,7 @@ new Float:MechanicBuyKitsCoords[][3] = {
 	{1834.046508, -1436.194213, 13.594635}
 };
 
-/* Le√±ador */
+/* LeÒador */
 enum
 {
 	LUMBER_TREE_STATE_NORMAL,
@@ -537,8 +537,8 @@ enum Supermarket_Enum
 }
 new Supermarket_Product_List[][Supermarket_Enum] =  
 {
-	{PRODUCT_TYPE_PHONE, "Tel√©fono", 350, 0.0, 0.0, 0},
-	{PRODUCT_TYPE_PHONE_RESOLVER, "Gu√≠a telef√≥nica", 200, 0.0, 0.0, 0},
+	{PRODUCT_TYPE_PHONE, "TelÈfono", 350, 0.0, 0.0, 0},
+	{PRODUCT_TYPE_PHONE_RESOLVER, "GuÌa telefÛnica", 200, 0.0, 0.0, 0},
 	{PRODUCT_TYPE_GPS, "Localizador GPS", 300, 0.0, 0.0, 0},
 	{PRODUCT_TYPE_MP3, "Reproductor MP3", 200, 0.0, 0.0, 0},
 	{PRODUCT_TYPE_SPEAKERS, "Altavoces", 200, 0.0, 0.0, 0},
@@ -603,7 +603,7 @@ enum Food_Info
 new PIZZA_FOOD[][Food_Info] =
 {
 	{"Pizza de verduras", 25, 10.0, -0.1},
-	{"Pizza de jam√≥n y queso", 60, 16.0, -0.1},
+	{"Pizza de jamÛn y queso", 60, 16.0, -0.1},
 	{"Pizza barbacoa", 40, 15.0, -0.1},
 	{"Pizza 4 quesos", 55, 14.0, -0.1},
 	{"Ensalada", 20, 10.0, 5.0},

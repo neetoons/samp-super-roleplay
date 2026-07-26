@@ -38,13 +38,13 @@ hook OnScriptInit() {
 }
 
 CMD:barco(playerid, params[]) {
-    if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendNotification(playerid, "No est√°s en un barco.");
+    if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendNotification(playerid, "No est·s en un barco.");
 
     new vehicleid = GetPlayerVehicleID(playerid);
     if(Vehicle_IsBoat(vehicleid)) {
         new info[3];
         Streamer_GetArrayData(STREAMER_TYPE_AREA, PLAYER_TEMP[playerid][pt_LAST_AREA_ID], E_STREAMER_EXTRA_ID, info);
-        if(info[0] != AREA_TYPE_WATERVEH_STATION || !IsPlayerInDynamicArea(playerid, PLAYER_TEMP[playerid][pt_LAST_AREA_ID])) return SendNotification(playerid, "No est√°s en el lugar adecuado.");
+        if(info[0] != AREA_TYPE_WATERVEH_STATION || !IsPlayerInDynamicArea(playerid, PLAYER_TEMP[playerid][pt_LAST_AREA_ID])) return SendNotification(playerid, "No est·s en el lugar adecuado.");
 
         GLOBAL_VEHICLES[vehicleid][gb_vehicle_PARAMS_ENGINE] = 0;
         UpdateVehicleParams(vehicleid);
@@ -64,7 +64,7 @@ CMD:barco(playerid, params[]) {
         PLAYER_TEMP[playerid][pt_DIALOG_ID] = DIALOG_BOAT_OPTIONS;
         ShowPlayerDialog(playerid, DIALOG_BOAT_OPTIONS, DIALOG_STYLE_LIST, "Puerto", dialog_str, "Continuar", "Cerrar");
     }
-    else SendNotification(playerid, "No est√°s en un barco.");
+    else SendNotification(playerid, "No est·s en un barco.");
     return 1;
 }
 
@@ -76,7 +76,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                     case 0: {
                         if(GivePlayerCash(playerid, -REPAIR_BOAT_PRICE, true, true)) {
                             RepairVehicleEx(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID], playerid);
-                            SendNotification(playerid, "Veh√≠culo reparado.");
+                            SendNotification(playerid, "VehÌculo reparado.");
                         }
                         else SendNotification(playerid, "No tienes suficiente dinero.");
                     }
@@ -100,7 +100,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                         case 1: GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_COLOR_2] = listitem;
                     }
                     ChangeVehicleColor(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID], GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_COLOR_1], GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_COLOR_2]);
-                    SendNotification(playerid, "Veh√≠culo pintado.");
+                    SendNotification(playerid, "VehÌculo pintado.");
                 }
                 else SendNotification(playerid, "No tienes suficiente dinero.");
             }

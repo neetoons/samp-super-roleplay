@@ -134,7 +134,7 @@ CMD:comida(playerid, params[])
 
     PLAYER_TEMP[playerid][pt_DIALOG_RESPONDED] = false;
     PLAYER_TEMP[playerid][pt_DIALOG_ID] = DIALOG_HOTDOG;
-    ShowPlayerDialog(playerid, DIALOG_HOTDOG, DIALOG_STYLE_TABLIST_HEADERS, "{FF7373}Puesto de comida r√°pida", dialog_body, "Comprar", "Cerrar");
+    ShowPlayerDialog(playerid, DIALOG_HOTDOG, DIALOG_STYLE_TABLIST_HEADERS, "{FF7373}Puesto de comida r·pida", dialog_body, "Comprar", "Cerrar");
 	return 1;
 }
 

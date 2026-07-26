@@ -316,7 +316,7 @@ public OnAirSpeedoRequestUpdate(playerid, vehicleid) {
             GLOBAL_VEHICLES[vehicleid][gb_vehicle_PARAMS_ENGINE] = 0;
             UpdateVehicleParams(vehicleid);
             
-            SendClientMessage(playerid, -1, "{999999}El vehÃ­culo se ha quedado sin gasolina...");
+            SendClientMessage(playerid, -1, "{999999}El vehículo se ha quedado sin gasolina...");
         }
     }
 

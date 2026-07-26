@@ -39,7 +39,7 @@ hook OnPlayerConnect(playerid) {
 	PlayerTextDrawSetProportional(playerid, pSpeedoTd[playerid][0], 1);
 	PlayerTextDrawSetShadow(playerid, pSpeedoTd[playerid][0], 0);
 
-	pSpeedoTd[playerid][1] = CreatePlayerTextDraw(playerid, 552.500000, 344.000000, "VelocÂ¢metro");
+	pSpeedoTd[playerid][1] = CreatePlayerTextDraw(playerid, 552.500000, 344.000000, "Veloc¢metro");
 	PlayerTextDrawLetterSize(playerid, pSpeedoTd[playerid][1], 0.198999, 1.015113);
 	PlayerTextDrawTextSize(playerid, pSpeedoTd[playerid][1], 0.000000, 108.000000);
 	PlayerTextDrawAlignment(playerid, pSpeedoTd[playerid][1], 2);
@@ -132,7 +132,7 @@ ShowPlayerSpeedoMeter(playerid)
     }
 	
 	new td_str[64];
-	format(td_str, sizeof td_str, "VehÂ¢culo:~y~_%s", VEHICLE_INFO[modelid - 400][vehicle_info_NAME]);
+	format(td_str, sizeof td_str, "Veh¢culo:~y~_%s", VEHICLE_INFO[modelid - 400][vehicle_info_NAME]);
 	PlayerTextDrawSetString(playerid, pSpeedoTd[playerid][2], td_str);
 	
 	format(td_str, sizeof td_str, "Gasolina:~y~_%.1f_Litros", GLOBAL_VEHICLES[vehicleid][gb_vehicle_GAS]);
@@ -229,7 +229,7 @@ public UpdatePlayerSpeedo(playerid, vehicleid, Float:maxvel)
 				
 			GLOBAL_VEHICLES[vehicleid][gb_vehicle_PARAMS_ENGINE] = 0;
 			UpdateVehicleParams(vehicleid);
-			SendClientMessage(playerid, -1, "{CCCCCC}El motor del vehÃ­culo estÃ¡ demasiado daÃ±ado.");
+			SendClientMessage(playerid, -1, "{CCCCCC}El motor del vehículo está demasiado dañado.");
 		}
 	}
 	
@@ -246,7 +246,7 @@ public UpdatePlayerSpeedo(playerid, vehicleid, Float:maxvel)
 				GLOBAL_VEHICLES[vehicleid][gb_vehicle_PARAMS_ENGINE] = 0;
 				UpdateVehicleParams(vehicleid);
 				
-				SendClientMessage(playerid, -1, "{999999}El vehÃ­culo se ha quedado sin gasolina...");
+				SendClientMessage(playerid, -1, "{999999}El vehículo se ha quedado sin gasolina...");
 			}
 		}
 		pLastFuelSubtraction[playerid] = gettime();

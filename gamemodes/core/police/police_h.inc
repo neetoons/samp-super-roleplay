@@ -89,8 +89,8 @@ new POLICE_RANKS[][] =
 	/* 8 */ "Detective III",
 	/* 9 */ "Sargento I",
 	/* 10 */ "Sargento II",
-	/* 11 */ "Capit√°n",
-	/* 12 */ "Jefe Polic√≠a"
+	/* 11 */ "Capit·n",
+	/* 12 */ "Jefe PolicÌa"
 };
 
 #define MAX_POLICE_OBJECTS	300

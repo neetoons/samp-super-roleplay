@@ -366,7 +366,7 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid) {
 
         for(new i = 0; i < MAX_WAREHOUSE_ORDERS_TD; i ++) {
             if(clickedid == Warehouse_OrdersTd[i][0]) {
-                if(pWarehouseCurrentOrder[playerid] > 0) SendNotification(playerid, "Ahora mismo est√°s atendiendo un pedido.");
+                if(pWarehouseCurrentOrder[playerid] > 0) SendNotification(playerid, "Ahora mismo est·s atendiendo un pedido.");
                 else {
                     new order[E_WarehouseOrders];
                     order = Warehouse_CurrentOrders_Data[i];
@@ -383,7 +383,7 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid) {
                         CallLocalFunction("StartPlayerJob", "iii", playerid, WORK_WAREHOUSE, INVALID_VEHICLE_ID);
                     }
                     else {
-                        SendNotification(playerid, "Este pedido ya est√° siendo atendido.");
+                        SendNotification(playerid, "Este pedido ya est· siendo atendido.");
                     }
                 }
                 return Y_HOOKS_BREAK_RETURN_1;
@@ -557,17 +557,17 @@ hook OnDynamicObjectMoved(objectid) {
 }
 
 CMD:pedidos(playerid, params[]) {
-    if(!PLAYER_WORKS[playerid][WORK_WAREHOUSE][pwork_SET]) return SendNotification(playerid, "No trabajas en el almac√©n.");
+    if(!PLAYER_WORKS[playerid][WORK_WAREHOUSE][pwork_SET]) return SendNotification(playerid, "No trabajas en el almacÈn.");
 	if(PLAYER_TEMP[playerid][pt_WORKING_IN] != WORK_NONE && PLAYER_TEMP[playerid][pt_WORKING_IN] != WORK_WAREHOUSE)
 	{
 		SendFormatNotification(playerid, "Tienes que dejar de estar de servicio como %s primero.", work_info[ PLAYER_TEMP[playerid][pt_WORKING_IN] ][work_info_NAME]);
 		return 1;
 	}
 
-    if(GetPlayerVirtualWorld(playerid) != 0) return SendNotification(playerid, "No est√°s en el lugar adecuado.");
-	if(GetPlayerInterior(playerid) != WAREHOUSE_INTERIOR) return SendNotification(playerid, "No est√°s en el lugar adecuado.");
-	if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return SendNotification(playerid, "No est√°s depie.");
-	if(!IsPlayerInRangeOfPoint(playerid, 1.0, Warehouse_OrdersCoords[0], Warehouse_OrdersCoords[1], Warehouse_OrdersCoords[2])) return SendNotification(playerid, "No est√°s en el lugar adecuado.");
+    if(GetPlayerVirtualWorld(playerid) != 0) return SendNotification(playerid, "No est·s en el lugar adecuado.");
+	if(GetPlayerInterior(playerid) != WAREHOUSE_INTERIOR) return SendNotification(playerid, "No est·s en el lugar adecuado.");
+	if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return SendNotification(playerid, "No est·s depie.");
+	if(!IsPlayerInRangeOfPoint(playerid, 1.0, Warehouse_OrdersCoords[0], Warehouse_OrdersCoords[1], Warehouse_OrdersCoords[2])) return SendNotification(playerid, "No est·s en el lugar adecuado.");
 
     ShowPlayerWarehouseOrders(playerid);
     return 1;
@@ -607,7 +607,7 @@ ShowPlayerWarehouseOrders(playerid) {
     }
 
     new string[128];
-    format(string, sizeof string, "%s~n~Almac√©n_(%04d)~n~", ACCOUNT_INFO[playerid][ac_NAME], ACCOUNT_INFO[playerid][ac_ID]);
+    format(string, sizeof string, "%s~n~AlmacÈn_(%04d)~n~", ACCOUNT_INFO[playerid][ac_NAME], ACCOUNT_INFO[playerid][ac_ID]);
     FixTextDrawString(string);
     pWarehouseOrdersTd[playerid] = CreatePlayerTextDraw(playerid, 446.000000, 122.000000, string);
     PlayerTextDrawLetterSize(playerid, pWarehouseOrdersTd[playerid], 0.188499, 0.993333);

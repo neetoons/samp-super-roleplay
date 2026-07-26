@@ -226,7 +226,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                         new total = CountPropertyObjects(PROPERTY_INFO[property_index][property_ID]);
                         
                         new string[256];
-                        format(string, sizeof string, "Se eliminarÃ¡n %d muebles.\nÂ¿EstÃ¡s seguro de que quieres eliminarlos?", total);
+                        format(string, sizeof string, "Se eliminarán %d muebles.\n¿Estás seguro de que quieres eliminarlos?", total);
                         
                         PLAYER_TEMP[playerid][pt_DIALOG_RESPONDED] = false;
                         PLAYER_TEMP[playerid][pt_DIALOG_ID] = DIALOG_POBJECTS_DELETE_ALL;
@@ -252,18 +252,18 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                         new dialog_body[32 * 4];
                         for(new i = 0; i < 4; i ++) {
                             new string[32];
-                            format(string, sizeof string, "Ãndice %d\n", i);
+                            format(string, sizeof string, "Índice %d\n", i);
                             strcat(dialog_body, string);
                         }
 
                         PLAYER_TEMP[playerid][pt_DIALOG_RESPONDED] = false;
                         PLAYER_TEMP[playerid][pt_DIALOG_ID] = DIALOG_POBJECT_TEXTURE_INDEX;
-                        ShowPlayerDialog(playerid, DIALOG_POBJECT_TEXTURE_INDEX, DIALOG_STYLE_LIST, "Selecciona el Ã­ndice", dialog_body, "Continuar", "AtrÃ¡s");
+                        ShowPlayerDialog(playerid, DIALOG_POBJECT_TEXTURE_INDEX, DIALOG_STYLE_LIST, "Selecciona el índice", dialog_body, "Continuar", "Atrás");
                     }
                     case 2: { //clonar
                         new property_index = PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED];
                         new limit = ACCOUNT_INFO[playerid][ac_VIP] ? MAX_SU_PROPERTY_OBJECTS : MAX_NU_PROPERTY_OBJECTS;
-                        if(CountPropertyObjects(PROPERTY_INFO[property_index][property_ID]) >= limit) SendNotification(playerid, "No puedes aÃ±adir mÃ¡s muebles a esta propiedad.");
+                        if(CountPropertyObjects(PROPERTY_INFO[property_index][property_ID]) >= limit) SendNotification(playerid, "No puedes añadir más muebles a esta propiedad.");
                         else {
                             if(GivePlayerCash(playerid, -GetPObjectModelPrice(pPObjectCurrentModelID[playerid]), true, true)) {
                                 inline OnQueryLoaded()
@@ -352,7 +352,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                     new modelid, txdname[64], texturename[64], inputColor[32];
                     if(!sscanf(inputtext, "ds[64]s[64]s[32]", modelid, txdname, texturename, inputColor)) { }
                     else if(!sscanf(inputtext, "ds[64]s[64]", modelid, txdname, texturename)) { }
-                    else return SendNotification(playerid, "El formato no es vÃ¡lido.");
+                    else return SendNotification(playerid, "El formato no es válido.");
 
                     new color = 0;
                     if(strlen(inputColor) > 0) {
@@ -399,7 +399,7 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid) {
 hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid) {
     if(pPUObjectsMenuOpened[playerid]) {
         if(playertextid == pUncreatedPObjectsTd[playerid][9]) { //<<
-            if((gettime() - pPUObjectsMenuLastPageChange[playerid]) < 1) SendNotification(playerid, "CÃ¡lmate.");
+            if((gettime() - pPUObjectsMenuLastPageChange[playerid]) < 1) SendNotification(playerid, "Cálmate.");
             else {
                 pPUObjectsMenuCurrentPage[playerid] --;
                 if(pPUObjectsMenuCurrentPage[playerid] < 0) pPUObjectsMenuCurrentPage[playerid] = pPUObjectsMenuTotalPages[playerid] - 1;
@@ -408,7 +408,7 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid) {
             return Y_HOOKS_BREAK_RETURN_1;
         }
         else if(playertextid == pUncreatedPObjectsTd[playerid][10]) { //>>
-            if((gettime() - pPUObjectsMenuLastPageChange[playerid]) < 1) SendNotification(playerid, "CÃ¡lmate.");
+            if((gettime() - pPUObjectsMenuLastPageChange[playerid]) < 1) SendNotification(playerid, "Cálmate.");
             else {
                 pPUObjectsMenuCurrentPage[playerid] ++;
                 if(pPUObjectsMenuCurrentPage[playerid] > pPUObjectsMenuTotalPages[playerid] - 1) pPUObjectsMenuCurrentPage[playerid] = 0;
@@ -520,13 +520,13 @@ UpdatePUObjectsTextDraws(playerid) {
 
     new string[128];
     if(pPUObjectsMenuTotalPages[playerid] > 1) {
-        format(string, sizeof string, "PÃ¡gina_%d/%d", pPUObjectsMenuCurrentPage[playerid] + 1, pPUObjectsMenuTotalPages[playerid]);
+        format(string, sizeof string, "Página_%d/%d", pPUObjectsMenuCurrentPage[playerid] + 1, pPUObjectsMenuTotalPages[playerid]);
         FixTextDrawString(string);
         PlayerTextDrawShow(playerid, pUncreatedPObjectsTd[playerid][9]);
         PlayerTextDrawShow(playerid, pUncreatedPObjectsTd[playerid][10]);
     }
     else {
-        format(string, sizeof string, "PÃ¡gina_1/1");
+        format(string, sizeof string, "Página_1/1");
         FixTextDrawString(string);
         PlayerTextDrawHide(playerid, pUncreatedPObjectsTd[playerid][9]);
         PlayerTextDrawHide(playerid, pUncreatedPObjectsTd[playerid][10]);
@@ -748,14 +748,14 @@ hook OnPlayerEditDynObject(playerid, STREAMER_TAG_OBJECT:objectid, response, Flo
                 SetDynamicObjectPos(objectid, pos[0], pos[1], pos[2]);
                 SetDynamicObjectRot(objectid, rot[0], rot[1], rot[2]);
 
-                SendNotification(playerid, "Has cancelado la ediciÃ³n y el objeto a vuelto a su posiciÃ³n anterior.");
+                SendNotification(playerid, "Has cancelado la edición y el objeto a vuelto a su posición anterior.");
                 ShowEditPObjectDialog(playerid);
             }
             case EDIT_RESPONSE_FINAL: {
                 SetDynamicObjectPos(objectid, x, y, z);
                 SetDynamicObjectRot(objectid, rx, ry, rz);
                 UpdatePObjectDB_Positions(pPObjectCurrentID[playerid], x, y, z, rx, ry, rz);
-                SendNotification(playerid, "La posiciÃ³n del mueble se ha actualizado correctamente.");
+                SendNotification(playerid, "La posición del mueble se ha actualizado correctamente.");
                 ShowEditPObjectDialog(playerid);
             }
         }
