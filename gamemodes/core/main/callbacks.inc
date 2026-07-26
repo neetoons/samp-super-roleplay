@@ -1465,6 +1465,8 @@ ConnectDatabase()
 
 	//srp_db
 	srp_db = mysql_connect_file("srp_db.ini");
+	printf("[MySQL] mysql_connect_file returned handle: %d", _:srp_db);
+	printf("[MySQL] mysql_errno: %d", mysql_errno(srp_db));
 	if(srp_db == MYSQL_INVALID_HANDLE || mysql_errno(srp_db) != 0)
 	{
 		printf("[MySQL] No se pudo conectar con la base de datos (srp_db) (%d)", mysql_errno(srp_db));
