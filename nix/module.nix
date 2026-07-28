@@ -274,6 +274,26 @@ in {
         default = false;
         description = "Automatically reconnect to the database.";
       };
+
+      backup = {
+        enable = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Enable daily database backups.";
+        };
+
+        path = lib.mkOption {
+          type = lib.types.str;
+          default = "/var/backups/samp-server";
+          description = "Directory to store database backups.";
+        };
+
+        retention = lib.mkOption {
+          type = lib.types.ints.unsigned;
+          default = 7;
+          description = "Number of days to keep backups.";
+        };
+      };
     };
   };
 
@@ -341,6 +361,39 @@ in {
         StateDirectory = "samp-server";
         ProtectHome = true;
         NoNewPrivileges = true;
+      };
+    };
+
+    systemd.services.samp-db-backup = lib.mkIf (cfg.database.enable && cfg.database.backup.enable) {
+      description = "SA-MP Server Database Backup";
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = ''
+          ${pkgs.bash}/bin/bash -c '
+            set -e
+            mkdir -p "${cfg.database.backup.path}"
+            ${pkgs.mariadb}/bin/mysqldump \
+              -h ${cfg.database.hostname} \
+              -u ${cfg.database.username} \
+              -p${cfg.database.password} \
+              ${cfg.database.name} \
+              | ${pkgs.gzip}/bin/gzip \
+              > "${cfg.database.backup.path}/srp_db-$(date +\%Y\%m\%d).sql.gz"
+            ${pkgs.findutils}/bin/find "${cfg.database.backup.path}" \
+              -name "srp_db-*.sql.gz" \
+              -mtime +${toString cfg.database.backup.retention} \
+              -delete
+          '
+        '';
+      };
+    };
+
+    systemd.timers.samp-db-backup = lib.mkIf (cfg.database.enable && cfg.database.backup.enable) {
+      description = "Daily SA-MP Server Database Backup";
+      wantedBy = [ "timers.target" ];
+      timerConfig = {
+        OnCalendar = "daily";
+        Persistent = true;
       };
     };
 
