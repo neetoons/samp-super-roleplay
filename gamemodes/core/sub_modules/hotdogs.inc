@@ -12,7 +12,7 @@
 
 */
 
-#if defined hotdogs_included 
+#if defined hotdogs_included
     #endinput
 #endif
 #define hotdogs_included
@@ -67,24 +67,26 @@ new Hotdogs[][E_Hotdogs] = {
 enum E_HotdogsFood {
     hotdogFood_NAME[24],
     hotdogFood_PRICE,
-	Float:hotdogFood_HUNGRY,
-	Float:hotdogFood_THIRST,
-	hotdogFood_DRUNK
+    Float:hotdogFood_HUNGRY,
+    Float:hotdogFood_THIRST,
+    hotdogFood_DRUNK
 };
 
 new HotdogsFood[][E_HotdogsFood] = {
     {"Botella de agua mineral", 80, 0.0, 25.0, 0},
-	{"Lata de refresco Sprunk", 40, 0.0, 12.0, 0},
-	{"Lata de refresco cola", 30, 0.0, 10.0, 0},
+    {"Lata de refresco Sprunk", 40, 0.0, 12.0, 0},
+    {"Lata de refresco cola", 30, 0.0, 10.0, 0},
     {"Perrito caliente", 50, 20.0, 0.0, 0},
-	{"Porcion de pizza", 50, 20.0, 0.0, 0},
-	{"Ensalada", 50, 15.0, 2.0, 0},
-	{"Sandwich", 45, 10.0, 2.0, 0},
-	{"Lata de cerveza", 40, 0.0, 3.0, 1000}
+    {"Porcion de pizza", 50, 20.0, 0.0, 0},
+    {"Ensalada", 50, 15.0, 2.0, 0},
+    {"Sandwich", 45, 10.0, 2.0, 0},
+    {"Lata de cerveza", 40, 0.0, 3.0, 1000}
 };
 
-hook OnScriptInit() {
-    for(new i = 0; i < sizeof Hotdogs; i ++) {
+hook OnScriptInit()
+{
+    for (new i = 0; i < sizeof Hotdogs; i++)
+{
         new tmp = CreateDynamicObject(1340, Hotdogs[i][hotdog_X], Hotdogs[i][hotdog_Y], Hotdogs[i][hotdog_Z], 0.0, 0.0, Hotdogs[i][hotdog_RZ], .interiorid = Hotdogs[i][hotdog_INTERIOR], .worldid = Hotdogs[i][hotdog_WORLD], .streamdistance = 600.0, .drawdistance = 600.0);
         SetDynamicObjectMaterial(tmp, 0, -1, "none", "none", 0xFFFFFFFF);
 
@@ -100,77 +102,82 @@ hook OnScriptInit() {
         CreateDynamic3DTextLabel("Presiona {FF7373}[ H ]{FFFFFF} para comprar comida", 0xFFFFFFFF, pos[0], pos[1], pos[2], 5.0, .testlos = true, .interiorid = Hotdogs[i][hotdog_INTERIOR], .worldid = Hotdogs[i][hotdog_WORLD]);
 
         new info[3], pickupId = CreateDynamicPickup(0, 1, pos[0], pos[1], pos[2] + 0.10, .interiorid = Hotdogs[i][hotdog_INTERIOR], .worldid = Hotdogs[i][hotdog_WORLD]);
-		info[0] = PICKUP_TYPE_HOTDOG;
-		info[1] = i; // Index
-		info[2] = 0; // Nada
-		Streamer_SetArrayData(STREAMER_TYPE_PICKUP, pickupId, E_STREAMER_EXTRA_ID, info);
+        info[0] = PICKUP_TYPE_HOTDOG;
+        info[1] = i; // Index
+        info[2] = 0; // Nada
+        Streamer_SetArrayData(STREAMER_TYPE_PICKUP, pickupId, E_STREAMER_EXTRA_ID, info);
     }
 }
 
 CMD:comida(playerid, params[])
 {
-	if(PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID] == 0) return 1;
+    if (PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID] == 0) return 1;
 
-	new info[3];
-	Streamer_GetArrayData(STREAMER_TYPE_PICKUP, PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID], E_STREAMER_EXTRA_ID, info);
-    if(info[0] != PICKUP_TYPE_HOTDOG) return 1;
+    new info[3];
+    Streamer_GetArrayData(STREAMER_TYPE_PICKUP, PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID], E_STREAMER_EXTRA_ID, info);
+    if (info[0] != PICKUP_TYPE_HOTDOG) return 1;
 
     new Float:pos[3];
     Streamer_GetFloatData(STREAMER_TYPE_PICKUP, PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID], E_STREAMER_X, pos[0]);
     Streamer_GetFloatData(STREAMER_TYPE_PICKUP, PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID], E_STREAMER_Y, pos[1]);
     Streamer_GetFloatData(STREAMER_TYPE_PICKUP, PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID], E_STREAMER_Z, pos[2]);
 
-    if(!IsPlayerInRangeOfPoint(playerid, 1.0, pos[0], pos[1], pos[2])) return 1;
-	
+    if (!IsPlayerInRangeOfPoint(playerid, 1.0, pos[0], pos[1], pos[2])) return 1;
+
 
     new dialog_body[64 * sizeof HotdogsFood];
     format(dialog_body, sizeof dialog_body, "{FFFFFF}Producto\t{FFFFFF}Precio\n");
-	for(new i = 0; i != sizeof HotdogsFood; i ++)
-	{
+    for (new i = 0; i != sizeof HotdogsFood; i++)
+    {
         new str[64];
-		format(str, sizeof(str), "%d. %s\t%d$\n", i + 1, HotdogsFood[i][hotdogFood_NAME], HotdogsFood[i][hotdogFood_PRICE]);
-		strcat(dialog_body, str);
-	}
+        format(str, sizeof(str), "%d. %s\t%d$\n", i + 1, HotdogsFood[i][hotdogFood_NAME], HotdogsFood[i][hotdogFood_PRICE]);
+        strcat(dialog_body, str);
+    }
 
     PLAYER_TEMP[playerid][pt_DIALOG_RESPONDED] = false;
     PLAYER_TEMP[playerid][pt_DIALOG_ID] = DIALOG_HOTDOG;
     ShowPlayerDialog(playerid, DIALOG_HOTDOG, DIALOG_STYLE_TABLIST_HEADERS, "{FF7373}Puesto de comida rápida", dialog_body, "Comprar", "Cerrar");
-	return 1;
+    return 1;
 }
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-    if(newkeys & KEY_CTRL_BACK)
+    if (newkeys & KEY_CTRL_BACK)
     {
         new info[3];
         Streamer_GetArrayData(STREAMER_TYPE_PICKUP, PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID], E_STREAMER_EXTRA_ID, info);
-        if(info[0] == PICKUP_TYPE_HOTDOG)
+        if (info[0] == PICKUP_TYPE_HOTDOG)
         {
             new Float:pos[3];
             Streamer_GetFloatData(STREAMER_TYPE_PICKUP, PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID], E_STREAMER_X, pos[0]);
             Streamer_GetFloatData(STREAMER_TYPE_PICKUP, PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID], E_STREAMER_Y, pos[1]);
             Streamer_GetFloatData(STREAMER_TYPE_PICKUP, PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID], E_STREAMER_Z, pos[2]);
 
-            if(IsPlayerInRangeOfPoint(playerid, 1.0, pos[0], pos[1], pos[2])) PC_EmulateCommand(playerid, "/comida");
+            if (IsPlayerInRangeOfPoint(playerid, 1.0, pos[0], pos[1], pos[2])) PC_EmulateCommand(playerid, "/comida");
         }
     }
     return 1;
 }
 
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
-    if(dialogid == DIALOG_HOTDOG) {
-        if(response) {
-            if(GivePlayerCash(playerid, -HotdogsFood[listitem][hotdogFood_PRICE], true, true)) {
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{
+    if (dialogid == DIALOG_HOTDOG)
+{
+        if (response)
+{
+            if (GivePlayerCash(playerid, -HotdogsFood[listitem][hotdogFood_PRICE], true, true))
+{
                 Add_Hungry_Thirst(playerid, HotdogsFood[listitem][hotdogFood_HUNGRY], HotdogsFood[listitem][hotdogFood_THIRST]);
-                if(HotdogsFood[listitem][hotdogFood_DRUNK] > 0) {
+                if (HotdogsFood[listitem][hotdogFood_DRUNK] > 0)
+{
                     GivePlayerDrunkLevel(playerid, HotdogsFood[listitem][hotdogFood_DRUNK]);
                 }
                 PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);
-                
+
                 new action[64];
                 format(action, sizeof action, "compra %s y lo consume.", HotdogsFood[listitem][hotdogFood_NAME]);
                 Auto_SendPlayerAction(playerid, action);
-                
+
                 ApplyAnimation(playerid, "FOOD", "EAT_Pizza", 0, 0, 0, 0, 0, 0);
                 ApplyAnimation(playerid, "FOOD", "EAT_Pizza", 4.1, false, true, true, false, 1000);
             }

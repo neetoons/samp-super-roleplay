@@ -12,7 +12,7 @@
 
 */
 
-#if defined levels_header_included 
+#if defined levels_header_included
     #endinput
 #endif
 #define levels_header_included
@@ -22,30 +22,30 @@ new ADMIN_LEVEL_AC_IMMUNITY = 3; //nivel 3 en adelante
 
 enum
 {
-	TYPE_WARNING,
-	TYPE_KICK,
-	TYPE_BAN,
-	TYPE_TEMP_BAN,
-	TYPE_UNBAN
+    TYPE_WARNING,
+    TYPE_KICK,
+    TYPE_BAN,
+    TYPE_TEMP_BAN,
+    TYPE_UNBAN
 }
 
 enum
 {
-	CMD_USER,
-	CMD_HELPER,
-	CMD_HELPER_MODERATOR,
-	CMD_MODERATOR,
-	CMD_ADMINISTRATOR,
-	CMD_DEVELOPER,
-	CMD_DISABLED,
+    CMD_USER,
+    CMD_HELPER,
+    CMD_HELPER_MODERATOR,
+    CMD_MODERATOR,
+    CMD_ADMINISTRATOR,
+    CMD_DEVELOPER,
+    CMD_DISABLED,
 }
-new ADMIN_LEVELS[][] = 
+new ADMIN_LEVELS[][] =
 {
-	"Ciudadano",
-	"Ayudante",
-	"Moderador",
-	"Operador",
-	"Administrador",
-	"Desarrollador"
+    "Ciudadano",
+    "Ayudante",
+    "Moderador",
+    "Operador",
+    "Administrador",
+    "Desarrollador"
 };
 

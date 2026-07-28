@@ -1,14 +1,14 @@
 /*
-	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-	SOFTWARE.
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
 
-	The Initial Developer of the Original Code was adri1.
-	Code originally released from: https://sampforum.blast.hk/showthread.php?tid=639431
+    The Initial Developer of the Original Code was adri1.
+    Code originally released from: https://sampforum.blast.hk/showthread.php?tid=639431
 
 */
 
@@ -51,9 +51,9 @@ L1:
 #define DEBUG_MODE 2
 
 #if DEBUG_MODE != 0
-	#pragma option -d3
-	#else
-	#pragma option -O1
+    #pragma option -d3
+    #else
+    #pragma option -O1
 #endif
 
 #include <a_samp>
@@ -86,28 +86,28 @@ L1:
 
 /*
 
-    8888888b.            .d888 d8b                            
-    888  "Y88b          d88P"  Y8P                            
-    888    888          888                                   
-    888    888  .d88b.  888888 888 88888b.   .d88b.  .d8888b  
-    888    888 d8P  Y8b 888    888 888 "88b d8P  Y8b 88K      
-    888    888 88888888 888    888 888  888 88888888 "Y8888b. 
-    888  .d88P Y8b.     888    888 888  888 Y8b.          X88 
-    8888888P"   "Y8888  888    888 888  888  "Y8888   88888P' 
+    8888888b.            .d888 d8b
+    888  "Y88b          d88P"  Y8P
+    888    888          888
+    888    888  .d88b.  888888 888 88888b.   .d88b.  .d8888b
+    888    888 d8P  Y8b 888    888 888 "88b d8P  Y8b 88K
+    888    888 88888888 888    888 888  888 88888888 "Y8888b.
+    888  .d88P Y8b.     888    888 888  888 Y8b.          X88
+    8888888P"   "Y8888  888    888 888  888  "Y8888   88888P'
 
 */
 
-#define SERVER_VERSION	"2.4.8"
-#define VERSION_DATE	"30/08/2020"
+#define SERVER_VERSION    "2.4.8"
+#define VERSION_DATE    "30/08/2020"
 
 /* Config */
-#define SERVER_NAME			"Super Roleplay"
-#define SERVER_SHORT_NAME	"Super"
-#define SERVER_GAMEMODE		"SRP2 "SERVER_VERSION" - Roleplay español"
-#define SERVER_LANGUAGE		"Español - Spanish"
-#define SERVER_WEBSITE		"yourwebsite"
-#define SERVER_HOSTNAME 	"Super Roleplay 2"
-#define SERVER_COIN			"Coins"
+#define SERVER_NAME            "Super Roleplay"
+#define SERVER_SHORT_NAME    "Super"
+#define SERVER_GAMEMODE        "SRP2 "SERVER_VERSION" - Roleplay español"
+#define SERVER_LANGUAGE        "Español - Spanish"
+#define SERVER_WEBSITE        "yourwebsite"
+#define SERVER_HOSTNAME     "Super Roleplay 2"
+#define SERVER_COIN            "Coins"
 
 #define PRIMARY_COLOR "fce679"
 #define SILVER_COLOR "d1d1d1"
@@ -120,9 +120,9 @@ L1:
 #define SECURE_LOGIN_REQUEST_URL "api.yourwebsite/auth/auth-request-code"
 #define SECURE_LOGIN_CHECK_URL "api.yourwebsite/auth/auth-check-code"
 #define SECURE_LOGIN_TIME 180000 //3 min en logear o kick
-#define KEY_F								( 16 )
+#define KEY_F                                ( 16 )
 // basura innecesaria, se espera por cambio
-#define callbackp:%0(%1)						forward %0(%1) ; public %0(%1)
+#define callbackp:%0(%1)                        forward %0(%1) ; public %0(%1)
 //YOUTUBE
 #define SEARCH_YT_PATH "yt.yourwebsite/search"
 #define DOWNLOAD_YT_PATH "yt.yourwebsite/download"
@@ -130,28 +130,28 @@ L1:
 
  /*
 
-    888    888                        888                  
-    888    888                        888                  
-    888    888                        888                  
-    8888888888  .d88b.   8888b.   .d88888  .d88b.  888d888 
-    888    888 d8P  Y8b     "88b d88" 888 d8P  Y8b 888P"   
-    888    888 88888888 .d888888 888  888 88888888 888     
-    888    888 Y8b.     888  888 Y88b 888 Y8b.     888     
-    888    888  "Y8888  "Y888888  "Y88888  "Y8888  888     
+    888    888                        888
+    888    888                        888
+    888    888                        888
+    8888888888  .d88b.   8888b.   .d88888  .d88b.  888d888
+    888    888 d8P  Y8b     "88b d88" 888 d8P  Y8b 888P"
+    888    888 88888888 .d888888 888  888 88888888 888
+    888    888 Y8b.     888  888 Y88b 888 Y8b.     888
+    888    888  "Y8888  "Y888888  "Y88888  "Y8888  888
 
-*/                                          
+*/
 
 #include "core/misc/macros_h"
 #include "core/db/db_h"
 
 
-// Admin 
+// Admin
 #include "core/administration/admin_levels_h"
 
 //anticheat
 #include "core/anticheat/anticheat_h"
 
-// world 
+// world
 #include "core/world/enter_exits_h"
 #include "core/world/extra_h"
 #include "core/world/world_h"
@@ -161,7 +161,7 @@ L1:
 
 
 // Player
-#include "core/player/player_h" 
+#include "core/player/player_h"
 #include "core/player/player_account_h" // se tiene que modular
 #include "core/player/player_temp_h"
 #include "core/player/player_phone_h"
@@ -192,21 +192,21 @@ L1:
 #include "core/furniture/properties_h"
 #include "core/key_areas/key_areas_h"
 #include "core/weapons/weapons_h"
-#include "core/directives/rules_h" 
+#include "core/directives/rules_h"
 /*
 
-8888888888                                  
-888                                         
-888                                         
-8888888 888  888 88888b.   .d8888b .d8888b  
-888     888  888 888 "88b d88P"    88K      
-888     888  888 888  888 888      "Y8888b. 
-888     Y88b 888 888  888 Y88b.         X88 
-888      "Y88888 888  888  "Y8888P  88888P' 
+8888888888
+888
+888
+8888888 888  888 88888b.   .d8888b .d8888b
+888     888  888 888 "88b d88P"    88K
+888     888  888 888  888 888      "Y8888b.
+888     Y88b 888 888  888 Y88b.         X88
+888      "Y88888 888  888  "Y8888P  88888P'
 
 */
 
-#include "core/color/pallete" 
+#include "core/color/pallete"
 
 // se tiene que modular
 #include "core/main/callbacks"
@@ -214,15 +214,15 @@ L1:
 
 /*
 
- .d8888b.                     888          
-d88P  Y88b                    888          
-888    888                    888          
-888        88888b.d88b.   .d88888 .d8888b  
-888        888 "888 "88b d88" 888 88K      
-888    888 888  888  888 888  888 "Y8888b. 
-Y88b  d88P 888  888  888 Y88b 888      X88 
- "Y8888P"  888  888  888  "Y88888  88888P' 
-                                           
+ .d8888b.                     888
+d88P  Y88b                    888
+888    888                    888
+888        88888b.d88b.   .d88888 .d8888b
+888        888 "888 "88b d88" 888 88K
+888    888 888  888  888 888  888 "Y8888b.
+Y88b  d88P 888  888  888 Y88b 888      X88
+ "Y8888P"  888  888  888  "Y88888  88888P'
+
 */
 
 // Administration
@@ -236,14 +236,14 @@ Y88b  d88P 888  888  888 Y88b 888      X88
 #include "core/main/commands" // se tiene que modular
 
 /*
-    888b     d888          d8b          
-    8888b   d8888          Y8P          
-    88888b.d88888                       
-    888Y88888P888  8888b.  888 88888b.  
-    888 Y888P 888     "88b 888 888 "88b 
-    888  Y8P  888 .d888888 888 888  888 
-    888   "   888 888  888 888 888  888 
-    888       888 "Y888888 888 888  888 
+    888b     d888          d8b
+    8888b   d8888          Y8P
+    88888b.d88888
+    888Y88888P888  8888b.  888 88888b.
+    888 Y888P 888     "88b 888 888 "88b
+    888  Y8P  888 .d888888 888 888  888
+    888   "   888 888  888 888 888  888
+    888       888 "Y888888 888 888  888
 */
 
 #include "core/dialog/showDialog" // se tiene que modular
@@ -252,15 +252,15 @@ Y88b  d88P 888  888  888 Y88b 888      X88
 
 /*
 
-888b     d888               888          888                   
-8888b   d8888               888          888                   
-88888b.d88888               888          888                   
-888Y88888P888  .d88b.   .d88888 888  888 888  .d88b.  .d8888b  
-888 Y888P 888 d88""88b d88" 888 888  888 888 d8P  Y8b 88K      
-888  Y8P  888 888  888 888  888 888  888 888 88888888 "Y8888b. 
-888   "   888 Y88..88P Y88b 888 Y88b 888 888 Y8b.          X88 
-888       888  "Y88P"   "Y88888  "Y88888 888  "Y8888   88888P' 
-                                                               
+888b     d888               888          888
+8888b   d8888               888          888
+88888b.d88888               888          888
+888Y88888P888  .d88b.   .d88888 888  888 888  .d88b.  .d8888b
+888 Y888P 888 d88""88b d88" 888 888  888 888 d8P  Y8b 88K
+888  Y8P  888 888  888 888  888 888  888 888 88888888 "Y8888b.
+888   "   888 Y88..88P Y88b 888 Y88b 888 888 Y8b.          X88
+888       888  "Y88P"   "Y88888  "Y88888 888  "Y8888   88888P'
+
 
 */
 
@@ -301,83 +301,83 @@ Y88b  d88P 888  888  888 Y88b 888      X88
 
 public OnGameModeInit()
 {
-	SetGameModeText(SERVER_GAMEMODE);
+    SetGameModeText(SERVER_GAMEMODE);
     SendRconCommand("hostname "SERVER_HOSTNAME"...");
     SendRconCommand("language "SERVER_LANGUAGE"");
-	SendRconCommand("weburl "SERVER_WEBSITE"");
-	SendRconCommand("minconnectiontime 0");
+    SendRconCommand("weburl "SERVER_WEBSITE"");
+    SendRconCommand("minconnectiontime 0");
     SendRconCommand("ackslimit 8000");
     SendRconCommand("messageslimit 100");
     SendRconCommand("conncookies 1");
-	SendRconCommand("cookielogging 0");
-	SendRconCommand("chatlogging 0");
-	SendRconCommand("sleep 1");
-	SetTimer("minconnecttime", 60000, 0);
-	SetTimer("BajarSegundos", 1000, true );
+    SendRconCommand("cookielogging 0");
+    SendRconCommand("chatlogging 0");
+    SendRconCommand("sleep 1");
+    SetTimer("minconnecttime", 60000, 0);
+    SetTimer("BajarSegundos", 1000, true );
 
 
- 	for( new i; i < sizeof MinaInfo; i++ )
-		{
-			MinaInfo[i][w_zone] = CreateDynamicSphere(MinaInfo[i][RocaX], MinaInfo[i][RocaY], MinaInfo[i][RocaZ], 1.5 );
-			MinaInfo[i][w_object] = CreateDynamicObject(1207, MinaInfo[i][RocaX], MinaInfo[i][RocaY], MinaInfo[i][RocaZ], MinaInfo[i][RocaRX], MinaInfo[i][RocaRY], MinaInfo[i][RocaRZ]);
-			SetMinaRoca(MinaInfo[i][w_mina],i);
-			SetTexuraRoca(MinaInfo[i][w_object],MinaInfo[i][w_tipo]);
-			MinaInfo[i][w_use] =
-			MinaInfo[i][w_drop] = false;
-			MinaInfo[i][w_count] = 100;
-			MinaInfo[i][w_time] = 0;
-		}
+     for ( new i; i < sizeof MinaInfo; i++ )
+        {
+            MinaInfo[i][w_zone] = CreateDynamicSphere(MinaInfo[i][RocaX], MinaInfo[i][RocaY], MinaInfo[i][RocaZ], 1.5 );
+            MinaInfo[i][w_object] = CreateDynamicObject(1207, MinaInfo[i][RocaX], MinaInfo[i][RocaY], MinaInfo[i][RocaZ], MinaInfo[i][RocaRX], MinaInfo[i][RocaRY], MinaInfo[i][RocaRZ]);
+            SetMinaRoca(MinaInfo[i][w_mina],i);
+            SetTexuraRoca(MinaInfo[i][w_object],MinaInfo[i][w_tipo]);
+            MinaInfo[i][w_use] =
+            MinaInfo[i][w_drop] = false;
+            MinaInfo[i][w_count] = 100;
+            MinaInfo[i][w_time] = 0;
+        }
 
-	ConnectDatabase();
+    ConnectDatabase();
 
-	SetWorldMinutesForDay(180); // 3 horas reales = 24 horas en juego
-	DisableInteriorEnterExits();
-	ShowPlayerMarkers(PLAYER_MARKERS_MODE_GLOBAL);
-	EnableStuntBonusForAll(false);
-	ManualVehicleEngineAndLights();
-	FormatDialogStrings();
-	UsePlayerPedAnims();
-	MapAndreas_Init(MAP_ANDREAS_MODE_FULL);
-	return 1;
+    SetWorldMinutesForDay(180); // 3 horas reales = 24 horas en juego
+    DisableInteriorEnterExits();
+    ShowPlayerMarkers(PLAYER_MARKERS_MODE_GLOBAL);
+    EnableStuntBonusForAll(false);
+    ManualVehicleEngineAndLights();
+    FormatDialogStrings();
+    UsePlayerPedAnims();
+    MapAndreas_Init(MAP_ANDREAS_MODE_FULL);
+    return 1;
 }
 
 public OnGameModeExit()
 {
-	print("\n\n\n----> Saliendo\n\n");
-	
-	new date[24];
-	getDateTime(date);
-	for(new i, j = GetPlayerPoolSize(); i <= j; i++)
-	{
-		if(IsPlayerConnected(i) && PLAYER_TEMP[i][pt_USER_LOGGED])
-		{
-			format(ACCOUNT_INFO[i][ac_LAST_CONNECTION], 24, "%s", date);
-			SavePlayerData(i);
-			SavePlayerVehicles(i, false);
-			SavePlayerToys(i);
-			SavePlayerWeaponsData(i);
-			SavePlayerWorkLevels(i);
-			PLAYER_TEMP[i][pt_SAVE_ACCOUNT_TIME] = gettime();
-		}
-	}
-	mysql_close(srp_db);
-	/*
+    print("\n\n\n----> Saliendo\n\n");
+
+    new date[24];
+    getDateTime(date);
+    for (new i, j = GetPlayerPoolSize(); i <= j; i++)
+    {
+        if (IsPlayerConnected(i) && PLAYER_TEMP[i][pt_USER_LOGGED])
+        {
+            format(ACCOUNT_INFO[i][ac_LAST_CONNECTION], 24, "%s", date);
+            SavePlayerData(i);
+            SavePlayerVehicles(i, false);
+            SavePlayerToys(i);
+            SavePlayerWeaponsData(i);
+            SavePlayerWorkLevels(i);
+            PLAYER_TEMP[i][pt_SAVE_ACCOUNT_TIME] = gettime();
+        }
+    }
+    mysql_close(srp_db);
+    /*
      * Pendiente por borrar o cambiar, esto me parece que es innecesario
-	for(new i, j = GetPlayerPoolSize(); i <= j; i++) // Cerrar conexión a todos al cerrar el server
-	{
-		if(IsPlayerConnected(i))
-		{
-				new BitStream:bs = BS_New();
+    for (new i, j = GetPlayerPoolSize(); i <= j; i++) // Cerrar conexión a todos al cerrar el server
+    {
+        if (IsPlayerConnected(i))
+        {
+                new BitStream:bs = BS_New();
 
-				BS_WriteValue(
-					bs,
-					PR_UINT8, 33
-				);
+                BS_WriteValue(
+                    bs,
+                    PR_UINT8, 33
+                );
 
-				BS_Send(bs, i);
-				BS_Delete(bs);
-		}
-	}
-	*/
-	return 1;
+                BS_Send(bs, i);
+                BS_Delete(bs);
+        }
+    }
+    */
+    return 1;
 }

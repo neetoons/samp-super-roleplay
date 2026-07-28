@@ -12,18 +12,18 @@
 
 */
 
-#if defined pallete_included 
+#if defined pallete_included
     #endinput
 #endif
 #define pallete_included
 
 /* Colores */
-#define COLOR_FADE1 	0xE6E6E6E6
-#define COLOR_FADE2 	0xC8C8C8C8
-#define COLOR_FADE3 	0xAAAAAAAA
-#define COLOR_FADE4 	0x8C8C8C8C
-#define COLOR_FADE5 	0x6E6E6E6E
-#define PLAYER_COLOR	0xCCCCCC00
+#define COLOR_FADE1     0xE6E6E6E6
+#define COLOR_FADE2     0xC8C8C8C8
+#define COLOR_FADE3     0xAAAAAAAA
+#define COLOR_FADE4     0x8C8C8C8C
+#define COLOR_FADE5     0x6E6E6E6E
+#define PLAYER_COLOR    0xCCCCCC00
 
 stock HexToRGBA(colour, &r, &g, &b, &a) //By Betamaster
 {
@@ -40,10 +40,10 @@ stock RGBAToHex(r, g, b, a) //By Betamaster
 
 stock RGBAToARGB(col)
 {
-	return ((((col) << 24) & 0xFF000000) | (((col) >>> 8) & 0xFFFFFF));
+    return ((((col) << 24) & 0xFF000000) | (((col) >>> 8) & 0xFFFFFF));
 }
 
 stock ARGBToRGBA(col)
 {
-	return ((((col) << 8) & 0xFFFFFF00) | (((col) >>> 24) & 0xFF));
+    return ((((col) << 8) & 0xFFFFFF00) | (((col) >>> 24) & 0xFF));
 }

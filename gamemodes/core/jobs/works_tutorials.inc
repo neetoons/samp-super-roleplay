@@ -51,7 +51,8 @@ new
 
 forward OnPWorkTutorialRequestNextStep(playerid);
 
-hook OnScriptInit() {
+hook OnScriptInit()
+{
     new tmp_tutorial[E_WorksTutorials],
         tutorial[E_WorksTutorials];
 
@@ -344,30 +345,36 @@ hook OnScriptInit() {
     WorksTutorials_Count[WORK_DELIVERYMAN] ++;
 }
 
-hook OnPlayerDisconnect(playerid, reason) {
+hook OnPlayerDisconnect(playerid, reason)
+{
     DestroyPlayerWorkTutorial(playerid);
 
     new tmp_pWorkTutorialInfo[E_workTutorialInfo];
     pWorkTutorialInfo[playerid] = tmp_pWorkTutorialInfo;
 }
 
-hook OnPlayerDeath(playerid, killerid, reason) {
-    if(pInWorkTutorial[playerid])
+hook OnPlayerDeath(playerid, killerid, reason)
+{
+    if (pInWorkTutorial[playerid])
     DestroyPlayerWorkTutorial(playerid);
 }
 
-hook OnPlayerObtainWork(playerid, work) {
-    if(PLAYER_WORKS[playerid][work][pwork_LEVEL] <= 0 && WorksTutorials_Count[work] > 0) {
+hook OnPlayerObtainWork(playerid, work)
+{
+    if (PLAYER_WORKS[playerid][work][pwork_LEVEL] <= 0 && WorksTutorials_Count[work] > 0)
+{
         StartPlayerWorkTutorial(playerid, work);
     }
-    else {
+    else
+{
         SendFormatNotification(playerid, "¡Felicidades! Has conseguido tu trabajo de ~b~%s~w~.", work_info[work][work_info_NAME]);
-		SendNotification(playerid, "Puedes utilizar ~y~/ayuda trabajos ~w~para ver como trabajar aquí.");
+        SendNotification(playerid, "Puedes utilizar ~y~/ayuda trabajos ~w~para ver como trabajar aquí.");
     }
 }
 
-hook OnPlayerSpawn(playerid) {
-    if(pWorkTutorialInfo[playerid][wti_APPLY])
+hook OnPlayerSpawn(playerid)
+{
+    if (pWorkTutorialInfo[playerid][wti_APPLY])
     {
         ACCOUNT_INFO[playerid][ac_STATE] = pWorkTutorialInfo[playerid][wti_RP_STATE];
         PI[playerid][ac_LOCAL_INTERIOR] = pWorkTutorialInfo[playerid][wti_LOCAL_INTERIOR];
@@ -379,24 +386,24 @@ hook OnPlayerSpawn(playerid) {
     }
 }
 
-DestroyPlayerWorkTutorial(playerid) 
+DestroyPlayerWorkTutorial(playerid)
     {
-        if(pWorkTutorialTimer[playerid] != -1) 
+        if (pWorkTutorialTimer[playerid] != -1)
         {
             KillTimer(pWorkTutorialTimer[playerid]);
             pWorkTutorialTimer[playerid] = -1;
         }
 
-        if(pWorkTutorialTd[playerid] != PlayerText:INVALID_TEXT_DRAW) 
+        if (pWorkTutorialTd[playerid] != PlayerText:INVALID_TEXT_DRAW)
         {
             PlayerTextDrawDestroy(playerid, pWorkTutorialTd[playerid]);
             pWorkTutorialTd[playerid] = PlayerText:INVALID_TEXT_DRAW;
         }
-        
+
         pWorkTutorial[playerid] = 0;
         pWorkTutorialStep[playerid] = 0;
 
-        if(ACCOUNT_INFO[playerid][ac_ID] > 0 && pInWorkTutorial[playerid]) 
+        if (ACCOUNT_INFO[playerid][ac_ID] > 0 && pInWorkTutorial[playerid])
         {
             TogglePlayerSpectatingEx(playerid, false);
             SetPlayerHud(playerid);
@@ -404,12 +411,13 @@ DestroyPlayerWorkTutorial(playerid)
         pInWorkTutorial[playerid] = false;
 }
 
-StartPlayerWorkTutorial(playerid, work) {
+StartPlayerWorkTutorial(playerid, work)
+{
     HideNotifications(playerid);
     ClearPlayerChat(playerid);
-    
+
     GetPlayerHealth(playerid, PI[playerid][ac_HEALTH]);
-	GetPlayerArmour(playerid, PI[playerid][ac_ARMOUR]);
+    GetPlayerArmour(playerid, PI[playerid][ac_ARMOUR]);
     PI[playerid][ac_POS_X] = obtain_work_coords[work][obtain_work_X];
     PI[playerid][ac_POS_Y] = obtain_work_coords[work][obtain_work_Y];
     PI[playerid][ac_POS_Z] = obtain_work_coords[work][obtain_work_Z];
@@ -430,7 +438,7 @@ StartPlayerWorkTutorial(playerid, work) {
     SetSpawnInfo(playerid, NO_TEAM, PI[playerid][ac_SKIN], PI[playerid][ac_POS_X], PI[playerid][ac_POS_Y], PI[playerid][ac_POS_Z], PI[playerid][ac_ANGLE], 0, 0, 0, 0, 0, 0);
 
     DestroyPlayerWorkTutorial(playerid);
-    
+
     pWorkTutorialTd[playerid] = CreatePlayerTextDraw(playerid, 320.000000, 350.000000, "_");
     PlayerTextDrawLetterSize(playerid, pWorkTutorialTd[playerid], 0.233249, 1.198665);
     PlayerTextDrawTextSize(playerid, pWorkTutorialTd[playerid], 0.000000, 300.000000);
@@ -449,8 +457,10 @@ StartPlayerWorkTutorial(playerid, work) {
     UpdatePlayerWorkTutorial(playerid);
 }
 
-UpdatePlayerWorkTutorial(playerid) {
-    if(pWorkTutorialTimer[playerid] != -1) {
+UpdatePlayerWorkTutorial(playerid)
+{
+    if (pWorkTutorialTimer[playerid] != -1)
+{
         KillTimer(pWorkTutorialTimer[playerid]);
         pWorkTutorialTimer[playerid] = -1;
     }
@@ -461,49 +471,55 @@ UpdatePlayerWorkTutorial(playerid) {
 
     new tutorialInfo[E_WorksTutorials];
     tutorialInfo = WorksTutorials_Data[work][step];
-    if(tutorialInfo[wt_Time] <= 0) tutorialInfo[wt_Time] = WORK_TUTORIAL_DEFAULT_TIME;
+    if (tutorialInfo[wt_Time] <= 0) tutorialInfo[wt_Time] = WORK_TUTORIAL_DEFAULT_TIME;
 
-    if(tutorialInfo[wt_camTo_X] != 0.0 && tutorialInfo[wt_camTo_Y] != 0.0 && tutorialInfo[wt_camTo_Z] != 0.0) InterpolateCameraPos(playerid, tutorialInfo[wt_cam_X], tutorialInfo[wt_cam_Y], tutorialInfo[wt_cam_Z], tutorialInfo[wt_camTo_X], tutorialInfo[wt_camTo_Y], tutorialInfo[wt_camTo_Z], tutorialInfo[wt_Time], CAMERA_MOVE);
+    if (tutorialInfo[wt_camTo_X] != 0.0 && tutorialInfo[wt_camTo_Y] != 0.0 && tutorialInfo[wt_camTo_Z] != 0.0) InterpolateCameraPos(playerid, tutorialInfo[wt_cam_X], tutorialInfo[wt_cam_Y], tutorialInfo[wt_cam_Z], tutorialInfo[wt_camTo_X], tutorialInfo[wt_camTo_Y], tutorialInfo[wt_camTo_Z], tutorialInfo[wt_Time], CAMERA_MOVE);
     else SetPlayerCameraPos(playerid, tutorialInfo[wt_cam_X], tutorialInfo[wt_cam_Y], tutorialInfo[wt_cam_Z]);
 
-    if(tutorialInfo[wt_camTo_LX] != 0.0 && tutorialInfo[wt_camTo_LY] != 0.0 && tutorialInfo[wt_camTo_LZ] != 0.0) InterpolateCameraLookAt(playerid, tutorialInfo[wt_cam_LX], tutorialInfo[wt_cam_LY], tutorialInfo[wt_cam_LZ], tutorialInfo[wt_camTo_LX], tutorialInfo[wt_camTo_LY], tutorialInfo[wt_camTo_LZ], tutorialInfo[wt_Time], CAMERA_MOVE);
+    if (tutorialInfo[wt_camTo_LX] != 0.0 && tutorialInfo[wt_camTo_LY] != 0.0 && tutorialInfo[wt_camTo_LZ] != 0.0) InterpolateCameraLookAt(playerid, tutorialInfo[wt_cam_LX], tutorialInfo[wt_cam_LY], tutorialInfo[wt_cam_LZ], tutorialInfo[wt_camTo_LX], tutorialInfo[wt_camTo_LY], tutorialInfo[wt_camTo_LZ], tutorialInfo[wt_Time], CAMERA_MOVE);
     else SetPlayerCameraLookAt(playerid, tutorialInfo[wt_cam_LX], tutorialInfo[wt_cam_LY], tutorialInfo[wt_cam_LZ]);
 
     SetPlayerInterior(playerid, tutorialInfo[wt_Interior]);
     SetPlayerVirtualWorld(playerid, tutorialInfo[wt_WorldId]);
 
-    if(tutorialInfo[wt_SoundId] != 0) PlayerPlaySound(playerid, tutorialInfo[wt_SoundId], 0.0, 0.0, 0.0);
-    if(strlen(tutorialInfo[wt_Audio]) > 0) PlayAudioStreamForPlayer(playerid, tutorialInfo[wt_Audio]);
+    if (tutorialInfo[wt_SoundId] != 0) PlayerPlaySound(playerid, tutorialInfo[wt_SoundId], 0.0, 0.0, 0.0);
+    if (strlen(tutorialInfo[wt_Audio]) > 0) PlayAudioStreamForPlayer(playerid, tutorialInfo[wt_Audio]);
 
-    if(strlen(tutorialInfo[wt_Message]) > 0) {
+    if (strlen(tutorialInfo[wt_Message]) > 0)
+{
         PlayerTextDrawShow(playerid, pWorkTutorialTd[playerid]);
         FixTextDrawString(tutorialInfo[wt_Message]);
         PlayerTextDrawSetString(playerid, pWorkTutorialTd[playerid], tutorialInfo[wt_Message]);
     }
-    else {
+    else
+{
         PlayerTextDrawHide(playerid, pWorkTutorialTd[playerid]);
         PlayerTextDrawSetString(playerid, pWorkTutorialTd[playerid], "_");
     }
 
-    pWorkTutorialTimer[playerid] = SetTimerEx("OnPWorkTutorialRequestNextStep", tutorialInfo[wt_Time], false, "i", playerid);   
+    pWorkTutorialTimer[playerid] = SetTimerEx("OnPWorkTutorialRequestNextStep", tutorialInfo[wt_Time], false, "i", playerid);
 }
 
-public OnPWorkTutorialRequestNextStep(playerid) {
+public OnPWorkTutorialRequestNextStep(playerid)
+{
     pWorkTutorialTimer[playerid] = -1;
 
     new
         work = pWorkTutorial[playerid],
         step = pWorkTutorialStep[playerid];
 
-    if(step >= WorksTutorials_Count[work] - 1) {
+    if (step >= WorksTutorials_Count[work] - 1)
+{
         DestroyPlayerWorkTutorial(playerid);
     }
-    else {
+    else
+{
         pWorkTutorialStep[playerid] ++;
         UpdatePlayerWorkTutorial(playerid);
     }
 }
 
-IsPlayerInWorkTutorial(playerid) {
+IsPlayerInWorkTutorial(playerid)
+{
     return pInWorkTutorial[playerid];
 }

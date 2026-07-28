@@ -11,7 +11,7 @@
     Code originally released from: https://sampforum.blast.hk/showthread.php?tid=639431
 
 */
-#if defined ac_anticbug_included 
+#if defined ac_anticbug_included
     #endinput
 #endif
 #define ac_anticbug_included
@@ -22,38 +22,47 @@ new
     bool:pCBugging[MAX_PLAYERS],
     pCBugLastFiredWeapon[MAX_PLAYERS];
 
-hook OnPlayerDisconnect(playerid, reason) {
+hook OnPlayerDisconnect(playerid, reason)
+{
     pCBugging[playerid] = false;
     pCBugLastFiredWeapon[playerid] = 0;
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
-    if(
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+{
+    if (
         ac_Info[CHEAT_CBUG][ac_Enabled] &&
         !pCBugging[playerid] &&
         GetPlayerState(playerid) == PLAYER_STATE_ONFOOT
-    ) {
+    )
+{
         new weaponid = GetPlayerWeapon(playerid);
-        if(weaponid > 0 && WEAPON_INFO[weaponid][weapon_info_AC_CBUG]) {
-            if(newkeys & KEY_FIRE) {
+        if (weaponid > 0 && WEAPON_INFO[weaponid][weapon_info_AC_CBUG])
+{
+            if (newkeys & KEY_FIRE)
+{
                 pCBugLastFiredWeapon[playerid] = gettime();
             }
-            else if(newkeys & KEY_CROUCH) {
+            else if (newkeys & KEY_CROUCH)
+{
                 new now = gettime();
-                if(now > PLAYER_AC_INFO[playerid][CHEAT_CBUG][p_ac_info_IMMUNITY])
+                if (now > PLAYER_AC_INFO[playerid][CHEAT_CBUG][p_ac_info_IMMUNITY])
                 {
-                    if((now - pCBugLastFiredWeapon[playerid]) < 1) {
-                        if(!ac_Info[CHEAT_CBUG][ac_Interval]) {
+                    if ((now - pCBugLastFiredWeapon[playerid]) < 1)
+{
+                        if (!ac_Info[CHEAT_CBUG][ac_Interval])
+{
                             OnPlayerCheatDetected(playerid, CHEAT_CBUG);
                             SetCBugPlayerInfo(playerid);
                         }
                         else
                         {
-                            if(now - PLAYER_AC_INFO[playerid][CHEAT_CBUG][p_ac_info_LAST_DETECTION] > ac_Info[CHEAT_CBUG][ac_Interval]) PLAYER_AC_INFO[playerid][CHEAT_CBUG][p_ac_info_DETECTIONS] = 0;
+                            if (now - PLAYER_AC_INFO[playerid][CHEAT_CBUG][p_ac_info_LAST_DETECTION] > ac_Info[CHEAT_CBUG][ac_Interval]) PLAYER_AC_INFO[playerid][CHEAT_CBUG][p_ac_info_DETECTIONS] = 0;
                             else PLAYER_AC_INFO[playerid][CHEAT_CBUG][p_ac_info_DETECTIONS] ++;
-                            
+
                             PLAYER_AC_INFO[playerid][CHEAT_CBUG][p_ac_info_LAST_DETECTION] = now;
-                            if(PLAYER_AC_INFO[playerid][CHEAT_CBUG][p_ac_info_DETECTIONS] >= ac_Info[CHEAT_CBUG][ac_Detections]) {
+                            if (PLAYER_AC_INFO[playerid][CHEAT_CBUG][p_ac_info_DETECTIONS] >= ac_Info[CHEAT_CBUG][ac_Detections])
+{
                                 OnPlayerCheatDetected(playerid, CHEAT_CBUG);
                                 SetCBugPlayerInfo(playerid);
                             }
@@ -65,7 +74,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
     }
 }
 
-SetCBugPlayerInfo(playerid) {
+SetCBugPlayerInfo(playerid)
+{
     new Float:sx, Float:sy, Float:sz;
     GetPlayerPos(playerid, sx, sy, sz);
     SetPlayerPos(playerid, sx, sy, sz);
@@ -77,7 +87,8 @@ SetCBugPlayerInfo(playerid) {
 }
 
 forward FinishCBug(playerid);
-public FinishCBug(playerid) {
+public FinishCBug(playerid)
+{
     pCBugging[playerid] = false;
     pCBugLastFiredWeapon[playerid] = 0;
     TogglePlayerControllableEx(playerid, true);

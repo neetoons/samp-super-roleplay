@@ -11,7 +11,7 @@
     Code originally released from: https://sampforum.blast.hk/showthread.php?tid=639431
 
 */
-#if defined taser_gun_weapon_included 
+#if defined taser_gun_weapon_included
     #endinput
 #endif
 #define taser_gun_weapon_included
@@ -20,27 +20,35 @@
 
 new bool:pTazed[MAX_PLAYERS];
 
-hook OnPlayerDisconnect(playerid, reason) {
+hook OnPlayerDisconnect(playerid, reason)
+{
     pTazed[playerid] = false;
 }
 
-hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ) {
+hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
+{
     new weaponId = weaponid;
-    if(weaponId) {
+    if (weaponId)
+{
         new slot = WEAPON_INFO[weaponId][weapon_info_SLOT];
-        if(WEAPON_INFO[ PLAYER_WEAPONS[playerid][slot][player_weapon_ID] ][weapon_info_TYPE] == WEAPON_TASER_GUN) {
+        if (WEAPON_INFO[ PLAYER_WEAPONS[playerid][slot][player_weapon_ID] ][weapon_info_TYPE] == WEAPON_TASER_GUN)
+{
             PlayerPlaySound(playerid, 6003, 0.0, 0.0, 0.0);
         }
     }
     return Y_HOOKS_CONTINUE_RETURN_1;
 }
 
-hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart) {
+hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
+{
     new weaponId = GetPlayerWeapon(playerid);
-    if(weaponId) {
+    if (weaponId)
+{
         new slot = WEAPON_INFO[weaponId][weapon_info_SLOT];
-        if(WEAPON_INFO[ PLAYER_WEAPONS[playerid][slot][player_weapon_ID] ][weapon_info_TYPE] == WEAPON_TASER_GUN) {
-            if(ACCOUNT_INFO[damagedid][ac_STATE] != ROLEPLAY_STATE_CRACK && !pTazed[damagedid]) {
+        if (WEAPON_INFO[ PLAYER_WEAPONS[playerid][slot][player_weapon_ID] ][weapon_info_TYPE] == WEAPON_TASER_GUN)
+{
+            if (ACCOUNT_INFO[damagedid][ac_STATE] != ROLEPLAY_STATE_CRACK && !pTazed[damagedid])
+{
                 pTazed[damagedid] = true;
                 PlayerPlaySound(damagedid, 6003, 0.0, 0.0, 0.0);
                 ApplyAnimation(damagedid, "CRACK", "crckidle4", 4.1, 1, 0, 0, 1, 0, 1);
@@ -54,7 +62,7 @@ hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart) {
                 GetPlayerHealth(damagedid, health);
 
                 new Float:newHealth = health + amount;
-                if(newHealth > 100.0) newHealth = 100.0;
+                if (newHealth > 100.0) newHealth = 100.0;
                 SetPlayerHealthEx(damagedid, newHealth);
             }
         }
@@ -63,7 +71,8 @@ hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart) {
 }
 
 forward FinishTazer(playerid);
-public FinishTazer(playerid) {
+public FinishTazer(playerid)
+{
     pTazed[playerid] = false;
     ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.1, 0, 0, 0, 0, 0, true);
     ClearAnimations(playerid, 1);

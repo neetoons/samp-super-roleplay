@@ -12,7 +12,7 @@
 
 */
 
-#if defined furniture_shop_included 
+#if defined furniture_shop_included
     #endinput
 #endif
 #define furniture_shop_included
@@ -51,7 +51,7 @@ new FurnitureTypesInfo[][E_FurnitureTypesInfo] = {
     {"Decoración", 1934.992553, -1743.235717, 1252.032104, 1935.613891, -1743.970581, 1251.760131},
     {"Puertas", 1933.297485, -1737.081054, 1252.086669, 1933.906494, -1736.344238, 1251.793090},
     {"Paredes", 1933.297485, -1737.081054, 1252.086669, 1933.906494, -1736.344238, 1251.793090},
-    {"Otros", 1933.297485, -1737.081054, 1252.086669, 1933.906494, -1736.344238, 1251.793090} 
+    {"Otros", 1933.297485, -1737.081054, 1252.086669, 1933.906494, -1736.344238, 1251.793090}
 };
 
 enum E_FurnitureObjectsInfo {
@@ -540,75 +540,91 @@ new
     pFurnitureShopPickup[MAX_PLAYERS] = {INVALID_STREAMER_ID, ...}
 ;
 
-hook OnScriptInit() {
+hook OnScriptInit()
+{
     CreateDynamic3DTextLabel("Usa {"#PRIMARY_COLOR"}/muebles {FFFFFF}para comprar muebles.", 0xFFFFFFFF, FurnitureShopBuyPos[0], FurnitureShopBuyPos[1], FurnitureShopBuyPos[2], 10.0, .testlos = true, .worldid = 0);
 }
 
-hook OnPlayerDisconnect(playerid, reason) {
+hook OnPlayerDisconnect(playerid, reason)
+{
     DestroyPlayerFurnitureShop(playerid);
 }
 
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
-	if(newstate == PLAYER_STATE_SPECTATING || newstate == PLAYER_STATE_WASTED) {
-        if(pFurnitureShopOpened[playerid]) {
-		    CancelSelectTextDrawEx(playerid);
+    if (newstate == PLAYER_STATE_SPECTATING || newstate == PLAYER_STATE_WASTED)
+{
+        if (pFurnitureShopOpened[playerid])
+{
+            CancelSelectTextDrawEx(playerid);
         }
-	}
-	return 1;
+    }
+    return 1;
 }
 
-hook OnPlayerClickTextDraw(playerid, Text:clickedid) {
-    if(clickedid == Text:INVALID_TEXT_DRAW && pFurnitureShopOpened[playerid]) {
+hook OnPlayerClickTextDraw(playerid, Text:clickedid)
+{
+    if (clickedid == Text:INVALID_TEXT_DRAW && pFurnitureShopOpened[playerid])
+{
         DestroyPlayerFurnitureShop(playerid);
     }
 }
 
-hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid) {
-    if(pFurnitureShopOpened[playerid]) {
-        if(playertextid == pFurnitureShopTd[playerid][3]) { //<< CAT
+hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
+{
+    if (pFurnitureShopOpened[playerid])
+{
+        if (playertextid == pFurnitureShopTd[playerid][3])
+{ //<< CAT
             pFurnitureShopCurrentType[playerid] --;
-            if(pFurnitureShopCurrentType[playerid] < 0) pFurnitureShopCurrentType[playerid] = sizeof(FurnitureTypesInfo) - 1;
+            if (pFurnitureShopCurrentType[playerid] < 0) pFurnitureShopCurrentType[playerid] = sizeof(FurnitureTypesInfo) - 1;
             pFurnitureShopCurrentModel[playerid] = 0;
             UpdatePlayerFurnitureShop(playerid);
             return Y_HOOKS_BREAK_RETURN_1;
         }
-        else if(playertextid == pFurnitureShopTd[playerid][4]) { //>> CAT
+        else if (playertextid == pFurnitureShopTd[playerid][4])
+{ //>> CAT
             pFurnitureShopCurrentType[playerid] ++;
-            if(pFurnitureShopCurrentType[playerid] > sizeof(FurnitureTypesInfo) - 1) pFurnitureShopCurrentType[playerid] = 0;
+            if (pFurnitureShopCurrentType[playerid] > sizeof(FurnitureTypesInfo) - 1) pFurnitureShopCurrentType[playerid] = 0;
             pFurnitureShopCurrentModel[playerid] = 0;
             UpdatePlayerFurnitureShop(playerid);
             return Y_HOOKS_BREAK_RETURN_1;
         }
-        else if(playertextid == pFurnitureShopTd[playerid][6]) { //<< MUEBLE
+        else if (playertextid == pFurnitureShopTd[playerid][6])
+{ //<< MUEBLE
             pFurnitureShopCurrentModel[playerid] --;
-            if(pFurnitureShopCurrentModel[playerid] < 0) pFurnitureShopCurrentModel[playerid] = CountFurnitureObjectsInfoType(pFurnitureShopCurrentType[playerid]) - 1;
+            if (pFurnitureShopCurrentModel[playerid] < 0) pFurnitureShopCurrentModel[playerid] = CountFurnitureObjectsInfoType(pFurnitureShopCurrentType[playerid]) - 1;
             UpdatePlayerFurnitureShop(playerid, false);
             return Y_HOOKS_BREAK_RETURN_1;
         }
-        else if(playertextid == pFurnitureShopTd[playerid][7]) { //>> MUEBLE
+        else if (playertextid == pFurnitureShopTd[playerid][7])
+{ //>> MUEBLE
             pFurnitureShopCurrentModel[playerid] ++;
-            if(pFurnitureShopCurrentModel[playerid] > CountFurnitureObjectsInfoType(pFurnitureShopCurrentType[playerid]) - 1) pFurnitureShopCurrentModel[playerid] = 0;
+            if (pFurnitureShopCurrentModel[playerid] > CountFurnitureObjectsInfoType(pFurnitureShopCurrentType[playerid]) - 1) pFurnitureShopCurrentModel[playerid] = 0;
             UpdatePlayerFurnitureShop(playerid, false);
             return Y_HOOKS_BREAK_RETURN_1;
         }
-        else if(playertextid == pFurnitureShopTd[playerid][9]) { //COMPRAR
+        else if (playertextid == pFurnitureShopTd[playerid][9])
+{ //COMPRAR
             new dialog_body[(MAX_SU_PROPERTIES * 128) + 1], count = 0;
             dialog_body = "Propiedad\tMuebles\n";
-            for(new i = 0; i < sizeof PROPERTY_INFO; i ++) {
-                if(PROPERTY_INFO[i][property_SOLD] && PROPERTY_INFO[i][property_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID]) {
+            for (new i = 0; i < sizeof PROPERTY_INFO; i++)
+{
+                if (PROPERTY_INFO[i][property_SOLD] && PROPERTY_INFO[i][property_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
+{
                     new string[64];
                     format(string, sizeof string, "%d. %s [ID: %d]\t%d/%d muebles\n", count + 1, PROPERTY_INFO[i][property_NAME], PROPERTY_INFO[i][property_ID], CountPropertyObjects(PROPERTY_INFO[i][property_ID]), ACCOUNT_INFO[playerid][ac_VIP] ? MAX_SU_PROPERTY_OBJECTS : MAX_NU_PROPERTY_OBJECTS);
                     strcat(dialog_body, string);
 
                     PLAYER_TEMP[playerid][pt_PLAYER_GPS_SELECTED_PROPERTY][count] = i;
-                    count ++;
+                    count++;
                 }
             }
 
-            if(count == 0) return SendNotification(playerid, "No tienes ninguna propiedad.");
+            if (count == 0) return SendNotification(playerid, "No tienes ninguna propiedad.");
 
-            for(new i = 0; i < sizeof pFurnitureShopTd[]; i ++) {
+            for (new i = 0; i < sizeof pFurnitureShopTd[]; i++)
+{
                 PlayerTextDrawHide(playerid, pFurnitureShopTd[playerid][i]);
             }
 
@@ -622,22 +638,28 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid) {
     return Y_HOOKS_CONTINUE_RETURN_1;
 }
 
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
-    if(dialogid == DIALOG_FSHOP_SELECT_PROPERTY) {
-        if(response) {
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{
+    if (dialogid == DIALOG_FSHOP_SELECT_PROPERTY)
+{
+        if (response)
+{
             new property_index = PLAYER_TEMP[playerid][pt_PLAYER_GPS_SELECTED_PROPERTY][listitem];
             new limit = ACCOUNT_INFO[playerid][ac_VIP] ? MAX_SU_PROPERTY_OBJECTS : MAX_NU_PROPERTY_OBJECTS;
-            if(CountPropertyObjects(PROPERTY_INFO[property_index][property_ID]) >= limit) SendNotification(playerid, "No puedes añadir más muebles a esta propiedad.");
-            else {
+            if (CountPropertyObjects(PROPERTY_INFO[property_index][property_ID]) >= limit) SendNotification(playerid, "No puedes añadir más muebles a esta propiedad.");
+            else
+{
                 new objectIndex = GetCurrentFurnitureObjectIndex(playerid);
-                if(GivePlayerCash(playerid, -FurnitureObjectsInfo[objectIndex][foi_PRICE], true, true)) {
+                if (GivePlayerCash(playerid, -FurnitureObjectsInfo[objectIndex][foi_PRICE], true, true))
+{
                     RegisterPropertyObject(property_index, PROPERTY_INFO[property_index][property_ID], FurnitureObjectsInfo[objectIndex][foi_MODELID]);
                     SendNotification(playerid, "~g~¡El mueble será entregado en tu propiedad! ~w~Puedes seguir comprando o presionar ~y~'ESC' ~w~para salir.");
                 }
                 else SendNotification(playerid, "No tienes suficiente dinero para comprar este mueble.");
             }
         }
-        for(new i = 0; i < sizeof pFurnitureShopTd[]; i ++) {
+        for (new i = 0; i < sizeof pFurnitureShopTd[]; i++)
+{
             PlayerTextDrawShow(playerid, pFurnitureShopTd[playerid][i]);
         }
         return Y_HOOKS_BREAK_RETURN_1;
@@ -645,15 +667,19 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
     return Y_HOOKS_CONTINUE_RETURN_1;
 }
 
-DestroyPlayerFurnitureShop(playerid) {
-    for(new i = 0; i < sizeof pFurnitureShopTd[]; i ++) {
-        if(pFurnitureShopTd[playerid][i] != PlayerText:INVALID_TEXT_DRAW) {
+DestroyPlayerFurnitureShop(playerid)
+{
+    for (new i = 0; i < sizeof pFurnitureShopTd[]; i++)
+{
+        if (pFurnitureShopTd[playerid][i] != PlayerText:INVALID_TEXT_DRAW)
+{
             PlayerTextDrawDestroy(playerid, pFurnitureShopTd[playerid][i]);
             pFurnitureShopTd[playerid][i] = PlayerText:INVALID_TEXT_DRAW;
         }
     }
 
-    if(pFurnitureShopPickup[playerid] != INVALID_STREAMER_ID) {
+    if (pFurnitureShopPickup[playerid] != INVALID_STREAMER_ID)
+{
         DestroyDynamicPickup(pFurnitureShopPickup[playerid]);
         pFurnitureShopPickup[playerid] = INVALID_STREAMER_ID;
     }
@@ -665,34 +691,37 @@ DestroyPlayerFurnitureShop(playerid) {
     SetCameraBehindPlayer(playerid);
 }
 
-UpdatePlayerFurnitureShop(playerid, bool:camera = true) {
-    if(camera)
+UpdatePlayerFurnitureShop(playerid, bool:camera = true)
+{
+    if (camera)
     InterpolatePCameraToFurType(playerid);
 
     new string[128];
     format(string, sizeof string, "Categoría_(%d/%d)", pFurnitureShopCurrentType[playerid] + 1, sizeof(FurnitureTypesInfo));
     FixTextDrawString(string);
     PlayerTextDrawSetString(playerid, pFurnitureShopTd[playerid][1], string);
-    
+
     format(string, sizeof string, "%s", FurnitureTypesInfo[pFurnitureShopCurrentType[playerid]][fti_NAME]);
     FixTextDrawString(string);
     PlayerTextDrawSetString(playerid, pFurnitureShopTd[playerid][2], string);
 
-    if(pFurnitureShopPickup[playerid] != INVALID_STREAMER_ID) {
+    if (pFurnitureShopPickup[playerid] != INVALID_STREAMER_ID)
+{
         DestroyDynamicPickup(pFurnitureShopPickup[playerid]);
         pFurnitureShopPickup[playerid] = INVALID_STREAMER_ID;
     }
-    
+
     new objectIndex = GetCurrentFurnitureObjectIndex(playerid);
-    if(objectIndex != -1) {
+    if (objectIndex != -1)
+{
         format(string, sizeof string, "Mueble_(%d/%d)", pFurnitureShopCurrentModel[playerid] + 1, CountFurnitureObjectsInfoType(pFurnitureShopCurrentType[playerid]));
         FixTextDrawString(string);
         PlayerTextDrawSetString(playerid, pFurnitureShopTd[playerid][5], string);
-    
+
         format(string, sizeof string, "%s$", number_format_thousand(FurnitureObjectsInfo[objectIndex][foi_PRICE]));
         FixTextDrawString(string);
         PlayerTextDrawSetString(playerid, pFurnitureShopTd[playerid][8], string);
-        
+
         PlayerTextDrawShow(playerid, pFurnitureShopTd[playerid][6]);
         PlayerTextDrawShow(playerid, pFurnitureShopTd[playerid][7]);
 
@@ -708,7 +737,7 @@ UpdatePlayerFurnitureShop(playerid, bool:camera = true) {
         fVX = FurnitureTypesInfo[ pFurnitureShopCurrentType[playerid] ][fti_CAM_LOOK_AT_X] - fPX;
         fVY = FurnitureTypesInfo[ pFurnitureShopCurrentType[playerid] ][fti_CAM_LOOK_AT_Y] - fPY;
         fVZ = FurnitureTypesInfo[ pFurnitureShopCurrentType[playerid] ][fti_CAM_LOOK_AT_Z] - fPZ;
- 
+
         pos[0] = fPX + floatmul(fVX, FURNITURE_CAMERA_OBJECT_SCALE);
         pos[1] = fPY + floatmul(fVY, FURNITURE_CAMERA_OBJECT_SCALE);
         pos[2] = fPZ + floatmul(fVZ, FURNITURE_CAMERA_OBJECT_SCALE);
@@ -724,11 +753,12 @@ UpdatePlayerFurnitureShop(playerid, bool:camera = true) {
             playerid
         );
     }
-    else {
+    else
+{
         format(string, sizeof string, "Mueble");
         FixTextDrawString(string);
         PlayerTextDrawSetString(playerid, pFurnitureShopTd[playerid][5], string);
-    
+
         format(string, sizeof string, "categoría_vacía");
         FixTextDrawString(string);
         PlayerTextDrawSetString(playerid, pFurnitureShopTd[playerid][8], string);
@@ -741,11 +771,12 @@ UpdatePlayerFurnitureShop(playerid, bool:camera = true) {
         PlayerTextDrawSetSelectable(playerid, pFurnitureShopTd[playerid][9], false);
         PlayerTextDrawShow(playerid, pFurnitureShopTd[playerid][9]);
     }
-    
+
     Streamer_Update(playerid, STREAMER_TYPE_PICKUP);
 }
 
-CreatePFurnitureShopTextDraws(playerid) {
+CreatePFurnitureShopTextDraws(playerid)
+{
     pFurnitureShopTd[playerid][0] = CreatePlayerTextDraw(playerid, 247.000000, 313.000000, "LD_SPAC:white");
     PlayerTextDrawTextSize(playerid, pFurnitureShopTd[playerid][0], 146.000000, 100.000000);
     PlayerTextDrawAlignment(playerid, pFurnitureShopTd[playerid][0], 1);
@@ -856,12 +887,15 @@ CreatePFurnitureShopTextDraws(playerid) {
     PlayerTextDrawSetSelectable(playerid, pFurnitureShopTd[playerid][9], true);
 }
 
-CreatePlayerFurnitureShop(playerid) {
+CreatePlayerFurnitureShop(playerid)
+{
     DestroyPlayerFurnitureShop(playerid);
     CreatePFurnitureShopTextDraws(playerid);
     SetPlayerVirtualWorld(playerid, playerid + MAX_PLAYERS);
-    for(new i = 0; i < sizeof pFurnitureShopTd[]; i ++) {
-        if(pFurnitureShopTd[playerid][i] != PlayerText:INVALID_TEXT_DRAW) {
+    for (new i = 0; i < sizeof pFurnitureShopTd[]; i++)
+{
+        if (pFurnitureShopTd[playerid][i] != PlayerText:INVALID_TEXT_DRAW)
+{
             PlayerTextDrawShow(playerid, pFurnitureShopTd[playerid][i]);
         }
     }
@@ -872,30 +906,38 @@ CreatePlayerFurnitureShop(playerid) {
     Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
 }
 
-CountFurnitureObjectsInfoType(type) {
+CountFurnitureObjectsInfoType(type)
+{
     new count = 0;
-    for(new i = 0; i < sizeof FurnitureObjectsInfo; i ++) {
-        if(_:FurnitureObjectsInfo[i][foi_TYPE] == type) {
-            count ++;
+    for (new i = 0; i < sizeof FurnitureObjectsInfo; i++)
+{
+        if (_:FurnitureObjectsInfo[i][foi_TYPE] == type)
+{
+            count++;
         }
     }
     return count;
 }
 
-GetCurrentFurnitureObjectIndex(playerid) {
+GetCurrentFurnitureObjectIndex(playerid)
+{
     new count;
-    for(new i = 0; i < sizeof FurnitureObjectsInfo; i ++) {
-        if(_:FurnitureObjectsInfo[i][foi_TYPE] == pFurnitureShopCurrentType[playerid]) {
-            if(count == pFurnitureShopCurrentModel[playerid]){
+    for (new i = 0; i < sizeof FurnitureObjectsInfo; i++)
+{
+        if (_:FurnitureObjectsInfo[i][foi_TYPE] == pFurnitureShopCurrentType[playerid])
+{
+            if (count == pFurnitureShopCurrentModel[playerid])
+{
                 return i;
             }
-            count ++;
+            count++;
         }
     }
     return -1;
 }
 
-InterpolatePCameraToFurType(playerid) {
+InterpolatePCameraToFurType(playerid)
+{
     new type = pFurnitureShopCurrentType[playerid];
 
     /*new Float:p[6]
@@ -908,17 +950,21 @@ InterpolatePCameraToFurType(playerid) {
     SetPlayerCameraLookAt(playerid, FurnitureTypesInfo[type][fti_CAM_LOOK_AT_X], FurnitureTypesInfo[type][fti_CAM_LOOK_AT_Y], FurnitureTypesInfo[type][fti_CAM_LOOK_AT_Z]);
 }
 
-CMD:muebles(playerid, params[]) {
-    if(!IsPlayerInRangeOfPoint(playerid, 1.0, FurnitureShopBuyPos[0], FurnitureShopBuyPos[1], FurnitureShopBuyPos[2])) return SendNotification(playerid, "No estás en el lugar adecuado.");
-    if(pFurnitureShopOpened[playerid]) return SendNotification(playerid, "Ya estás viendo los muebles.");
+CMD:muebles(playerid, params[])
+{
+    if (!IsPlayerInRangeOfPoint(playerid, 1.0, FurnitureShopBuyPos[0], FurnitureShopBuyPos[1], FurnitureShopBuyPos[2])) return SendNotification(playerid, "No estás en el lugar adecuado.");
+    if (pFurnitureShopOpened[playerid]) return SendNotification(playerid, "Ya estás viendo los muebles.");
 
     CreatePlayerFurnitureShop(playerid);
     return 1;
 }
 
-GetPObjectModelPrice(modelid) {
-    for(new i = 0; i < sizeof FurnitureObjectsInfo; i ++) {
-        if(FurnitureObjectsInfo[i][foi_MODELID] == modelid) {
+GetPObjectModelPrice(modelid)
+{
+    for (new i = 0; i < sizeof FurnitureObjectsInfo; i++)
+{
+        if (FurnitureObjectsInfo[i][foi_MODELID] == modelid)
+{
             return FurnitureObjectsInfo[i][foi_PRICE];
         }
     }

@@ -11,7 +11,7 @@
     Code originally released from: https://sampforum.blast.hk/showthread.php?tid=639431
 
 */
-#if defined helper_cmds_included 
+#if defined helper_cmds_included
     #endinput
 #endif
 #define helper_cmds_included

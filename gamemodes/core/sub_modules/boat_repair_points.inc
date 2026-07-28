@@ -11,7 +11,7 @@
     Code originally released from: https://sampforum.blast.hk/showthread.php?tid=639431
 
 */
-#if defined boat_repair_points_included 
+#if defined boat_repair_points_included
     #endinput
 #endif
 #define boat_repair_points_included
@@ -29,22 +29,26 @@ new Float:WaterVehsStations[][] = {
 #define REPAIR_BOAT_PRICE 2000
 #define PAINT_BOAT_PRICE 5000
 
-hook OnScriptInit() {
-    for(new i = 0; i < sizeof WaterVehsStations; i ++) {
+hook OnScriptInit()
+{
+    for (new i = 0; i < sizeof WaterVehsStations; i++)
+{
         CreateDynamic3DTextLabel("Usa {"#PRIMARY_COLOR"}/barco {FFFFFF}para ver opciones.", 0xFFFFFFFF, WaterVehsStations[i][0], WaterVehsStations[i][1], WaterVehsStations[i][2], 100.0, .testlos = false, .interiorid = 0, .worldid = 0);
         new areaId = CreateDynamicCylinder(WaterVehsStations[i][0], WaterVehsStations[i][1], WaterVehsStations[i][2] - 10.0, WaterVehsStations[i][2] + 10.0, 30.0, 0, 0);
         Streamer_SetArrayData(STREAMER_TYPE_AREA, areaId, E_STREAMER_EXTRA_ID, { AREA_TYPE_WATERVEH_STATION });
     }
 }
 
-CMD:barco(playerid, params[]) {
-    if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendNotification(playerid, "No estás en un barco.");
+CMD:barco(playerid, params[])
+{
+    if (GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendNotification(playerid, "No estás en un barco.");
 
     new vehicleid = GetPlayerVehicleID(playerid);
-    if(Vehicle_IsBoat(vehicleid)) {
+    if (Vehicle_IsBoat(vehicleid))
+{
         new info[3];
         Streamer_GetArrayData(STREAMER_TYPE_AREA, PLAYER_TEMP[playerid][pt_LAST_AREA_ID], E_STREAMER_EXTRA_ID, info);
-        if(info[0] != AREA_TYPE_WATERVEH_STATION || !IsPlayerInDynamicArea(playerid, PLAYER_TEMP[playerid][pt_LAST_AREA_ID])) return SendNotification(playerid, "No estás en el lugar adecuado.");
+        if (info[0] != AREA_TYPE_WATERVEH_STATION || !IsPlayerInDynamicArea(playerid, PLAYER_TEMP[playerid][pt_LAST_AREA_ID])) return SendNotification(playerid, "No estás en el lugar adecuado.");
 
         GLOBAL_VEHICLES[vehicleid][gb_vehicle_PARAMS_ENGINE] = 0;
         UpdateVehicleParams(vehicleid);
@@ -54,7 +58,8 @@ CMD:barco(playerid, params[]) {
         new dialog_str[256];
         format(dialog_str, sizeof dialog_str, "1. Reparar (%s$)\n", number_format_thousand(REPAIR_BOAT_PRICE));
 
-        if(PLAYER_VEHICLES[vehicleid][player_vehicle_VALID] && PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID]) {
+        if (PLAYER_VEHICLES[vehicleid][player_vehicle_VALID] && PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
+{
             new string[128];
             format(string, sizeof string, "2. Cambiar color primario (%s$)\n3. Cambiar color secundario (%s$)", number_format_thousand(PAINT_BOAT_PRICE), number_format_thousand(PAINT_BOAT_PRICE));
             strcat(dialog_str, string);
@@ -68,13 +73,18 @@ CMD:barco(playerid, params[]) {
     return 1;
 }
 
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
-    switch(dialogid) {
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{
+    switch (dialogid)
+{
         case DIALOG_BOAT_OPTIONS: {
-            if(response) {
-                switch(listitem) {
+            if (response)
+{
+                switch (listitem)
+{
                     case 0: {
-                        if(GivePlayerCash(playerid, -REPAIR_BOAT_PRICE, true, true)) {
+                        if (GivePlayerCash(playerid, -REPAIR_BOAT_PRICE, true, true))
+{
                             RepairVehicleEx(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID], playerid);
                             SendNotification(playerid, "Vehículo reparado.");
                         }
@@ -82,7 +92,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                     }
                     case 1, 2: {
                         new vehicleid = PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID];
-                        if(PLAYER_VEHICLES[vehicleid][player_vehicle_VALID] && PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID]) {
+                        if (PLAYER_VEHICLES[vehicleid][player_vehicle_VALID] && PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
+{
                             PLAYER_TEMP[playerid][pt_MECHANIC_COLOR_SLOT] = listitem - 1;
                             ShowDialog(playerid, DIALOG_BOAT_SELECT_COLOR);
                         }
@@ -92,9 +103,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
             return Y_HOOKS_BREAK_RETURN_1;
         }
         case DIALOG_BOAT_SELECT_COLOR: {
-            if(response) {
-                if(GivePlayerCash(playerid, -PAINT_BOAT_PRICE, true, true)) {
-                    switch(PLAYER_TEMP[playerid][pt_MECHANIC_COLOR_SLOT])
+            if (response)
+{
+                if (GivePlayerCash(playerid, -PAINT_BOAT_PRICE, true, true))
+{
+                    switch (PLAYER_TEMP[playerid][pt_MECHANIC_COLOR_SLOT])
                     {
                         case 0: GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_COLOR_1] = listitem;
                         case 1: GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_COLOR_2] = listitem;

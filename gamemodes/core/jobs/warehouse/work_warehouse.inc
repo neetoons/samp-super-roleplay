@@ -85,7 +85,8 @@ new
     pWarehouseCP[MAX_PLAYERS] = {INVALID_STREAMER_ID, ...}
 ;
 
-hook OnScriptInit() {
+hook OnScriptInit()
+{
     Warehouse_AreaId = CreateDynamicRectangle(1847.117065, -1564.247436, 1975.150146, -1428.235595, 0, WAREHOUSE_INTERIOR);
     Warehouse_CurrentOrders_Count = 0;
 
@@ -180,8 +181,10 @@ hook OnScriptInit() {
     TextDrawSetProportional(Warehouse_OrdersBaseTd[8], 1);
 }
 
-hook OnInfoVarsLoaded() {
-    if(WarehouseOrderNum == 0) {
+hook OnInfoVarsLoaded()
+{
+    if (WarehouseOrderNum == 0)
+{
         WarehouseOrderNum = 1;
         SaveInfoVars();
     }
@@ -195,23 +198,29 @@ task OnWarehouseSeedRequest[SEED_WAREHOUSE_ORDERS_INTERVAL]()
 
 hook OnPlayerLeaveDynArea(playerid, areaid)
 {
-    if(PLAYER_TEMP[playerid][pt_WORKING_IN] == WORK_WAREHOUSE && areaid == Warehouse_AreaId) {
+    if (PLAYER_TEMP[playerid][pt_WORKING_IN] == WORK_WAREHOUSE && areaid == Warehouse_AreaId)
+{
         CallLocalFunction("EndPlayerJob", "iib", playerid, WORK_WAREHOUSE, true);
     }
     return Y_HOOKS_CONTINUE_RETURN_1;
 }
 
-SeedWarehouseOrders(amount = -1) {
-    if(amount == -1) {
+SeedWarehouseOrders(amount = -1)
+{
+    if (amount == -1)
+{
         amount = MAX_WAREHOUSE_ORDERS - Warehouse_CurrentOrders_Count;
     }
 
-    if(amount > 0) {
+    if (amount > 0)
+{
         new date[24];
         getDateTime(date);
 
-        for(new i = 0; i < amount; i ++) {
-            if(Warehouse_CurrentOrders_Count >= MAX_WAREHOUSE_ORDERS) {
+        for (new i = 0; i < amount; i++)
+{
+            if (Warehouse_CurrentOrders_Count >= MAX_WAREHOUSE_ORDERS)
+{
                 break;
             }
 
@@ -221,17 +230,19 @@ SeedWarehouseOrders(amount = -1) {
             order[worder_PRODUCTS] = minrand(1, 5);
             order[worder_STATE] = WORDER_STATUS_NONE;
             Warehouse_CurrentOrders_Data[Warehouse_CurrentOrders_Count] = order;
-            Warehouse_CurrentOrders_Count ++;
-            WarehouseOrderNum ++;
+            Warehouse_CurrentOrders_Count++;
+            WarehouseOrderNum++;
         }
         SaveInfoVars();
         UpdateWarehouseOrdersTds();
     }
 }
 
-GetWOrderStateTdName(status) {
+GetWOrderStateTdName(status)
+{
     new string[128];
-    switch(status) {
+    switch (status)
+{
         case WORDER_STATUS_PROCESS: format(string, sizeof string, "~y~Preparando...");
         case WORDER_STATUS_COMPLETED: format(string, sizeof string, "~g~Completado");
         default: format(string, sizeof string, "Esperando...");
@@ -239,10 +250,14 @@ GetWOrderStateTdName(status) {
     return string;
 }
 
-UpdateWarehouseOrdersTds() {
-    for(new i = 0; i < sizeof Warehouse_OrdersTd; i ++) {
-        for(new j = 0; j < sizeof Warehouse_OrdersTd[]; j ++) {
-            if(Warehouse_OrdersTd[i][j] != Text:INVALID_TEXT_DRAW) {
+UpdateWarehouseOrdersTds()
+{
+    for (new i = 0; i < sizeof Warehouse_OrdersTd; i++)
+{
+        for (new j = 0; j < sizeof Warehouse_OrdersTd[]; j++)
+{
+            if (Warehouse_OrdersTd[i][j] != Text:INVALID_TEXT_DRAW)
+{
                 TextDrawDestroy(Warehouse_OrdersTd[i][j]);
                 Warehouse_OrdersTd[i][j] = Text:INVALID_TEXT_DRAW;
             }
@@ -250,14 +265,16 @@ UpdateWarehouseOrdersTds() {
     }
 
     new Float:currentY = 173.0;
-    for(new i = 0; i < Warehouse_CurrentOrders_Count; i ++) {
-        if(i >= MAX_WAREHOUSE_ORDERS_TD) {
+    for (new i = 0; i < Warehouse_CurrentOrders_Count; i++)
+{
+        if (i >= MAX_WAREHOUSE_ORDERS_TD)
+{
             break;
         }
 
         new order[E_WarehouseOrders], string[128];
         order = Warehouse_CurrentOrders_Data[i];
-        
+
         Warehouse_OrdersTd[i][0] = TextDrawCreate(320.000000, currentY, "box");
         TextDrawLetterSize(Warehouse_OrdersTd[i][0], 0.000000, 1.000000);
         TextDrawTextSize(Warehouse_OrdersTd[i][0], 10.000000, 262.000000);
@@ -318,13 +335,16 @@ UpdateWarehouseOrdersTds() {
         currentY += 13.0;
     }
 
-    for(new playerid = 0, x = GetPlayerPoolSize(); playerid <= x; playerid ++)
-	{
-		if(IsPlayerConnected(playerid) && pWarehouseOrders[playerid])
-		{
-            for(new i = 0; i < sizeof Warehouse_OrdersTd; i ++) {
-                for(new j = 0; j < sizeof Warehouse_OrdersTd[]; j ++) {
-                    if(Warehouse_OrdersTd[i][j] != Text:INVALID_TEXT_DRAW) {
+    for (new playerid = 0, x = GetPlayerPoolSize(); playerid <= x; playerid++)
+    {
+        if (IsPlayerConnected(playerid) && pWarehouseOrders[playerid])
+        {
+            for (new i = 0; i < sizeof Warehouse_OrdersTd; i++)
+{
+                for (new j = 0; j < sizeof Warehouse_OrdersTd[]; j++)
+{
+                    if (Warehouse_OrdersTd[i][j] != Text:INVALID_TEXT_DRAW)
+{
                         TextDrawShowForPlayer(playerid, Warehouse_OrdersTd[i][j]);
                     }
                 }
@@ -335,8 +355,10 @@ UpdateWarehouseOrdersTds() {
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	if(newkeys & KEY_CTRL_BACK) {
-        if(IsPlayerInRangeOfPoint(playerid, 1.0, Warehouse_OrdersCoords[0], Warehouse_OrdersCoords[1], Warehouse_OrdersCoords[2])) {
+    if (newkeys & KEY_CTRL_BACK)
+{
+        if (IsPlayerInRangeOfPoint(playerid, 1.0, Warehouse_OrdersCoords[0], Warehouse_OrdersCoords[1], Warehouse_OrdersCoords[2]))
+{
             PC_EmulateCommand(playerid, "/pedidos");
             return Y_HOOKS_BREAK_RETURN_1;
         }
@@ -344,37 +366,47 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
     return Y_HOOKS_CONTINUE_RETURN_1;
 }
 
-hook OnPlayerDisconnect(playerid, reason) {
+hook OnPlayerDisconnect(playerid, reason)
+{
     DestroyPlayerWarehouseOrders(playerid);
 }
 
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
-	if(newstate == PLAYER_STATE_SPECTATING || newstate == PLAYER_STATE_WASTED) {
-        if(pWarehouseOrders[playerid]) {
-		    CancelSelectTextDrawEx(playerid);
+    if (newstate == PLAYER_STATE_SPECTATING || newstate == PLAYER_STATE_WASTED)
+{
+        if (pWarehouseOrders[playerid])
+{
+            CancelSelectTextDrawEx(playerid);
         }
-	}
-	return 1;
+    }
+    return 1;
 }
 
-hook OnPlayerClickTextDraw(playerid, Text:clickedid) {
-    if(pWarehouseOrders[playerid]) {
-        if(clickedid == Text:INVALID_TEXT_DRAW) {
+hook OnPlayerClickTextDraw(playerid, Text:clickedid)
+{
+    if (pWarehouseOrders[playerid])
+{
+        if (clickedid == Text:INVALID_TEXT_DRAW)
+{
             DestroyPlayerWarehouseOrders(playerid);
         }
 
-        for(new i = 0; i < MAX_WAREHOUSE_ORDERS_TD; i ++) {
-            if(clickedid == Warehouse_OrdersTd[i][0]) {
-                if(pWarehouseCurrentOrder[playerid] > 0) SendNotification(playerid, "Ahora mismo estás atendiendo un pedido.");
-                else {
+        for (new i = 0; i < MAX_WAREHOUSE_ORDERS_TD; i++)
+{
+            if (clickedid == Warehouse_OrdersTd[i][0])
+{
+                if (pWarehouseCurrentOrder[playerid] > 0) SendNotification(playerid, "Ahora mismo estás atendiendo un pedido.");
+                else
+{
                     new order[E_WarehouseOrders];
                     order = Warehouse_CurrentOrders_Data[i];
-                    if(order[worder_STATE] == WORDER_STATUS_NONE) {
+                    if (order[worder_STATE] == WORDER_STATUS_NONE)
+{
                         pWarehouseCurrentOrder[playerid] = order[worder_ID];
                         order[worder_STATE] = WORDER_STATUS_PROCESS;
                         Warehouse_CurrentOrders_Data[i] = order;
-                        
+
                         new string[128];
                         format(string, sizeof string, "%s", GetWOrderStateTdName(order[worder_STATE]));
                         TextDrawSetString(Warehouse_OrdersTd[i][4], string);
@@ -382,7 +414,8 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid) {
                         CancelSelectTextDrawEx(playerid);
                         CallLocalFunction("StartPlayerJob", "iii", playerid, WORK_WAREHOUSE, INVALID_VEHICLE_ID);
                     }
-                    else {
+                    else
+{
                         SendNotification(playerid, "Este pedido ya está siendo atendido.");
                     }
                 }
@@ -393,19 +426,24 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid) {
     return Y_HOOKS_CONTINUE_RETURN_1;
 }
 
-GetOrderIndexByOrderId(id) {
-    for(new i = 0; i < Warehouse_CurrentOrders_Count; i ++) {
+GetOrderIndexByOrderId(id)
+{
+    for (new i = 0; i < Warehouse_CurrentOrders_Count; i++)
+{
         new tmpOrder[E_WarehouseOrders];
         tmpOrder = Warehouse_CurrentOrders_Data[i];
-        if(tmpOrder[worder_ID] == id) {
+        if (tmpOrder[worder_ID] == id)
+{
             return i;
         }
     }
     return -1;
 }
 
-hook StartPlayerJob(playerid, work, vehicleid) {
-    if(work == WORK_WAREHOUSE) {
+hook StartPlayerJob(playerid, work, vehicleid)
+{
+    if (work == WORK_WAREHOUSE)
+{
         DisablePlayerArmedWeapons(playerid);
 
         pWarehouseCurrentProduct[playerid] = 0;
@@ -413,22 +451,26 @@ hook StartPlayerJob(playerid, work, vehicleid) {
     }
 }
 
-SetPlayerWarehousePickUpPoint(playerid, bool:put = false) {
-    if(pWarehouseCP[playerid] != INVALID_STREAMER_ID) {
+SetPlayerWarehousePickUpPoint(playerid, bool:put = false)
+{
+    if (pWarehouseCP[playerid] != INVALID_STREAMER_ID)
+{
         DestroyDynamicCP(pWarehouseCP[playerid]);
         pWarehouseCP[playerid] = INVALID_STREAMER_ID;
     }
 
-    if(put) {
+    if (put)
+{
         pWarehouseCP[playerid] = CreateDynamicCP(Warehouse_PutCoords[0], Warehouse_PutCoords[1], Warehouse_PutCoords[2], 2.0, 0, WAREHOUSE_INTERIOR, playerid, 500.0);
         Streamer_SetArrayData(STREAMER_TYPE_CP, pWarehouseCP[playerid], E_STREAMER_EXTRA_ID, {CHECKPOINT_TYPE_WH_PUT});
         SendNotification(playerid, "Ve a colocar el producto en la cinta transportadora.");
     }
-    else {
+    else
+{
         new point = random(sizeof Warehouse_PickUpPoints);
         pWarehouseCP[playerid] = CreateDynamicCP(Warehouse_PickUpPoints[point][0], Warehouse_PickUpPoints[point][1], Warehouse_PickUpPoints[point][2], 2.0, 0, WAREHOUSE_INTERIOR, playerid, 500.0);
         Streamer_SetArrayData(STREAMER_TYPE_CP, pWarehouseCP[playerid], E_STREAMER_EXTRA_ID, {CHECKPOINT_TYPE_WH_PICKUP});
-        if(pWarehouseCurrentProduct[playerid] == 0) SendNotification(playerid, "Ve a coger el primer producto.");
+        if (pWarehouseCurrentProduct[playerid] == 0) SendNotification(playerid, "Ve a coger el primer producto.");
         else SendNotification(playerid, "Ve a coger el siguiente producto.");
     }
     Streamer_Update(playerid, STREAMER_TYPE_CP);
@@ -436,16 +478,16 @@ SetPlayerWarehousePickUpPoint(playerid, bool:put = false) {
 
 hook OnPlayerEnterDynamicCP(playerid, checkpointid)
 {
-	new info[1];
-	Streamer_GetArrayData(STREAMER_TYPE_CP, checkpointid, E_STREAMER_EXTRA_ID, info);
+    new info[1];
+    Streamer_GetArrayData(STREAMER_TYPE_CP, checkpointid, E_STREAMER_EXTRA_ID, info);
 
-	switch(info[0])
-	{
-		case CHECKPOINT_TYPE_WH_PICKUP: {
+    switch (info[0])
+    {
+        case CHECKPOINT_TYPE_WH_PICKUP: {
             SetPlayerArmedWeapon(playerid, 0);
             RemovePlayerAttachedObject(playerid, 8);
-	        SetPlayerAttachedObject(playerid, 8, 1220, 5, 0.020000, 0.150999, 0.184000, 8.100003, 20.200000, 5.300002, 0.494000, 0.450000, 0.531000);
-			SetPlayerSpecialAction(playerid, SPECIAL_ACTION_CARRY);
+            SetPlayerAttachedObject(playerid, 8, 1220, 5, 0.020000, 0.150999, 0.184000, 8.100003, 20.200000, 5.300002, 0.494000, 0.450000, 0.531000);
+            SetPlayerSpecialAction(playerid, SPECIAL_ACTION_CARRY);
             SetPlayerWarehousePickUpPoint(playerid, true);
             return Y_HOOKS_BREAK_RETURN_1;
         }
@@ -462,12 +504,14 @@ hook OnPlayerEnterDynamicCP(playerid, checkpointid)
             Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
 
             new orderIndex = GetOrderIndexByOrderId(pWarehouseCurrentOrder[playerid]);
-            if(orderIndex != -1) {
+            if (orderIndex != -1)
+{
                 new order[E_WarehouseOrders];
                 order = Warehouse_CurrentOrders_Data[orderIndex];
 
                 pWarehouseCurrentProduct[playerid] ++;
-                if(pWarehouseCurrentProduct[playerid] >= order[worder_PRODUCTS]) {
+                if (pWarehouseCurrentProduct[playerid] >= order[worder_PRODUCTS])
+{
                     order[worder_STATE] = WORDER_STATUS_COMPLETED;
                     Warehouse_CurrentOrders_Data[orderIndex] = order;
 
@@ -478,23 +522,24 @@ hook OnPlayerEnterDynamicCP(playerid, checkpointid)
                     pWarehouseCurrentOrder[playerid] = 0;
                     PLAYER_WORKS[playerid][WORK_WAREHOUSE][pwork_LEVEL] ++;
                     AddPlayerJobPoints(playerid, WORK_WAREHOUSE);
-                    
+
                     new work_extra_payment;
-                    if(work_info[WORK_WAREHOUSE][work_info_EXTRA_PAY] > 0 && work_info[WORK_WAREHOUSE][work_info_EXTRA_PAY_EXP] > 0)
+                    if (work_info[WORK_WAREHOUSE][work_info_EXTRA_PAY] > 0 && work_info[WORK_WAREHOUSE][work_info_EXTRA_PAY_EXP] > 0)
                     {
                         work_extra_payment = (work_info[WORK_WAREHOUSE][work_info_EXTRA_PAY] * floatround(floatdiv(PLAYER_WORKS[playerid][WORK_WAREHOUSE][pwork_LEVEL], work_info[WORK_WAREHOUSE][work_info_EXTRA_PAY_EXP])));
-                        if(work_info[WORK_WAREHOUSE][work_info_EXTRA_PAY_LIMIT] != 0) if(work_extra_payment > work_info[WORK_WAREHOUSE][work_info_EXTRA_PAY_LIMIT]) work_extra_payment = work_info[WORK_WAREHOUSE][work_info_EXTRA_PAY_LIMIT];
-                        
-                        if(ACCOUNT_INFO[playerid][ac_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
+                        if (work_info[WORK_WAREHOUSE][work_info_EXTRA_PAY_LIMIT] != 0) if (work_extra_payment > work_info[WORK_WAREHOUSE][work_info_EXTRA_PAY_LIMIT]) work_extra_payment = work_info[WORK_WAREHOUSE][work_info_EXTRA_PAY_LIMIT];
+
+                        if (ACCOUNT_INFO[playerid][ac_VIP]) work_extra_payment += SU_WORK_EXTRA_PAY;
                     }
                     new amount = (minrand(40, 50) * order[worder_PRODUCTS]) + work_extra_payment;
                     GivePlayerCash(playerid, amount, true, false);
-                    
+
                     format(string, sizeof string, "~g~+%d$", amount);
                     GameTextForPlayer(playerid, string, 5000, 1);
                     CallLocalFunction("EndPlayerJob", "iib", playerid, WORK_WAREHOUSE, true);
                 }
-                else {
+                else
+{
                     SetPlayerWarehousePickUpPoint(playerid);
                 }
             }
@@ -504,17 +549,22 @@ hook OnPlayerEnterDynamicCP(playerid, checkpointid)
     return Y_HOOKS_CONTINUE_RETURN_1;
 }
 
-hook EndPlayerJob(playerid, work, bool:changeskin) {
-    if(work == WORK_WAREHOUSE) {
+hook EndPlayerJob(playerid, work, bool:changeskin)
+{
+    if (work == WORK_WAREHOUSE)
+{
         RemovePlayerAttachedObject(playerid, 8);
         SetPlayerToys(playerid);
 
-        if(pWarehouseCurrentOrder[playerid] != 0) {
+        if (pWarehouseCurrentOrder[playerid] != 0)
+{
             new orderIndex = GetOrderIndexByOrderId(pWarehouseCurrentOrder[playerid]);
-            if(orderIndex != -1) {
+            if (orderIndex != -1)
+{
                 new order[E_WarehouseOrders];
                 order = Warehouse_CurrentOrders_Data[orderIndex];
-                if(order[worder_STATE] != WORDER_STATUS_COMPLETED) {
+                if (order[worder_STATE] != WORDER_STATUS_COMPLETED)
+{
                     order[worder_STATE] = WORDER_STATUS_NONE;
                     Warehouse_CurrentOrders_Data[orderIndex] = order;
 
@@ -527,27 +577,33 @@ hook EndPlayerJob(playerid, work, bool:changeskin) {
 
         pWarehouseCurrentOrder[playerid] = 0;
         pWarehouseCurrentProduct[playerid] = 0;
-        if(pWarehouseCP[playerid] != INVALID_STREAMER_ID) {
+        if (pWarehouseCP[playerid] != INVALID_STREAMER_ID)
+{
             DestroyDynamicCP(pWarehouseCP[playerid]);
             pWarehouseCP[playerid] = INVALID_STREAMER_ID;
         }
     }
 }
 
-hook OnDynamicObjectMoved(objectid) {
+hook OnDynamicObjectMoved(objectid)
+{
     new info[3];
-	Streamer_GetArrayData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_EXTRA_ID, info);
-    if(info[0] == OBJECT_TYPE_WH_BOX) {
+    Streamer_GetArrayData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_EXTRA_ID, info);
+    if (info[0] == OBJECT_TYPE_WH_BOX)
+{
         DestroyDynamicObject(objectid);
         new orderIndex = GetOrderIndexByOrderId(info[1]);
-        if(orderIndex != -1) {
+        if (orderIndex != -1)
+{
             new order[E_WarehouseOrders];
             order = Warehouse_CurrentOrders_Data[orderIndex];
-            if(order[worder_STATE] == WORDER_STATUS_COMPLETED) {
-                for(new j = orderIndex; j < Warehouse_CurrentOrders_Count - 1; j ++) {
+            if (order[worder_STATE] == WORDER_STATUS_COMPLETED)
+{
+                for (new j = orderIndex; j < Warehouse_CurrentOrders_Count - 1; j++)
+{
                     Warehouse_CurrentOrders_Data[j] = Warehouse_CurrentOrders_Data[j + 1];
                 }
-                Warehouse_CurrentOrders_Count --;
+                Warehouse_CurrentOrders_Count--;
                 UpdateWarehouseOrdersTds();
             }
         }
@@ -556,51 +612,63 @@ hook OnDynamicObjectMoved(objectid) {
     return Y_HOOKS_CONTINUE_RETURN_1;
 }
 
-CMD:pedidos(playerid, params[]) {
-    if(!PLAYER_WORKS[playerid][WORK_WAREHOUSE][pwork_SET]) return SendNotification(playerid, "No trabajas en el almacén.");
-	if(PLAYER_TEMP[playerid][pt_WORKING_IN] != WORK_NONE && PLAYER_TEMP[playerid][pt_WORKING_IN] != WORK_WAREHOUSE)
-	{
-		SendFormatNotification(playerid, "Tienes que dejar de estar de servicio como %s primero.", work_info[ PLAYER_TEMP[playerid][pt_WORKING_IN] ][work_info_NAME]);
-		return 1;
-	}
+CMD:pedidos(playerid, params[])
+{
+    if (!PLAYER_WORKS[playerid][WORK_WAREHOUSE][pwork_SET]) return SendNotification(playerid, "No trabajas en el almacén.");
+    if (PLAYER_TEMP[playerid][pt_WORKING_IN] != WORK_NONE && PLAYER_TEMP[playerid][pt_WORKING_IN] != WORK_WAREHOUSE)
+    {
+        SendFormatNotification(playerid, "Tienes que dejar de estar de servicio como %s primero.", work_info[ PLAYER_TEMP[playerid][pt_WORKING_IN] ][work_info_NAME]);
+        return 1;
+    }
 
-    if(GetPlayerVirtualWorld(playerid) != 0) return SendNotification(playerid, "No estás en el lugar adecuado.");
-	if(GetPlayerInterior(playerid) != WAREHOUSE_INTERIOR) return SendNotification(playerid, "No estás en el lugar adecuado.");
-	if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return SendNotification(playerid, "No estás depie.");
-	if(!IsPlayerInRangeOfPoint(playerid, 1.0, Warehouse_OrdersCoords[0], Warehouse_OrdersCoords[1], Warehouse_OrdersCoords[2])) return SendNotification(playerid, "No estás en el lugar adecuado.");
+    if (GetPlayerVirtualWorld(playerid) != 0) return SendNotification(playerid, "No estás en el lugar adecuado.");
+    if (GetPlayerInterior(playerid) != WAREHOUSE_INTERIOR) return SendNotification(playerid, "No estás en el lugar adecuado.");
+    if (GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return SendNotification(playerid, "No estás depie.");
+    if (!IsPlayerInRangeOfPoint(playerid, 1.0, Warehouse_OrdersCoords[0], Warehouse_OrdersCoords[1], Warehouse_OrdersCoords[2])) return SendNotification(playerid, "No estás en el lugar adecuado.");
 
     ShowPlayerWarehouseOrders(playerid);
     return 1;
 }
 
-DestroyPlayerWarehouseOrders(playerid) {
-    for(new i = 0; i < sizeof Warehouse_OrdersBaseTd; i ++) {
+DestroyPlayerWarehouseOrders(playerid)
+{
+    for (new i = 0; i < sizeof Warehouse_OrdersBaseTd; i++)
+{
         TextDrawHideForPlayer(playerid, Warehouse_OrdersBaseTd[i]);
     }
-    for(new i = 0; i < sizeof Warehouse_OrdersTd; i ++) {
-        for(new j = 0; j < sizeof Warehouse_OrdersTd[]; j ++) {
-            if(Warehouse_OrdersTd[i][j] != Text:INVALID_TEXT_DRAW) {
+    for (new i = 0; i < sizeof Warehouse_OrdersTd; i++)
+{
+        for (new j = 0; j < sizeof Warehouse_OrdersTd[]; j++)
+{
+            if (Warehouse_OrdersTd[i][j] != Text:INVALID_TEXT_DRAW)
+{
                 TextDrawHideForPlayer(playerid, Warehouse_OrdersTd[i][j]);
             }
         }
     }
-    if(pWarehouseOrdersTd[playerid] != PlayerText:INVALID_TEXT_DRAW) {
+    if (pWarehouseOrdersTd[playerid] != PlayerText:INVALID_TEXT_DRAW)
+{
         PlayerTextDrawDestroy(playerid, pWarehouseOrdersTd[playerid]);
         pWarehouseOrdersTd[playerid] = PlayerText:INVALID_TEXT_DRAW;
     }
     pWarehouseOrders[playerid] = false;
 }
 
-ShowPlayerWarehouseOrders(playerid) {
+ShowPlayerWarehouseOrders(playerid)
+{
     DestroyPlayerWarehouseOrders(playerid);
 
-    for(new i = 0; i < sizeof Warehouse_OrdersBaseTd; i ++) {
+    for (new i = 0; i < sizeof Warehouse_OrdersBaseTd; i++)
+{
         TextDrawShowForPlayer(playerid, Warehouse_OrdersBaseTd[i]);
     }
 
-    for(new i = 0; i < sizeof Warehouse_OrdersTd; i ++) {
-        for(new j = 0; j < sizeof Warehouse_OrdersTd[]; j ++) {
-            if(Warehouse_OrdersTd[i][j] != Text:INVALID_TEXT_DRAW) {
+    for (new i = 0; i < sizeof Warehouse_OrdersTd; i++)
+{
+        for (new j = 0; j < sizeof Warehouse_OrdersTd[]; j++)
+{
+            if (Warehouse_OrdersTd[i][j] != Text:INVALID_TEXT_DRAW)
+{
                 TextDrawShowForPlayer(playerid, Warehouse_OrdersTd[i][j]);
             }
         }

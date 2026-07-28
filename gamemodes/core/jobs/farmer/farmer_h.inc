@@ -12,89 +12,89 @@
 
 */
 
-#if defined farmer_header_included 
+#if defined farmer_header_included
     #endinput
 #endif
 #define farmer_header_included
 
 enum
 {
-	TYPE_LEGAL,
-	TYPE_ILLEGAL,
+    TYPE_LEGAL,
+    TYPE_ILLEGAL,
 }
 
 // AGRICULTOR
 enum
 {
-	PLANT_TYPE_MEDICINE, 	// VIDA
-	PLANT_TYPE_CANNABIS,	// YOKSETIOXD
-	PLANT_TYPE_CRACK,		//CHALECO
+    PLANT_TYPE_MEDICINE,     // VIDA
+    PLANT_TYPE_CANNABIS,    // YOKSETIOXD
+    PLANT_TYPE_CRACK,        //CHALECO
 }
 
 enum seed_info_enum
 {
-	seed_info_TYPE,
-	seed_info_PLANT_TYPE,
-	seed_info_EXP,
-	seed_info_NAME[24],
-	seed_info_PRICE,
+    seed_info_TYPE,
+    seed_info_PLANT_TYPE,
+    seed_info_EXP,
+    seed_info_NAME[24],
+    seed_info_PRICE,
 }
 new seed_info[][seed_info_enum] =
 {
-	{TYPE_LEGAL, PLANT_TYPE_MEDICINE, 0, "Medicina", 50},
-	{TYPE_ILLEGAL, PLANT_TYPE_CANNABIS, 100, "Marihuana", 150},
-	{TYPE_ILLEGAL, PLANT_TYPE_CRACK, 200, "Coca", 300}
+    {TYPE_LEGAL, PLANT_TYPE_MEDICINE, 0, "Medicina", 50},
+    {TYPE_ILLEGAL, PLANT_TYPE_CANNABIS, 100, "Marihuana", 150},
+    {TYPE_ILLEGAL, PLANT_TYPE_CRACK, 200, "Coca", 300}
 };
 
 enum plant_info_enum
 {
-	plant_info_SEEDS,
-	plant_info_NAME[24],
+    plant_info_SEEDS,
+    plant_info_NAME[24],
 }
 new plant_info[][plant_info_enum] =
 {
-	{2, "Medicamento"},
-	{4, "Marihuana"},
-	{10, "Crack"}
+    {2, "Medicamento"},
+    {4, "Marihuana"},
+    {10, "Crack"}
 };
 
 
 enum PLANTS_ENUM
 {
-	bool:plant_VALID,
-	bool:plant_GROWING,
-	bool:plant_INVISIBLE,
-	Float:plant_GROWING_PROGRESS,
-	plant_TYPE,
-	plant_PLANTED_BY_ACCOUNT_ID,
-	plant_PLANTED_BY_NAME[24],
-	plant_OBJECT_ID,
-	Text3D:plant_LABEL_ID,
-	plant_EXPIRE_TIME,
-	plant_TIMER,
-	plant_IMMUNITY,
+    bool:plant_VALID,
+    bool:plant_GROWING,
+    bool:plant_INVISIBLE,
+    Float:plant_GROWING_PROGRESS,
+    plant_TYPE,
+    plant_PLANTED_BY_ACCOUNT_ID,
+    plant_PLANTED_BY_NAME[24],
+    plant_OBJECT_ID,
+    Text3D:plant_LABEL_ID,
+    plant_EXPIRE_TIME,
+    plant_TIMER,
+    plant_IMMUNITY,
 }
 new PLANTS[MAX_PLANTS][PLANTS_ENUM];
 
 enum
 {
-	OBJECT_TYPE_NONE,
-	OBJECT_TYPE_PLANT,
-	OBJECT_TYPE_POLICE,
-	OBJECT_TYPE_FURNITURE,
-	OBJECT_TYPE_WH_BOX,
-	OBJECT_TYPE_GRAFFITI,
-	OBJECT_TYPE_TEST
+    OBJECT_TYPE_NONE,
+    OBJECT_TYPE_PLANT,
+    OBJECT_TYPE_POLICE,
+    OBJECT_TYPE_FURNITURE,
+    OBJECT_TYPE_WH_BOX,
+    OBJECT_TYPE_GRAFFITI,
+    OBJECT_TYPE_TEST
 }
 
 GetPlayerPlantedPlants(playerid)
 {
-	new plants;
-	
-	for(new i = 0; i != MAX_PLANTS; i ++)
-	{
-		if(!PLANTS[i][plant_VALID]) continue;
-		if(PLANTS[i][plant_PLANTED_BY_ACCOUNT_ID] == ACCOUNT_INFO[playerid][ac_ID]) plants ++;
-	}
-	return plants;
+    new plants;
+
+    for (new i = 0; i != MAX_PLANTS; i++)
+    {
+        if (!PLANTS[i][plant_VALID]) continue;
+        if (PLANTS[i][plant_PLANTED_BY_ACCOUNT_ID] == ACCOUNT_INFO[playerid][ac_ID]) plants++;
+    }
+    return plants;
 }

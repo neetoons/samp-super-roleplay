@@ -12,7 +12,7 @@
 
 */
 
-#if defined notifications_included 
+#if defined notifications_included
     #endinput
 #endif
 #define notifications_included
@@ -40,12 +40,12 @@ new TextDrawsNotification[MAX_PLAYERS][3][InformationTDN],
 forward TimerHideNotification(playerid);
 public TimerHideNotification(playerid)
 {
-    for(new cycle; cycle < 3; cycle++)
+    for (new cycle; cycle < 3; cycle++)
     {
-        if(TextDrawsNotification[playerid][cycle][Hide] == -1)
+        if (TextDrawsNotification[playerid][cycle][Hide] == -1)
         {
             TextDrawsNotification[playerid][cycle][Use] = 0;
-            if(TextDrawsNotification[playerid][cycle][TextDraw] != PlayerText:-1)
+            if (TextDrawsNotification[playerid][cycle][TextDraw] != PlayerText:-1)
             {
                 PlayerTextDrawDestroy(playerid, TextDrawsNotification[playerid][cycle][TextDraw]);
                 TextDrawsNotification[playerid][cycle][Line] = 0;
@@ -63,12 +63,12 @@ public TimerHideNotification(playerid)
     return 0;
 }
 
-forward SendNotification(playerid, const reason[]); 
+forward SendNotification(playerid, const reason[]);
 public SendNotification(playerid, const reason[])
 {
-    for(new cycle; cycle < 3; cycle++)
+    for (new cycle; cycle < 3; cycle++)
     {
-        if(!TextDrawsNotification[playerid][cycle][Use])
+        if (!TextDrawsNotification[playerid][cycle][Use])
         {
             TextDrawsNotification[playerid][cycle][Text][0] = EOS;
 
@@ -76,7 +76,7 @@ public SendNotification(playerid, const reason[])
             FixTextDrawString(TextDrawsNotification[playerid][cycle][Text]);
 
             TextDrawsNotification[playerid][cycle][Use] = 1;
- 
+
             LinesNotification(playerid, cycle);
 
             MinPosYNotification(playerid, cycle);
@@ -94,20 +94,20 @@ public SendNotification(playerid, const reason[])
     return -1;
 }
 
-forward SendNotification_Manual(playerid, const reason[]); 
+forward SendNotification_Manual(playerid, const reason[]);
 public SendNotification_Manual(playerid, const reason[])
 {
-    for(new cycle; cycle < 3; cycle++)
+    for (new cycle; cycle < 3; cycle++)
     {
-        if(!TextDrawsNotification[playerid][cycle][Use])
+        if (!TextDrawsNotification[playerid][cycle][Use])
         {
             TextDrawsNotification[playerid][cycle][Text][0] = EOS;
 
             strcat(TextDrawsNotification[playerid][cycle][Text], reason, 800);
             FixTextDrawString(TextDrawsNotification[playerid][cycle][Text]);
- 
+
             TextDrawsNotification[playerid][cycle][Use] = 1;
- 
+
             LinesNotification(playerid, cycle);
 
             MinPosYNotification(playerid, cycle);
@@ -115,11 +115,11 @@ public SendNotification_Manual(playerid, const reason[])
 
             CreateTDN(playerid, cycle);
 
-            for(new i; i < 3; i++)
+            for (new i; i < 3; i++)
             {
-                if(used(playerid, counter_@[playerid]))
+                if (used(playerid, counter_@[playerid]))
                 {
-                    if(counter_@[playerid] == 3 - 1) counter_@[playerid] = 0;
+                    if (counter_@[playerid] == 3 - 1) counter_@[playerid] = 0;
                     else counter_@[playerid]++;
                 }
                 else break;
@@ -129,7 +129,7 @@ public SendNotification_Manual(playerid, const reason[])
 
             TextDrawsNotification[playerid][cycle][Hide] = TDN;
 
-            if(counter_@[playerid] == 3 - 1) counter_@[playerid] = 0;
+            if (counter_@[playerid] == 3 - 1) counter_@[playerid] = 0;
             else counter_@[playerid]++;
 
             return TDN;
@@ -140,9 +140,9 @@ public SendNotification_Manual(playerid, const reason[])
 
 stock used(playerid, id)
 {
-    for(new cycle; cycle < 3; cycle++)
+    for (new cycle; cycle < 3; cycle++)
     {
-        if(TextDrawsNotification[playerid][cycle][Hide] == id) return 1;
+        if (TextDrawsNotification[playerid][cycle][Hide] == id) return 1;
     }
     return 0;
 }
@@ -150,12 +150,12 @@ stock used(playerid, id)
 forward HideNotification(playerid, TDN);
 public HideNotification(playerid, TDN)
 {
-    for(new cycle; cycle < 3; cycle++)
+    for (new cycle; cycle < 3; cycle++)
     {
-        if(TextDrawsNotification[playerid][cycle][Hide] == TDN)
+        if (TextDrawsNotification[playerid][cycle][Hide] == TDN)
         {
             TextDrawsNotification[playerid][cycle][Use] = 0;
-            if(TextDrawsNotification[playerid][cycle][TextDraw] != PlayerText:-1)
+            if (TextDrawsNotification[playerid][cycle][TextDraw] != PlayerText:-1)
             {
                 PlayerTextDrawDestroy(playerid, TextDrawsNotification[playerid][cycle][TextDraw]);
                 TextDrawsNotification[playerid][cycle][Line] = 0;
@@ -175,13 +175,13 @@ public HideNotification(playerid, TDN)
 
 stock UpdateNotification(playerid)
 {
-    for(new cycle = 0; cycle < 3; cycle ++)
+    for (new cycle = 0; cycle < 3; cycle++)
     {
-        if(!TextDrawsNotification[playerid][cycle][Use])
+        if (!TextDrawsNotification[playerid][cycle][Use])
         {
-            if(cycle != 3 - 1)
+            if (cycle != 3 - 1)
             {
-                if(TextDrawsNotification[playerid][cycle + 1][Use])
+                if (TextDrawsNotification[playerid][cycle + 1][Use])
                 {
                     TextDrawsNotification[playerid][cycle][Use] = TextDrawsNotification[playerid][cycle + 1][Use];
                     TextDrawsNotification[playerid][cycle][Line] = TextDrawsNotification[playerid][cycle + 1][Line];
@@ -202,11 +202,11 @@ stock UpdateNotification(playerid)
                 }
             }
         }
-        else if(TextDrawsNotification[playerid][cycle][Use])
+        else if (TextDrawsNotification[playerid][cycle][Use])
         {
-            if(cycle != 0)
+            if (cycle != 0)
             {
-                if(!TextDrawsNotification[playerid][cycle - 1][Use])
+                if (!TextDrawsNotification[playerid][cycle - 1][Use])
                 {
                     TextDrawsNotification[playerid][cycle - 1][Use] = TextDrawsNotification[playerid][cycle][Use];
                     TextDrawsNotification[playerid][cycle - 1][Line] = TextDrawsNotification[playerid][cycle][Line];
@@ -234,7 +234,7 @@ stock UpdateNotification(playerid)
 
 stock MinPosYNotification(playerid, TDN)
 {
-    if(TDN == 0)
+    if (TDN == 0)
     {
         TextDrawsNotification[playerid][TDN][MinPosY] = PI[playerid][ac_WANTED_LEVEL] == 0 ? 130.000000 : 153.0;
     }
@@ -254,47 +254,47 @@ stock MaxPosYNotification(playerid, TDN)
 stock LinesNotification(playerid, TDN)
 {
     new lines = 1, Float:width, lastspace = -1, supr, len = strlen(TextDrawsNotification[playerid][TDN][Text]);
- 
-    for(new i = 0; i < len; i ++)
+
+    for (new i = 0; i < len; i++)
     {
-        if(TextDrawsNotification[playerid][TDN][Text][i] == '~')
+        if (TextDrawsNotification[playerid][TDN][Text][i] == '~')
         {
-            if(supr == 0)
+            if (supr == 0)
             {
                 supr = 1;
-                if(TextDrawsNotification[playerid][TDN][Text][i+2] != '~') return 1;
+                if (TextDrawsNotification[playerid][TDN][Text][i+2] != '~') return 1;
             }
-            else if(supr == 1) supr = 0;
+            else if (supr == 1) supr = 0;
         }
         else
         {
-            if(supr == 1)
+            if (supr == 1)
             {
-                if(TextDrawsNotification[playerid][TDN][Text][i] == 'n')
+                if (TextDrawsNotification[playerid][TDN][Text][i] == 'n')
                 {
-                    lines ++;
+                    lines++;
                     lastspace = -1;
                     width = 0;
                 }
             }
             else
             {
-                if(TextDrawsNotification[playerid][TDN][Text][i] == ' ') lastspace = i;
- 
+                if (TextDrawsNotification[playerid][TDN][Text][i] == ' ') lastspace = i;
+
                 width += TD_NOTIFICATION_LETTER_X * GetTextDrawCharacterWidth(TextDrawsNotification[playerid][TDN][Text][i], 1, bool:1);
 
-                if(width > 112.100000 - 3)
+                if (width > 112.100000 - 3)
                 {
-                    if(lastspace != i && lastspace != -1)
+                    if (lastspace != i && lastspace != -1)
                     {
-                        lines ++;
+                        lines++;
                         i = lastspace;
                         lastspace = -1;
                         width = 0;
                     }
                     else
                     {
-                        lines ++;
+                        lines++;
                         lastspace = -1;
                         width = 0;
                     }
@@ -302,21 +302,21 @@ stock LinesNotification(playerid, TDN)
             }
         }
     }
-    
+
     TextDrawsNotification[playerid][TDN][Line] = lines;
- 
+
     return 1;
 }
 
 stock CreateTDN(playerid, TDN)
 {
-    if(TextDrawsNotification[playerid][TDN][Use] == 1)
+    if (TextDrawsNotification[playerid][TDN][Use] == 1)
     {
-        if(TextDrawsNotification[playerid][TDN][TextDraw] != PlayerText:-1)
+        if (TextDrawsNotification[playerid][TDN][TextDraw] != PlayerText:-1)
         {
             PlayerTextDrawDestroy(playerid, TextDrawsNotification[playerid][TDN][TextDraw]);
         }
-    
+
         TextDrawsNotification[playerid][TDN][TextDraw] = CreatePlayerTextDraw(playerid, 499.000000, TextDrawsNotification[playerid][TDN][MinPosY], TextDrawsNotification[playerid][TDN][Text]);
         PlayerTextDrawFont(playerid, TextDrawsNotification[playerid][TDN][TextDraw], 1);
         PlayerTextDrawLetterSize(playerid, TextDrawsNotification[playerid][TDN][TextDraw], TD_NOTIFICATION_LETTER_X, TD_NOTIFICATION_LETTER_Y);
@@ -337,9 +337,9 @@ stock CreateTDN(playerid, TDN)
 
 hook OnGameModeInit()
 {
-    for(new playerid = 0; playerid < MAX_PLAYERS; playerid++)
+    for (new playerid = 0; playerid < MAX_PLAYERS; playerid++)
     {
-        for(new TDN = 0; TDN < 3; TDN++)
+        for (new TDN = 0; TDN < 3; TDN++)
         {
             TextDrawsNotification[playerid][TDN][TextDraw] = PlayerText:-1;
             TextDrawsNotification[playerid][TDN][Hide] = -1;
@@ -355,13 +355,16 @@ hook OnPlayerDisconnect(playerid, reason)
     return 1;
 }
 
-HideNotifications(playerid) {
-    for(new cycle; cycle < 3; cycle++)
+HideNotifications(playerid)
+{
+    for (new cycle; cycle < 3; cycle++)
     {
-        if(TextDrawsNotification[playerid][cycle][TextDraw] != PlayerText:-1) {
+        if (TextDrawsNotification[playerid][cycle][TextDraw] != PlayerText:-1)
+{
             PlayerTextDrawDestroy(playerid, TextDrawsNotification[playerid][cycle][TextDraw]);
         }
-        if(TextDrawsNotification[playerid][cycle][Timer] != -1) {
+        if (TextDrawsNotification[playerid][cycle][Timer] != -1)
+{
             KillTimer(TextDrawsNotification[playerid][cycle][Timer]);
         }
         TextDrawsNotification[playerid][cycle][Use] = 0;
@@ -377,40 +380,40 @@ HideNotifications(playerid) {
 
 SendFormatNotification(playerid, const text[], {Float, _}:...)
 {
-	static
-	    args,
-	    str[192];
+    static
+        args,
+        str[192];
 
-	if ((args = numargs()) <= 2)
-	{
-	    SendNotification(playerid, text);
-	}
-	else
-	{
-		while (--args >= 2)
-		{
-			#emit LCTRL 5
-			#emit LOAD.alt args
-			#emit SHL.C.alt 2
-			#emit ADD.C 12
-			#emit ADD
-			#emit LOAD.I
-			#emit PUSH.pri
-		}
-		#emit PUSH.S text
-		#emit PUSH.C 192
-		#emit PUSH.C str
-		#emit LOAD.S.pri 8
-		#emit CONST.alt 4
-		#emit ADD
-		#emit PUSH.pri
-		#emit SYSREQ.C format
-		#emit LCTRL 5
-		#emit SCTRL 4
+    if ((args = numargs()) <= 2)
+    {
+        SendNotification(playerid, text);
+    }
+    else
+    {
+        while (--args >= 2)
+        {
+            #emit LCTRL 5
+            #emit LOAD.alt args
+            #emit SHL.C.alt 2
+            #emit ADD.C 12
+            #emit ADD
+            #emit LOAD.I
+            #emit PUSH.pri
+        }
+        #emit PUSH.S text
+        #emit PUSH.C 192
+        #emit PUSH.C str
+        #emit LOAD.S.pri 8
+        #emit CONST.alt 4
+        #emit ADD
+        #emit PUSH.pri
+        #emit SYSREQ.C format
+        #emit LCTRL 5
+        #emit SCTRL 4
 
-		SendNotification(playerid, str);
+        SendNotification(playerid, str);
 
-		#emit RETN
-	}
-	return 1;
+        #emit RETN
+    }
+    return 1;
 }

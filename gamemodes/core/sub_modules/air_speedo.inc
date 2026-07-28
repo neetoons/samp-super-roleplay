@@ -11,14 +11,15 @@
     Code originally released from: https://sampforum.blast.hk/showthread.php?tid=639431
 
 */
-#if defined air_speedo_included 
+#if defined air_speedo_included
     #endinput
 #endif
 #define air_speedo_included
 
 #include <YSI_Coding\y_hooks>
 
-enum PLANE_ALARMS_TYPES:(<<= 1) {
+enum PLANE_ALARMS_TYPES:(<<= 1)
+{
     PLANE_ALARM_TERRAIN = 1,
     PLANE_ALARM_BANK_ANGLE
 };
@@ -48,8 +49,10 @@ new
 
 forward OnAirSpeedoRequestUpdate(playerid, vehicleid);
 
-hook OnScriptInit() {
-    for(new i = 0; i < sizeof Airports_Areas; i ++) {
+hook OnScriptInit()
+{
+    for (new i = 0; i < sizeof Airports_Areas; i++)
+{
         Airports_Areas[i][airport_area_AREAID] = CreateDynamicRectangle(Airports_Areas[i][airport_area_MIN_X], Airports_Areas[i][airport_area_MIN_Y], Airports_Areas[i][airport_area_MAX_X], Airports_Areas[i][airport_area_MAX_Y], 0, 0);
         Streamer_SetArrayData(STREAMER_TYPE_AREA, Airports_Areas[i][airport_area_AREAID], E_STREAMER_EXTRA_ID, { AREA_TYPE_AIRPORT });
     }
@@ -204,7 +207,8 @@ hook OnScriptInit() {
     TextDrawSetProportional(airSpeedoTd[15], 0);
 }
 
-hook OnPlayerConnect(playerid) {
+hook OnPlayerConnect(playerid)
+{
     pAirAlarms[playerid] = PLANE_ALARMS_TYPES:0;
     pInAirport[playerid] = false;
 
@@ -247,27 +251,33 @@ hook OnPlayerConnect(playerid) {
     RemoveBuildingForPlayer(playerid, 8339, 1641.1328, 1629.4063, 13.8203, 0.25);
 }
 
-hook OnPlayerDisconnect(playerid, reason) {
+hook OnPlayerDisconnect(playerid, reason)
+{
     DestroyPlayerAirSpeedo(playerid);
 }
 
-hook OnPlayerStateChange(playerid, newstate, oldstate) {
-    if(newstate == PLAYER_STATE_DRIVER) {
+hook OnPlayerStateChange(playerid, newstate, oldstate)
+{
+    if (newstate == PLAYER_STATE_DRIVER)
+{
         new vehicleid = GetPlayerVehicleID(playerid);
-        if(!VEHICLE_INFO[GetVehicleModel(vehicleid) - 400][vehicle_info_NORMAL_SPEEDO] && (Vehicle_IsPlane(vehicleid) || Vehicle_IsHelicopter(vehicleid))) {
+        if (!VEHICLE_INFO[GetVehicleModel(vehicleid) - 400][vehicle_info_NORMAL_SPEEDO] && (Vehicle_IsPlane(vehicleid) || Vehicle_IsHelicopter(vehicleid)))
+{
             CreatePlayerAirSpeedo(playerid, vehicleid);
         }
     }
-    else if(oldstate == PLAYER_STATE_DRIVER && pAirSpeedo[playerid]) {
+    else if (oldstate == PLAYER_STATE_DRIVER && pAirSpeedo[playerid])
+{
         DestroyPlayerAirSpeedo(playerid);
     }
 }
 
 hook OnPlayerEnterDynArea(playerid, areaid)
 {
-	new info[2];
-	Streamer_GetArrayData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID, info);
-    if(info[0] == AREA_TYPE_AIRPORT) {
+    new info[2];
+    Streamer_GetArrayData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID, info);
+    if (info[0] == AREA_TYPE_AIRPORT)
+{
         pInAirport[playerid] = true;
         return Y_HOOKS_BREAK_RETURN_1;
     }
@@ -276,23 +286,26 @@ hook OnPlayerEnterDynArea(playerid, areaid)
 
 hook OnPlayerLeaveDynArea(playerid, areaid)
 {
-	new info[2];
-	Streamer_GetArrayData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID, info);
-    if(info[0] == AREA_TYPE_AIRPORT) {
+    new info[2];
+    Streamer_GetArrayData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID, info);
+    if (info[0] == AREA_TYPE_AIRPORT)
+{
         pInAirport[playerid] = false;
         return Y_HOOKS_BREAK_RETURN_1;
     }
     return Y_HOOKS_CONTINUE_RETURN_1;
 }
 
-public OnAirSpeedoRequestUpdate(playerid, vehicleid) {
+public OnAirSpeedoRequestUpdate(playerid, vehicleid)
+{
     new string[128], model = GetVehicleModel(vehicleid), Float:pos[3], Float:angle;
 
     GetVehiclePos(vehicleid, pos[0], pos[1], pos[2]);
     GetVehicleZAngle(vehicleid, angle);
 
-    if(VEHICLE_INFO[model - 400][vehicle_info_LANDING_GEAR]) {
-        PlayerTextDrawSetString(playerid, pAirSpeedoTd[playerid][0], 
+    if (VEHICLE_INFO[model - 400][vehicle_info_LANDING_GEAR])
+{
+        PlayerTextDrawSetString(playerid, pAirSpeedoTd[playerid][0],
             GLOBAL_VEHICLES[vehicleid][gb_vehicle_LANDING_GEAR_STATUS] ? "up" : "down"
         );
     }
@@ -303,19 +316,20 @@ public OnAirSpeedoRequestUpdate(playerid, vehicleid) {
 
     format(string, sizeof string, "%s~n~FT",  number_format_thousand(floatround(pos[2] * 13.28 /* 3.28 */)));
     PlayerTextDrawSetString(playerid, pAirSpeedoTd[playerid][2], string);
-    
+
     format(string, sizeof string, "%.0f|", angle);
     PlayerTextDrawSetString(playerid, pAirSpeedoTd[playerid][3], string);
 
-    if(GLOBAL_VEHICLES[vehicleid][gb_vehicle_PARAMS_ENGINE]) {
+    if (GLOBAL_VEHICLES[vehicleid][gb_vehicle_PARAMS_ENGINE])
+{
         GLOBAL_VEHICLES[vehicleid][gb_vehicle_GAS] -= floatmul(floatdiv(GLOBAL_VEHICLES[vehicleid][gb_vehicle_MAX_GAS], 200), vel * 0.0004);
-        if(GLOBAL_VEHICLES[vehicleid][gb_vehicle_GAS] <= 0.1)
+        if (GLOBAL_VEHICLES[vehicleid][gb_vehicle_GAS] <= 0.1)
         {
             PLAYER_AC_INFO[playerid][CHEAT_VEHICLE_NOFUEL][p_ac_info_IMMUNITY] = gettime() + 15;
             GLOBAL_VEHICLES[vehicleid][gb_vehicle_GAS] = 0.0;
             GLOBAL_VEHICLES[vehicleid][gb_vehicle_PARAMS_ENGINE] = 0;
             UpdateVehicleParams(vehicleid);
-            
+
             SendClientMessage(playerid, -1, "{999999}El vehículo se ha quedado sin gasolina...");
         }
     }
@@ -323,20 +337,25 @@ public OnAirSpeedoRequestUpdate(playerid, vehicleid) {
     format(string, sizeof string, "%s~n~liters", number_format_thousand(floatround(GLOBAL_VEHICLES[vehicleid][gb_vehicle_GAS])));
     PlayerTextDrawSetString(playerid, pAirSpeedoTd[playerid][4], string);
 
-    if(VEHICLE_INFO[model - 400][vehicle_info_AIR_ALARMS]) {
+    if (VEHICLE_INFO[model - 400][vehicle_info_AIR_ALARMS])
+{
         new PLANE_ALARMS_TYPES:oldAlarms = pAirAlarms[playerid];
 
         //terrain
         new Float:highest_Z = 0.0;
         MapAndreas_FindZ_For2DCoord(pos[0], pos[1], highest_Z);
 
-        if((pos[2] - highest_Z) < 100.0 && !pInAirport[playerid] && vel > 50.0) {
-            if(!(pAirAlarms[playerid] & PLANE_ALARM_TERRAIN)) {
+        if ((pos[2] - highest_Z) < 100.0 && !pInAirport[playerid] && vel > 50.0)
+{
+            if (!(pAirAlarms[playerid] & PLANE_ALARM_TERRAIN))
+{
                 pAirAlarms[playerid] |= PLANE_ALARM_TERRAIN;
             }
         }
-        else {
-            if(pAirAlarms[playerid] & PLANE_ALARM_TERRAIN) {
+        else
+{
+            if (pAirAlarms[playerid] & PLANE_ALARM_TERRAIN)
+{
                 pAirAlarms[playerid] &= ~PLANE_ALARM_TERRAIN;
             }
         }
@@ -344,35 +363,45 @@ public OnAirSpeedoRequestUpdate(playerid, vehicleid) {
         //bank angle
         new Float:rot[3];
         GetVehicleRotation(vehicleid, rot[0], rot[1], rot[2]);
-        if(rot[0] >= 40.0 || rot[0] <= -40.0 || rot[1] >= 55.00 || rot[1] <= -55.0) {
-            if(!(pAirAlarms[playerid] & PLANE_ALARM_BANK_ANGLE)) {
+        if (rot[0] >= 40.0 || rot[0] <= -40.0 || rot[1] >= 55.00 || rot[1] <= -55.0)
+{
+            if (!(pAirAlarms[playerid] & PLANE_ALARM_BANK_ANGLE))
+{
                 pAirAlarms[playerid] |= PLANE_ALARM_BANK_ANGLE;
             }
         }
-        else {
-            if(pAirAlarms[playerid] & PLANE_ALARM_BANK_ANGLE) {
+        else
+{
+            if (pAirAlarms[playerid] & PLANE_ALARM_BANK_ANGLE)
+{
                 pAirAlarms[playerid] &= ~PLANE_ALARM_BANK_ANGLE;
             }
         }
-		//sistemas de emergencia en vuelo BY: Allendis Vargas.
-        if(pAirAlarms[playerid] != oldAlarms) {
-            if((pAirAlarms[playerid] & PLANE_ALARM_TERRAIN) && (pAirAlarms[playerid] & PLANE_ALARM_BANK_ANGLE)) {
+        //sistemas de emergencia en vuelo BY: Allendis Vargas.
+        if (pAirAlarms[playerid] != oldAlarms)
+{
+            if ((pAirAlarms[playerid] & PLANE_ALARM_TERRAIN) && (pAirAlarms[playerid] & PLANE_ALARM_BANK_ANGLE))
+{
                 PlayAudioStreamForPlayer(playerid, "https://cjoint.com/doc/21_07/KGkphU7J35U_dominicanrp-alarma-angulo.mp3");
             }
-            else if(pAirAlarms[playerid] & PLANE_ALARM_TERRAIN) {
+            else if (pAirAlarms[playerid] & PLANE_ALARM_TERRAIN)
+{
                 PlayAudioStreamForPlayer(playerid, "https://cjoint.com/doc/21_07/KGkpfIQV8pU_dominicanrp-alarma-tierra.mp3");
             }
-            else if(pAirAlarms[playerid] & PLANE_ALARM_BANK_ANGLE) {
+            else if (pAirAlarms[playerid] & PLANE_ALARM_BANK_ANGLE)
+{
                 PlayAudioStreamForPlayer(playerid, "https://cjoint.com/doc/21_07/KGkpl4WHP6U_dominicanrp-alarma-angulo-2.mp3");
             }
-            else {
+            else
+{
                 StopAudioStreamForPlayer(playerid);
             }
         }
     }
 }
 
-CreatePlayerAirSpeedo(playerid, vehicleid) {
+CreatePlayerAirSpeedo(playerid, vehicleid)
+{
     DestroyPlayerAirSpeedo(playerid);
 
     pAirSpeedoTd[playerid][0] = CreatePlayerTextDraw(playerid, 200.000000, 372.000000, "-");
@@ -420,11 +449,13 @@ CreatePlayerAirSpeedo(playerid, vehicleid) {
     PlayerTextDrawFont(playerid, pAirSpeedoTd[playerid][4], 2);
     PlayerTextDrawSetProportional(playerid, pAirSpeedoTd[playerid][4], 1);
 
-    for(new i = 0; i < sizeof airSpeedoTd; i ++) {
+    for (new i = 0; i < sizeof airSpeedoTd; i++)
+{
         TextDrawShowForPlayer(playerid, airSpeedoTd[i]);
     }
 
-    for(new i = 0; i < sizeof pAirSpeedoTd[]; i ++) {
+    for (new i = 0; i < sizeof pAirSpeedoTd[]; i++)
+{
         PlayerTextDrawShow(playerid, pAirSpeedoTd[playerid][i]);
     }
 
@@ -432,16 +463,20 @@ CreatePlayerAirSpeedo(playerid, vehicleid) {
     pAirSpeedo[playerid] = true;
 }
 
-DestroyPlayerAirSpeedo(playerid) {
-    for(new i = 0; i < sizeof airSpeedoTd; i ++) {
+DestroyPlayerAirSpeedo(playerid)
+{
+    for (new i = 0; i < sizeof airSpeedoTd; i++)
+{
         TextDrawHideForPlayer(playerid, airSpeedoTd[i]);
     }
 
-    for(new i = 0; i < sizeof pAirSpeedoTd[]; i ++) {
+    for (new i = 0; i < sizeof pAirSpeedoTd[]; i++)
+{
         PlayerTextDrawDestroy(playerid, pAirSpeedoTd[playerid][i]);
     }
 
-    if(pAirSpeedoTimer[playerid] != -1) {
+    if (pAirSpeedoTimer[playerid] != -1)
+{
         KillTimer(pAirSpeedoTimer[playerid]);
         pAirSpeedoTimer[playerid] = -1;
     }
@@ -453,7 +488,7 @@ DestroyPlayerAirSpeedo(playerid) {
 stock Float:GetVehicleAirSpeed(vehicleid)
 {
     new Float:vel = GetVehicleSpeed(vehicleid);
-	return vel * 1.2; //vel * 0.54;
+    return vel * 1.2; //vel * 0.54;
 }
 
 const VEHICLE_SYNC = 200;
@@ -464,7 +499,8 @@ IPacket:VEHICLE_SYNC(playerid, BitStream:bs)
     BS_IgnoreBits(bs, 8);
     BS_ReadInCarSync(bs, inCarData);
 
-    if(GLOBAL_VEHICLES[ inCarData[PR_vehicleId] ][gb_vehicle_VALID]) {
+    if (GLOBAL_VEHICLES[ inCarData[PR_vehicleId] ][gb_vehicle_VALID])
+{
         GLOBAL_VEHICLES[ inCarData[PR_vehicleId] ][gb_vehicle_LANDING_GEAR_STATUS] = inCarData[PR_landingGearState];
     }
     return 1;

@@ -11,7 +11,7 @@
     Code originally released from: https://sampforum.blast.hk/showthread.php?tid=639431
 
 */
-#if defined visible_items_included 
+#if defined visible_items_included
     #endinput
 #endif
 #define visible_items_included
@@ -20,17 +20,20 @@
 
 #define DEFAULT_VISIBLE_ITEMS 500
 
-hook OnPlayerConnect(playerid) {
+hook OnPlayerConnect(playerid)
+{
     Streamer_SetVisibleItems(STREAMER_TYPE_OBJECT, DEFAULT_VISIBLE_ITEMS, playerid);
 }
 
-hook OnPlayerEnterInterior(playerid, index) {
+hook OnPlayerEnterInterior(playerid, index)
+{
     new items = DEFAULT_VISIBLE_ITEMS;
-    
-    if(ENTER_EXIT[index][ee_VISIBLE_ITEMS] >= 0) items = ENTER_EXIT[index][ee_VISIBLE_ITEMS];
+
+    if (ENTER_EXIT[index][ee_VISIBLE_ITEMS] >= 0) items = ENTER_EXIT[index][ee_VISIBLE_ITEMS];
     Streamer_SetVisibleItems(STREAMER_TYPE_OBJECT, items, playerid);
 }
 
-hook OnPlayerExitInterior(playerid, index) {
+hook OnPlayerExitInterior(playerid, index)
+{
     Streamer_SetVisibleItems(STREAMER_TYPE_OBJECT, DEFAULT_VISIBLE_ITEMS, playerid);
 }
