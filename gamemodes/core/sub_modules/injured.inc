@@ -49,8 +49,8 @@ hook OnPlayerSpawn(playerid) {
         pInjuredTimer[playerid] = SetTimerEx("HealthDown", 3000, false, "i", playerid);
         
         ApplyAnimation(playerid, "SWEET", "Sweet_injuredloop", 4.1, true, 0, 0, 0, 0, 1);
-        if(PI[playerid][ac_WANTED_LEVEL] > 0) SendNotification(playerid, "Est·s herido y en b˙squeda, espera a que la policÌa venga a por ti.");
-        else SendNotification(playerid, "Est·s herido, puedes esperar a un mÈdico o usar ~r~/morir~w~.");
+        if(PI[playerid][ac_WANTED_LEVEL] > 0) SendNotification(playerid, "Est√°s herido y en b√∫squeda, espera a que la polic√≠a venga a por ti.");
+        else SendNotification(playerid, "Est√°s herido, puedes esperar a un m√©dico o usar ~r~/morir~w~.");
     }
 }
 

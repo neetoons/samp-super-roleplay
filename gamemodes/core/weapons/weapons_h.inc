@@ -39,7 +39,7 @@ enum enum_WEAPON_INFO
 }
 new WEAPON_INFO[][enum_WEAPON_INFO] = 
 {
-	{false, false, false, false, NO_WEAPON, "Puño", 0, 250, -1, false},
+	{false, false, false, false, NO_WEAPON, "PuÃ±o", 0, 250, -1, false},
 	{false, false, true, false, WEAPON_BRASSKNUCKLE, "Manopla", 0, 250, 331, true},
 	{false, false, true, false, WEAPON_GOLFCLUB, "Palo de golf", 1, 250, 333, true},
 	{false, false, true, false, WEAPON_NITESTICK, "Porra", 1, 250, 334, false},
@@ -54,9 +54,9 @@ new WEAPON_INFO[][enum_WEAPON_INFO] =
 	{false, false, true, false, WEAPON_VIBRATOR, "Vibrador", 10, 250, 323, true},
 	{false, false, true, false, WEAPON_VIBRATOR2, "Vibrador plateado", 10, 250, 324, true},
 	{false, false, true, false, WEAPON_FLOWER, "Flores", 10, 250, 325, true},
-	{false, false, true, false, WEAPON_CANE, "Bastón", 10, 250, 326, true},
+	{false, false, true, false, WEAPON_CANE, "BastÃ³n", 10, 250, 326, true},
 	{false, false, true, true, WEAPON_GRENADE, "Granada", 8, 500, 342, true},
-	{false, false, true, true, WEAPON_TEARGAS, "Gas lacrimógeno", 8, 500, 343, true},
+	{false, false, true, true, WEAPON_TEARGAS, "Gas lacrimÃ³geno", 8, 500, 343, true},
 	{false, false, true, true, WEAPON_MOLTOV, "Cocktail Molotov", 8, 500, 344, true},
 	{false, false, false, false, NO_WEAPON, "", 0, 0, -1, false},
 	{false, false, false, false, NO_WEAPON, "", 0, 0, -1, false},
@@ -82,10 +82,10 @@ new WEAPON_INFO[][enum_WEAPON_INFO] =
 	{false, false, false, false, WEAPON_BOMB, "Detonador", 12, 500, 364, false},
 	{false, false, true, true, WEAPON_SPRAYCAN, "Bote de spray", 9, 10, 365, true},
 	{false, false, true, true, WEAPON_FIREEXTINGUISHER, "Extintor", 9, 10, 366, true},
-	{false, false, true, false, WEAPON_CAMERA, "Cámara", 9, 500, 367, true},
-	{false, false, true, false, NO_WEAPON, "Gafas de visión nocturna", 11, 0, 368, false},
-	{false, false, true, false, NO_WEAPON, "Gafas térmicas", 11, 0, 369, false},
-	{false, false, false, false, WEAPON_PARACHUTE, "Paracaídas", 11, 0, 371, true},
+	{false, false, true, false, WEAPON_CAMERA, "CÃ¡mara", 9, 500, 367, true},
+	{false, false, true, false, NO_WEAPON, "Gafas de visiÃ³n nocturna", 11, 0, 368, false},
+	{false, false, true, false, NO_WEAPON, "Gafas tÃ©rmicas", 11, 0, 369, false},
+	{false, false, false, false, WEAPON_PARACHUTE, "ParacaÃ­das", 11, 0, 371, true},
 	{true, false, false, false, WEAPON_SHIELD, "Escudo", 13, 0, 18637, false},
 	{true, true, true, true, WEAPON_TASER_GUN, "Pistola taser", 2, 120, 347, false}
 };

@@ -30,7 +30,7 @@
 	((newkeys & (%0)) == (%0))
 
 
-#define MAX_BAD_LOGIN_ATTEMPS 3	// maximos intentos de contraseñas erroneas
+#define MAX_BAD_LOGIN_ATTEMPS 3	// maximos intentos de contraseÃ±as erroneas
 #define REP_MULTIPLIER 3	//12 rep * nivel para subir, si es nivel 1 necesita 12 rep para subir a nivel 2
 #define TIME_FOR_REP 1500000 // 25 minutos para obtener reputacion
 #define REP_FOR_PAYDAY 2	// payday cada 2 reputaciones
@@ -68,8 +68,8 @@ forward Float:frandom(Float:max, Float:min, dp);
 #define MAX_LISTITEMS			(35)
 /* Timers
 0 = Kick
-1 = Gangzone daño Rojo
-2 = Añadir reputacion
+1 = Gangzone daÃ±o Rojo
+2 = AÃ±adir reputacion
 3 = un/freeze player
 4 = recuperar vida
 5 = restart hambre sed
@@ -86,7 +86,7 @@ forward Float:frandom(Float:max, Float:min, dp);
 17 = msg td
 18 = intro 
 19 = anti cj
-20 = terminó descarga dl
+20 = terminÃ³ descarga dl
 21 = ocultar textdraw login ciudad extra
 */
 

@@ -189,8 +189,8 @@ public OnDeliveryManRequestLoad(playerid, vehicleid) {
 
             if(angle > (DeliveryManLoadPoints[i][3] - 15.0) && angle < (DeliveryManLoadPoints[i][3] + 15.0))
             {	
-                if(TRUCK_VEHICLE[vehicleid][truck_vehicle_LOADED]) return SendNotification(playerid, "La furgoneta ya está cargada.");
-                if(TRUCK_VEHICLE[vehicleid][truck_vehicle_LOADING]) return SendNotification(playerid, "La furgoneta ya se está cargando.");
+                if(TRUCK_VEHICLE[vehicleid][truck_vehicle_LOADED]) return SendNotification(playerid, "La furgoneta ya estÃ¡ cargada.");
+                if(TRUCK_VEHICLE[vehicleid][truck_vehicle_LOADING]) return SendNotification(playerid, "La furgoneta ya se estÃ¡ cargando.");
     
                 TRUCK_VEHICLE[vehicleid][truck_vehicle_LOADING] = true;
                 TRUCK_VEHICLE[vehicleid][truck_vehicle_DRIVER_USER_ID] = ACCOUNT_INFO[playerid][ac_ID];
@@ -214,7 +214,7 @@ public OnDeliveryManRequestLoad(playerid, vehicleid) {
 
                 pDeliveryManLoadingTimer[playerid] = SetTimerEx("OnDeliveryManLoadingUp", 1000, true, "ii", playerid, vehicleid);
             }
-            else SendNotification(playerid, "La furgoneta no está correctamente colocada para cargarlo.");
+            else SendNotification(playerid, "La furgoneta no estÃ¡ correctamente colocada para cargarlo.");
             return 1;
         }
     }
@@ -419,7 +419,7 @@ hook OnPlayerEnterDynamicCP(playerid, checkpointid)
 			if(WORK_VEHICLES[vehicleid][work_vehicle_WORK] != WORK_DELIVERYMAN) return 1;
 			if(!TRUCK_VEHICLE[vehicleid][truck_vehicle_DELIVERED]) return 1;
 			if(TRUCK_VEHICLE[vehicleid][truck_vehicle_UNLOADING]) return 1;
-			if(TRUCK_VEHICLE[vehicleid][truck_vehicle_DRIVER_USER_ID] != ACCOUNT_INFO[playerid][ac_ID]) return SendNotification(playerid, "Solo le pagaremos al conductor que entregó los paquetes.");
+			if(TRUCK_VEHICLE[vehicleid][truck_vehicle_DRIVER_USER_ID] != ACCOUNT_INFO[playerid][ac_ID]) return SendNotification(playerid, "Solo le pagaremos al conductor que entregÃ³ los paquetes.");
 			
 			DestroyDynamicCP(PLAYER_TEMP[playerid][pt_TRUCK_CHECKPOINT]);
 			PLAYER_TEMP[playerid][pt_TRUCK_CHECKPOINT] = INVALID_STREAMER_ID;

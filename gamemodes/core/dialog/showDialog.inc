@@ -27,17 +27,17 @@ ShowDialog(playerid, dialogid)
 		case DIALOG_REGISTER:
 		{
 			new dialog[140];
-			format(dialog, sizeof dialog, "Esta cuenta no está registrada.\nIngrese su contraseña a continuación.\n\nLa contraseña debe contener entre %d-%d caracteres.", MIN_PASS_LENGTH, MAX_PASS_LENGTH);
+			format(dialog, sizeof dialog, "Esta cuenta no estÃ¡ registrada.\nIngrese su contraseÃ±a a continuaciÃ³n.\n\nLa contraseÃ±a debe contener entre %d-%d caracteres.", MIN_PASS_LENGTH, MAX_PASS_LENGTH);
 			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_PASSWORD, "Registrarse", dialog, "Continuar", "Cerrar");
 			return 1;
 		}
-		case DIALOG_LOGIN: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_PASSWORD, "Ingresar", "Bienvenido de nuevo.\nIngrese su contraseña para acceder.", "Continuar", "Cerrar");
-		case DIALOG_SECURE_LOGIN_INSERT_CODE: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Verifica tu cuenta", "Se ha enviado un código verificación\nal correo asociado a esta cuenta.\n\nIntroduce el código para acceder:", "Continuar", "Cerrar");
-		case DIALOG_REGISTER_EMAIL: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Correo electrónico", "Ingresa una dirección de correo electrónico válida.\n\nEs importante que tengas acceso al correo ya que\nserá la única manera de recuperar tu contraseña.\n\nTranquilo, no recibirás ningún tipo de SPAM ni suscripciones.", "Continuar", "Cerrar");
-		case DIALOG_CLOTHES: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "{FF7373}¿Qué quieres comprar?", "Ropa\nAccesorios", ">>", "Salir");
-		case DIALOG_FOOD_PIZZA: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "Comida rápida", DIALOG_FOOD_PIZZA_String, "Pedir", "Cerrar");
-		case DIALOG_FOOD_CLUCKIN: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "Comida rápida", DIALOG_FOOD_CLUCKIN_String, "Pedir", "Cerrar");
-		case DIALOG_FOOD_BURGER: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "Comida rápida", DIALOG_FOOD_BURGER_String, "Pedir", "Cerrar");
+		case DIALOG_LOGIN: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_PASSWORD, "Ingresar", "Bienvenido de nuevo.\nIngrese su contraseÃ±a para acceder.", "Continuar", "Cerrar");
+		case DIALOG_SECURE_LOGIN_INSERT_CODE: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Verifica tu cuenta", "Se ha enviado un cÃ³digo verificaciÃ³n\nal correo asociado a esta cuenta.\n\nIntroduce el cÃ³digo para acceder:", "Continuar", "Cerrar");
+		case DIALOG_REGISTER_EMAIL: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Correo electrÃ³nico", "Ingresa una direcciÃ³n de correo electrÃ³nico vÃ¡lida.\n\nEs importante que tengas acceso al correo ya que\nserÃ¡ la Ãºnica manera de recuperar tu contraseÃ±a.\n\nTranquilo, no recibirÃ¡s ningÃºn tipo de SPAM ni suscripciones.", "Continuar", "Cerrar");
+		case DIALOG_CLOTHES: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "{FF7373}Â¿QuÃ© quieres comprar?", "Ropa\nAccesorios", ">>", "Salir");
+		case DIALOG_FOOD_PIZZA: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "Comida rÃ¡pida", DIALOG_FOOD_PIZZA_String, "Pedir", "Cerrar");
+		case DIALOG_FOOD_CLUCKIN: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "Comida rÃ¡pida", DIALOG_FOOD_CLUCKIN_String, "Pedir", "Cerrar");
+		case DIALOG_FOOD_BURGER: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "Comida rÃ¡pida", DIALOG_FOOD_BURGER_String, "Pedir", "Cerrar");
 		case DIALOG_PLAYER_TOYS:
 		{
 			new dialog[96 * (MAX_SU_TOYS + 2)], line_str[64];
@@ -48,26 +48,26 @@ ShowDialog(playerid, dialogid)
 				{
 					if(PLAYER_TOYS[playerid][i][player_toy_VALID])
 					{
-						if(PLAYER_TOYS[playerid][i][player_toy_ATTACHED]) format(line_str, sizeof line_str, "{"#SILVER_COLOR"}%d. %s\t{"#BLUE_COLOR"}Sí\n", i + 1, PLAYER_TOYS[playerid][i][player_toy_NAME]);
+						if(PLAYER_TOYS[playerid][i][player_toy_ATTACHED]) format(line_str, sizeof line_str, "{"#SILVER_COLOR"}%d. %s\t{"#BLUE_COLOR"}SÃ­\n", i + 1, PLAYER_TOYS[playerid][i][player_toy_NAME]);
 						else format(line_str, sizeof line_str, "{"#SILVER_COLOR"}%d. %s\t{"#BLUE_COLOR"}No\n", i + 1, PLAYER_TOYS[playerid][i][player_toy_NAME]);
 					}
-					else format(line_str, sizeof line_str, "{666666}%d. Slot vacío\n", i + 1);
+					else format(line_str, sizeof line_str, "{666666}%d. Slot vacÃ­o\n", i + 1);
 				}
 				else
 				{
 					if(i >= MAX_NU_TOYS)
 					{
 						if(PLAYER_TOYS[playerid][i][player_toy_VALID]) format(line_str, sizeof line_str, "{666666}%d. %s\t{"#BLUE_COLOR"}No\n", i + 1, PLAYER_TOYS[playerid][i][player_toy_NAME]);
-						else format(line_str, sizeof line_str, "{666666}%d. Slot vacío\n", i + 1);
+						else format(line_str, sizeof line_str, "{666666}%d. Slot vacÃ­o\n", i + 1);
 					}
 					else
 					{
 						if(PLAYER_TOYS[playerid][i][player_toy_VALID])
 						{
-							if(PLAYER_TOYS[playerid][i][player_toy_ATTACHED]) format(line_str, sizeof line_str, "{"#SILVER_COLOR"}%d. %s\t{"#BLUE_COLOR"}Sí\n", i + 1, PLAYER_TOYS[playerid][i][player_toy_NAME]);
+							if(PLAYER_TOYS[playerid][i][player_toy_ATTACHED]) format(line_str, sizeof line_str, "{"#SILVER_COLOR"}%d. %s\t{"#BLUE_COLOR"}SÃ­\n", i + 1, PLAYER_TOYS[playerid][i][player_toy_NAME]);
 							else format(line_str, sizeof line_str, "{"#SILVER_COLOR"}%d. %s\t{"#BLUE_COLOR"}No\n", i + 1, PLAYER_TOYS[playerid][i][player_toy_NAME]);
 						}
-						else format(line_str, sizeof line_str, "{666666}%d. Slot vacío\n", i + 1);
+						else format(line_str, sizeof line_str, "{666666}%d. Slot vacÃ­o\n", i + 1);
 					}
 				}
 				strcat(dialog, line_str);
@@ -81,7 +81,7 @@ ShowDialog(playerid, dialogid)
 		{
 			if(!PLAYER_TOYS[playerid][ PLAYER_TEMP[playerid][pt_SELECTED_TOY_SLOT] ][player_toy_VALID])
 			{
-				SendNotification(playerid, "Este slot está vacío, puedes comprar accesorios en cualquier tienda de ropa.");
+				SendNotification(playerid, "Este slot estÃ¡ vacÃ­o, puedes comprar accesorios en cualquier tienda de ropa.");
 				return 1;
 			}
 			
@@ -94,7 +94,7 @@ ShowDialog(playerid, dialogid)
 			{
 				if(PLAYER_TOYS[playerid][ PLAYER_TEMP[playerid][pt_SELECTED_TOY_SLOT] ][player_toy_BONE] == -1)
 				{
-					SendNotification(playerid, "Este accesorio es nuevo y aún no ha sido configurado, configuralo desde 'Configurar el accesorio'.");
+					SendNotification(playerid, "Este accesorio es nuevo y aÃºn no ha sido configurado, configuralo desde 'Configurar el accesorio'.");
 					format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Colocarte el accesorio\n{"#SILVER_COLOR"}Cambiar el nombre del accesorio\n{"#SILVER_COLOR"}Configurar el accesorio\n{"#SILVER_COLOR"}Color primario\n{"#SILVER_COLOR"}Color secundario\n{"#SILVER_COLOR"}Eliminar este accesorio");
 				}
 				else format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Colocarte el accesorio\n{"#SILVER_COLOR"}Cambiar el nombre del accesorio\n{"#SILVER_COLOR"}Configurar el accesorio\n{"#SILVER_COLOR"}Color primario\n{"#SILVER_COLOR"}Color secundario\n{"#SILVER_COLOR"}Eliminar este accesorio");
@@ -107,14 +107,14 @@ ShowDialog(playerid, dialogid)
 		{		
 			new dialog[145];
 			format(dialog, sizeof dialog, "Nombre actual: \"%s\"\nIndica el nuevo nombre:", PLAYER_TOYS[playerid][ PLAYER_TEMP[playerid][pt_SELECTED_TOY_SLOT] ][player_toy_NAME]);
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "{"#SILVER_COLOR"}Accesorio - Modificar nombre", dialog, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "{"#SILVER_COLOR"}Accesorio - Modificar nombre", dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_PLAYER_TOY_CONFIRMDELETE:
 		{
 			new dialog[145];
-			format(dialog, sizeof dialog, "¿Estás seguro que quieres borrar el siguiente accesorio?\n\t\"%s\"", PLAYER_TOYS[playerid][ PLAYER_TEMP[playerid][pt_SELECTED_TOY_SLOT] ][player_toy_NAME]);
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "{"#SILVER_COLOR"}Accesorio - Eliminar accesorio", dialog, "Eliminar", "Atrás");
+			format(dialog, sizeof dialog, "Â¿EstÃ¡s seguro que quieres borrar el siguiente accesorio?\n\t\"%s\"", PLAYER_TOYS[playerid][ PLAYER_TEMP[playerid][pt_SELECTED_TOY_SLOT] ][player_toy_NAME]);
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "{"#SILVER_COLOR"}Accesorio - Eliminar accesorio", dialog, "Eliminar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_PLAYER_TOY_SELECT_BONE:
@@ -131,7 +131,7 @@ ShowDialog(playerid, dialogid)
 				strcat(dialog, line_str);
 			}
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, dialog, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_PLAYER_TOY_EDIT_BONE:
@@ -140,24 +140,24 @@ ShowDialog(playerid, dialogid)
 			format(caption, sizeof caption, "{"#SILVER_COLOR"}Accesorio '%s'", PLAYER_TOYS[playerid][ PLAYER_TEMP[playerid][pt_SELECTED_TOY_SLOT] ][player_toy_NAME]);
 			
 			new dialog[145];
-			format(dialog, sizeof(dialog), "¿Quieres cambiar la parte del cuerpo donde se coloca este accesorio?\nActualmente está colocado en: %s", Toys_Bones[ PLAYER_TOYS[playerid][ PLAYER_TEMP[playerid][pt_SELECTED_TOY_SLOT] ][player_toy_BONE] - 1 ]);
+			format(dialog, sizeof(dialog), "Â¿Quieres cambiar la parte del cuerpo donde se coloca este accesorio?\nActualmente estÃ¡ colocado en: %s", Toys_Bones[ PLAYER_TOYS[playerid][ PLAYER_TEMP[playerid][pt_SELECTED_TOY_SLOT] ][player_toy_BONE] - 1 ]);
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, caption, dialog, "Sí", "No");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, caption, dialog, "SÃ­", "No");
 			return 1;
 		}
 		case DIALOG_PLAYER_TOY_COLOR_1:
 		{
 			SendNotification(playerid, "Selecciona el color 0 para poner el color original del accesorio.");
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Selecciona color", DIALOG_CREATE_CREW_COLOR_String, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Selecciona color", DIALOG_CREATE_CREW_COLOR_String, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_PLAYER_TOY_COLOR_2:
 		{
 			SendNotification(playerid, "Selecciona el color 0 para poner el color original del accesorio.");
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Selecciona color", DIALOG_CREATE_CREW_COLOR_String, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Selecciona color", DIALOG_CREATE_CREW_COLOR_String, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
-		case DIALOG_PLAYER_TOY_DELETE_ALL: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Accesorios - Eliminar todo", "¿Estás seguro de que quiere eliminar todos sus accesorios?\nEsta opción no se puede deshacer.", "Eliminar", "Atrás");	
+		case DIALOG_PLAYER_TOY_DELETE_ALL: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Accesorios - Eliminar todo", "Â¿EstÃ¡s seguro de que quiere eliminar todos sus accesorios?\nEsta opciÃ³n no se puede deshacer.", "Eliminar", "AtrÃ¡s");	
 		case DIALOG_BANK:
 		{
 			if(PI[playerid][ac_BANK_ACCOUNT] == 0) return SendNotification(playerid, "No tienes cuenta bancaria.");
@@ -166,39 +166,39 @@ ShowDialog(playerid, dialogid)
 			format(caption, sizeof caption, "Mi cuenta bancaria: {"#BLUE_COLOR"}%s {FFFFFF}- Balance actual: {"#BLUE_COLOR"}%s$", number_format_thousand(PI[playerid][ac_BANK_ACCOUNT]), number_format_thousand(PI[playerid][ac_BANK_MONEY]));
 			
 			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, 
-				"{"#SILVER_COLOR"}1. Retirar dinero\n{"#SILVER_COLOR"}2. Depositar dinero\n{"#SILVER_COLOR"}3. Transferir dinero\n{"#SILVER_COLOR"}4. Últimas transacciones", 
+				"{"#SILVER_COLOR"}1. Retirar dinero\n{"#SILVER_COLOR"}2. Depositar dinero\n{"#SILVER_COLOR"}3. Transferir dinero\n{"#SILVER_COLOR"}4. Ãšltimas transacciones", 
 			"Continuar", "Cerrar");
 			return 1;
 		}
 		case DIALOG_CREATE_BANK_ACCOUNT:
 		{
 			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Crear cuenta bancaria", 
-				"{"#SILVER_COLOR"}Bienvenido, actualmente no tienes una cuenta bancaria.\n\nPara disfrutar de los beneficios de una cuenta bancaria\npuedes crearla ahora mismo con un depósito minimo de 500$.", 
+				"{"#SILVER_COLOR"}Bienvenido, actualmente no tienes una cuenta bancaria.\n\nPara disfrutar de los beneficios de una cuenta bancaria\npuedes crearla ahora mismo con un depÃ³sito minimo de 500$.", 
 			"Crear", "Cerrar");
 			return 1;
 		}
 		case DIALOG_BANK_WITHDRAW:
 		{
 			new dialog[100];
-			format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Balance actual: {"#BLUE_COLOR"}%s$\n{"#SILVER_COLOR"}¿Cuánto quiere retirar?", number_format_thousand(PI[playerid][ac_BANK_MONEY]));
+			format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Balance actual: {"#BLUE_COLOR"}%s$\n{"#SILVER_COLOR"}Â¿CuÃ¡nto quiere retirar?", number_format_thousand(PI[playerid][ac_BANK_MONEY]));
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Banco - Retirar", dialog, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Banco - Retirar", dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_BANK_DEPOSIT:
 		{
 			new dialog[100];
-			format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Dinero actual: {"#BLUE_COLOR"}%s$\n{"#SILVER_COLOR"}¿Cuánto quiere depositar?", number_format_thousand(PI[playerid][ac_CASH]));
+			format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Dinero actual: {"#BLUE_COLOR"}%s$\n{"#SILVER_COLOR"}Â¿CuÃ¡nto quiere depositar?", number_format_thousand(PI[playerid][ac_CASH]));
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Banco - Depositar", dialog, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Banco - Depositar", dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
-		case DIALOG_BANK_TRANSFER: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Banco - Transferir", "Indica a que número de cuenta quiere transferir dinero.", "Continuar", "Atrás");
+		case DIALOG_BANK_TRANSFER: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Banco - Transferir", "Indica a que nÃºmero de cuenta quiere transferir dinero.", "Continuar", "AtrÃ¡s");
 		case DIALOG_BANK_TRANSFER_SEND:
 		{
 			new dialog[170];
-			format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Transferir a cuenta: {"#BLUE_COLOR"}%s\n{"#SILVER_COLOR"}Balance actual: {"#BLUE_COLOR"}%s$\n\n{"#SILVER_COLOR"}¿Cuánto quiere transferir?", number_format_thousand(PLAYER_TEMP[playerid][pt_SELECT_BANK_TRANSFER_ACCOUNT]), number_format_thousand(PI[playerid][ac_BANK_MONEY]));
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Banco - Transferir", dialog, "Continuar", "Atrás");
+			format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Transferir a cuenta: {"#BLUE_COLOR"}%s\n{"#SILVER_COLOR"}Balance actual: {"#BLUE_COLOR"}%s$\n\n{"#SILVER_COLOR"}Â¿CuÃ¡nto quiere transferir?", number_format_thousand(PLAYER_TEMP[playerid][pt_SELECT_BANK_TRANSFER_ACCOUNT]), number_format_thousand(PI[playerid][ac_BANK_MONEY]));
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Banco - Transferir", dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_BANK_TRANSACTIONS:
@@ -209,7 +209,7 @@ ShowDialog(playerid, dialogid)
 				if(cache_get_row_count(rows))
 				{
 					new dialog[2675], caption[40], line_str[128];
-					format(caption, sizeof caption, "Banco - Últimas %d transacciones", rows);
+					format(caption, sizeof caption, "Banco - Ãšltimas %d transacciones", rows);
 					format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Fecha\t{"#BLUE_COLOR"}Concepto\t{"#SILVER_COLOR"}Importe\n");
 					if(rows)
 					{
@@ -261,19 +261,19 @@ ShowDialog(playerid, dialogid)
 								}
 								case BANK_TRANSACTION_BUY_VEHICLE:
 								{
-									format(line_str, sizeof line_str, "{"#SILVER_COLOR"}%s\t{"#BLUE_COLOR"}Compra de vehículo\t{"#SILVER_COLOR"}-%s$\n", date, number_format_thousand(amount));
+									format(line_str, sizeof line_str, "{"#SILVER_COLOR"}%s\t{"#BLUE_COLOR"}Compra de vehÃ­culo\t{"#SILVER_COLOR"}-%s$\n", date, number_format_thousand(amount));
 									strcat(dialog, line_str);
 								}
 								case BANK_TRANSACTION_SOLD_VEHICLE:
 								{
-									format(line_str, sizeof line_str, "{"#SILVER_COLOR"}%s\t{"#BLUE_COLOR"}Venta de vehículo\t{"#SILVER_COLOR"}%s$\n", date, number_format_thousand(amount));
+									format(line_str, sizeof line_str, "{"#SILVER_COLOR"}%s\t{"#BLUE_COLOR"}Venta de vehÃ­culo\t{"#SILVER_COLOR"}%s$\n", date, number_format_thousand(amount));
 									strcat(dialog, line_str);
 								}
 							}
 						}
 					}
 					else strcat(dialog, "{"#SILVER_COLOR"}No hay transacciones en tu cuenta.");
-					ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, caption, dialog, "Cerrar", "Atrás");
+					ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, caption, dialog, "Cerrar", "AtrÃ¡s");
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT bank_movements.*, player.bank_account AS from_bankid, player2.bank_account AS to_bankid FROM bank_movements LEFT JOIN player ON bank_movements.from_id = player.id LEFT JOIN player AS player2 ON bank_movements.to_id = player2.id WHERE bank_movements.from_id = %d OR bank_movements.to_id = %d ORDER BY date DESC LIMIT %d;", ACCOUNT_INFO[playerid][ac_ID], ACCOUNT_INFO[playerid][ac_ID], MAX_BANK_TRANSACTIONS_DIALOG);
@@ -293,7 +293,7 @@ ShowDialog(playerid, dialogid)
 				}
 				else
 				{
-					format(line_str, sizeof line_str, "{666666}%d. Slot vacío\n", i + 1);
+					format(line_str, sizeof line_str, "{666666}%d. Slot vacÃ­o\n", i + 1);
 					strcat(dialog, line_str);
 				}
 			}
@@ -337,15 +337,15 @@ ShowDialog(playerid, dialogid)
 			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, dialog_body, "Continuar", "Cerrar");
 			return 1;
 		}
-		case DIALOG_PLAYER_POCKET_DELETE_ALL: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Alimentos - Eliminar todo", "¿Estás seguro de que quiere eliminar todos sus alimentos?\nEsta opción no se puede deshacer y perderás todos lo que haya.", "Eliminar", "Atrás");	
+		case DIALOG_PLAYER_POCKET_DELETE_ALL: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Alimentos - Eliminar todo", "Â¿EstÃ¡s seguro de que quiere eliminar todos sus alimentos?\nEsta opciÃ³n no se puede deshacer y perderÃ¡s todos lo que haya.", "Eliminar", "AtrÃ¡s");	
 		case DIALOG_PHONE:
 		{
 			new caption[50];
-			format(caption, sizeof caption, "Mi teléfono - %d", PI[playerid][ac_PHONE_NUMBER]);
+			format(caption, sizeof caption, "Mi telÃ©fono - %d", PI[playerid][ac_PHONE_NUMBER]);
 			
 			new dialog[200];
-			if(PI[playerid][ac_PHONE_STATE] == PHONE_STATE_ON) format(dialog, sizeof dialog, "{"#SILVER_COLOR"}1. Agenda\n{"#SILVER_COLOR"}2. Llamar\n{"#SILVER_COLOR"}3. Enviar mensaje\n{"#SILVER_COLOR"}4. Ver mensajes recibidos\n{"#SILVER_COLOR"}5. Ver mensajes enviados\n{"#SILVER_COLOR"}6. Tienda de compra y venta\n{"#SILVER_COLOR"}7. Apagar teléfono");
-			else format(dialog, sizeof dialog, "{"#SILVER_COLOR"}1. Encender teléfono\n{"#SILVER_COLOR"}2. Agenda\n{"#SILVER_COLOR"}3. Llamar\n{"#SILVER_COLOR"}4. Enviar mensaje\n{"#SILVER_COLOR"}5. Ver mensajes recibidos\n{"#SILVER_COLOR"}6. Ver mensajes enviados\n{"#SILVER_COLOR"}7. Tienda de compra y venta");
+			if(PI[playerid][ac_PHONE_STATE] == PHONE_STATE_ON) format(dialog, sizeof dialog, "{"#SILVER_COLOR"}1. Agenda\n{"#SILVER_COLOR"}2. Llamar\n{"#SILVER_COLOR"}3. Enviar mensaje\n{"#SILVER_COLOR"}4. Ver mensajes recibidos\n{"#SILVER_COLOR"}5. Ver mensajes enviados\n{"#SILVER_COLOR"}6. Tienda de compra y venta\n{"#SILVER_COLOR"}7. Apagar telÃ©fono");
+			else format(dialog, sizeof dialog, "{"#SILVER_COLOR"}1. Encender telÃ©fono\n{"#SILVER_COLOR"}2. Agenda\n{"#SILVER_COLOR"}3. Llamar\n{"#SILVER_COLOR"}4. Enviar mensaje\n{"#SILVER_COLOR"}5. Ver mensajes recibidos\n{"#SILVER_COLOR"}6. Ver mensajes enviados\n{"#SILVER_COLOR"}7. Tienda de compra y venta");
 			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, dialog, "Continuar", "Cerrar");
 			return 1;
 		}
@@ -354,7 +354,7 @@ ShowDialog(playerid, dialogid)
 			for(new i = 0; i != MAX_LISTITEMS; i++ ) PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][i] = -1;
 			
 			new dialog[80 * (MAX_PHONE_CONTACTS + 3)];
-			format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Nombre\t{"#BLUE_COLOR"}Número\n");
+			format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Nombre\t{"#BLUE_COLOR"}NÃºmero\n");
 
 			new line_str[80], contacts, listitem;
 			for(new i = 0; i != MAX_PHONE_CONTACTS; i++ )
@@ -370,7 +370,7 @@ ShowDialog(playerid, dialogid)
 			if(contacts < MAX_PHONE_CONTACTS)
 			{
 				PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] = MAX_PHONE_CONTACTS + 10;
-				strcat(dialog, "{"#SILVER_COLOR"}+ Añadir contacto\n"); listitem ++;
+				strcat(dialog, "{"#SILVER_COLOR"}+ AÃ±adir contacto\n"); listitem ++;
 			}
 			if(contacts > 0)
 			{
@@ -378,17 +378,17 @@ ShowDialog(playerid, dialogid)
 				strcat(dialog, "{c4290d}- Eliminar todo\n"); listitem ++;
 			}
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "Mi teléfono - Agenda", dialog, "Continuar", "Atrás");		
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "Mi telÃ©fono - Agenda", dialog, "Continuar", "AtrÃ¡s");		
 			return 1;
 		}
-		case DIALOG_PHONE_BOOK_ADD_NUMBER: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Agenda - Añadir contacto", "Está añadiendo un nuevo contacto en su agenda.\nIndique el número de teléfono del nuevo contacto.", "Continuar", "Atrás");
-		case DIALOG_PHONE_BOOK_ADD_NAME: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Agenda - Añadir contacto", "Está añadiendo un nuevo contacto en su agenda.\nIndique el nombre del nuevo contacto.", "Continuar", "Atrás");
+		case DIALOG_PHONE_BOOK_ADD_NUMBER: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Agenda - AÃ±adir contacto", "EstÃ¡ aÃ±adiendo un nuevo contacto en su agenda.\nIndique el nÃºmero de telÃ©fono del nuevo contacto.", "Continuar", "AtrÃ¡s");
+		case DIALOG_PHONE_BOOK_ADD_NAME: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Agenda - AÃ±adir contacto", "EstÃ¡ aÃ±adiendo un nuevo contacto en su agenda.\nIndique el nombre del nuevo contacto.", "Continuar", "AtrÃ¡s");
 		case DIALOG_PHONE_BOOK_OPTIONS:
 		{
 			new caption[40];
 			format(caption, sizeof caption, "Contacto - %s", PLAYER_PHONE_BOOK[playerid][ PLAYER_TEMP[playerid][pt_PLAYER_PHONE_BOOK_SELECTED] ][phone_book_contact_NAME]);
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, "{"#SILVER_COLOR"}1. Llamar\n{"#SILVER_COLOR"}2. Enviar mensaje\n{"#SILVER_COLOR"}3. Cambiar nombre del contacto\n{"#SILVER_COLOR"}4. Eliminar este contacto", "Continuar", "Atrás");			
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, "{"#SILVER_COLOR"}1. Llamar\n{"#SILVER_COLOR"}2. Enviar mensaje\n{"#SILVER_COLOR"}3. Cambiar nombre del contacto\n{"#SILVER_COLOR"}4. Eliminar este contacto", "Continuar", "AtrÃ¡s");			
 			return 1;
 		}
 		case DIALOG_PHONE_BOOK_CHANGE_NAME:
@@ -397,9 +397,9 @@ ShowDialog(playerid, dialogid)
 			format(caption, sizeof caption, "Contacto - %s", PLAYER_PHONE_BOOK[playerid][ PLAYER_TEMP[playerid][pt_PLAYER_PHONE_BOOK_SELECTED] ][phone_book_contact_NAME]);
 			
 			new dialog[140];
-			format(dialog, sizeof dialog, "Nombre actual: %s\nTeléfono: %d\n\nIndica el nuevo nombre de este contacto.", PLAYER_PHONE_BOOK[playerid][ PLAYER_TEMP[playerid][pt_PLAYER_PHONE_BOOK_SELECTED] ][phone_book_contact_NAME], PLAYER_PHONE_BOOK[playerid][ PLAYER_TEMP[playerid][pt_PLAYER_PHONE_BOOK_SELECTED] ][phone_book_contact_PHONE_NUMBER]);
+			format(dialog, sizeof dialog, "Nombre actual: %s\nTelÃ©fono: %d\n\nIndica el nuevo nombre de este contacto.", PLAYER_PHONE_BOOK[playerid][ PLAYER_TEMP[playerid][pt_PLAYER_PHONE_BOOK_SELECTED] ][phone_book_contact_NAME], PLAYER_PHONE_BOOK[playerid][ PLAYER_TEMP[playerid][pt_PLAYER_PHONE_BOOK_SELECTED] ][phone_book_contact_PHONE_NUMBER]);
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, caption, dialog, "Cambiar", "Atrás");	
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, caption, dialog, "Cambiar", "AtrÃ¡s");	
 			return 1;
 		}
 		case DIALOG_PHONE_BOOK_CONFIRM_DELET:
@@ -408,16 +408,16 @@ ShowDialog(playerid, dialogid)
 			format(caption, sizeof caption, "Contacto - %s", PLAYER_PHONE_BOOK[playerid][ PLAYER_TEMP[playerid][pt_PLAYER_PHONE_BOOK_SELECTED] ][phone_book_contact_NAME]);
 			
 			new dialog[140];
-			format(dialog, sizeof dialog, "¿Estás seguro de que desea eliminar el siguiente contacto?\n\nNombre: %s\nTeléfono: %d", PLAYER_PHONE_BOOK[playerid][ PLAYER_TEMP[playerid][pt_PLAYER_PHONE_BOOK_SELECTED] ][phone_book_contact_NAME], PLAYER_PHONE_BOOK[playerid][ PLAYER_TEMP[playerid][pt_PLAYER_PHONE_BOOK_SELECTED] ][phone_book_contact_PHONE_NUMBER]);
+			format(dialog, sizeof dialog, "Â¿EstÃ¡s seguro de que desea eliminar el siguiente contacto?\n\nNombre: %s\nTelÃ©fono: %d", PLAYER_PHONE_BOOK[playerid][ PLAYER_TEMP[playerid][pt_PLAYER_PHONE_BOOK_SELECTED] ][phone_book_contact_NAME], PLAYER_PHONE_BOOK[playerid][ PLAYER_TEMP[playerid][pt_PLAYER_PHONE_BOOK_SELECTED] ][phone_book_contact_PHONE_NUMBER]);
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, caption, dialog, "Eliminar", "Atrás");	
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, caption, dialog, "Eliminar", "AtrÃ¡s");	
 			return 1;
 		}
-		case DIALOG_PHONE_BOOK_DELETE_ALL: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Agenda - Eliminar todo", "¿Estás seguro de que quiere eliminar todos sus contactos?\nEsta opción no se puede deshacer y perderás todos los contactos guardados.", "Eliminar", "Atrás");	
-		case DIALOG_PHONE_CALL_NUMBER: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Mi teléfono - Realizar una llamada", "¿A quién quieres llamar?\nIndique el número al que desea llamar.", "Continuar", "Atrás");
-		case DIALOG_PHONE_SMS_NUMBER: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Mi teléfono - Enviar mensaje", "¿A quién quieres enviarle el mensaje?\nIndique el número al que desea enviar el mensaje.", "Continuar", "Atrás");
-		case DIALOG_PHONE_SMS_MESSAGE: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Mi teléfono - Enviar mensaje", "Escribe el mensaje que quieres enviar\nCaracteres: 1-64.", "Continuar", "Atrás");
-		case DIALOG_PHONE_BOOK_SEND_MESSAGE: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Mi teléfono - Enviar mensaje", "Escribe el mensaje que quieres enviar\nCaracteres: 1-64.", "Continuar", "Atrás");
+		case DIALOG_PHONE_BOOK_DELETE_ALL: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Agenda - Eliminar todo", "Â¿EstÃ¡s seguro de que quiere eliminar todos sus contactos?\nEsta opciÃ³n no se puede deshacer y perderÃ¡s todos los contactos guardados.", "Eliminar", "AtrÃ¡s");	
+		case DIALOG_PHONE_CALL_NUMBER: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Mi telÃ©fono - Realizar una llamada", "Â¿A quiÃ©n quieres llamar?\nIndique el nÃºmero al que desea llamar.", "Continuar", "AtrÃ¡s");
+		case DIALOG_PHONE_SMS_NUMBER: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Mi telÃ©fono - Enviar mensaje", "Â¿A quiÃ©n quieres enviarle el mensaje?\nIndique el nÃºmero al que desea enviar el mensaje.", "Continuar", "AtrÃ¡s");
+		case DIALOG_PHONE_SMS_MESSAGE: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Mi telÃ©fono - Enviar mensaje", "Escribe el mensaje que quieres enviar\nCaracteres: 1-64.", "Continuar", "AtrÃ¡s");
+		case DIALOG_PHONE_BOOK_SEND_MESSAGE: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Mi telÃ©fono - Enviar mensaje", "Escribe el mensaje que quieres enviar\nCaracteres: 1-64.", "Continuar", "AtrÃ¡s");
 		case DIALOG_PHONE_SENT_MESSAGES:
 		{
 			inline OnSentMessagesLoad()
@@ -426,7 +426,7 @@ ShowDialog(playerid, dialogid)
 				if(cache_get_row_count(rows))
 				{
 					new dialog[1600], caption[40], line_str[128];
-					format(caption, sizeof caption, "Últimos %d mensajes enviados", rows);
+					format(caption, sizeof caption, "Ãšltimos %d mensajes enviados", rows);
 					format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Fecha\t{"#BLUE_COLOR"}Enviado a\t{"#SILVER_COLOR"}Mensaje\n");
 					if(rows)
 					{
@@ -444,7 +444,7 @@ ShowDialog(playerid, dialogid)
 						}
 					}
 					else strcat(dialog, "{"#SILVER_COLOR"}No hay mensajes.");
-					ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, caption, dialog, "Cerrar", "Atrás");
+					ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, caption, dialog, "Cerrar", "AtrÃ¡s");
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT pmessages.*, player.phone_number FROM pmessages LEFT JOIN player ON pmessages.to_id = player.id WHERE pmessages.from_id = %d ORDER BY pmessages.date DESC LIMIT 10;", ACCOUNT_INFO[playerid][ac_ID]);
@@ -459,7 +459,7 @@ ShowDialog(playerid, dialogid)
 				if(cache_get_row_count(rows))
 				{
 					new dialog[1600], caption[40], line_str[128];
-					format(caption, sizeof caption, "Últimos %d mensajes recibidos", rows);
+					format(caption, sizeof caption, "Ãšltimos %d mensajes recibidos", rows);
 					format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Fecha\t{"#BLUE_COLOR"}Remitente\t{"#SILVER_COLOR"}Mensaje\n");
 					if(rows)
 					{
@@ -477,7 +477,7 @@ ShowDialog(playerid, dialogid)
 						}
 					}
 					else strcat(dialog, "{"#SILVER_COLOR"}No hay mensajes.");
-					ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, caption, dialog, "Cerrar", "Atrás");
+					ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, caption, dialog, "Cerrar", "AtrÃ¡s");
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT pmessages.*, player.phone_number FROM pmessages LEFT JOIN player ON pmessages.from_id = player.id WHERE pmessages.to_id = %d ORDER BY pmessages.date DESC LIMIT 10;", ACCOUNT_INFO[playerid][ac_ID]);
@@ -490,18 +490,18 @@ ShowDialog(playerid, dialogid)
 			
 			if(PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_EXTRA])
 			{
-				format(dialog, sizeof dialog, "Coste de la propiedad: %d "SERVER_COIN"\nSeguro: NO\nMonedas "SERVER_COIN" actuales: %d "SERVER_COIN"\nMonedas "SERVER_COIN" tras la compra: %d "SERVER_COIN"\n\n¿De verdad desea comprar esta propiedad?", PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX] ][property_EXTRA], PI[playerid][ac_COINS], PI[playerid][ac_COINS] - PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX] ][property_EXTRA]);
+				format(dialog, sizeof dialog, "Coste de la propiedad: %d "SERVER_COIN"\nSeguro: NO\nMonedas "SERVER_COIN" actuales: %d "SERVER_COIN"\nMonedas "SERVER_COIN" tras la compra: %d "SERVER_COIN"\n\nÂ¿De verdad desea comprar esta propiedad?", PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX] ][property_EXTRA], PI[playerid][ac_COINS], PI[playerid][ac_COINS] - PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX] ][property_EXTRA]);
 			}
 			else
 			{
-				format(dialog, sizeof dialog, "Precio de la propiedad: %s$\nSeguro: %s$\nBalance actual: %s$\nBalance tras la compra: %s$\n\n¿De verdad desea comprar esta propiedad?", number_format_thousand(PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX] ][property_PRICE]), number_format_thousand(PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX] ][property_PRICE_BASE] / 200), number_format_thousand(PI[playerid][ac_BANK_MONEY]), number_format_thousand(PI[playerid][ac_BANK_MONEY] - PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX] ][property_PRICE]));
+				format(dialog, sizeof dialog, "Precio de la propiedad: %s$\nSeguro: %s$\nBalance actual: %s$\nBalance tras la compra: %s$\n\nÂ¿De verdad desea comprar esta propiedad?", number_format_thousand(PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX] ][property_PRICE]), number_format_thousand(PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX] ][property_PRICE_BASE] / 200), number_format_thousand(PI[playerid][ac_BANK_MONEY]), number_format_thousand(PI[playerid][ac_BANK_MONEY] - PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX] ][property_PRICE]));
 			}
 			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Comprar propiedad",  dialog, "Comprar", "Cerrar");
 			return 1;
 		}
 		case DIALOG_PLAYER_GPS:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "GPS",  "- Mis lugares\n- Mis propiedades\n- Mis vehículos\n- Lugares de interés\n- Trabajos\n- Ver mapa", "Continuar", "Cerrar");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "GPS",  "- Mis lugares\n- Mis propiedades\n- Mis vehÃ­culos\n- Lugares de interÃ©s\n- Trabajos\n- Ver mapa", "Continuar", "Cerrar");
 			return 1;
 		}
 		case DIALOG_PLAYER_GPS_PLAYER:
@@ -525,7 +525,7 @@ ShowDialog(playerid, dialogid)
 			if(sites < MAX_PLAYER_GPS_SAVES)
 			{
 				PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] = MAX_PLAYER_GPS_SAVES + 10;
-				strcat(dialog, "{"#SILVER_COLOR"}+ Añadir lugar actual\n"); listitem ++;
+				strcat(dialog, "{"#SILVER_COLOR"}+ AÃ±adir lugar actual\n"); listitem ++;
 			}
 			if(sites > 0)
 			{
@@ -533,42 +533,42 @@ ShowDialog(playerid, dialogid)
 				strcat(dialog, "{c4290d}- Eliminar todo\n"); listitem ++;
 			}
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "GPS - Mis lugares", dialog, "Continuar", "Atrás");	
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "GPS - Mis lugares", dialog, "Continuar", "AtrÃ¡s");	
 			return 1;
 		}
 		case DIALOG_PLAYER_GPS_PLAYER_ADD:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "GPS - Añadir lugar", "Tu posición actual será guardada en este lugar para ir más tarde.\nIndica el nombre de este lugar para guardarlo.", "Continuar", "Atrás");	
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "GPS - AÃ±adir lugar", "Tu posiciÃ³n actual serÃ¡ guardada en este lugar para ir mÃ¡s tarde.\nIndica el nombre de este lugar para guardarlo.", "Continuar", "AtrÃ¡s");	
 			return 1;
 		}
-		case DIALOG_PLAYER_GPS_DELETE_ALL: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Mis lugares - Eliminar todo", "¿Estás seguro de que quiere eliminar todos sus lugares?\nEsta opción no se puede deshacer y perderás todos los lugares guardados.", "Eliminar", "Atrás");	
+		case DIALOG_PLAYER_GPS_DELETE_ALL: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Mis lugares - Eliminar todo", "Â¿EstÃ¡s seguro de que quiere eliminar todos sus lugares?\nEsta opciÃ³n no se puede deshacer y perderÃ¡s todos los lugares guardados.", "Eliminar", "AtrÃ¡s");	
 		case DIALOG_PLAYER_GPS_PLAYER_OPTION:
 		{
 			new caption[40];
 			format(caption, sizeof caption, "GPS - %s", PLAYER_GPS[playerid][ PLAYER_TEMP[playerid][pt_GPS_PLAYER_SELECTED] ][player_gps_NAME]);
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, "{"#SILVER_COLOR"}1. Marcar coordenadas en el GPS\n{"#SILVER_COLOR"}2. Cambiar nombre de este lugar\n{"#SILVER_COLOR"}3. Eliminar este lugar del GPS", "Continuar", "Atrás");	
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, "{"#SILVER_COLOR"}1. Marcar coordenadas en el GPS\n{"#SILVER_COLOR"}2. Cambiar nombre de este lugar\n{"#SILVER_COLOR"}3. Eliminar este lugar del GPS", "Continuar", "AtrÃ¡s");	
 			return 1;
 		}
 		case DIALOG_PLAYER_GPS_CHANGE_NAME:
 		{
 			new dialog[90];
 			format(dialog, sizeof dialog, "Nombre del lugar: %s\nIndica el nuevo nombre para este lugar.", PLAYER_GPS[playerid][ PLAYER_TEMP[playerid][pt_GPS_PLAYER_SELECTED] ][player_gps_NAME]);
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "GPS - Cambiar nombre de un lugar", dialog, "Continuar", "Atrás");	
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "GPS - Cambiar nombre de un lugar", dialog, "Continuar", "AtrÃ¡s");	
 			return 1;
 		}
 		case DIALOG_PLAYER_GPS_CONFIRM_DELET:
 		{
 			new dialog[95];
-			format(dialog, sizeof dialog, "Nombre del lugar: %s\n¿Estás seguro de que quiere borrarlo del GPS?", PLAYER_GPS[playerid][ PLAYER_TEMP[playerid][pt_GPS_PLAYER_SELECTED] ][player_gps_NAME]);
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "GPS - Eliminar un lugar", dialog, "Eliminar", "Atrás");	
+			format(dialog, sizeof dialog, "Nombre del lugar: %s\nÂ¿EstÃ¡s seguro de que quiere borrarlo del GPS?", PLAYER_GPS[playerid][ PLAYER_TEMP[playerid][pt_GPS_PLAYER_SELECTED] ][player_gps_NAME]);
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "GPS - Eliminar un lugar", dialog, "Eliminar", "AtrÃ¡s");	
 			return 1;
 		}
 		case DIALOG_PLAYER_GPS_SITES:
 		{
 			new dialog[1024];
-			format(dialog, sizeof dialog, "- Hospitales\n- Tiendas de Ropa\n- Tiendas 24/7\n- Restaurantes\n- Bancos\n- Cajeros\n- Gasolineras\n- Concesionarios\n- Gobierno\n- Policías\n- "SERVER_SHORT_NAME" Tuning Club\n- Autoescuela\n- Ikea (tienda de muebles)");
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "GPS - Lugares de interés", dialog, "Continuar", "Atrás");
+			format(dialog, sizeof dialog, "- Hospitales\n- Tiendas de Ropa\n- Tiendas 24/7\n- Restaurantes\n- Bancos\n- Cajeros\n- Gasolineras\n- Concesionarios\n- Gobierno\n- PolicÃ­as\n- "SERVER_SHORT_NAME" Tuning Club\n- Autoescuela\n- Ikea (tienda de muebles)");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "GPS - Lugares de interÃ©s", dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_PLAYER_GPS_WORKS:
@@ -594,7 +594,7 @@ ShowDialog(playerid, dialogid)
 				listitem ++;
 			}
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "GPS - Trabajos", dialog, "Continuar", "Atrás");	
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "GPS - Trabajos", dialog, "Continuar", "AtrÃ¡s");	
 			return 1;
 		}
 		case DIALOG_WORKS_TELEPORTS:
@@ -613,7 +613,7 @@ ShowDialog(playerid, dialogid)
 				PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] = i;
 				listitem ++;
 			}
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "Trabajos", dialog, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "Trabajos", dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_PLAYER_GPS_SITE_0: //Hospitales
@@ -631,7 +631,7 @@ ShowDialog(playerid, dialogid)
 
 				listitem++;
 			}
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "GPS - Hospitales", dialog, "Continuar", "Atrás");	
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "GPS - Hospitales", dialog, "Continuar", "AtrÃ¡s");	
 			return 1;
 		}
 		case DIALOG_PLAYER_GPS_SITE_1: //Tiendas de ropa
@@ -654,7 +654,7 @@ ShowDialog(playerid, dialogid)
 				sites ++;
 			}
 
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "GPS - Tiendas de ropa", dialog, "Continuar", "Atrás");	
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "GPS - Tiendas de ropa", dialog, "Continuar", "AtrÃ¡s");	
 			return 1;
 		}
 		case DIALOG_PLAYER_GPS_SITE_2: //Tiendas 24 horas
@@ -677,7 +677,7 @@ ShowDialog(playerid, dialogid)
 				sites ++;
 			}
 
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "GPS - Tiendas 24/7", dialog, "Continuar", "Atrás");	
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "GPS - Tiendas 24/7", dialog, "Continuar", "AtrÃ¡s");	
 			return 1;
 		}
 		case DIALOG_PLAYER_GPS_SITE_3: //Comida rapida
@@ -700,7 +700,7 @@ ShowDialog(playerid, dialogid)
 				sites ++;
 			}
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "GPS - Restaurantes", dialog, "Continuar", "Atrás");	
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "GPS - Restaurantes", dialog, "Continuar", "AtrÃ¡s");	
 			return 1;
 		}
 		case DIALOG_PLAYER_GPS_SITE_4: //Bancos
@@ -723,7 +723,7 @@ ShowDialog(playerid, dialogid)
 				sites ++;
 			}
 
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "GPS - Bancos", dialog, "Continuar", "Atrás");	
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "GPS - Bancos", dialog, "Continuar", "AtrÃ¡s");	
 			return 1;
 		}
 		case DIALOG_PLAYER_GPS_SITE_5: //Cajeros
@@ -741,7 +741,7 @@ ShowDialog(playerid, dialogid)
 				sites ++;
 			}
 
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "GPS - Cajeros", dialog, "Continuar", "Atrás");	
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "GPS - Cajeros", dialog, "Continuar", "AtrÃ¡s");	
 			return 1;
 		}
 		case DIALOG_PLAYER_GPS_SITE_6: //Gasolineras
@@ -759,12 +759,12 @@ ShowDialog(playerid, dialogid)
 				sites ++;
 			}
 
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "GPS - Gasolineras", dialog, "Continuar", "Atrás");	
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "GPS - Gasolineras", dialog, "Continuar", "AtrÃ¡s");	
 			return 1;
 		}
 		case DIALOG_PLAYER_GPS_SITE_7: //Concesionarios
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "GPS - Concesionarios", DIALOG_PLAYER_GPS_SITE_7_String, "Continuar", "Atrás");	
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "GPS - Concesionarios", DIALOG_PLAYER_GPS_SITE_7_String, "Continuar", "AtrÃ¡s");	
 			return 1;
 		}
 		case DIALOG_PLAYER_GPS_SITE_8: //Policias
@@ -787,7 +787,7 @@ ShowDialog(playerid, dialogid)
 				sites ++;
 			}
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "GPS - Policías", dialog, "Continuar", "Atrás");	
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "GPS - PolicÃ­as", dialog, "Continuar", "AtrÃ¡s");	
 			return 1;
 		}
 		case DIALOG_PLAYER_GPS_PROPERTIES:
@@ -817,7 +817,7 @@ ShowDialog(playerid, dialogid)
 						}
 					}
 					else strcat(dialog, "{"#SILVER_COLOR"}No tienes propiedades");
-					ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "GPS - Mis propiedades", dialog, "Continuar", "Atrás");
+					ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "GPS - Mis propiedades", dialog, "Continuar", "AtrÃ¡s");
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT * FROM properties WHERE id_player = %d;", ACCOUNT_INFO[playerid][ac_ID]);
@@ -829,7 +829,7 @@ ShowDialog(playerid, dialogid)
 			for(new i = 0; i != MAX_LISTITEMS; i ++) PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][i] = -1;
 
 			new dialog[115 * (MAX_SU_VEHICLES + 2)], total_vehicles;
-			format(dialog, sizeof dialog, "Vehículo\tMatrícula\tDistancia\n");
+			format(dialog, sizeof dialog, "VehÃ­culo\tMatrÃ­cula\tDistancia\n");
 			for(new i = 0, j = GetVehiclePoolSize(); i <= j; i ++)
 			{
 				if(!GLOBAL_VEHICLES[i][gb_vehicle_VALID]) continue;
@@ -854,9 +854,9 @@ ShowDialog(playerid, dialogid)
 					total_vehicles ++;
 				}
 			}
-			if(total_vehicles == 0) strcat(dialog, "{"#SILVER_COLOR"}No tienes vehículos");
+			if(total_vehicles == 0) strcat(dialog, "{"#SILVER_COLOR"}No tienes vehÃ­culos");
 
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "GPS - Mis vehículos", dialog, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "GPS - Mis vehÃ­culos", dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_PROPERTY_OPTIONS:
@@ -865,7 +865,7 @@ ShowDialog(playerid, dialogid)
 			format(caption, sizeof caption, "Propiedad - %s", PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_NAME]);
 
 			new dialog[512];
-			format(dialog, sizeof dialog, "1. Cambiar nombre de la propiedad\n2. Echar a todo del mundo de mi propiedad\n3. Poner música desde tu MP3\n4. Muebles\n");
+			format(dialog, sizeof dialog, "1. Cambiar nombre de la propiedad\n2. Echar a todo del mundo de mi propiedad\n3. Poner mÃºsica desde tu MP3\n4. Muebles\n");
 
 			if(PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_DIS_DEFAULT_INTERIOR]) strcat(dialog, "5. Crear muebles por defecto\n");
 			else strcat(dialog, "5. Eliminar muebles por defecto\n");
@@ -878,17 +878,17 @@ ShowDialog(playerid, dialogid)
 				}
 			}
 
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, dialog, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_PROPERTY_NAME:
 		{
 			new dialog[85];
 			format(dialog, sizeof dialog, "Nombre actual: %s\nIndica el nuevo nombre de la propiedad.", PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_NAME]);
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Propiedad - Cambiar nombre", dialog, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Propiedad - Cambiar nombre", dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
-		case DIALOG_PLAYER_MP3: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "MP3 - Buscar una canción", "Indica el nombre y cantante de la canción que quieres reproducir.\nSe recomienda añadir la palabra 'audio' para canción directa.\n\nPor ejemplo: Lynyrd Skynyrd - Free Bird (Audio)", "Buscar", "Cerrar");
+		case DIALOG_PLAYER_MP3: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "MP3 - Buscar una canciÃ³n", "Indica el nombre y cantante de la canciÃ³n que quieres reproducir.\nSe recomienda aÃ±adir la palabra 'audio' para canciÃ³n directa.\n\nPor ejemplo: Lynyrd Skynyrd - Free Bird (Audio)", "Buscar", "Cerrar");
 		case DIALOG_BUY_VEHICLE:
 		{
 			if(!GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][gb_vehicle_VALID]) return 0;
@@ -897,11 +897,11 @@ ShowDialog(playerid, dialogid)
 			
 			new dialog[800];
 			format(dialog, sizeof dialog, 
-				"Vehículo: %s\n\
+				"VehÃ­culo: %s\n\
 				Nivel necesario: %d\n\
-				Precio del vehículo: %s$\n\
-				Velocidad máxima: %d Km/h\n\
-				Capacidad depósito: %.1f Litros\n\
+				Precio del vehÃ­culo: %s$\n\
+				Velocidad mÃ¡xima: %d Km/h\n\
+				Capacidad depÃ³sito: %.1f Litros\n\
 				Espacio maletero: %d\n\
 				Seguro: %s$\n\n", 
 				VEHICLE_INFO[ GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][gb_vehicle_MODELID] - 400 ][vehicle_info_NAME],
@@ -916,67 +916,67 @@ ShowDialog(playerid, dialogid)
 			new str[145];
 			if(SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_LEVEL] > ACCOUNT_INFO[playerid][ac_LEVEL])
 			{
-				format(str, sizeof str, "{"#RED_COLOR"}- Necesitas ser al menos nivel %d para poder comprar este vehículo.", SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_LEVEL]);
+				format(str, sizeof str, "{"#RED_COLOR"}- Necesitas ser al menos nivel %d para poder comprar este vehÃ­culo.", SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_LEVEL]);
 				strcat(dialog, str);
 				PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] = INVALID_VEHICLE_ID;
-				ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Comprar vehículo", dialog, "Cerrar", "");
+				ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Comprar vehÃ­culo", dialog, "Cerrar", "");
 				return 1;
 			}
 			
 			if(SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_VIP_LEVEL] > ACCOUNT_INFO[playerid][ac_VIP])
 			{
-				format(str, sizeof str, "{"#RED_COLOR"}- Necesitas membresía VIP (%d) para poder comprar este vehículo.", SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_VIP_LEVEL]);
+				format(str, sizeof str, "{"#RED_COLOR"}- Necesitas membresÃ­a VIP (%d) para poder comprar este vehÃ­culo.", SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_VIP_LEVEL]);
 				strcat(dialog, str);
 				PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] = INVALID_VEHICLE_ID;
-				ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Comprar vehículo", dialog, "Cerrar", "");
+				ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Comprar vehÃ­culo", dialog, "Cerrar", "");
 				return 1;
 			}
 			
 			if(PI[playerid][ac_BANK_ACCOUNT] == 0)
 			{
-				strcat(dialog, "{"#RED_COLOR"}- Necesitas una cuenta bancaria para poder comprar vehículos.");
+				strcat(dialog, "{"#RED_COLOR"}- Necesitas una cuenta bancaria para poder comprar vehÃ­culos.");
 				PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] = INVALID_VEHICLE_ID;
-				ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Comprar vehículo", dialog, "Cerrar", "");
+				ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Comprar vehÃ­culo", dialog, "Cerrar", "");
 				return 1;
 			}
 	
 			if(SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_PRICE] > PI[playerid][ac_BANK_MONEY])
 			{
 				new diff = SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_PRICE] - PI[playerid][ac_BANK_MONEY];
-				format(str, sizeof str, "{"#RED_COLOR"}- Te faltan %s$ en tu cuenta bancaria para poder comprar este vehículo.", number_format_thousand(diff));
+				format(str, sizeof str, "{"#RED_COLOR"}- Te faltan %s$ en tu cuenta bancaria para poder comprar este vehÃ­culo.", number_format_thousand(diff));
 				strcat(dialog, str);
 				PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] = INVALID_VEHICLE_ID;
-				ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Comprar vehículo", dialog, "Cerrar", "");
+				ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Comprar vehÃ­culo", dialog, "Cerrar", "");
 				return 1;
 			}
 			
 			if(SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_EXTRA] > PI[playerid][ac_COINS])
 			{
-				format(str, sizeof str, "{"#RED_COLOR"}- Te faltan %d "SERVER_COIN" para poder comprar este vehículo.", SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_EXTRA] - PI[playerid][ac_COINS]);
+				format(str, sizeof str, "{"#RED_COLOR"}- Te faltan %d "SERVER_COIN" para poder comprar este vehÃ­culo.", SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_EXTRA] - PI[playerid][ac_COINS]);
 				strcat(dialog, str);
 				PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] = INVALID_VEHICLE_ID;
-				ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Comprar vehículo", dialog, "Cerrar", "");
+				ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Comprar vehÃ­culo", dialog, "Cerrar", "");
 				return 1;
 			}
 
 			if(PI[playerid][ac_DRIVE_LICENSE_POINTS] == 0)
 			{
-				strcat(dialog, "{"#RED_COLOR"}- No puedes comprar vehículos sin una licencia.");
+				strcat(dialog, "{"#RED_COLOR"}- No puedes comprar vehÃ­culos sin una licencia.");
 				PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] = INVALID_VEHICLE_ID;
-				ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Comprar vehículo", dialog, "Cerrar", "");
+				ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Comprar vehÃ­culo", dialog, "Cerrar", "");
 				return 1;
 			}
 			
-			if(!SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_EXTRA]) format(str, sizeof str, "Balance de tu cuenta bancaria: %s$\nBalance tras la compra: %s$\n\n¿De verdad desea comprar este vehículo?", number_format_thousand(PI[playerid][ac_BANK_MONEY]), number_format_thousand(PI[playerid][ac_BANK_MONEY] - SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_PRICE]));
-			else format(str, sizeof str, "Tus monedas: %d "SERVER_COIN"\nMonedas tras la compra: %d "SERVER_COIN"\n\n¿De verdad desea comprar este vehículo?", PI[playerid][ac_COINS], PI[playerid][ac_COINS] - SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_EXTRA]);
+			if(!SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_EXTRA]) format(str, sizeof str, "Balance de tu cuenta bancaria: %s$\nBalance tras la compra: %s$\n\nÂ¿De verdad desea comprar este vehÃ­culo?", number_format_thousand(PI[playerid][ac_BANK_MONEY]), number_format_thousand(PI[playerid][ac_BANK_MONEY] - SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_PRICE]));
+			else format(str, sizeof str, "Tus monedas: %d "SERVER_COIN"\nMonedas tras la compra: %d "SERVER_COIN"\n\nÂ¿De verdad desea comprar este vehÃ­culo?", PI[playerid][ac_COINS], PI[playerid][ac_COINS] - SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_EXTRA]);
 			strcat(dialog, str);
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Comprar vehículo", dialog, "Comprar", "Cerrar");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Comprar vehÃ­culo", dialog, "Comprar", "Cerrar");
 			return 1;
 		}
 		case DIALOG_NOTARY:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Notaría", "{"#SILVER_COLOR"}Vender una propiedad al banco\n{"#SILVER_COLOR"}Vender un vehículo al banco\n{"#SILVER_COLOR"}Vender una propiedad a una persona\n{"#SILVER_COLOR"}Vender un vehículo a una persona", "Continuar", "Cerrar");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "NotarÃ­a", "{"#SILVER_COLOR"}Vender una propiedad al banco\n{"#SILVER_COLOR"}Vender un vehÃ­culo al banco\n{"#SILVER_COLOR"}Vender una propiedad a una persona\n{"#SILVER_COLOR"}Vender un vehÃ­culo a una persona", "Continuar", "Cerrar");
 			return 1;
 		}
 		case DIALOG_NOTARY_SELECT_PROPERTY:
@@ -1003,7 +1003,7 @@ ShowDialog(playerid, dialogid)
 						}
 					}
 					else strcat(dialog, "{"#SILVER_COLOR"}No tienes propiedades");
-					ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "Selecciona la propiedad que quieres vender", dialog, "Continuar", "Atrás");
+					ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "Selecciona la propiedad que quieres vender", dialog, "Continuar", "AtrÃ¡s");
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id, name FROM properties WHERE id_player = %d;", ACCOUNT_INFO[playerid][ac_ID]);
@@ -1021,8 +1021,8 @@ ShowDialog(playerid, dialogid)
 			else payment = floatround( floatmul(price, 0.25) );
 			
 			new dialog[160];
-			format(dialog, sizeof dialog, "Precio en mercado: %s$\nNosotros te pagaremos: %s$\n\n¿Estás seguro de que quiere venderla?", number_format_thousand(PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_PRICE]), number_format_thousand(payment));
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, caption, dialog, "Vender", "Atrás");
+			format(dialog, sizeof dialog, "Precio en mercado: %s$\nNosotros te pagaremos: %s$\n\nÂ¿EstÃ¡s seguro de que quiere venderla?", number_format_thousand(PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_PRICE]), number_format_thousand(payment));
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, caption, dialog, "Vender", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_PROPERTY_SELL_PRICE:
@@ -1037,11 +1037,11 @@ ShowDialog(playerid, dialogid)
 			
 			new dialog[250];
 			format(dialog, sizeof dialog, 
-			"Precio en mercado: %s$\n\nPrecio mínimo de venta: %s$\nPrecio máximo de venta: %s$\n\n¿Por cuánto quieres vender esta propiedad?", 
+			"Precio en mercado: %s$\n\nPrecio mÃ­nimo de venta: %s$\nPrecio mÃ¡ximo de venta: %s$\n\nÂ¿Por cuÃ¡nto quieres vender esta propiedad?", 
 			number_format_thousand(PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_PRICE]),
 			number_format_thousand(min_price),
 			number_format_thousand(max_price));
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, caption, dialog, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, caption, dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_PROPERTY_SELL_TO_PLAYER:
@@ -1052,7 +1052,7 @@ ShowDialog(playerid, dialogid)
 			new dialog[250];
 			format(dialog, sizeof dialog, "De acuerdo, quieres vender esta propiedad por %s$.\n\nIndica el nombre o playerid del comprador.\nEl comprador debe estar en la sala y cumplir todos los requisitos.", number_format_thousand(PLAYER_TEMP[playerid][pt_NOTARY_PRICE]));
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, caption, dialog, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, caption, dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_SELL_CONFIRM_PROPERTY:
@@ -1063,7 +1063,7 @@ ShowDialog(playerid, dialogid)
 				Propiedad: %d\n\
 				Precio: %s$\n\n\
 				Balance tras la compra: %s$\n\n\
-				¿Quieres comprar esta propiedad?",
+				Â¿Quieres comprar esta propiedad?",
 				PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_NOTARY_TO_PLAYER] ][pt_RP_NAME],
 				PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_ID],
 				number_format_thousand(PLAYER_TEMP[playerid][pt_NOTARY_PRICE]),
@@ -1078,7 +1078,7 @@ ShowDialog(playerid, dialogid)
 			for(new i = 0; i != MAX_LISTITEMS; i ++) PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][i] = -1;
 			
 			new dialog[95 * (MAX_SU_VEHICLES + 2)], total_vehicles;
-			format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Vehículo\t{"#BLUE_COLOR"}Matrícula\n");
+			format(dialog, sizeof dialog, "{"#SILVER_COLOR"}VehÃ­culo\t{"#BLUE_COLOR"}MatrÃ­cula\n");
 			for(new i = 0, j = GetVehiclePoolSize(); i <= j; i ++)
 			{
 				if(!GLOBAL_VEHICLES[i][gb_vehicle_VALID]) continue;
@@ -1095,9 +1095,9 @@ ShowDialog(playerid, dialogid)
 					total_vehicles ++;
 				}
 			}
-			if(total_vehicles == 0) strcat(dialog, "{"#SILVER_COLOR"}No tienes vehículos");
+			if(total_vehicles == 0) strcat(dialog, "{"#SILVER_COLOR"}No tienes vehÃ­culos");
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "Selecciona el vehículo que quieres vender", dialog, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "Selecciona el vehÃ­culo que quieres vender", dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_VEHICLE_BANK_SELL:
@@ -1111,8 +1111,8 @@ ShowDialog(playerid, dialogid)
 			else payment = floatround( floatmul(price, 0.25) );
 			
 			new dialog[160];
-			format(dialog, sizeof dialog, "Precio en mercado: %s$\nNosotros te pagaremos: %s$\n\n¿Estás seguro de que quiere venderlo?", number_format_thousand( VEHICLE_INFO[ GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_PLAYER_VEHICLE_SELECTED] ][gb_vehicle_MODELID] - 400 ][vehicle_info_PRICE] ), number_format_thousand(payment));
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, caption, dialog, "Vender", "Atrás");
+			format(dialog, sizeof dialog, "Precio en mercado: %s$\nNosotros te pagaremos: %s$\n\nÂ¿EstÃ¡s seguro de que quiere venderlo?", number_format_thousand( VEHICLE_INFO[ GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_PLAYER_VEHICLE_SELECTED] ][gb_vehicle_MODELID] - 400 ][vehicle_info_PRICE] ), number_format_thousand(payment));
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, caption, dialog, "Vender", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_VEHICLE_SELL_PRICE:
@@ -1127,11 +1127,11 @@ ShowDialog(playerid, dialogid)
 			
 			new dialog[250];
 			format(dialog, sizeof dialog, 
-			"Precio en mercado: %s$\n\nPrecio mínimo de venta: %s$\nPrecio máximo de venta: %s$\n\n¿Por cuánto quieres vender este vehículo?", 
+			"Precio en mercado: %s$\n\nPrecio mÃ­nimo de venta: %s$\nPrecio mÃ¡ximo de venta: %s$\n\nÂ¿Por cuÃ¡nto quieres vender este vehÃ­culo?", 
 			number_format_thousand(VEHICLE_INFO[ GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_PLAYER_VEHICLE_SELECTED] ][gb_vehicle_MODELID] - 400 ][vehicle_info_PRICE]),
 			number_format_thousand(min_price),
 			number_format_thousand(max_price));
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, caption, dialog, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, caption, dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_VEHICLE_SELL_TO_PLAYER:
@@ -1140,21 +1140,21 @@ ShowDialog(playerid, dialogid)
 			format(caption, sizeof caption, "Vender - %s", VEHICLE_INFO[ GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_PLAYER_VEHICLE_SELECTED] ][gb_vehicle_MODELID] - 400 ][vehicle_info_NAME]);
 			
 			new dialog[250];
-			format(dialog, sizeof dialog, "De acuerdo, quieres vender este vehículo por %s$.\n\nIndica el nombre o playerid del comprador.\nEl comprador debe estar en la sala y cumplir todos los requisitos.", number_format_thousand(PLAYER_TEMP[playerid][pt_NOTARY_PRICE]));
+			format(dialog, sizeof dialog, "De acuerdo, quieres vender este vehÃ­culo por %s$.\n\nIndica el nombre o playerid del comprador.\nEl comprador debe estar en la sala y cumplir todos los requisitos.", number_format_thousand(PLAYER_TEMP[playerid][pt_NOTARY_PRICE]));
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, caption, dialog, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, caption, dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_SELL_CONFIRM_VEHICLE:
 		{
 			new dialog[300];
 			format(dialog, sizeof dialog,
-				"%s te quiere vender un vehículo.\n\n\
-				Vehículo: %s\n\
-				Matrícula: %s\n\
+				"%s te quiere vender un vehÃ­culo.\n\n\
+				VehÃ­culo: %s\n\
+				MatrÃ­cula: %s\n\
 				Precio: %s$\n\n\
 				Balance tras la compra: %s$\n\n\
-				¿Quieres comprar este vehículo?",
+				Â¿Quieres comprar este vehÃ­culo?",
 				PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_NOTARY_TO_PLAYER] ][pt_RP_NAME],
 				VEHICLE_INFO[ GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_PLAYER_VEHICLE_SELECTED] ][gb_vehicle_MODELID] - 400 ][vehicle_info_NAME],
 				GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_PLAYER_VEHICLE_SELECTED] ][gb_vehicle_NUMBER_PLATE],
@@ -1209,14 +1209,14 @@ ShowDialog(playerid, dialogid)
 				{
 					new caption[45], dialog[80 * TOTAL_TUNING_PARTS], line_str[80];
 					format(caption, sizeof caption, "Tuning - %s", VEHICLE_INFO[ GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_MODELID] - 400 ][vehicle_info_NAME]);
-					format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Categoría\n");
+					format(dialog, sizeof dialog, "{"#SILVER_COLOR"}CategorÃ­a\n");
 					if(rows)
 					{
 						for(new i = 0; i != rows; i ++)
 						{
 							if(i >= TOTAL_TUNING_PARTS)
 							{
-								printf("---> Límite superado en array 'PLAYER_TUNING_MENU, dialog Parts' al intentar cargar de la base de datos.");
+								printf("---> LÃ­mite superado en array 'PLAYER_TUNING_MENU, dialog Parts' al intentar cargar de la base de datos.");
 								break;
 							}
 
@@ -1225,8 +1225,8 @@ ShowDialog(playerid, dialogid)
 							strcat(dialog, line_str);
 						}
 					}
-					else strcat(dialog, "{666666}Este vehículo no se puede tunear");
-					ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, caption, dialog, "Continuar", "Atrás");
+					else strcat(dialog, "{666666}Este vehÃ­culo no se puede tunear");
+					ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, caption, dialog, "Continuar", "AtrÃ¡s");
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT vcomponents_info.part FROM vcomponents_info INNER JOIN vcomponents ON vcomponents_info.id = vcomponents.componentid WHERE vcomponents.modelid = %d GROUP BY vcomponents_info.part;", GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_MODELID]);
@@ -1242,14 +1242,14 @@ ShowDialog(playerid, dialogid)
 				{
 					new caption[45], dialog[75 * MAX_TUNING_PARTS_COMPONENTS], line_str[75];
 					format(caption, sizeof caption, "%s > %s", VEHICLE_INFO[ GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_MODELID] - 400 ][vehicle_info_NAME], PLAYER_TEMP[playerid][pt_TUNING_SELECTED_PART]);
-					format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Categoría\t{"#BLUE_COLOR"}Piezas necesarias\t{"#SILVER_COLOR"}Estimación\n");
+					format(dialog, sizeof dialog, "{"#SILVER_COLOR"}CategorÃ­a\t{"#BLUE_COLOR"}Piezas necesarias\t{"#SILVER_COLOR"}EstimaciÃ³n\n");
 					if(rows)
 					{
 						for(new i = 0; i != rows; i ++)
 						{
 							if(i >= MAX_TUNING_PARTS_COMPONENTS)
 							{
-								printf("---> Límite superado en array 'PLAYER_TUNING_MENU, dialog Partsnames' al intentar cargar de la base de datos.");
+								printf("---> LÃ­mite superado en array 'PLAYER_TUNING_MENU, dialog Partsnames' al intentar cargar de la base de datos.");
 								break;
 							}
 
@@ -1261,7 +1261,7 @@ ShowDialog(playerid, dialogid)
 						}
 					}
 					else strcat(dialog, "{666666}No se puede tunear");
-					ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, caption, dialog, "Continuar", "Atrás");
+					ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, caption, dialog, "Continuar", "AtrÃ¡s");
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT vcomponents_info.id, vcomponents_info.name, vcomponents_info.pieces FROM vcomponents_info INNER JOIN vcomponents ON vcomponents_info.id = vcomponents.componentid WHERE vcomponents_info.part = '%e' AND vcomponents.modelid = %d;", PLAYER_TEMP[playerid][pt_TUNING_SELECTED_PART], GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_MODELID]);
@@ -1269,7 +1269,7 @@ ShowDialog(playerid, dialogid)
 			return 1;
 		}
 		case DIALOG_GRAFFITI_EDIT: {
-			ShowPlayerDialog(playerid, DIALOG_GRAFFITI_EDIT, DIALOG_STYLE_LIST, "Graffiti", "1. Cambiar posición\n2. Editar texto\n3. Borrar", "Continuar", "Cerrar");
+			ShowPlayerDialog(playerid, DIALOG_GRAFFITI_EDIT, DIALOG_STYLE_LIST, "Graffiti", "1. Cambiar posiciÃ³n\n2. Editar texto\n3. Borrar", "Continuar", "Cerrar");
 		}
 		case DIALOG_MECHANIC_MENU:
 		{
@@ -1279,31 +1279,31 @@ ShowDialog(playerid, dialogid)
 			new dialog[450];
 			format(dialog, sizeof dialog, 
 			"\
-				{"#SILVER_COLOR"}Opción\t{"#BLUE_COLOR"}Piezas necesarias\t{"#SILVER_COLOR"}Estimación\n\
-				{"#SILVER_COLOR"}Reparación completa\t{"#BLUE_COLOR"}10\t{"#SILVER_COLOR"}500$\n\
+				{"#SILVER_COLOR"}OpciÃ³n\t{"#BLUE_COLOR"}Piezas necesarias\t{"#SILVER_COLOR"}EstimaciÃ³n\n\
+				{"#SILVER_COLOR"}ReparaciÃ³n completa\t{"#BLUE_COLOR"}10\t{"#SILVER_COLOR"}500$\n\
 			");
 			
 			for(new i; i != sizeof Mechanic_Areas; i++)
 				if(IsPlayerInDynamicArea(playerid, Mechanic_Areas[i]))
 				{
 					new paintjobs = VehiclePaintjob( GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_MODELID] );
-					strcat(dialog, "{"#SILVER_COLOR"}Pintar vehículo\t{"#BLUE_COLOR"}5\t{"#SILVER_COLOR"}250$\n");
+					strcat(dialog, "{"#SILVER_COLOR"}Pintar vehÃ­culo\t{"#BLUE_COLOR"}5\t{"#SILVER_COLOR"}250$\n");
 					if(PLAYER_WORKS[playerid][WORK_MECHANIC][pwork_LEVEL] >= 100)
 					{
 						strcat(dialog, "{"#SILVER_COLOR"}Eliminar componentes\n");
-						strcat(dialog, "{"#SILVER_COLOR"}Tunear vehículo\n");
+						strcat(dialog, "{"#SILVER_COLOR"}Tunear vehÃ­culo\n");
 						if(paintjobs > 0) strcat(dialog, "{"#SILVER_COLOR"}Paintjob\t{"#BLUE_COLOR"}15\t{"#SILVER_COLOR"}750$\n");
 					}
 					else
 					{
 						strcat(dialog, "{666666}Eliminar componentes\n");
-						strcat(dialog, "{666666}Tunear vehículo\n");
+						strcat(dialog, "{666666}Tunear vehÃ­culo\n");
 						if(paintjobs > 0) strcat(dialog, "{666666}Paintjob\t{666666}15\t{666666}750$\n");
 					}
 					break;
 				}
 
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, caption, dialog, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, caption, dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_MECHANIC_REPAIR_PRICE:
@@ -1311,7 +1311,7 @@ ShowDialog(playerid, dialogid)
 			new caption[60];
 			format(caption, sizeof caption, "Reparar %s", VEHICLE_INFO[ GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_MODELID] - 400 ][vehicle_info_NAME]);
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, caption, "Indica el precio de la reparación.\nRango de precio: 0$ - 2.000$", "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, caption, "Indica el precio de la reparaciÃ³n.\nRango de precio: 0$ - 2.000$", "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_MECHANIC_COLOR_PRICE:
@@ -1319,7 +1319,7 @@ ShowDialog(playerid, dialogid)
 			new caption[60];
 			format(caption, sizeof caption, "Pintar %s", VEHICLE_INFO[ GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_MODELID] - 400 ][vehicle_info_NAME]);
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, caption, "Indica el precio para pintar el vehículo.\nRango de precio: 0$ - 1.750$", "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, caption, "Indica el precio para pintar el vehÃ­culo.\nRango de precio: 0$ - 1.750$", "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_MECHANIC_TUNING_PRICE:
@@ -1327,8 +1327,8 @@ ShowDialog(playerid, dialogid)
 			new caption[60], dialog[145];
 			format(caption, sizeof caption, "Tunear %s", VEHICLE_INFO[ GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_MODELID] - 400 ][vehicle_info_NAME]);
 			
-			format(dialog, sizeof dialog, "Indica el precio para tunear el vehículo.\nRango de precio: 0$ - %s$", number_format_thousand((PLAYER_TEMP[playerid][pt_TUNING_SELECTED_PIECES] * 50) + 2000));
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, caption, dialog, "Continuar", "Atrás");
+			format(dialog, sizeof dialog, "Indica el precio para tunear el vehÃ­culo.\nRango de precio: 0$ - %s$", number_format_thousand((PLAYER_TEMP[playerid][pt_TUNING_SELECTED_PIECES] * 50) + 2000));
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, caption, dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_MECHANIC_PAINTJOB_PRICE:
@@ -1337,9 +1337,9 @@ ShowDialog(playerid, dialogid)
 			format(caption, sizeof caption, "Paintjob %s", VEHICLE_INFO[ GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_MODELID] - 400 ][vehicle_info_NAME]);
 			
 			if(PLAYER_TEMP[playerid][pt_PAINTJOB_SELECTED_ID] == 3)
-				ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, caption, "Indica el precio para eliminar el paintjob del vehículo.\nRango de precio: 0$ - 2.750$", "Continuar", "Atrás");
+				ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, caption, "Indica el precio para eliminar el paintjob del vehÃ­culo.\nRango de precio: 0$ - 2.750$", "Continuar", "AtrÃ¡s");
 			else
-				ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, caption, "Indica el precio para el paintjob del vehículo.\nRango de precio: 0$ - 2.750$", "Continuar", "Atrás");
+				ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, caption, "Indica el precio para el paintjob del vehÃ­culo.\nRango de precio: 0$ - 2.750$", "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_MECHANIC_REM_COM_PRICE:
@@ -1347,7 +1347,7 @@ ShowDialog(playerid, dialogid)
 			new caption[60];
 			format(caption, sizeof caption, "Eliminar componente de %s", VEHICLE_INFO[ GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_MODELID] - 400 ][vehicle_info_NAME]);
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, caption, "Indica el precio para eliminar el componente del vehículo.\nRango de precio: 0$ - 2.750$", "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, caption, "Indica el precio para eliminar el componente del vehÃ­culo.\nRango de precio: 0$ - 2.750$", "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_MECHANIC_ACCEPT:
@@ -1356,18 +1356,18 @@ ShowDialog(playerid, dialogid)
 			format(dialog, sizeof dialog,
 				
 				"\
-					{"#SILVER_COLOR"}El mecánico %s te ofrece:\n\
+					{"#SILVER_COLOR"}El mecÃ¡nico %s te ofrece:\n\
 						\t%s\n\
 					\n\
 					{"#SILVER_COLOR"}Precio: %s$\n\
-					¿Quieres aceptarlo?\n\
+					Â¿Quieres aceptarlo?\n\
 				",
 					PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_MECHANIC_PID] ][pt_RP_NAME],
 					PLAYER_TEMP[playerid][pt_MECHANIC_TEXT],
 					number_format_thousand(PLAYER_TEMP[playerid][pt_MECHANIC_PRICE])
 			);
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Mecánico", dialog, "Aceptar", "Cancelar");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "MecÃ¡nico", dialog, "Aceptar", "Cancelar");
 			return 1;
 		}
 		case DIALOG_MECHANIC_SELECT_COL_SLOT:
@@ -1375,7 +1375,7 @@ ShowDialog(playerid, dialogid)
 			new caption[60];
 			format(caption, sizeof caption, "Pintar %s", VEHICLE_INFO[ GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_MODELID] - 400 ][vehicle_info_NAME]);
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, "{"#SILVER_COLOR"}Pintar color primario\n{"#SILVER_COLOR"}Pintar color secundario", "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, "{"#SILVER_COLOR"}Pintar color primario\n{"#SILVER_COLOR"}Pintar color secundario", "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_MECHANIC_SELECT_COLOR, DIALOG_PLANE_SELECT_COLOR, DIALOG_BOAT_SELECT_COLOR:
@@ -1392,7 +1392,7 @@ ShowDialog(playerid, dialogid)
 				strcat(dialog, line_str);
 			}
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, dialog, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_MECHANIC_REMOVE_COMPONEN:
@@ -1420,11 +1420,11 @@ ShowDialog(playerid, dialogid)
 								strcat(dialog, line_str);
 								count++;
 							}
-							else strcat(dialog, "{"#SILVER_COLOR"}Vehículo sin tunear"); 
+							else strcat(dialog, "{"#SILVER_COLOR"}VehÃ­culo sin tunear"); 
 						}
 					}
-					else strcat(dialog, "{"#SILVER_COLOR"}Vehículo sin tunear");
-					ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, caption, dialog, "Eliminar", "Atrás");
+					else strcat(dialog, "{"#SILVER_COLOR"}VehÃ­culo sin tunear");
+					ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, caption, dialog, "Eliminar", "AtrÃ¡s");
 				}
 			}
 
@@ -1438,7 +1438,7 @@ ShowDialog(playerid, dialogid)
 				else format(components_query, sizeof components_query, "%s OR id = %d", components_query, GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_COMPONENTS][i]);
 				count ++;
 			}
-			if(!count) SendNotification(playerid, "Vehículo sin tunear.");
+			if(!count) SendNotification(playerid, "VehÃ­culo sin tunear.");
 			else MySQL_TQueryInline(srp_db, using inline OnComponentsInfoLoad, components_query);
 			return 1;
 		}
@@ -1450,7 +1450,7 @@ ShowDialog(playerid, dialogid)
 			new paintjobs = VehiclePaintjob( GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_MODELID] );
 			if(paintjobs == 0)
 			{
-				SendNotification(playerid, "Este vehículo no soporta paintjobs.");
+				SendNotification(playerid, "Este vehÃ­culo no soporta paintjobs.");
 				ShowDialog(playerid, DIALOG_MECHANIC_MENU);
 				return 1;
 			}
@@ -1462,7 +1462,7 @@ ShowDialog(playerid, dialogid)
 				format(line_str, sizeof line_str, "{"#SILVER_COLOR"}Paintjob %d\n", i + 1);
 				strcat(dialog, line_str);
 			}
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, dialog, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_SEED_LIST:
@@ -1489,9 +1489,9 @@ ShowDialog(playerid, dialogid)
 		case DIALOG_SEED_BUY:
 		{
 			new dialog[145];
-			format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Vale, quieres comprar semillas de %s.\n{"#SILVER_COLOR"}El precio por semilla es de: %d$\n\n{"#SILVER_COLOR"}¿Cuántas semillas quieres comprar?", seed_info[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_SEED_ID] ][seed_info_NAME], seed_info[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_SEED_ID] ][seed_info_PRICE]);
+			format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Vale, quieres comprar semillas de %s.\n{"#SILVER_COLOR"}El precio por semilla es de: %d$\n\n{"#SILVER_COLOR"}Â¿CuÃ¡ntas semillas quieres comprar?", seed_info[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_SEED_ID] ][seed_info_NAME], seed_info[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_SEED_ID] ][seed_info_PRICE]);
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Semillas", dialog, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Semillas", dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_PLANT_PLANTS:
@@ -1513,7 +1513,7 @@ ShowDialog(playerid, dialogid)
 		}
 		case DIALOG_BLACK_MARKET:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Mercado negro", "{"#SILVER_COLOR"}Comprar armas\n{"#SILVER_COLOR"}Comprar munición para mis armas", "Comprar", "Cerrar");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Mercado negro", "{"#SILVER_COLOR"}Comprar armas\n{"#SILVER_COLOR"}Comprar municiÃ³n para mis armas", "Comprar", "Cerrar");
 			return 1;
 		}
 		case DIALOG_BLACK_MARKET_WEAPONS:
@@ -1544,7 +1544,7 @@ ShowDialog(playerid, dialogid)
 			for(new i = 0; i != MAX_LISTITEMS; i ++) PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][i] = -1;
 			
 			new dialog[95 * 15], line_str[95], listitem;
-			format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Arma\t{"#BLUE_COLOR"}Munición\t{"#SILVER_COLOR"}Slot\n");
+			format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Arma\t{"#BLUE_COLOR"}MuniciÃ³n\t{"#SILVER_COLOR"}Slot\n");
 			
 			for(new i = 0; i < sizeof PLAYER_WEAPONS[]; i ++)
 			{
@@ -1558,15 +1558,15 @@ ShowDialog(playerid, dialogid)
 			}
 			if(listitem == 0) strcat(dialog, "{666666}No tienes armas");
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "Selecciona la arma a la que quieres comprarle munición", dialog, "Continuar", "Cerrar");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "Selecciona la arma a la que quieres comprarle municiÃ³n", dialog, "Continuar", "Cerrar");
 			return 1;
 		}
 		case DIALOG_BLACK_MARKET_AMMO:
 		{
 			new dialog[145];
-			format(dialog, sizeof dialog, "Arma: %s\nMunición: %s\n\nEl precio por bala es de 3$\n¿Cuánto munición quiere comprar?", WEAPON_INFO[ PLAYER_WEAPONS[playerid][ PLAYER_TEMP[playerid][pt_SELECTED_DIALOG_WEAPON_SLOT] ][player_weapon_ID] ][weapon_info_NAME], number_format_thousand(PLAYER_WEAPONS[playerid][ PLAYER_TEMP[playerid][pt_SELECTED_DIALOG_WEAPON_SLOT] ][player_weapon_AMMO]));
+			format(dialog, sizeof dialog, "Arma: %s\nMuniciÃ³n: %s\n\nEl precio por bala es de 3$\nÂ¿CuÃ¡nto municiÃ³n quiere comprar?", WEAPON_INFO[ PLAYER_WEAPONS[playerid][ PLAYER_TEMP[playerid][pt_SELECTED_DIALOG_WEAPON_SLOT] ][player_weapon_ID] ][weapon_info_NAME], number_format_thousand(PLAYER_WEAPONS[playerid][ PLAYER_TEMP[playerid][pt_SELECTED_DIALOG_WEAPON_SLOT] ][player_weapon_AMMO]));
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Comprar munición", dialog, "Continuar", "Cerrar");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Comprar municiÃ³n", dialog, "Continuar", "Cerrar");
 			return 1;
 		}
 		case DIALOG_PLAYER_WEAPONS:
@@ -1574,7 +1574,7 @@ ShowDialog(playerid, dialogid)
 			for(new i = 0; i != MAX_LISTITEMS; i ++) PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][i] = -1;
 			
 			new dialog[95 * 15], line_str[95], listitem;
-			format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Arma\t{"#BLUE_COLOR"}Munición\t{"#SILVER_COLOR"}Slot\n");
+			format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Arma\t{"#BLUE_COLOR"}MuniciÃ³n\t{"#SILVER_COLOR"}Slot\n");
 			
 			for(new i = 0; i < sizeof PLAYER_WEAPONS[]; i ++)
 			{
@@ -1594,13 +1594,13 @@ ShowDialog(playerid, dialogid)
 		}
 		case DIALOG_PLAYER_WEAPONS_DELETE_A:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Mis armas - Eliminar todo", "¿Estás seguro de que quiere eliminar todas sus armas?\nEsta opción no se puede deshacer.", "Eliminar", "Atrás");	
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Mis armas - Eliminar todo", "Â¿EstÃ¡s seguro de que quiere eliminar todas sus armas?\nEsta opciÃ³n no se puede deshacer.", "Eliminar", "AtrÃ¡s");	
 			return 1;
 		}
 		case DIALOG_PLAYER_WEAPONS_DELETE:
 		{
 			new dialog[150];
-			format(dialog, sizeof dialog, "Arma: %s\nMunición: %s\n\n¿Estás seguro de que quiere eliminar esta arma?\nEsta opción no se puede deshacer.", WEAPON_INFO[ PLAYER_WEAPONS[playerid][ PLAYER_TEMP[playerid][pt_SELECTED_DIALOG_WEAPON_SLOT] ][player_weapon_ID] ][weapon_info_NAME], number_format_thousand(PLAYER_WEAPONS[playerid][ PLAYER_TEMP[playerid][pt_SELECTED_DIALOG_WEAPON_SLOT] ][player_weapon_AMMO]));
+			format(dialog, sizeof dialog, "Arma: %s\nMuniciÃ³n: %s\n\nÂ¿EstÃ¡s seguro de que quiere eliminar esta arma?\nEsta opciÃ³n no se puede deshacer.", WEAPON_INFO[ PLAYER_WEAPONS[playerid][ PLAYER_TEMP[playerid][pt_SELECTED_DIALOG_WEAPON_SLOT] ][player_weapon_ID] ][weapon_info_NAME], number_format_thousand(PLAYER_WEAPONS[playerid][ PLAYER_TEMP[playerid][pt_SELECTED_DIALOG_WEAPON_SLOT] ][player_weapon_AMMO]));
 			
 			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Mis armas - Eliminar arma", dialog, "Eliminar", "Cerrar");	
 			return 1;
@@ -1609,7 +1609,7 @@ ShowDialog(playerid, dialogid)
 		case DIALOG_TRICKS_FOOD:
 		{	
 			new dialog[150];
-			format(dialog, sizeof dialog, "%s te quiere vender algo.\n\nTipo: alimento\nNombre: %s\nPrecio: %s$\n\n¿Quieres comprárselo?",
+			format(dialog, sizeof dialog, "%s te quiere vender algo.\n\nTipo: alimento\nNombre: %s\nPrecio: %s$\n\nÂ¿Quieres comprÃ¡rselo?",
 									PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pt_RP_NAME],
 									PLAYER_POCKET[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][ PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA] ][player_pocket_object_NAME],
 									number_format_thousand(PLAYER_TEMP[playerid][pt_TRICK_PRICE])
@@ -1621,7 +1621,7 @@ ShowDialog(playerid, dialogid)
 		case DIALOG_TRICKS_MEDICINE:
 		{	
 			new dialog[150];
-			format(dialog, sizeof dialog, "%s te quiere vender algo.\n\nTipo: medicamento\nCantidad: %dg\nPrecio: %s$\n\n¿Quieres comprárselo?",
+			format(dialog, sizeof dialog, "%s te quiere vender algo.\n\nTipo: medicamento\nCantidad: %dg\nPrecio: %s$\n\nÂ¿Quieres comprÃ¡rselo?",
 									PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pt_RP_NAME],
 									PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA],
 									number_format_thousand(PLAYER_TEMP[playerid][pt_TRICK_PRICE])
@@ -1633,7 +1633,7 @@ ShowDialog(playerid, dialogid)
 		case DIALOG_TRICKS_CANNABIS:
 		{	
 			new dialog[150];
-			format(dialog, sizeof dialog, "%s te quiere vender algo.\n\nTipo: marihuana\nCantidad: %dg\nPrecio: %s$\n\n¿Quieres comprárselo?",
+			format(dialog, sizeof dialog, "%s te quiere vender algo.\n\nTipo: marihuana\nCantidad: %dg\nPrecio: %s$\n\nÂ¿Quieres comprÃ¡rselo?",
 									PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pt_RP_NAME],
 									PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA],
 									number_format_thousand(PLAYER_TEMP[playerid][pt_TRICK_PRICE])
@@ -1645,7 +1645,7 @@ ShowDialog(playerid, dialogid)
 		case DIALOG_TRICKS_CRACK:
 		{	
 			new dialog[150];
-			format(dialog, sizeof dialog, "%s te quiere vender algo.\n\nTipo: crack\nCantidad: %dg\nPrecio: %s$\n\n¿Quieres comprárselo?",
+			format(dialog, sizeof dialog, "%s te quiere vender algo.\n\nTipo: crack\nCantidad: %dg\nPrecio: %s$\n\nÂ¿Quieres comprÃ¡rselo?",
 									PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pt_RP_NAME],
 									PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA],
 									number_format_thousand(PLAYER_TEMP[playerid][pt_TRICK_PRICE])
@@ -1657,7 +1657,7 @@ ShowDialog(playerid, dialogid)
 		case DIALOG_TRICKS_SU:
 		{	
 			new dialog[150];
-			format(dialog, sizeof dialog, "%s te quiere vender %d "SERVER_COIN"\nPrecio: %s$\n\n¿Quieres comprárselo?",
+			format(dialog, sizeof dialog, "%s te quiere vender %d "SERVER_COIN"\nPrecio: %s$\n\nÂ¿Quieres comprÃ¡rselo?",
 									PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pt_RP_NAME],
 									PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA],
 									number_format_thousand(PLAYER_TEMP[playerid][pt_TRICK_PRICE])
@@ -1669,7 +1669,7 @@ ShowDialog(playerid, dialogid)
 		case DIALOG_TRICKS_WEAPON:
 		{	
 			new dialog[180];
-			format(dialog, sizeof dialog, "%s te quiere vender algo.\n\nTipo: arma\nNombre: %s\nMunición: %s\nPrecio: %s$\n\n¿Quieres comprárselo?",
+			format(dialog, sizeof dialog, "%s te quiere vender algo.\n\nTipo: arma\nNombre: %s\nMuniciÃ³n: %s\nPrecio: %s$\n\nÂ¿Quieres comprÃ¡rselo?",
 									PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pt_RP_NAME],
 									WEAPON_INFO[ PLAYER_WEAPONS[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][ PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA] ][player_weapon_ID] ][weapon_info_NAME],
 									number_format_thousand(PLAYER_WEAPONS[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][ PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA] ][player_weapon_AMMO]),
@@ -1687,7 +1687,7 @@ ShowDialog(playerid, dialogid)
 			if(max_slots > MAX_BOOT_SLOTS) max_slots = MAX_BOOT_SLOTS;
 			
 			new dialog[128 * (MAX_BOOT_SLOTS + 2)], line_str[128], listitem;
-			format(dialog, sizeof dialog, "Tipo\tDescripción\n");
+			format(dialog, sizeof dialog, "Tipo\tDescripciÃ³n\n");
 			
 			for(new i = 0; i != max_slots; i ++)
 			{
@@ -1720,10 +1720,10 @@ ShowDialog(playerid, dialogid)
 			
 			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, caption, dialog, "Continuar", "Cerrar");
 		}
-		case DIALOG_VEHICLE_BOOT_DELETE_ALL: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Maletero - Eliminar todo", "¿Estás seguro de que quiere eliminar todo de su maletero?\nEsta opción no se puede deshacer.", "Eliminar", "Cancelar");	
+		case DIALOG_VEHICLE_BOOT_DELETE_ALL: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Maletero - Eliminar todo", "Â¿EstÃ¡s seguro de que quiere eliminar todo de su maletero?\nEsta opciÃ³n no se puede deshacer.", "Eliminar", "Cancelar");	
 		case DIALOG_VEHICLE_BOOT_OPTIONS:
 		{	
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Opciones", "{"#SILVER_COLOR"}1. Sacar\n{"#SILVER_COLOR"}2. Eliminar", "Continuar", "Atrás");	
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Opciones", "{"#SILVER_COLOR"}1. Sacar\n{"#SILVER_COLOR"}2. Eliminar", "Continuar", "AtrÃ¡s");	
 			return 1;
 		}
 		case DIALOG_VEHICLE_BOOT_DELETE:
@@ -1732,10 +1732,10 @@ ShowDialog(playerid, dialogid)
 
 			switch(VEHICLE_BOOT[ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE] ][ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE_BOOT_SLOT] ][vehicle_boot_TYPE])
 			{
-				case BOOT_TYPE_WEAPON: format(dialog, sizeof dialog, "Tipo: %s\nDescripción: %s (%s balas)\n\n¿Estás seguro de que quiere eliminar esto de tu maletero?\nEsta opción no se puede deshacer.", GetBootTypeName(VEHICLE_BOOT[ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE] ][ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE_BOOT_SLOT] ][vehicle_boot_TYPE]), WEAPON_INFO[ VEHICLE_BOOT[ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE] ][ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE_BOOT_SLOT] ][vehicle_boot_INT] ][weapon_info_NAME], number_format_thousand( VEHICLE_BOOT[ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE] ][ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE_BOOT_SLOT] ][vehicle_boot_INT_EXTRA] ));
-				case BOOT_TYPE_MEDICINES, BOOT_TYPE_CANNABIS, BOOT_TYPE_CRACK: format(dialog, sizeof dialog, "Tipo: %s\nDescripción: %s gramos\n\n¿Estás seguro de que quiere eliminar esto de tu maletero?\nEsta opción no se puede deshacer.", GetBootTypeName(VEHICLE_BOOT[ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE] ][ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE_BOOT_SLOT] ][vehicle_boot_TYPE]), number_format_thousand( VEHICLE_BOOT[ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE] ][ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE_BOOT_SLOT] ][vehicle_boot_INT] ));
+				case BOOT_TYPE_WEAPON: format(dialog, sizeof dialog, "Tipo: %s\nDescripciÃ³n: %s (%s balas)\n\nÂ¿EstÃ¡s seguro de que quiere eliminar esto de tu maletero?\nEsta opciÃ³n no se puede deshacer.", GetBootTypeName(VEHICLE_BOOT[ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE] ][ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE_BOOT_SLOT] ][vehicle_boot_TYPE]), WEAPON_INFO[ VEHICLE_BOOT[ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE] ][ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE_BOOT_SLOT] ][vehicle_boot_INT] ][weapon_info_NAME], number_format_thousand( VEHICLE_BOOT[ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE] ][ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE_BOOT_SLOT] ][vehicle_boot_INT_EXTRA] ));
+				case BOOT_TYPE_MEDICINES, BOOT_TYPE_CANNABIS, BOOT_TYPE_CRACK: format(dialog, sizeof dialog, "Tipo: %s\nDescripciÃ³n: %s gramos\n\nÂ¿EstÃ¡s seguro de que quiere eliminar esto de tu maletero?\nEsta opciÃ³n no se puede deshacer.", GetBootTypeName(VEHICLE_BOOT[ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE] ][ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE_BOOT_SLOT] ][vehicle_boot_TYPE]), number_format_thousand( VEHICLE_BOOT[ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE] ][ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE_BOOT_SLOT] ][vehicle_boot_INT] ));
 			}			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Maletero - Eliminar", dialog, "Eliminar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Maletero - Eliminar", dialog, "Eliminar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_SELECT_POLICE_SKIN:
@@ -1781,7 +1781,7 @@ ShowDialog(playerid, dialogid)
 				if(cache_get_row_count(rows))
 				{
 					new dialog[128 * 15], line_str[128], count, start_pos = PLAYER_TEMP[playerid][pt_DIALOG_DB_PAGE] * PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT] + 1;
-					format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Nombre\t{"#SILVER_COLOR"}Rango\t{"#SILVER_COLOR"}Últ. conexión\n");
+					format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Nombre\t{"#SILVER_COLOR"}Rango\t{"#SILVER_COLOR"}Ãšlt. conexiÃ³n\n");
 					for(new i = 0; i != MAX_LISTITEMS; i++ ) PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][i] = -1;
 					for(new i = 0; i != rows; i ++)
 					{
@@ -1802,7 +1802,7 @@ ShowDialog(playerid, dialogid)
 					strcat(dialog, "{c9c9c9}- Siguiente\n");
 					PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = -3;
 					strcat(dialog, "{c9c9c9}- Anterior\n");
-					ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "policías", dialog, "Continuar", "Cerrar");
+					ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "policÃ­as", dialog, "Continuar", "Cerrar");
 				}
 			}
 			mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT pworks.level, player.id, player.name, player.last_connection, player.connected FROM pworks INNER JOIN player ON pworks.id_player = player.id WHERE pworks.id_work = %d AND pworks.`set` = 1 ORDER BY player.connected DESC, pworks.level DESC LIMIT %d, %d;", WORK_POLICE, PLAYER_TEMP[playerid][pt_DIALOG_DB_PAGE] * PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT], PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT]);
@@ -1822,11 +1822,11 @@ ShowDialog(playerid, dialogid)
 						cache_get_value_name_int(0, "level", level);
 						cache_get_value_name(0, "name", name);
 
-						if(level > PLAYER_WORKS[playerid][WORK_POLICE][pwork_LEVEL]) SendNotification(playerid, "No puedes modificar el rango de este policía porque es un rango superior al tuyo.");
+						if(level > PLAYER_WORKS[playerid][WORK_POLICE][pwork_LEVEL]) SendNotification(playerid, "No puedes modificar el rango de este policÃ­a porque es un rango superior al tuyo.");
 						else
 						{
 							new caption[45], dialog[45 * sizeof(POLICE_RANKS)], line_str[45];
-							format(caption, sizeof caption, "policía - %s", name);
+							format(caption, sizeof caption, "policÃ­a - %s", name);
 							format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Civil (eliminar)\n");
 							for(new i = 1; i != sizeof POLICE_RANKS; i ++)
 							{
@@ -1842,7 +1842,7 @@ ShowDialog(playerid, dialogid)
 								}
 								strcat(dialog, line_str);
 							}
-							ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, dialog, "Continuar", "Atrás");
+							ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, dialog, "Continuar", "AtrÃ¡s");
 						}
 					}
 				}
@@ -1853,7 +1853,7 @@ ShowDialog(playerid, dialogid)
 		}
 		case DIALOG_POLICE_SHOP:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Equiparse", "{"#SILVER_COLOR"}Comprar armas\n{"#SILVER_COLOR"}Comprar munición para mis armas\n{"#SILVER_COLOR"}Comprar chaleco antibalas", "Comprar", "Cerrar");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Equiparse", "{"#SILVER_COLOR"}Comprar armas\n{"#SILVER_COLOR"}Comprar municiÃ³n para mis armas\n{"#SILVER_COLOR"}Comprar chaleco antibalas", "Comprar", "Cerrar");
 			return 1;
 		}
 		case DIALOG_POLICE_SELECT_WEAPON:
@@ -1861,7 +1861,7 @@ ShowDialog(playerid, dialogid)
 			for(new i = 0; i != MAX_LISTITEMS; i ++) PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][i] = -1;
 			
 			new dialog[95 * 15], line_str[95], listitem;
-			format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Arma\t{"#BLUE_COLOR"}Munición\t{"#SILVER_COLOR"}Slot\n");
+			format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Arma\t{"#BLUE_COLOR"}MuniciÃ³n\t{"#SILVER_COLOR"}Slot\n");
 			
 			for(new i = 0; i < sizeof PLAYER_WEAPONS[]; i ++)
 			{
@@ -1875,20 +1875,20 @@ ShowDialog(playerid, dialogid)
 			}
 			if(listitem == 0) strcat(dialog, "{666666}No tienes armas");
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "Selecciona la arma a la que quieres comprarle munición", dialog, "Continuar", "Cerrar");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "Selecciona la arma a la que quieres comprarle municiÃ³n", dialog, "Continuar", "Cerrar");
 			return 1;
 		}
 		case DIALOG_POLICE_AMMO:
 		{
 			new dialog[145];
-			format(dialog, sizeof dialog, "Arma: %s\nMunición: %s\n\nEl precio por bala es de 2$\n¿Cuánto munición quiere comprar?", WEAPON_INFO[ PLAYER_WEAPONS[playerid][ PLAYER_TEMP[playerid][pt_SELECTED_DIALOG_WEAPON_SLOT] ][player_weapon_ID] ][weapon_info_NAME], number_format_thousand(PLAYER_WEAPONS[playerid][ PLAYER_TEMP[playerid][pt_SELECTED_DIALOG_WEAPON_SLOT] ][player_weapon_AMMO]));
+			format(dialog, sizeof dialog, "Arma: %s\nMuniciÃ³n: %s\n\nEl precio por bala es de 2$\nÂ¿CuÃ¡nto municiÃ³n quiere comprar?", WEAPON_INFO[ PLAYER_WEAPONS[playerid][ PLAYER_TEMP[playerid][pt_SELECTED_DIALOG_WEAPON_SLOT] ][player_weapon_ID] ][weapon_info_NAME], number_format_thousand(PLAYER_WEAPONS[playerid][ PLAYER_TEMP[playerid][pt_SELECTED_DIALOG_WEAPON_SLOT] ][player_weapon_AMMO]));
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Comprar munición", dialog, "Continuar", "Cerrar");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Comprar municiÃ³n", dialog, "Continuar", "Cerrar");
 			return 1;
 		}
 		case DIALOG_POLICE_ARMOUR:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Comprar chaleco", "El precio del chaleco antibalas es de 300$.\n¿Lo quieres comprar?", "Continuar", "Cerrar");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Comprar chaleco", "El precio del chaleco antibalas es de 300$.\nÂ¿Lo quieres comprar?", "Continuar", "Cerrar");
 			return 1;
 		}
 		case DIALOG_POLICE_WEAPONS:
@@ -1920,15 +1920,15 @@ ShowDialog(playerid, dialogid)
 			
 				"\
 					{"#SILVER_COLOR"}- General\n\
-					{"#SILVER_COLOR"}- Información\n\
+					{"#SILVER_COLOR"}- InformaciÃ³n\n\
 					{"#SILVER_COLOR"}- Personaje\n\
 					{"#SILVER_COLOR"}- Propiedades\n\
 					{"#SILVER_COLOR"}- Reportar\n\
 					{"#SILVER_COLOR"}- Trabajos\n\
-					{"#SILVER_COLOR"}- Vehículos\n\
+					{"#SILVER_COLOR"}- VehÃ­culos\n\
 					{"#SILVER_COLOR"}- Bandas\n\
-					{"#PRIMARY_COLOR"}- Membresía VIP\n\
-					{"#PRIMARY_COLOR"}- Verificación en dos pasos\n\
+					{"#PRIMARY_COLOR"}- MembresÃ­a VIP\n\
+					{"#PRIMARY_COLOR"}- VerificaciÃ³n en dos pasos\n\
 				"
 			
 			, "Continuar", "Cerrar");
@@ -1939,27 +1939,27 @@ ShowDialog(playerid, dialogid)
 			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "General",
 			
 				"\
-					{FFFFFF}Un día del juego dura tres horas reales.\n\
+					{FFFFFF}Un dÃ­a del juego dura tres horas reales.\n\
 					\n\
-					Para subir de nivel necesitas rellenar la reputación, puedes verlo gráficamente\n\
-					en la barra que aparece en la parte superior derecha que representa tu reputación.\n\
-					La reputación se aumenta cada {"#PRIMARY_COLOR"}25 minutos,{FFFFFF} cuando la reputación llegue\n\
-					al límite podrás subir al siguiente nivel con el comando {"#SILVER_COLOR"}/comprarnivel.\n\
+					Para subir de nivel necesitas rellenar la reputaciÃ³n, puedes verlo grÃ¡ficamente\n\
+					en la barra que aparece en la parte superior derecha que representa tu reputaciÃ³n.\n\
+					La reputaciÃ³n se aumenta cada {"#PRIMARY_COLOR"}25 minutos,{FFFFFF} cuando la reputaciÃ³n llegue\n\
+					al lÃ­mite podrÃ¡s subir al siguiente nivel con el comando {"#SILVER_COLOR"}/comprarnivel.\n\
 					{FFFFFF}El pago de juego(payday) se recibe cada tres reputaciones {"#PRIMARY_COLOR"}(75 minutos).\n\
 					{FFFFFF}Puedes utilizar {"#SILVER_COLOR"}/csave{FFFFFF} para guardar los datos de tu cuenta.\n\
 					\n\
-					Utiliza {"#SILVER_COLOR"}/estadisticas{FFFFFF} para ver tus estadísticas, utiliza {"#SILVER_COLOR"}/exp{FFFFFF} para ver tus habilidades.\n\
-					En el nivel uno no podrás agredir a otros jugadores, tampoco podrás tener armas\n\
+					Utiliza {"#SILVER_COLOR"}/estadisticas{FFFFFF} para ver tus estadÃ­sticas, utiliza {"#SILVER_COLOR"}/exp{FFFFFF} para ver tus habilidades.\n\
+					En el nivel uno no podrÃ¡s agredir a otros jugadores, tampoco podrÃ¡s tener armas\n\
 					hasta el nivel tres.\n\
 					Utiliza {"#SILVER_COLOR"}/nombre{FFFFFF} para cambiar tu nombre.\n\
-					Utiliza {"#SILVER_COLOR"}/correo{FFFFFF} para cambiar tu correo electrónico.\n\
-					Utiliza {"#SILVER_COLOR"}/pass{FFFFFF} para cambiar la contraseña de tu cuenta.\n\
-					Para ver el tiempo que te queda en la cárcel utiliza {"#SILVER_COLOR"}/tiempo.\n\
+					Utiliza {"#SILVER_COLOR"}/correo{FFFFFF} para cambiar tu correo electrÃ³nico.\n\
+					Utiliza {"#SILVER_COLOR"}/pass{FFFFFF} para cambiar la contraseÃ±a de tu cuenta.\n\
+					Para ver el tiempo que te queda en la cÃ¡rcel utiliza {"#SILVER_COLOR"}/tiempo.\n\
 					\n\
 					{FFFFFF}Para utilizar el canal de dudas utiliza el comando {"#SILVER_COLOR"}/duda{FFFFFF} seguido de tu duda.\n\
 					Para deshabilitar o volver a habilitar el canal de dudas usa {"#SILVER_COLOR"}/dudas.\n\
 					\n\
-					{FFFFFF}Utiliza {"#SILVER_COLOR"}/panel {FFFFFF}para configuraciones básicas de tu cuenta.\n\
+					{FFFFFF}Utiliza {"#SILVER_COLOR"}/panel {FFFFFF}para configuraciones bÃ¡sicas de tu cuenta.\n\
 					\n\
 				"
 			, "Cerrar", "");
@@ -1967,7 +1967,7 @@ ShowDialog(playerid, dialogid)
 		}
 		case DIALOG_HELP_INFO:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Información", DIALOG_CREDIT_String, "Cerrar", "");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "InformaciÃ³n", DIALOG_CREDIT_String, "Cerrar", "");
 			return 1;
 		}
 		case DIALOG_HELP_CHARACTER:
@@ -1976,32 +1976,32 @@ ShowDialog(playerid, dialogid)
 			
 				"\
 					{FFFFFF}Para poder localizar cualquier punto en San Andreas te recomandamos que compres\n\
-					un GPS en cualquier tienda {FF846A}24/7.{FFFFFF} Desde el GPS podrás localizarlo todo, tus vehículos,\n\
-					tus propiedades, trabajos, lugares de interés, etc.\n\
+					un GPS en cualquier tienda {FF846A}24/7.{FFFFFF} Desde el GPS podrÃ¡s localizarlo todo, tus vehÃ­culos,\n\
+					tus propiedades, trabajos, lugares de interÃ©s, etc.\n\
 					\n\
-					Utiliza tu teléfono para llamar a la policía, mecánico, taxi... o para hablar con\n\
-					alguien, por defecto tendrás varios contactos en la agenda pero puedes eliminarlos\n\
-					o añadir más, puedes tener hasta 20 contactos, todo esto se hace desde {"#SILVER_COLOR"}/movil{FFFFFF} o {"#SILVER_COLOR"}/celular.\n\
+					Utiliza tu telÃ©fono para llamar a la policÃ­a, mecÃ¡nico, taxi... o para hablar con\n\
+					alguien, por defecto tendrÃ¡s varios contactos en la agenda pero puedes eliminarlos\n\
+					o aÃ±adir mÃ¡s, puedes tener hasta 20 contactos, todo esto se hace desde {"#SILVER_COLOR"}/movil{FFFFFF} o {"#SILVER_COLOR"}/celular.\n\
 					\n\
-					{FFFFFF}En las tiendas {FF846A}24/7{FFFFFF} puedes comprar guías para saber el número de cualquier jugador.\n\
-					Para evitar aparecer en la guía utiliza {"#SILVER_COLOR"}/sguia.\n\
+					{FFFFFF}En las tiendas {FF846A}24/7{FFFFFF} puedes comprar guÃ­as para saber el nÃºmero de cualquier jugador.\n\
+					Para evitar aparecer en la guÃ­a utiliza {"#SILVER_COLOR"}/sguia.\n\
 					\n\
-					{FFFFFF}Las barras en la esquina superior derecha representan tu nivel de hidratación y de alimentación,\n\
-					si los niveles llegan muy abajo tu personaje se empezará a sentir mal y empezarás a perder vida.\n\
-					Los niveles bajarán según tu actividad física, corriendo te dará sed más pronto que caminando.\n\
-					Para alimentarte ve a un restaurante de cómida rápida o a un {FF846A}24/7{FFFFFF} donde podrás comprar alimentos,\n\
-					que podrás consumir el cualquier momento con {"#SILVER_COLOR"}/alimentos{FFFFFF} o {"#SILVER_COLOR"}/consumir.\n\
+					{FFFFFF}Las barras en la esquina superior derecha representan tu nivel de hidrataciÃ³n y de alimentaciÃ³n,\n\
+					si los niveles llegan muy abajo tu personaje se empezarÃ¡ a sentir mal y empezarÃ¡s a perder vida.\n\
+					Los niveles bajarÃ¡n segÃºn tu actividad fÃ­sica, corriendo te darÃ¡ sed mÃ¡s pronto que caminando.\n\
+					Para alimentarte ve a un restaurante de cÃ³mida rÃ¡pida o a un {FF846A}24/7{FFFFFF} donde podrÃ¡s comprar alimentos,\n\
+					que podrÃ¡s consumir el cualquier momento con {"#SILVER_COLOR"}/alimentos{FFFFFF} o {"#SILVER_COLOR"}/consumir.\n\
 					\n\
-					{FFFFFF}Puedes dar objetos con el comando {"#SILVER_COLOR"}/dar,{FFFFFF} para más información utiliza {"#SILVER_COLOR"}/man dar.\n\
-					{FFFFFF}Puedes deshacerte de tus objetos con el comando {"#SILVER_COLOR"}/tirar,{FFFFFF} para más información utiliza {"#SILVER_COLOR"}/man tirar.\n\
-					{FFFFFF}Puedes vender objetos con el comando {"#SILVER_COLOR"}/vender, para más información utiliza {"#SILVER_COLOR"}/man vender.\n\
+					{FFFFFF}Puedes dar objetos con el comando {"#SILVER_COLOR"}/dar,{FFFFFF} para mÃ¡s informaciÃ³n utiliza {"#SILVER_COLOR"}/man dar.\n\
+					{FFFFFF}Puedes deshacerte de tus objetos con el comando {"#SILVER_COLOR"}/tirar,{FFFFFF} para mÃ¡s informaciÃ³n utiliza {"#SILVER_COLOR"}/man tirar.\n\
+					{FFFFFF}Puedes vender objetos con el comando {"#SILVER_COLOR"}/vender, para mÃ¡s informaciÃ³n utiliza {"#SILVER_COLOR"}/man vender.\n\
 					{FFFFFF}Para consumir consumibles que lleves contigo utiliza {"#SILVER_COLOR"}/consumir.\n\
 					\n\
-					{FFFFFF}Puedes cambiar la ropa de tu personaje en cualquier tienda de ropa, también\n\
-					podrás comprarte accesorios y ponertelos o quitartelos {"#SILVER_COLOR"}(/accesorios).\n\
+					{FFFFFF}Puedes cambiar la ropa de tu personaje en cualquier tienda de ropa, tambiÃ©n\n\
+					podrÃ¡s comprarte accesorios y ponertelos o quitartelos {"#SILVER_COLOR"}(/accesorios).\n\
 					\n\
-					{FFFFFF}Si tienes nivel de búsqueda o estás arrestado y mueres irás a la cárcel después de recuperarte.\n\
-					Cuando te arresten los policías te pueden requisar tus pertenencias ilegales {FF846A}(armas y drogas).\n\
+					{FFFFFF}Si tienes nivel de bÃºsqueda o estÃ¡s arrestado y mueres irÃ¡s a la cÃ¡rcel despuÃ©s de recuperarte.\n\
+					Cuando te arresten los policÃ­as te pueden requisar tus pertenencias ilegales {FF846A}(armas y drogas).\n\
 					\n\
 					{FFFFFF}Utiliza {"#SILVER_COLOR"}/inv{FFFFFF} o pulsa {"#SILVER_COLOR"}N {FFFFFF}para ver todo lo que llevas encima.\n\
 					{FFFFFF}Utiliza {"#SILVER_COLOR"}/estilo{FFFFFF} para cambiar el estilo de tu personaje.\n\
@@ -2015,23 +2015,23 @@ ShowDialog(playerid, dialogid)
 			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Propiedades",
 			
 				"\
-					{FFFFFF}Puedes encontrar diferentes propiedades en todo {FF846A}San Andreas,{FFFFFF} para comprarla tendrás que saber la\n\
+					{FFFFFF}Puedes encontrar diferentes propiedades en todo {FF846A}San Andreas,{FFFFFF} para comprarla tendrÃ¡s que saber la\n\
 					ID de la propiedad e ir a cualquier banco para comprarla, el dinero se descuenta de la cuenta bancaria.\n\
 					\n\
 					Puedes localizar tus propiedades con el GPS.\n\
 					Puedes dejar pasar a cualquiera a tu propiedad, solo tiene que tocar el timbre\n\
 					y tu elijes si quieres dejarlo pasar o no.\n\
 					\n\
-					Si quieres echar a alguien que está dentro de tu propiedad utiliza el comando {"#SILVER_COLOR"}/echar.\n\
-					{FFFFFF}Dentro de la propiedad sitúate en la puerta interior y pon {"#SILVER_COLOR"}/casa,{FFFFFF} desde ahí podras\n\
-					cambiar el nombre de la propiedad para así localizarla más fácilmente en el GPS.\n\
-					{FFFFFF}también podrás echar a todos los huéspedes de tu propiedad.\n\
-					Si tienes un MP3 podrás poner música en él y hacer que se reproduzca para toda la gente\n\
+					Si quieres echar a alguien que estÃ¡ dentro de tu propiedad utiliza el comando {"#SILVER_COLOR"}/echar.\n\
+					{FFFFFF}Dentro de la propiedad sitÃºate en la puerta interior y pon {"#SILVER_COLOR"}/casa,{FFFFFF} desde ahÃ­ podras\n\
+					cambiar el nombre de la propiedad para asÃ­ localizarla mÃ¡s fÃ¡cilmente en el GPS.\n\
+					{FFFFFF}tambiÃ©n podrÃ¡s echar a todos los huÃ©spedes de tu propiedad.\n\
+					Si tienes un MP3 podrÃ¡s poner mÃºsica en Ã©l y hacer que se reproduzca para toda la gente\n\
 					que haya dentro de la propiedad.\n\
 					\n\
-					Si quieres vender tu propiedad puedes hacerlo en {"#PRIMARY_COLOR"}\"Gobierno San Andreas\"{FFFFFF}, localizaló en el GPS.\n\
-					Puedes vendersela al banco al instante, pero te darán solo el 25% de lo que te costó {FF846A}(50% VIP).\n\
-					{FFFFFF}también se la puedes vender a otro jugador, dentro de un rango de precio pre-establecido.\n\
+					Si quieres vender tu propiedad puedes hacerlo en {"#PRIMARY_COLOR"}\"Gobierno San Andreas\"{FFFFFF}, localizalÃ³ en el GPS.\n\
+					Puedes vendersela al banco al instante, pero te darÃ¡n solo el 25% de lo que te costÃ³ {FF846A}(50% VIP).\n\
+					{FFFFFF}tambiÃ©n se la puedes vender a otro jugador, dentro de un rango de precio pre-establecido.\n\
 					Para vender tu propiedad a un jugador puedes ponerla en {"#SILVER_COLOR"}/tienda.\n\
 					\n\
 				"
@@ -2045,8 +2045,8 @@ ShowDialog(playerid, dialogid)
 				"\
 					{FFFFFF}Para un reporte simple utiliza {"#SILVER_COLOR"}/reportar ID{FFFFFF} para reportar a un jugador.\n\
 					\n\
-					Para reportes más detallado debes publicarlos en el foro aportando imágenes.\n\
-					Los reportes de fallos o bugs también deberás hacerlo en el foro junto con imágenes.\n\
+					Para reportes mÃ¡s detallado debes publicarlos en el foro aportando imÃ¡genes.\n\
+					Los reportes de fallos o bugs tambiÃ©n deberÃ¡s hacerlo en el foro junto con imÃ¡genes.\n\
 					\n\
 				"
 			, "Cerrar", "");
@@ -2054,38 +2054,38 @@ ShowDialog(playerid, dialogid)
 		}
 		case DIALOG_HELP_VEHICLES:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Vehículos",
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "VehÃ­culos",
 			
 				"\
 					{FF846A}GENERAL\n\
-					{FFFFFF}Para arrancar o detener un vehículo presiona {"#SILVER_COLOR"}~k~~CONVERSATION_YES~ {FFFFFF}o utiliza {"#SILVER_COLOR"}/motor.\n\
-					{FFFFFF}Utiliza {"#SILVER_COLOR"}/luces{FFFFFF} para encender o apagar las luces del vehículos.\n\
-					Si tu vehículo se daña tendrás que llamar a un mecánico desde tu móvil para que lo repare.\n\
+					{FFFFFF}Para arrancar o detener un vehÃ­culo presiona {"#SILVER_COLOR"}~k~~CONVERSATION_YES~ {FFFFFF}o utiliza {"#SILVER_COLOR"}/motor.\n\
+					{FFFFFF}Utiliza {"#SILVER_COLOR"}/luces{FFFFFF} para encender o apagar las luces del vehÃ­culos.\n\
+					Si tu vehÃ­culo se daÃ±a tendrÃ¡s que llamar a un mecÃ¡nico desde tu mÃ³vil para que lo repare.\n\
 					\n\
-					Cada vehículo tiene su cantidad máxima del depósito de gasolina.\n\
-					Para repostar el vehículo debes ir a cualquier gasolinera, puedes localizarlas con el GPS.\n\
-					también puedes comprar un bidón de gasolina para {"#SILVER_COLOR"}/vertir{FFFFFF} gasolina en cualquier momento.\n\
-					Si tienes un MP3 puedes poner una canción en el vehículo con el comando {"#SILVER_COLOR"}/vmp3.\n\
+					Cada vehÃ­culo tiene su cantidad mÃ¡xima del depÃ³sito de gasolina.\n\
+					Para repostar el vehÃ­culo debes ir a cualquier gasolinera, puedes localizarlas con el GPS.\n\
+					tambiÃ©n puedes comprar un bidÃ³n de gasolina para {"#SILVER_COLOR"}/vertir{FFFFFF} gasolina en cualquier momento.\n\
+					Si tienes un MP3 puedes poner una canciÃ³n en el vehÃ­culo con el comando {"#SILVER_COLOR"}/vmp3.\n\
 					\n\
 					\n\
 					{FF846A}VEHICULOS PERSONALES\n\
 					{FFFFFF}Para comprarlos ve a cualquier concesionario.\n\
 					El dinero para comprarlo es el de la cuenta bancaria.\n\
-					Para localizar tus vehículos utiliza el GPS.\n\
+					Para localizar tus vehÃ­culos utiliza el GPS.\n\
 					\n\
-					Utiliza {"#SILVER_COLOR"}/abrir{FFFFFF} para abrir las puertes de tu vehículo, utiliza {"#SILVER_COLOR"}/cerrar{FFFFFF} para cerrarlas.\n\
-					Puedes estacionar tu vehículo con el comando {"#SILVER_COLOR"}/estacionar.\n\
-					{FFFFFF}Cuando tu vehículo sea destruido recibirás uno nuevo en tu último estacionamiento.\n\
-					Para pintar, tunear o modificar tu vehículo tendrás que hacerlo en el mecánico.\n\
+					Utiliza {"#SILVER_COLOR"}/abrir{FFFFFF} para abrir las puertes de tu vehÃ­culo, utiliza {"#SILVER_COLOR"}/cerrar{FFFFFF} para cerrarlas.\n\
+					Puedes estacionar tu vehÃ­culo con el comando {"#SILVER_COLOR"}/estacionar.\n\
+					{FFFFFF}Cuando tu vehÃ­culo sea destruido recibirÃ¡s uno nuevo en tu Ãºltimo estacionamiento.\n\
+					Para pintar, tunear o modificar tu vehÃ­culo tendrÃ¡s que hacerlo en el mecÃ¡nico.\n\
 					\n\
-					Puedes guardar cosas en el maletero del vehículo con el comando {"#SILVER_COLOR"}/guardar.\n\
+					Puedes guardar cosas en el maletero del vehÃ­culo con el comando {"#SILVER_COLOR"}/guardar.\n\
 					{FFFFFF}Para sacar cosas del maletero puedes utilizar {"#SILVER_COLOR"}/maletero.\n\
 					\n\
-					{FFFFFF}Si quieres vender tu vehículo puedes hacerlo en \"Gobierno San Andreas\", localizaló en el GPS.\n\
-					Puedes venderselo al banco, pero te darán solo el 25% de lo que te costó (50% VIP).\n\
-					también se la puedes vender a otro jugador, dentro de un rango de precio pre-establecido.\n\
-					Para vender tu vehículo a un jugador puedes ponerlo en {"#SILVER_COLOR"}/tienda.\n\
-					{FFFFFF}Al vender tu vehículo se venderá con todo lo que haya en el maletero.\n\
+					{FFFFFF}Si quieres vender tu vehÃ­culo puedes hacerlo en \"Gobierno San Andreas\", localizalÃ³ en el GPS.\n\
+					Puedes venderselo al banco, pero te darÃ¡n solo el 25% de lo que te costÃ³ (50% VIP).\n\
+					tambiÃ©n se la puedes vender a otro jugador, dentro de un rango de precio pre-establecido.\n\
+					Para vender tu vehÃ­culo a un jugador puedes ponerlo en {"#SILVER_COLOR"}/tienda.\n\
+					{FFFFFF}Al vender tu vehÃ­culo se venderÃ¡ con todo lo que haya en el maletero.\n\
 					\n\
 				"
 			, "Cerrar", "");
@@ -2111,7 +2111,7 @@ ShowDialog(playerid, dialogid)
 					{FFFFFF}Utiliza {"#SILVER_COLOR"}/banda{FFFFFF} para crear una banda o administrar la tuya.\n\
 					{FFFFFF}Al entrar a una banda puedes conquistar territorios por todo San Andreas.\n\
 					\n\
-					{FFFFFF}Visita {FF846A}"SERVER_WEBSITE" {FFFFFF}para más información.\n\
+					{FFFFFF}Visita {FF846A}"SERVER_WEBSITE" {FFFFFF}para mÃ¡s informaciÃ³n.\n\
 					\n\
 				"
 			
@@ -2120,30 +2120,30 @@ ShowDialog(playerid, dialogid)
 		}
 		case DIALOG_HELP_SU:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Membresía VIP",
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "MembresÃ­a VIP",
 			
 				"\
-					{"#SILVER_COLOR"}Puedes comprar VIP por 30 días con el comando /vip.\n\
+					{"#SILVER_COLOR"}Puedes comprar VIP por 30 dÃ­as con el comando /vip.\n\
 					{"#SILVER_COLOR"}Se compra con "SERVER_COIN", para ver como comprar esta moneda visita nuestra web.\n\
 					\n\
 					{"#PRIMARY_COLOR"}Ventajas\n\
 					{"#SILVER_COLOR"}- Tener "#MAX_SU_WORKS" trabajos.\n\
-					{"#SILVER_COLOR"}- Tener "#MAX_SU_VEHICLES" vehículos.\n\
+					{"#SILVER_COLOR"}- Tener "#MAX_SU_VEHICLES" vehÃ­culos.\n\
 					{"#SILVER_COLOR"}- Tener "#MAX_SU_TOYS" accesorios.\n\
 					{"#SILVER_COLOR"}- Tener "#MAX_SU_PROPERTIES" propiedades.\n\
 					{"#SILVER_COLOR"}- Tener "#MAX_SU_PROPERTY_OBJECTS" muebles por propiedad.\n\
-					{"#SILVER_COLOR"}- No pagas seguro de propiedades ni vehículos en el Payday.\n\
+					{"#SILVER_COLOR"}- No pagas seguro de propiedades ni vehÃ­culos en el Payday.\n\
 					{"#SILVER_COLOR"}- No pierdes chaleco al morir.\n\
-					{"#SILVER_COLOR"}- Al vender un vehículo o propiedad al banco recibes un 50%.\n\
-					{"#SILVER_COLOR"}- Te recuperas el doble de rápido en el hospital.\n\
+					{"#SILVER_COLOR"}- Al vender un vehÃ­culo o propiedad al banco recibes un 50%.\n\
+					{"#SILVER_COLOR"}- Te recuperas el doble de rÃ¡pido en el hospital.\n\
 					{"#SILVER_COLOR"}- Al recuperarte tu vida es del 100%.\n\
-					{"#SILVER_COLOR"}- Reducción de la condena a la mitad.\n\
-					{"#SILVER_COLOR"}- Cuando un médico te cura vida al 50%.\n\
+					{"#SILVER_COLOR"}- ReducciÃ³n de la condena a la mitad.\n\
+					{"#SILVER_COLOR"}- Cuando un mÃ©dico te cura vida al 50%.\n\
 					{"#SILVER_COLOR"}- Comprar armas en mercado negro sin pertenecer a banda.\n\
 					{"#SILVER_COLOR"}- Comprar armas sin esperar 5 minutos por cada compra.\n\
 					{"#SILVER_COLOR"}- Pagas extras de 300$ en algunos trabajos.\n\
 					\n\
-					{"#SILVER_COLOR"}Visita {"#PRIMARY_COLOR"}"SERVER_WEBSITE" {"#SILVER_COLOR"}para más información.\n\
+					{"#SILVER_COLOR"}Visita {"#PRIMARY_COLOR"}"SERVER_WEBSITE" {"#SILVER_COLOR"}para mÃ¡s informaciÃ³n.\n\
 					\n\
 				"
 			
@@ -2155,18 +2155,18 @@ ShowDialog(playerid, dialogid)
 			new string[512];
 			format(string, sizeof string, 
 				"\
-					Activa la verificación en dos pasos para proteger tu cuenta.\n\
-					Cuando tu IP cambie se enviará un correo electrónico para\n\
-					poder verificiar el inicio de sesión\n\
+					Activa la verificaciÃ³n en dos pasos para proteger tu cuenta.\n\
+					Cuando tu IP cambie se enviarÃ¡ un correo electrÃ³nico para\n\
+					poder verificiar el inicio de sesiÃ³n\n\
 					\n\
-					Tu dirección de correo electrónico actual es: %s.\n\
+					Tu direcciÃ³n de correo electrÃ³nico actual es: %s.\n\
 					Puedes cambiar tu correo con el comando /correo.\n\
 					\n\
-					Para activar o desactivar la verificación en dos pasos utiliza el comando /panel.\
+					Para activar o desactivar la verificaciÃ³n en dos pasos utiliza el comando /panel.\
 				",
 					ACCOUNT_INFO[playerid][ac_EMAIL]
 			);
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Verificación en dos pasos", string, "Cerrar", "");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "VerificaciÃ³n en dos pasos", string, "Cerrar", "");
 			return 1;
 		}
 		case DIALOG_ADMIN_LIST:
@@ -2177,7 +2177,7 @@ ShowDialog(playerid, dialogid)
 				if(cache_get_row_count(rows))
 				{
 					new dialog[128 * 15], line_str[128], count, start_pos = PLAYER_TEMP[playerid][pt_DIALOG_DB_PAGE] * PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT] + 1;
-					format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Nombre\t{"#SILVER_COLOR"}Rango\t{"#SILVER_COLOR"}Últ. conexión\n");
+					format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Nombre\t{"#SILVER_COLOR"}Rango\t{"#SILVER_COLOR"}Ãšlt. conexiÃ³n\n");
 					for(new i = 0; i != MAX_LISTITEMS; i++ ) PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][i] = -1;
 					for(new i = 0; i != rows; i++)
 					{
@@ -2245,7 +2245,7 @@ ShowDialog(playerid, dialogid)
 								strcat(dialog, line_str);
 							}
 							
-							ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, dialog, "Continuar", "Atrás");
+							ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, dialog, "Continuar", "AtrÃ¡s");
 						}
 					}
 				}
@@ -2256,14 +2256,14 @@ ShowDialog(playerid, dialogid)
 		}
 		case DIALOG_CHANGE_PASSWORD:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_PASSWORD, "Cambiar contraseña", "Introduce tu contraseña actual.", "Continuar", "Cerrar");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_PASSWORD, "Cambiar contraseÃ±a", "Introduce tu contraseÃ±a actual.", "Continuar", "Cerrar");
 			return 1;
 		}
 		case DIALOG_CHANGE_PASSWORD_PASS:
 		{
 			new dialog[128];
-			format(dialog, sizeof dialog, "Introduce tu nueva contraseña.\nLa contraseña debe contener entre %d-%d caracteres.", MIN_PASS_LENGTH, MAX_PASS_LENGTH);
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_PASSWORD, "Cambiar contraseña", dialog, "Continuar", "Cerrar");
+			format(dialog, sizeof dialog, "Introduce tu nueva contraseÃ±a.\nLa contraseÃ±a debe contener entre %d-%d caracteres.", MIN_PASS_LENGTH, MAX_PASS_LENGTH);
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_PASSWORD, "Cambiar contraseÃ±a", dialog, "Continuar", "Cerrar");
 			return 1;
 		}
 		case DIALOG_ANTI_CHEAT:
@@ -2271,7 +2271,7 @@ ShowDialog(playerid, dialogid)
 			if(ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] < 4) return 0;
 			
 			new dialog[115 * sizeof(ac_Info) + 1], line_str[115];
-			dialog = "Tipo\tEstado\tAccionar\tAcción\n";
+			dialog = "Tipo\tEstado\tAccionar\tAcciÃ³n\n";
 			
 			for(new i = 0; i != sizeof(ac_Info); i ++)
 			{
@@ -2291,7 +2291,7 @@ ShowDialog(playerid, dialogid)
 			format(caption, sizeof caption, "ac %02d %s", PLAYER_TEMP[playerid][pt_SELECTED_AC_LISTITEM], ac_Info[ PLAYER_TEMP[playerid][pt_SELECTED_AC_LISTITEM] ][ac_Name]);
 			format(dialog, sizeof dialog, "Estado\t%s\nAccionar\t(%d:%d)\nAccion\t%s", ac_Info[ PLAYER_TEMP[playerid][pt_SELECTED_AC_LISTITEM] ][ac_Enabled] ? "Activado" : "Desactivado", ac_Info[ PLAYER_TEMP[playerid][pt_SELECTED_AC_LISTITEM] ][ac_Detections], ac_Info[ PLAYER_TEMP[playerid][pt_SELECTED_AC_LISTITEM] ][ac_Interval], ac_Info[ PLAYER_TEMP[playerid][pt_SELECTED_AC_LISTITEM] ][ac_Kick] ? "Kick" : "Aviso");
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST, caption, dialog, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST, caption, dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_ANTI_CHEAT_MODIFY_DETECT:
@@ -2299,26 +2299,26 @@ ShowDialog(playerid, dialogid)
 			new caption[45], dialog[200];
 			
 			format(caption, sizeof caption, "ac %02d %s", PLAYER_TEMP[playerid][pt_SELECTED_AC_LISTITEM], ac_Info[ PLAYER_TEMP[playerid][pt_SELECTED_AC_LISTITEM] ][ac_Name]);
-			format(dialog, sizeof dialog, "Estado actual de accioner en: (%d:%d)\n\nSintaxis: <detecciones>:<segundos>\nDeja segundos en 0 para que sea instantáneo.\n\nEjemplo de 2 detecciones en 10 segundos: 2:10", ac_Info[ PLAYER_TEMP[playerid][pt_SELECTED_AC_LISTITEM] ][ac_Detections], ac_Info[ PLAYER_TEMP[playerid][pt_SELECTED_AC_LISTITEM] ][ac_Interval]);
+			format(dialog, sizeof dialog, "Estado actual de accioner en: (%d:%d)\n\nSintaxis: <detecciones>:<segundos>\nDeja segundos en 0 para que sea instantÃ¡neo.\n\nEjemplo de 2 detecciones en 10 segundos: 2:10", ac_Info[ PLAYER_TEMP[playerid][pt_SELECTED_AC_LISTITEM] ][ac_Detections], ac_Info[ PLAYER_TEMP[playerid][pt_SELECTED_AC_LISTITEM] ][ac_Interval]);
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, caption, dialog, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, caption, dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
-		case DIALOG_SHOP_ARTICLE_MODIFY: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Mi anuncio", "Inserta el nuevo precio de tu artículo:\n", "Continuar", "Atrás");
-		case DIALOG_SHOP_ARTICLE_REMOVE: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Eliminar anuncio", "¿Estás seguro de que quiere eliminar este anuncio?\nEsta opción no se puede deshacer.", "Eliminar", "Atrás");	
+		case DIALOG_SHOP_ARTICLE_MODIFY: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Mi anuncio", "Inserta el nuevo precio de tu artÃ­culo:\n", "Continuar", "AtrÃ¡s");
+		case DIALOG_SHOP_ARTICLE_REMOVE: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Eliminar anuncio", "Â¿EstÃ¡s seguro de que quiere eliminar este anuncio?\nEsta opciÃ³n no se puede deshacer.", "Eliminar", "AtrÃ¡s");	
 		case DIALOG_SHOP_ADD:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Añadir anuncio", "{"#SILVER_COLOR"}Propiedad\n{"#SILVER_COLOR"}Vehículo\n{"#SILVER_COLOR"}Otros", "Continuar", "Cerrar");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "AÃ±adir anuncio", "{"#SILVER_COLOR"}Propiedad\n{"#SILVER_COLOR"}VehÃ­culo\n{"#SILVER_COLOR"}Otros", "Continuar", "Cerrar");
 			return 1;
 		}
 		case DIALOG_SHOP_ADD_TEXT:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Añadir anuncio", "Introduce una breve descripción para tu anuncio.\nCaracteres: 1-24 [A-Z a-z 0-9]", "Continuar", "Cerrar");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "AÃ±adir anuncio", "Introduce una breve descripciÃ³n para tu anuncio.\nCaracteres: 1-24 [A-Z a-z 0-9]", "Continuar", "Cerrar");
 			return 1;
 		}
 		case DIALOG_SHOP_ADD_PRICE:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Añadir anuncio", "Introduce el precio para tu anuncio.\nAl publicar tu anuncio se te cobrará 500$.", "Continuar", "Cerrar");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "AÃ±adir anuncio", "Introduce el precio para tu anuncio.\nAl publicar tu anuncio se te cobrarÃ¡ 500$.", "Continuar", "Cerrar");
 			return 1;
 		}
 		case DIALOG_CRANE_SELECT_VEHICLE:
@@ -2326,7 +2326,7 @@ ShowDialog(playerid, dialogid)
 			for(new i = 0; i != MAX_LISTITEMS; i ++) PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][i] = -1;
 			
 			new dialog[95 * (MAX_SU_VEHICLES + 2)], total_vehicles;
-			format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Vehículo\t{"#BLUE_COLOR"}Matrícula\t{"#SILVER_COLOR"}Precio\n");
+			format(dialog, sizeof dialog, "{"#SILVER_COLOR"}VehÃ­culo\t{"#BLUE_COLOR"}MatrÃ­cula\t{"#SILVER_COLOR"}Precio\n");
 			for(new i = 0, j = GetVehiclePoolSize(); i <= j; i ++)
 			{
 				if(!GLOBAL_VEHICLES[i][gb_vehicle_VALID]) continue;
@@ -2343,14 +2343,14 @@ ShowDialog(playerid, dialogid)
 					total_vehicles ++;
 				}
 			}
-			if(total_vehicles == 0) strcat(dialog, "{"#SILVER_COLOR"}No tienes vehículos");
+			if(total_vehicles == 0) strcat(dialog, "{"#SILVER_COLOR"}No tienes vehÃ­culos");
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "Selecciona el vehículo que quieres remolcar", dialog, "Continuar", "Cerrar");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "Selecciona el vehÃ­culo que quieres remolcar", dialog, "Continuar", "Cerrar");
 			return 1;
 		}
 		case DIALOG_CREATE_CREW:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Banda", "No perteneces a ninguna banda.\n\n¿Quieres crear una?\nPara crear una banda necesitas ser nivel 5, además cuesta 600.000$.", "Sí", "No");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Banda", "No perteneces a ninguna banda.\n\nÂ¿Quieres crear una?\nPara crear una banda necesitas ser nivel 5, ademÃ¡s cuesta 600.000$.", "SÃ­", "No");
 			return 1;
 		}
 		case DIALOG_CREATE_CREW_NAME:
@@ -2360,7 +2360,7 @@ ShowDialog(playerid, dialogid)
 		}
 		case DIALOG_CREATE_CREW_COLOR:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Selecciona un color para tu banda", DIALOG_CREATE_CREW_COLOR_String, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Selecciona un color para tu banda", DIALOG_CREATE_CREW_COLOR_String, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_CREATE_CREW_CONFIRM:
@@ -2371,10 +2371,10 @@ ShowDialog(playerid, dialogid)
 					"\
 						{"#SILVER_COLOR"}Nombre de la banda: %s\n\
 						{"#SILVER_COLOR"}Color de la banda: {%06x}color %d\n\
-						{"#SILVER_COLOR"}Coste de creación: 600.000$\n\
+						{"#SILVER_COLOR"}Coste de creaciÃ³n: 600.000$\n\
 						\n\
-						{"#SILVER_COLOR"}¿Quieres crear esta banda?\n\
-						{"#SILVER_COLOR"}Una vez creada podrás crear rangos, modificarlos y mucho más.\n\
+						{"#SILVER_COLOR"}Â¿Quieres crear esta banda?\n\
+						{"#SILVER_COLOR"}Una vez creada podrÃ¡s crear rangos, modificarlos y mucho mÃ¡s.\n\
 						\n\
 					", 
 						PLAYER_TEMP[playerid][pt_CREATE_CREW_NAME],
@@ -2448,7 +2448,7 @@ ShowDialog(playerid, dialogid)
 				{
 					new dialog[128 * 15], caption[64], line_str[128], count, start_pos = PLAYER_TEMP[playerid][pt_DIALOG_DB_PAGE] * PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT] + 1;
 					format(caption, sizeof caption, "Miembros de la banda '%s'", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_NAME]);
-					format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Nombre\t{"#SILVER_COLOR"}Rango\t{"#SILVER_COLOR"}Últ. conexión\n");
+					format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Nombre\t{"#SILVER_COLOR"}Rango\t{"#SILVER_COLOR"}Ãšlt. conexiÃ³n\n");
 					for(new i = 0; i != MAX_LISTITEMS; i++ ) PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][i] = -1;
 					for(new i = 0; i != rows; i++)
 					{
@@ -2478,8 +2478,8 @@ ShowDialog(playerid, dialogid)
 		case DIALOG_CREW_CHANGE_NAME:
 		{
 			new dialog[128];
-			format(dialog, sizeof dialog, "Nombre actual de la banda:\n\t\"%s\"\n\nIndica el nuevo nombre.\nMáximo 32 caracteres.", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_NAME]);
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Cambiar nombre de la banda", dialog, "Cambiar", "Atrás");
+			format(dialog, sizeof dialog, "Nombre actual de la banda:\n\t\"%s\"\n\nIndica el nuevo nombre.\nMÃ¡ximo 32 caracteres.", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_NAME]);
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Cambiar nombre de la banda", dialog, "Cambiar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_CREW_MEMBER_LIST_DELETE:
@@ -2490,7 +2490,7 @@ ShowDialog(playerid, dialogid)
 				if(cache_get_row_count(rows))
 				{
 					new dialog[128 * 15], line_str[128], count, start_pos = PLAYER_TEMP[playerid][pt_DIALOG_DB_PAGE] * PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT] + 1;
-					format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Nombre\t{"#SILVER_COLOR"}Rango\t{"#SILVER_COLOR"}Últ. conexión\n");
+					format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Nombre\t{"#SILVER_COLOR"}Rango\t{"#SILVER_COLOR"}Ãšlt. conexiÃ³n\n");
 					for(new i = 0; i != MAX_LISTITEMS; i++ ) PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][i] = -1;
 					for(new i = 0; i != rows; i++)
 					{
@@ -2520,7 +2520,7 @@ ShowDialog(playerid, dialogid)
 		}
 		case DIALOG_CREW_CAST_MEMBER_CONFIRM:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Echar a un miembro", "¿Estás seguro de que quieres echar a este miembro de la banda?", "Echar", "Cancelar");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Echar a un miembro", "Â¿EstÃ¡s seguro de que quieres echar a este miembro de la banda?", "Echar", "Cancelar");
 			return 1;
 		}
 		case DIALOG_CREW_INVITE_RANK:
@@ -2546,7 +2546,7 @@ ShowDialog(playerid, dialogid)
 		{
 			new dialog[128];
 			format(dialog, sizeof dialog, "Te han ofrecio unirte a una banda.\n\nBanda: %s\nRango: %s\n", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INVITE_INFO][1] ][crew_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INVITE_INFO][1] ][ PLAYER_TEMP[playerid][pt_CREW_INVITE_INFO][2] ][crew_rank_NAME]);
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Invitación", dialog, "Unirme", "Cerrar");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "InvitaciÃ³n", dialog, "Unirme", "Cerrar");
 			return 1;
 		}
 		case DIALOG_CREW_RANKS:
@@ -2561,24 +2561,24 @@ ShowDialog(playerid, dialogid)
 				}
 				else
 				{
-					if(i < PI[playerid][ac_CREW_RANK]) format(line_str, sizeof line_str, "{666666}%d. Slot vacío\n", i + 1, CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][i][crew_rank_NAME]);
-					else format(line_str, sizeof line_str, "{FFFFFF}%d. Slot vacío\n", i + 1, CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][i][crew_rank_NAME]);
+					if(i < PI[playerid][ac_CREW_RANK]) format(line_str, sizeof line_str, "{666666}%d. Slot vacÃ­o\n", i + 1, CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][i][crew_rank_NAME]);
+					else format(line_str, sizeof line_str, "{FFFFFF}%d. Slot vacÃ­o\n", i + 1, CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][i][crew_rank_NAME]);
 				}
 				strcat(dialog, line_str);
 			}
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Rangos", dialog, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Rangos", dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_CREW_RANK_MODIFY:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Modificar rango", "Cambiar nombre del rango\nModificar permisos\nEliminar rango", "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Modificar rango", "Cambiar nombre del rango\nModificar permisos\nEliminar rango", "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_CREW_RANK_MODIFY_NAME:
 		{
 			new dialog[145];
-			format(dialog, sizeof dialog, "Nombre actual del rango:\n\t\"%s\"\n\nIndica el nuevo nombre del rango.\nMáximo 32 caracteres.", CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PLAYER_TEMP[playerid][pt_CREW_SELECTED_RANK] ][crew_rank_NAME]);
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Modificar rango", dialog, "Continuar", "Atrás");
+			format(dialog, sizeof dialog, "Nombre actual del rango:\n\t\"%s\"\n\nIndica el nuevo nombre del rango.\nMÃ¡ximo 32 caracteres.", CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PLAYER_TEMP[playerid][pt_CREW_SELECTED_RANK] ][crew_rank_NAME]);
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Modificar rango", dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_CREW_RANK_MODIFY_PERMISS:
@@ -2591,18 +2591,18 @@ ShowDialog(playerid, dialogid)
 			
 			for(new i = 0; i != CREW_RANK_SIZE; i ++)
 			{
-				if(CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][i]) format(line_str, sizeof line_str, "%s\t%s\n", CREW_RANKS_PERMISSIONS[i], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PLAYER_TEMP[playerid][pt_CREW_SELECTED_RANK] ][crew_rank_PERMISSION][i] ? "Sí" : "No");
-				else format(line_str, sizeof line_str, "{666666}%s\t{666666}%s\n", CREW_RANKS_PERMISSIONS[i], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PLAYER_TEMP[playerid][pt_CREW_SELECTED_RANK] ][crew_rank_PERMISSION][i] ? "Sí" : "No");
+				if(CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][i]) format(line_str, sizeof line_str, "%s\t%s\n", CREW_RANKS_PERMISSIONS[i], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PLAYER_TEMP[playerid][pt_CREW_SELECTED_RANK] ][crew_rank_PERMISSION][i] ? "SÃ­" : "No");
+				else format(line_str, sizeof line_str, "{666666}%s\t{666666}%s\n", CREW_RANKS_PERMISSIONS[i], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PLAYER_TEMP[playerid][pt_CREW_SELECTED_RANK] ][crew_rank_PERMISSION][i] ? "SÃ­" : "No");
 				
 				strcat(dialog, line_str);
 			}
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, caption, dialog, "Cambiar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, caption, dialog, "Cambiar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_CREW_RANK_CREATE:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Crear nuevo rango", "Indica el nombre del rango.\nMáximo 32 caracteres.", "Crear", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Crear nuevo rango", "Indica el nombre del rango.\nMÃ¡ximo 32 caracteres.", "Crear", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_CREW_RANK_DELETE:
@@ -2622,7 +2622,7 @@ ShowDialog(playerid, dialogid)
 				
 				listitem ++;
 			}
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Seleccionar nuevo rango", dialog, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Seleccionar nuevo rango", dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_CREW_RANK_DELETE_CONFIRM:
@@ -2641,14 +2641,14 @@ ShowDialog(playerid, dialogid)
 						format(dialog, sizeof dialog, 
 								
 							"\
-								Rango que se eliminará:\n\
+								Rango que se eliminarÃ¡:\n\
 									\t'%s'\n\
 								\n\
 								Miembros afectados: %d\n\
-								El nuevo rango de estos miembros será:\n\
+								El nuevo rango de estos miembros serÃ¡:\n\
 									\t'%s'\n\
 								\n\
-								¿Seguro que quieres eliminar el rango? Esta opción no se puede deshacer.\n\
+								Â¿Seguro que quieres eliminar el rango? Esta opciÃ³n no se puede deshacer.\n\
 								\n\
 							",
 								CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PLAYER_TEMP[playerid][pt_CREW_SELECTED_RANK] ][crew_rank_NAME],
@@ -2666,7 +2666,7 @@ ShowDialog(playerid, dialogid)
 		}
 		case DIALOG_CREW_MODIFY_COLOR:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Selecciona el nuevo color para tu banda", DIALOG_CREATE_CREW_COLOR_String, "Cambiar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Selecciona el nuevo color para tu banda", DIALOG_CREATE_CREW_COLOR_String, "Cambiar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_CREW_DELETE:
@@ -2690,7 +2690,7 @@ ShowDialog(playerid, dialogid)
 								Miembros: %d\n\
 								Territorios: %d\n\
 								\n\
-								¿De verdad quieres borrar la banda?\n\
+								Â¿De verdad quieres borrar la banda?\n\
 								\n\
 							",
 								CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_NAME],
@@ -2707,7 +2707,7 @@ ShowDialog(playerid, dialogid)
 		}
 		case DIALOG_CREW_LEAVE:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Abandonar banda", "¿Quieres abandonar la banda?\nEsta opción no se puede deshacer.", "Abandonar", "Cancelar");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Abandonar banda", "Â¿Quieres abandonar la banda?\nEsta opciÃ³n no se puede deshacer.", "Abandonar", "Cancelar");
 			return 1;
 		}
 		case DIALOG_CREW_MODIFY_MEMBERS:
@@ -2718,7 +2718,7 @@ ShowDialog(playerid, dialogid)
 				if(cache_get_row_count(rows))
 				{
 					new dialog[128 * 15], line_str[128], count, start_pos = PLAYER_TEMP[playerid][pt_DIALOG_DB_PAGE] * PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT] + 1;
-					format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Nombre\t{"#SILVER_COLOR"}Rango\t{"#SILVER_COLOR"}Últ. conexión\n");
+					format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Nombre\t{"#SILVER_COLOR"}Rango\t{"#SILVER_COLOR"}Ãšlt. conexiÃ³n\n");
 					for(new i = 0; i != MAX_LISTITEMS; i++ ) PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][i] = -1;
 					for(new i = 0; i != rows; i++)
 					{
@@ -2772,7 +2772,7 @@ ShowDialog(playerid, dialogid)
 										{
 											new total;
 											cache_get_value_index_int(0, 0, total);
-											if(total <= 1) SendNotification(playerid, "No se puede modificar el rango de este miembro ya que es el único miembro con el rango fundador.");
+											if(total <= 1) SendNotification(playerid, "No se puede modificar el rango de este miembro ya que es el Ãºnico miembro con el rango fundador.");
 											else
 											{
 												new caption[45], dialog[45 * CREW_RANK_SIZE], line_str[45], count;
@@ -2795,7 +2795,7 @@ ShowDialog(playerid, dialogid)
 													strcat(dialog, line_str);
 													PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = i;
 												}
-												ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, dialog, "Continuar", "Atrás");
+												ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, dialog, "Continuar", "AtrÃ¡s");
 											}
 										}
 									}
@@ -2825,7 +2825,7 @@ ShowDialog(playerid, dialogid)
 									strcat(dialog, line_str);
 									PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = i;
 								}
-								ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, dialog, "Continuar", "Atrás");
+								ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, dialog, "Continuar", "AtrÃ¡s");
 							}
 						}
 					}
@@ -2837,23 +2837,23 @@ ShowDialog(playerid, dialogid)
 		}
 		case DIALOG_CREW_PROPERTY_CONFIRM:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Propiedad de banda", "¿Estás seguro que quieres pasar esta propiedad a banda?\nEsta opción no se puede deshacer.", "Continuar", "Cancelar");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Propiedad de banda", "Â¿EstÃ¡s seguro que quieres pasar esta propiedad a banda?\nEsta opciÃ³n no se puede deshacer.", "Continuar", "Cancelar");
 			return 1;
 		}
 		case DIALOG_CREW_LEAVE_TERRITORY:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Abandonar territorio", "¿Estás seguro que quieres abandonar este territorio?\nEsta opción no se puede deshacer.", "Continuar", "Cancelar");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Abandonar territorio", "Â¿EstÃ¡s seguro que quieres abandonar este territorio?\nEsta opciÃ³n no se puede deshacer.", "Continuar", "Cancelar");
 			return 1;
 		}
 		case DIALOG_CREW_LEAVE_PROPERTY:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Propiedad de banda", "¿Estás seguro que quieres liberar esta propiedad?\nEsta opción no se puede deshacer.", "Continuar", "Cancelar");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Propiedad de banda", "Â¿EstÃ¡s seguro que quieres liberar esta propiedad?\nEsta opciÃ³n no se puede deshacer.", "Continuar", "Cancelar");
 			return 1;
 		}
 		case DIALOG_POLICE_PENALTY:
 		{
 			new dialog[128];
-			format(dialog, sizeof dialog, "El policía %s te ha puesto una multa.\nImporte: %s$\n", PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_POLICE_PEN_PID] ][pt_RP_NAME], number_format_thousand(PLAYER_TEMP[playerid][pt_POLICE_PEN_IM]));
+			format(dialog, sizeof dialog, "El policÃ­a %s te ha puesto una multa.\nImporte: %s$\n", PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_POLICE_PEN_PID] ][pt_RP_NAME], number_format_thousand(PLAYER_TEMP[playerid][pt_POLICE_PEN_IM]));
 			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Multa", dialog, "Pagar", "Cerrar");
 			return 1;
 		}
@@ -2899,13 +2899,13 @@ ShowDialog(playerid, dialogid)
 				case 6: format(dialog, sizeof dialog, "VIP JOB EXTRA PAY: %d", SU_WORK_EXTRA_PAY);
 				case 7: format(dialog, sizeof dialog, "Coste cambiar nombre: %d "SERVER_COIN"", CHANGE_NAME_SD_PRICE);
 			}
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Multiplicador", dialog, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Multiplicador", dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_SU_BUY:
 		{
 			new dialog[128];
-			format(dialog, sizeof dialog, "El coste del VIP es de %d "SERVER_COIN"\nDuración: 30 días\n\n¿Comprar?", SU_SD_PRICE);
+			format(dialog, sizeof dialog, "El coste del VIP es de %d "SERVER_COIN"\nDuraciÃ³n: 30 dÃ­as\n\nÂ¿Comprar?", SU_SD_PRICE);
 			
 			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "VIP", dialog, "Comprar", "Cerrar");
 			return 1;
@@ -2920,7 +2920,7 @@ ShowDialog(playerid, dialogid)
 					Fecha actual: %s\n\
 					Fecha caducidad: %s\n\
 					\n\
-					Renuevalo 30 días más por %d "SERVER_COIN".\n\
+					Renuevalo 30 dÃ­as mÃ¡s por %d "SERVER_COIN".\n\
 					\n\
 				",
 					current_date,
@@ -2936,7 +2936,7 @@ ShowDialog(playerid, dialogid)
 			new caption[45];
 			format(caption, sizeof caption, "STC - '%s'", VEHICLE_INFO[ GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][gb_vehicle_MODELID] - 400 ][vehicle_info_NAME]);
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, "1. Mis objetos\n2. Comprar objeto\n3. Añadir texto (500$)\n4. Añadir bandera de país (2.000$)\n5. Añadir panel de país (2.000$)", "Continuar", "Cerrar");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, "1. Mis objetos\n2. Comprar objeto\n3. AÃ±adir texto (500$)\n4. AÃ±adir bandera de paÃ­s (2.000$)\n5. AÃ±adir panel de paÃ­s (2.000$)", "Continuar", "Cerrar");
 			return 1;
 		}
 		case DIALOG_VOBJECT_OBJECTS:
@@ -2949,15 +2949,15 @@ ShowDialog(playerid, dialogid)
 			{
 				if(VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][i][vobject_VALID])
 				{
-					if(VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][i][vobject_ATTACHED]) format(line_str, sizeof line_str, "{"#SILVER_COLOR"}%d. %s\t{"#BLUE_COLOR"}Sí\n", i + 1, VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][i][vobject_NAME]);
+					if(VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][i][vobject_ATTACHED]) format(line_str, sizeof line_str, "{"#SILVER_COLOR"}%d. %s\t{"#BLUE_COLOR"}SÃ­\n", i + 1, VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][i][vobject_NAME]);
 					else format(line_str, sizeof line_str, "{"#SILVER_COLOR"}%d. %s\t{"#BLUE_COLOR"}No\n", i + 1, VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][i][vobject_NAME]);
 				}
-				else format(line_str, sizeof line_str, "{666666}%d. Slot vacío\n", i + 1);
+				else format(line_str, sizeof line_str, "{666666}%d. Slot vacÃ­o\n", i + 1);
 				strcat(dialog, line_str);
 			}
 			strcat(dialog, "{c4290d}- Eliminar todo\n");
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, caption, dialog, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, caption, dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_VOBJECT_OBJECT:
@@ -2969,29 +2969,29 @@ ShowDialog(playerid, dialogid)
 			{
 				case VOBJECT_TYPE_OBJECT:
 				{
-					if(VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][ PLAYER_TEMP[playerid][pt_TUNING_EDIT_SLOT] ][vobject_ATTACHED]) format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Guardar este objeto\n{"#SILVER_COLOR"}Cambiar el nombre del objeto\n{"#SILVER_COLOR"}Editar posición del objeto\n{"#SILVER_COLOR"}Colores\n{"#SILVER_COLOR"}Eliminar este objeto");
-					else format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Colocar este objeto\n{"#SILVER_COLOR"}Cambiar el nombre del objeto\n{666666}Editar posición del objeto\n{666666}Colores\n{"#SILVER_COLOR"}Eliminar este objeto");
+					if(VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][ PLAYER_TEMP[playerid][pt_TUNING_EDIT_SLOT] ][vobject_ATTACHED]) format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Guardar este objeto\n{"#SILVER_COLOR"}Cambiar el nombre del objeto\n{"#SILVER_COLOR"}Editar posiciÃ³n del objeto\n{"#SILVER_COLOR"}Colores\n{"#SILVER_COLOR"}Eliminar este objeto");
+					else format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Colocar este objeto\n{"#SILVER_COLOR"}Cambiar el nombre del objeto\n{666666}Editar posiciÃ³n del objeto\n{666666}Colores\n{"#SILVER_COLOR"}Eliminar este objeto");
 				}
 				case VOBJECT_TYPE_TEXT:
 				{
-					if(VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][ PLAYER_TEMP[playerid][pt_TUNING_EDIT_SLOT] ][vobject_ATTACHED]) format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Guardar este objeto\n{"#SILVER_COLOR"}Cambiar el nombre del objeto\n{"#SILVER_COLOR"}Editar posición del objeto\n{"#SILVER_COLOR"}Texto\n{"#SILVER_COLOR"}Eliminar este objeto");
-					else format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Colocar este objeto\n{"#SILVER_COLOR"}Cambiar el nombre del objeto\n{666666}Editar posición del objeto\n{666666}Texto\n{"#SILVER_COLOR"}Eliminar este objeto");
+					if(VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][ PLAYER_TEMP[playerid][pt_TUNING_EDIT_SLOT] ][vobject_ATTACHED]) format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Guardar este objeto\n{"#SILVER_COLOR"}Cambiar el nombre del objeto\n{"#SILVER_COLOR"}Editar posiciÃ³n del objeto\n{"#SILVER_COLOR"}Texto\n{"#SILVER_COLOR"}Eliminar este objeto");
+					else format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Colocar este objeto\n{"#SILVER_COLOR"}Cambiar el nombre del objeto\n{666666}Editar posiciÃ³n del objeto\n{666666}Texto\n{"#SILVER_COLOR"}Eliminar este objeto");
 				}
 				case VOBJECT_TYPE_COUNTRY_FLAG, VOBJECT_TYPE_COUNTRY_PANEL:
 				{
-					if(VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][ PLAYER_TEMP[playerid][pt_TUNING_EDIT_SLOT] ][vobject_ATTACHED]) format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Guardar este objeto\n{"#SILVER_COLOR"}Cambiar el nombre del objeto\n{"#SILVER_COLOR"}Editar posición del objeto\n{"#SILVER_COLOR"}Eliminar este objeto");
-					else format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Colocar este objeto\n{"#SILVER_COLOR"}Cambiar el nombre del objeto\n{666666}Editar posición del objeto\n{"#SILVER_COLOR"}Eliminar este objeto");
+					if(VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][ PLAYER_TEMP[playerid][pt_TUNING_EDIT_SLOT] ][vobject_ATTACHED]) format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Guardar este objeto\n{"#SILVER_COLOR"}Cambiar el nombre del objeto\n{"#SILVER_COLOR"}Editar posiciÃ³n del objeto\n{"#SILVER_COLOR"}Eliminar este objeto");
+					else format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Colocar este objeto\n{"#SILVER_COLOR"}Cambiar el nombre del objeto\n{666666}Editar posiciÃ³n del objeto\n{"#SILVER_COLOR"}Eliminar este objeto");
 				}
 			}
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, dialog, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_VOBJECT_OBJECT_CNAME:
 		{		
 			new dialog[145];
 			format(dialog, sizeof dialog, "Nombre actual: \"%s\"\nIndica el nuevo nombre:", VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][ PLAYER_TEMP[playerid][pt_TUNING_EDIT_SLOT] ][vobject_NAME]);
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Objeto - Modificar nombre", dialog, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Objeto - Modificar nombre", dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_VOBJECT_OBJECT_COLORS:
@@ -3007,7 +3007,7 @@ ShowDialog(playerid, dialogid)
 				
 				strcat(dialog, line_str);
 			}
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, dialog, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_VOBJECT_OBJECT_COLOR:
@@ -3028,7 +3028,7 @@ ShowDialog(playerid, dialogid)
 					VEHICLE_COLORS[ GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][gb_vehicle_COLOR_2] ] >>> 8
 			);
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, dialog, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_VOBJECT_OBJECT_COLOR_HEX:
@@ -3036,59 +3036,59 @@ ShowDialog(playerid, dialogid)
 			new caption[64];
 			format(caption, sizeof caption, "Color (%d) de '%s'", PLAYER_TEMP[playerid][pt_TUNING_EDIT_COLOR_SLOT], VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][ PLAYER_TEMP[playerid][pt_TUNING_EDIT_SLOT] ][vobject_NAME]);
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, caption, "Introduce el color en formato AARRGGBB\nPor ejemplo: FFCCCCCC", "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, caption, "Introduce el color en formato AARRGGBB\nPor ejemplo: FFCCCCCC", "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_VOBJECT_OBJECT_CDELETE:
 		{
 			new dialog[145];
-			format(dialog, sizeof dialog, "¿Estás seguro que quieres borrar el siguiente objeto?\n\t\"%s\"", VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][ PLAYER_TEMP[playerid][pt_TUNING_EDIT_SLOT] ][vobject_NAME]);
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Objeto - Eliminar Objeto", dialog, "Eliminar", "Atrás");
+			format(dialog, sizeof dialog, "Â¿EstÃ¡s seguro que quieres borrar el siguiente objeto?\n\t\"%s\"", VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][ PLAYER_TEMP[playerid][pt_TUNING_EDIT_SLOT] ][vobject_NAME]);
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Objeto - Eliminar Objeto", dialog, "Eliminar", "AtrÃ¡s");
 			return 1;
 		}
-		case DIALOG_VOBJECT_DELETE_ALL: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Objeto - Eliminar todo", "¿Estás seguro de que quiere eliminar todos los objetos de este vehículo?\nEsta opción no se puede deshacer.", "Eliminar", "Atrás");	
+		case DIALOG_VOBJECT_DELETE_ALL: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Objeto - Eliminar todo", "Â¿EstÃ¡s seguro de que quiere eliminar todos los objetos de este vehÃ­culo?\nEsta opciÃ³n no se puede deshacer.", "Eliminar", "AtrÃ¡s");	
 		case DIALOG_VOBJECT_TEXT_MENU:
 		{
 			new caption[64];
 			format(caption, sizeof caption, "Texto '%s'", VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][ PLAYER_TEMP[playerid][pt_TUNING_EDIT_SLOT] ][vobject_NAME]);
 
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, "Editar texto\nCambiar fuente\nTamaño de letra\nNegrita\nColor de fuente", "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, "Editar texto\nCambiar fuente\nTamaÃ±o de letra\nNegrita\nColor de fuente", "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_VOBJECT_TEXT_TEXT:
 		{
 			new dialog[128];
 			format(dialog, sizeof dialog, "Texto actual:\n\"%s\"\n\nIndica el nuevo texto (1-32 caracteres)\n", VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][ PLAYER_TEMP[playerid][pt_TUNING_EDIT_SLOT] ][vobject_text_TEXT]);
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Modificar texto", dialog, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Modificar texto", dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_VOBJECT_TEXT_FONT:
 		{
 			new dialog[128];
 			format(dialog, sizeof dialog, "Fuente actual:\n\"%s\"\n\nIndica la nueva fuente (1-24 caracteres)\n", VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][ PLAYER_TEMP[playerid][pt_TUNING_EDIT_SLOT] ][vobject_text_FONT]);
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Modificar fuente", dialog, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Modificar fuente", dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_VOBJECT_TEXT_FONT_SIZE:
 		{
 			new dialog[128];
-			format(dialog, sizeof dialog, "Tamaño actual: %d\n\nIndica el nuevo tamaño\n", VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][ PLAYER_TEMP[playerid][pt_TUNING_EDIT_SLOT] ][vobject_text_FONT_SIZE]);
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Modificar tamaño de letra", dialog, "Continuar", "Atrás");
+			format(dialog, sizeof dialog, "TamaÃ±o actual: %d\n\nIndica el nuevo tamaÃ±o\n", VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][ PLAYER_TEMP[playerid][pt_TUNING_EDIT_SLOT] ][vobject_text_FONT_SIZE]);
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Modificar tamaÃ±o de letra", dialog, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_VOBJECT_TEXT_FONT_COLOR:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Selecciona color", DIALOG_CREATE_CREW_COLOR_String, "Continuar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Selecciona color", DIALOG_CREATE_CREW_COLOR_String, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIAlOG_BUY_MASO:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "{2396FA}Herramientas de minería", "Masa\t\t\t\t\t{16DC45}300${FFFFFF}", "Comprar", "Cerrar");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "{2396FA}Herramientas de minerÃ­a", "Masa\t\t\t\t\t{16DC45}300${FFFFFF}", "Comprar", "Cerrar");
 			return 1;
 		}
 		case DIALOG_VOBJECT_COUNTRY:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Selecciona país",
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Selecciona paÃ­s",
 				
 				"\
 					Alemania\n\
@@ -3100,12 +3100,12 @@ ShowDialog(playerid, dialogid)
 					Chile\n\
 					Colombia\n\
 					El Salvador\n\
-					España\n\
+					EspaÃ±a\n\
 					Estonia\n\
 					Francia\n\
 					Guatemala\n\
 					Holanda\n\
-					Hungrúa\n\
+					HungrÃºa\n\
 					India\n\
 					Indonesia\n\
 					Irlanda\n\
@@ -3114,20 +3114,20 @@ ShowDialog(playerid, dialogid)
 					Luxemburgo\n\
 					Madagascar\n\
 					Malta\n\
-					Malí\n\
-					México\n\
+					MalÃ­\n\
+					MÃ©xico\n\
 					Nigeria\n\
-					Panamá\n\
+					PanamÃ¡\n\
 					Paraguay\n\
-					Perú\n\
+					PerÃº\n\
 					Polonia\n\
-					Rumanía\n\
+					RumanÃ­a\n\
 					Rusia\n\
 					Ucrania\n\
 					Venezuela\n\
 				"
 				
-			, "Continuar", "Atrás");
+			, "Continuar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_PLAYER_CONFIG:
@@ -3139,35 +3139,35 @@ ShowDialog(playerid, dialogid)
 					Audios del servidor\t%s\n\
 					Barras indicadoras (hud)\t%s\n\
 					Ver sanciones, kicks, baneos\t%s\n\
-					Número en guía telefónica\t%s\n\
+					NÃºmero en guÃ­a telefÃ³nica\t%s\n\
 					Sonidos del servidor\t%s\n\
 					Mostrar hora del servidor\t%s\n\
 					Canal de dudas\t%s\n\
-					Verificación en dos pasos\t%s\
+					VerificaciÃ³n en dos pasos\t%s\
 				",
-					(PI[playerid][ac_CONFIG_AUDIO] ? "Sí" : "No"),
-					(PI[playerid][ac_CONFIG_HUD] ? "Sí" : "No"),
-					(PI[playerid][ac_CONFIG_ADMIN] ? "Sí" : "No"),
-					(PI[playerid][ac_PHONE_VISIBLE_NUMBER] ? "Sí" : "No"),
-					(PI[playerid][ac_CONFIG_SOUNDS] ? "Sí" : "No"),
-					(PI[playerid][ac_CONFIG_TIME] ? "Sí" : "No"),
-					(ACCOUNT_INFO[playerid][ac_DOUBT_CHANNEL] ? "Sí" : "No"),
-					(PI[playerid][ac_CONFIG_SECURE_LOGIN] ? "Sí" : "No")
+					(PI[playerid][ac_CONFIG_AUDIO] ? "SÃ­" : "No"),
+					(PI[playerid][ac_CONFIG_HUD] ? "SÃ­" : "No"),
+					(PI[playerid][ac_CONFIG_ADMIN] ? "SÃ­" : "No"),
+					(PI[playerid][ac_PHONE_VISIBLE_NUMBER] ? "SÃ­" : "No"),
+					(PI[playerid][ac_CONFIG_SOUNDS] ? "SÃ­" : "No"),
+					(PI[playerid][ac_CONFIG_TIME] ? "SÃ­" : "No"),
+					(ACCOUNT_INFO[playerid][ac_DOUBT_CHANNEL] ? "SÃ­" : "No"),
+					(PI[playerid][ac_CONFIG_SECURE_LOGIN] ? "SÃ­" : "No")
 			);
 			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST, "Panel de configuración del usuario", dialog, "Cambiar", "Cerrar");	
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST, "Panel de configuraciÃ³n del usuario", dialog, "Cambiar", "Cerrar");	
 			return 1;
 		}
 		case DIALOG_POLICE_BYC:
 		{
 			new caption[128];
-			format(caption, sizeof caption, "Placa Nº%d | %c. %s", PI[playerid][ac_PLACA_PD], PLAYER_TEMP[playerid][pt_FIRST_NAME][0], PLAYER_TEMP[playerid][pt_SUB_NAME]);
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST, caption, "Ver Últimos registros a BYC\nBuscar BYC de una persona", "Continuar", "Cerrar");	
+			format(caption, sizeof caption, "Placa NÂº%d | %c. %s", PI[playerid][ac_PLACA_PD], PLAYER_TEMP[playerid][pt_FIRST_NAME][0], PLAYER_TEMP[playerid][pt_SUB_NAME]);
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST, caption, "Ver Ãšltimos registros a BYC\nBuscar BYC de una persona", "Continuar", "Cerrar");	
 			return 1;
 		}
 		case DIALOG_POLICE_BYC_NAME_FIND:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Búsqueda", "Introduce el nombre completo del sospechoso.\n\nUsa el guión bajo para separar nombre y apellido\nPor ejemplo: Nombre_Apellido.", "Buscar", "Cerrar");	
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "BÃºsqueda", "Introduce el nombre completo del sospechoso.\n\nUsa el guiÃ³n bajo para separar nombre y apellido\nPor ejemplo: Nombre_Apellido.", "Buscar", "Cerrar");	
 			return 1;
 		}
 		case DIALOG_POLICE_BYC_LAST_ALL:
@@ -3179,7 +3179,7 @@ ShowDialog(playerid, dialogid)
 				{
 					for(new i = 0; i != MAX_LISTITEMS; i++ ) PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][i] = -1;
 					new dialog[256 * 15], line_str[256], count, start_pos = PLAYER_TEMP[playerid][pt_DIALOG_DB_PAGE] * PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT] + 1;
-					format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Sospechoso\t{"#SILVER_COLOR"}Añadido por\t{"#SILVER_COLOR"}Fecha\t{"#SILVER_COLOR"}Razón\n");
+					format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Sospechoso\t{"#SILVER_COLOR"}AÃ±adido por\t{"#SILVER_COLOR"}Fecha\t{"#SILVER_COLOR"}RazÃ³n\n");
 					for(new i = 0; i != rows; i ++)
 					{
 						new id, id_player, text[128], date[24], toname[24], fromname[24], bool:isnull_fromname;
@@ -3217,7 +3217,7 @@ ShowDialog(playerid, dialogid)
 				{
 					for(new i = 0; i != MAX_LISTITEMS; i++ ) PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][i] = -1;
 					new dialog[256 * 15], line_str[256], count, start_pos = PLAYER_TEMP[playerid][pt_DIALOG_DB_PAGE] * PLAYER_TEMP[playerid][pt_DIALOG_DB_LIMIT] + 1;
-					format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Sospechoso\t{"#SILVER_COLOR"}Añadido por\t{"#SILVER_COLOR"}Fecha\t{"#SILVER_COLOR"}Razón\n");
+					format(dialog, sizeof dialog, "{"#SILVER_COLOR"}Sospechoso\t{"#SILVER_COLOR"}AÃ±adido por\t{"#SILVER_COLOR"}Fecha\t{"#SILVER_COLOR"}RazÃ³n\n");
 					for(new i = 0; i != rows; i ++)
 					{
 						new id, id_player, text[128], date[24], toname[24], fromname[24], bool:isnull_fromname;
@@ -3248,12 +3248,12 @@ ShowDialog(playerid, dialogid)
 		}
 		case DIALOG_POLICE_DELETE_BYC:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "BYC", "¿Borrar esto del historial?", "Borrar", "Cerrar");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "BYC", "Â¿Borrar esto del historial?", "Borrar", "Cerrar");
 			return 1;
 		}
 		case DIALOG_CHANGE_NAME:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_PASSWORD, "Cambiar nombre", "Introduce tu contraseña actual.", "Continuar", "Cerrar");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_PASSWORD, "Cambiar nombre", "Introduce tu contraseÃ±a actual.", "Continuar", "Cerrar");
 			return 1;
 		}
 		case DIALOG_CHANGE_NAME_NAME:
@@ -3265,12 +3265,12 @@ ShowDialog(playerid, dialogid)
 		}
 		case DIALOG_CHANGE_EMAIL:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_PASSWORD, "Cambiar correo electrónico", "Introduce tu contraseña actual.", "Continuar", "Cerrar");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_PASSWORD, "Cambiar correo electrÃ³nico", "Introduce tu contraseÃ±a actual.", "Continuar", "Cerrar");
 			return 1;
 		}
 		case DIALOG_CHANGE_EMAIL_EMAIL:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Cambiar correo electrónico", "Introduce tu nuevo correo electrónico.", "Continuar", "Cerrar");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, "Cambiar correo electrÃ³nico", "Introduce tu nuevo correo electrÃ³nico.", "Continuar", "Cerrar");
 			return 1;
 		}
 		case DIALOG_PROPERTY_CLOSET:
@@ -3280,7 +3280,7 @@ ShowDialog(playerid, dialogid)
 			new max_slots = MAX_CLOSET_SLOTS,
 				dialog[128 * (MAX_CLOSET_SLOTS + 2)], line_str[128], listitem;
 
-			format(dialog, sizeof dialog, "Tipo\tDescripción\n");
+			format(dialog, sizeof dialog, "Tipo\tDescripciÃ³n\n");
 			
 			for(new i = 0; i != max_slots; i ++)
 			{
@@ -3313,10 +3313,10 @@ ShowDialog(playerid, dialogid)
 			
 			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, caption, dialog, "Continuar", "Cerrar");
 		}
-		case DIALOG_PROPERTY_CLOSET_DLT_ALL: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Armario - Eliminar todo", "¿Estás seguro de que quiere eliminar todo de su armario?\nEsta opción no se puede deshacer.", "Eliminar", "Cancelar");	
+		case DIALOG_PROPERTY_CLOSET_DLT_ALL: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Armario - Eliminar todo", "Â¿EstÃ¡s seguro de que quiere eliminar todo de su armario?\nEsta opciÃ³n no se puede deshacer.", "Eliminar", "Cancelar");	
 		case DIALOG_PROPERTY_CLOSET_OPTIONS:
 		{
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Armario", "{"#SILVER_COLOR"}1. Sacar\n{"#SILVER_COLOR"}2. Eliminar", "Continuar", "Atrás");	
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Armario", "{"#SILVER_COLOR"}1. Sacar\n{"#SILVER_COLOR"}2. Eliminar", "Continuar", "AtrÃ¡s");	
 			return 1;
 		}
 		case DIALOG_PROPERTY_CLOSET_DELETE:
@@ -3324,10 +3324,10 @@ ShowDialog(playerid, dialogid)
 			new dialog[190];
 			switch(PROPERTY_CLOSET[ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY] ][ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY_SLOT] ][property_closet_TYPE])
 			{
-				case CLOSET_TYPE_WEAPON: format(dialog, sizeof dialog, "Tipo: %s\nDescripción: %s (%s balas)\n\n¿Estás seguro de que quiere eliminar esto de tu maletero?\nEsta opción no se puede deshacer.", GetClosetTypeName(PROPERTY_CLOSET[ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY] ][ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY_SLOT] ][property_closet_TYPE]), WEAPON_INFO[ PROPERTY_CLOSET[ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY] ][ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY_SLOT] ][property_closet_INT] ][weapon_info_NAME], number_format_thousand( PROPERTY_CLOSET[ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY] ][ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY_SLOT] ][property_closet_INT_EXTRA] ));
-				case CLOSET_TYPE_MEDICINES, CLOSET_TYPE_CANNABIS, CLOSET_TYPE_CRACK: format(dialog, sizeof dialog, "Tipo: %s\nDescripción: %s gramos\n\n¿Estás seguro de que quiere eliminar esto de tu maletero?\nEsta opción no se puede deshacer.", GetClosetTypeName(PROPERTY_CLOSET[ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY] ][ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY_SLOT] ][property_closet_TYPE]), number_format_thousand( PROPERTY_CLOSET[ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY] ][ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY_SLOT] ][property_closet_INT] ));
+				case CLOSET_TYPE_WEAPON: format(dialog, sizeof dialog, "Tipo: %s\nDescripciÃ³n: %s (%s balas)\n\nÂ¿EstÃ¡s seguro de que quiere eliminar esto de tu maletero?\nEsta opciÃ³n no se puede deshacer.", GetClosetTypeName(PROPERTY_CLOSET[ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY] ][ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY_SLOT] ][property_closet_TYPE]), WEAPON_INFO[ PROPERTY_CLOSET[ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY] ][ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY_SLOT] ][property_closet_INT] ][weapon_info_NAME], number_format_thousand( PROPERTY_CLOSET[ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY] ][ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY_SLOT] ][property_closet_INT_EXTRA] ));
+				case CLOSET_TYPE_MEDICINES, CLOSET_TYPE_CANNABIS, CLOSET_TYPE_CRACK: format(dialog, sizeof dialog, "Tipo: %s\nDescripciÃ³n: %s gramos\n\nÂ¿EstÃ¡s seguro de que quiere eliminar esto de tu maletero?\nEsta opciÃ³n no se puede deshacer.", GetClosetTypeName(PROPERTY_CLOSET[ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY] ][ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY_SLOT] ][property_closet_TYPE]), number_format_thousand( PROPERTY_CLOSET[ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY] ][ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY_SLOT] ][property_closet_INT] ));
 			}			
-			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Armario - Eliminar", dialog, "Eliminar", "Atrás");
+			ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Armario - Eliminar", dialog, "Eliminar", "AtrÃ¡s");
 			return 1;
 		}
 		case DIALOG_PROPERTY_OBJECTS_MENU: return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Muebles", "1. Editar mueble\n2. Ver muebles guardados\n3. Eliminar todos los muebles", "Continuar", "Cancelar");	

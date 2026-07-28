@@ -83,14 +83,14 @@ ShowSelectPriceDialog(playerid, id = -1) {
     PLAYER_TEMP[playerid][pt_DIALOG_RESPONDED] = false;
     PLAYER_TEMP[playerid][pt_DIALOG_ID] = DIALOG_NEARS_PLAYERS_PRICE;
     pNearsPlayers_ID[playerid] = id;
-    ShowPlayerDialog(playerid, DIALOG_NEARS_PLAYERS_PRICE, DIALOG_STYLE_INPUT, "Introduce el precio", "Introduce el precio aquí:", "Continuar", "Cerrar");
+    ShowPlayerDialog(playerid, DIALOG_NEARS_PLAYERS_PRICE, DIALOG_STYLE_INPUT, "Introduce el precio", "Introduce el precio aquÃ­:", "Continuar", "Cerrar");
 }
 
 ShowSelectAmountDialog(playerid, id = -1) {
     PLAYER_TEMP[playerid][pt_DIALOG_RESPONDED] = false;
     PLAYER_TEMP[playerid][pt_DIALOG_ID] = DIALOG_NEARS_PLAYERS_AMOUNT;
     pNearsPlayers_ID[playerid] = id;
-    ShowPlayerDialog(playerid, DIALOG_NEARS_PLAYERS_AMOUNT, DIALOG_STYLE_INPUT, "Introduce la cantidad", "Introduce la cantidad aquí:", "Continuar", "Cerrar");
+    ShowPlayerDialog(playerid, DIALOG_NEARS_PLAYERS_AMOUNT, DIALOG_STYLE_INPUT, "Introduce la cantidad", "Introduce la cantidad aquÃ­:", "Continuar", "Cerrar");
 }
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {

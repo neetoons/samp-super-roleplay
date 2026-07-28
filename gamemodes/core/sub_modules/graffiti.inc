@@ -192,9 +192,9 @@ ClearTerritoryGraffitis(territoryId, territoryIndex) {
 CMD:graffiti(playerid, params[]) {
     if(!PI[playerid][ac_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
 	if(!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_GRAFFITI]) return SendNotification(playerid, "No tienes permiso para crear o borrar graffitis.");
-	if(PLAYER_TEMP[playerid][pt_LAST_TERRITORY] == INVALID_STREAMER_ID) return SendNotification(playerid, "No est�s en un territorio de tu banda.");
-	if(!IsPlayerInDynamicArea(playerid, TERRITORIES[ PLAYER_TEMP[playerid][pt_LAST_TERRITORY] ][territory_AREA])) return SendNotification(playerid, "No est�s en un territorio de tu banda.");
-	if(TERRITORIES[ PLAYER_TEMP[playerid][pt_LAST_TERRITORY] ][territory_CREW_ID] != PI[playerid][ac_CREW]) return SendNotification(playerid, "No est�s en un territorio de tu banda.");			
+	if(PLAYER_TEMP[playerid][pt_LAST_TERRITORY] == INVALID_STREAMER_ID) return SendNotification(playerid, "No estï¿½s en un territorio de tu banda.");
+	if(!IsPlayerInDynamicArea(playerid, TERRITORIES[ PLAYER_TEMP[playerid][pt_LAST_TERRITORY] ][territory_AREA])) return SendNotification(playerid, "No estï¿½s en un territorio de tu banda.");
+	if(TERRITORIES[ PLAYER_TEMP[playerid][pt_LAST_TERRITORY] ][territory_CREW_ID] != PI[playerid][ac_CREW]) return SendNotification(playerid, "No estï¿½s en un territorio de tu banda.");			
     if(ACCOUNT_INFO[playerid][ac_LEVEL] < 6) return SendNotification(playerid, "Debes ser nivel 6 o superior para usar los graffitis.");
 	
 	PLAYER_TEMP[playerid][pt_PLAYER_TERRITORY_PRO] = PLAYER_TEMP[playerid][pt_LAST_TERRITORY];
@@ -214,7 +214,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                 switch(listitem) {
                     case 0: {
                         new territoryIndex = PLAYER_TEMP[playerid][pt_PLAYER_TERRITORY_PRO];
-                        if(CountGraffitisInZone(territoryIndex) >= MAX_GRAFFITI_PER_ZONE) SendNotification(playerid, "No se pueden crear m�s graffitis en este territorio.");
+                        if(CountGraffitisInZone(territoryIndex) >= MAX_GRAFFITI_PER_ZONE) SendNotification(playerid, "No se pueden crear mï¿½s graffitis en este territorio.");
                         else {
                             new Float:pos[3], Float:angle, interior = GetPlayerInterior(playerid), world = GetPlayerVirtualWorld(playerid);
                             GetPlayerPos(playerid, pos[0], pos[1], pos[2]);
@@ -291,17 +291,17 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                     case 0: { //texto
                         PLAYER_TEMP[playerid][pt_DIALOG_RESPONDED] = false;
                         PLAYER_TEMP[playerid][pt_DIALOG_ID] = DIALOG_GRAFFITI_ETEXT_TEXT;
-                        ShowPlayerDialog(playerid, DIALOG_GRAFFITI_ETEXT_TEXT, DIALOG_STYLE_INPUT, "Graffiti", "Introduce el nuevo texto:", "Continuar", "Atr�s");
+                        ShowPlayerDialog(playerid, DIALOG_GRAFFITI_ETEXT_TEXT, DIALOG_STYLE_INPUT, "Graffiti", "Introduce el nuevo texto:", "Continuar", "Atrï¿½s");
                     }
                     case 1: { //fuente
                         PLAYER_TEMP[playerid][pt_DIALOG_RESPONDED] = false;
                         PLAYER_TEMP[playerid][pt_DIALOG_ID] = DIALOG_GRAFFITI_ETEXT_FONT;
-                        ShowPlayerDialog(playerid, DIALOG_GRAFFITI_ETEXT_FONT, DIALOG_STYLE_INPUT, "Graffiti", "Introduce la nueva fuente:", "Continuar", "Atr�s");
+                        ShowPlayerDialog(playerid, DIALOG_GRAFFITI_ETEXT_FONT, DIALOG_STYLE_INPUT, "Graffiti", "Introduce la nueva fuente:", "Continuar", "Atrï¿½s");
                     }
-                    case 2: { //tama�o
+                    case 2: { //tamaï¿½o
                         PLAYER_TEMP[playerid][pt_DIALOG_RESPONDED] = false;
                         PLAYER_TEMP[playerid][pt_DIALOG_ID] = DIALOG_GRAFFITI_ETEXT_SIZE;
-                        ShowPlayerDialog(playerid, DIALOG_GRAFFITI_ETEXT_SIZE, DIALOG_STYLE_INPUT, "Graffiti", "Introduce el nuevo tama�o de letra:", "Continuar", "Atr�s");
+                        ShowPlayerDialog(playerid, DIALOG_GRAFFITI_ETEXT_SIZE, DIALOG_STYLE_INPUT, "Graffiti", "Introduce el nuevo tamaï¿½o de letra:", "Continuar", "Atrï¿½s");
                     }
                     case 3: { //negrita
                         new info[4];
@@ -336,7 +336,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
                         PLAYER_TEMP[playerid][pt_DIALOG_RESPONDED] = false;
                         PLAYER_TEMP[playerid][pt_DIALOG_ID] = DIALOG_GRAFFITI_ETEXT_COLOR;
-                        ShowPlayerDialog(playerid, DIALOG_GRAFFITI_ETEXT_COLOR, DIALOG_STYLE_LIST, "Graffiti", string, "Continuar", "Atr�s");
+                        ShowPlayerDialog(playerid, DIALOG_GRAFFITI_ETEXT_COLOR, DIALOG_STYLE_LIST, "Graffiti", string, "Continuar", "Atrï¿½s");
                     }
                 }
             }
@@ -345,7 +345,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
         case DIALOG_GRAFFITI_ETEXT_TEXT: {
             if(response) {
                 new value[128];
-                if(sscanf(inputtext, "s[128]", value)) return SendNotification(playerid, "Valor no v�lido.");
+                if(sscanf(inputtext, "s[128]", value)) return SendNotification(playerid, "Valor no vï¿½lido.");
 
                 new info[4];
                 Streamer_GetArrayData(STREAMER_TYPE_OBJECT, PLAYER_TEMP[playerid][pt_SELECTED_GRAFFITI], E_STREAMER_EXTRA_ID, info);
@@ -372,7 +372,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
         case DIALOG_GRAFFITI_ETEXT_FONT: {
             if(response) {
                 new value[24];
-                if(sscanf(inputtext, "s[24]", value)) return SendNotification(playerid, "Valor no v�lido.");
+                if(sscanf(inputtext, "s[24]", value)) return SendNotification(playerid, "Valor no vï¿½lido.");
 
                 new info[4];
                 Streamer_GetArrayData(STREAMER_TYPE_OBJECT, PLAYER_TEMP[playerid][pt_SELECTED_GRAFFITI], E_STREAMER_EXTRA_ID, info);
@@ -399,8 +399,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
         case DIALOG_GRAFFITI_ETEXT_SIZE: {
             if(response) {
                 new value;
-                if(sscanf(inputtext, "d", value)) return SendNotification(playerid, "Valor no v�lido.");
-                if(value <= 0 || value > 200) return SendNotification(playerid, "Valor no v�lido.");
+                if(sscanf(inputtext, "d", value)) return SendNotification(playerid, "Valor no vï¿½lido.");
+                if(value <= 0 || value > 200) return SendNotification(playerid, "Valor no vï¿½lido.");
 
                 new info[4];
                 Streamer_GetArrayData(STREAMER_TYPE_OBJECT, PLAYER_TEMP[playerid][pt_SELECTED_GRAFFITI], E_STREAMER_EXTRA_ID, info);
@@ -488,7 +488,7 @@ hook OnPlayerEditDynObject(playerid, STREAMER_TAG_OBJECT:objectid, response, Flo
                 SetDynamicObjectPos(objectid, pos[0], pos[1], pos[2]);
                 SetDynamicObjectRot(objectid, rot[0], rot[1], rot[2]);
 
-                SendNotification(playerid, "Has cancelado la edici�n y el objeto a vuelto a su posici�n anterior.");
+                SendNotification(playerid, "Has cancelado la ediciï¿½n y el objeto a vuelto a su posiciï¿½n anterior.");
                 ShowDialog(playerid, DIALOG_GRAFFITI_EDIT);
             }
             case EDIT_RESPONSE_FINAL: {
@@ -498,7 +498,7 @@ hook OnPlayerEditDynObject(playerid, STREAMER_TAG_OBJECT:objectid, response, Flo
                 mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE graffiti SET x = %f, y = %f, z = %f, rx = %f, ry = %f, rz = %f WHERE id = %d;", x, y, z, rx, ry, rz, info[3]);
                 mysql_tquery(srp_db, QUERY_BUFFER);
 
-                SendNotification(playerid, "La posici�n del graffiti se ha actualizado correctamente.");
+                SendNotification(playerid, "La posiciï¿½n del graffiti se ha actualizado correctamente.");
                 ShowDialog(playerid, DIALOG_GRAFFITI_EDIT);
             }
         }
@@ -535,13 +535,13 @@ ShowEditGraffitiTextDialog(playerid) {
 
         new string[512];
         format(string, sizeof string, "\
-            Par�metro\tValor\n\
+            Parï¿½metro\tValor\n\
             Texto\t'%s'\n\
             Fuente\t'%s'\n\
-            Tama�o\t%d\n\
+            Tamaï¿½o\t%d\n\
             Negrita\t%s\n\
             Color\t{%06x}%d\n\
-        ", ginfo[graffiti_TEXT], ginfo[graffiti_FONT], ginfo[graffiti_FONT_SIZE], ginfo[graffiti_FONT_BOLD] == 0 ? "no" : "s�", ARGBToRGBA(ginfo[graffiti_FONT_COLOR]) >>> 8, ginfo[graffiti_FONT_COLOR]);
+        ", ginfo[graffiti_TEXT], ginfo[graffiti_FONT], ginfo[graffiti_FONT_SIZE], ginfo[graffiti_FONT_BOLD] == 0 ? "no" : "sï¿½", ARGBToRGBA(ginfo[graffiti_FONT_COLOR]) >>> 8, ginfo[graffiti_FONT_COLOR]);
         ShowPlayerDialog(playerid, DIALOG_GRAFFITI_TEXT_OPTIONS, DIALOG_STYLE_TABLIST_HEADERS, "Graffiti", string, "Continuar", "Cerrar");
     }
 }
