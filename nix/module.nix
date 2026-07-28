@@ -176,12 +176,6 @@ in {
       };
     };
 
-    connCookies = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "Enable connection cookies.";
-    };
-
     logTimeFormat = lib.mkOption {
       type = lib.types.str;
       default = "%d/%m/%Y %H:%M:%S";
