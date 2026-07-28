@@ -17,10 +17,7 @@
       port = cfg.port;
       stream_radius = cfg.streamDistance;
       stream_rate = cfg.streamRate;
-      cookie_reseed_time =
-        if cfg.connCookies
-        then 300000
-        else 0;
+      cookie_reseed_time = 300000;
     };
 
     max_players = cfg.maxPlayers;

@@ -86,11 +86,13 @@ stdenv.mkDerivation {
 
     mkdir -p gamemodes filterscripts
 
-    if [ -f gamemodes/srp.pwn ]; then
-      cd gamemodes
-      pawncc -Dgamemodes -i../pawno/include -i${ysi}/include -d3 -Z "-(+" "-;+" srp.pwn
-      cd ..
-    fi
+    for gm in test srp; do
+      if [ -f "gamemodes/$gm.pwn" ]; then
+        cd gamemodes
+        pawncc -Dgamemodes -i../pawno/include -i${ysi}/include -d3 -Z "-(+" "-;+" "$gm.pwn"
+        cd ..
+      fi
+    done
 
     if [ -f filterscripts/maps.pwn ]; then
       cd filterscripts
@@ -132,7 +134,9 @@ stdenv.mkDerivation {
     '') (builtins.attrNames components))}
 
     mkdir -p $BASE/gamemodes $BASE/filterscripts
-    [ -f gamemodes/srp.amx ] && cp gamemodes/srp.amx $BASE/gamemodes/
+    for f in gamemodes/*.amx; do
+      [ -f "$f" ] && cp "$f" $BASE/gamemodes/
+    done
 
     if compgen -G "filterscripts/*.amx" > /dev/null; then
       cp filterscripts/*.amx $BASE/filterscripts/
