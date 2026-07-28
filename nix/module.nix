@@ -323,7 +323,21 @@ in {
         ln -sfn ${cfg.package}/share/samp/filterscripts ${cfg.dataDir}/filterscripts
         ln -sfn ${cfg.package}/share/samp/components ${cfg.dataDir}/components
         ln -sfn ${cfg.package}/share/samp/plugins ${cfg.dataDir}/plugins
+
+        ${lib.optionalString cfg.database.enable ''
+          mysql -u root <<SQL
+            CREATE USER IF NOT EXISTS '${cfg.database.username}'@'localhost' IDENTIFIED BY '${cfg.database.password}';
+            ALTER USER '${cfg.database.username}'@'localhost' IDENTIFIED BY '${cfg.database.password}';
+            CREATE USER IF NOT EXISTS '${cfg.database.username}'@'%' IDENTIFIED BY '${cfg.database.password}';
+            ALTER USER '${cfg.database.username}'@'%' IDENTIFIED BY '${cfg.database.password}';
+            GRANT ALL PRIVILEGES ON ${cfg.database.name}.* TO '${cfg.database.username}'@'localhost';
+            GRANT ALL PRIVILEGES ON ${cfg.database.name}.* TO '${cfg.database.username}'@'%';
+            FLUSH PRIVILEGES;
+          SQL
+        ''}
       '';
+
+      path = lib.optional cfg.database.enable pkgs.mariadb;
 
       serviceConfig = {
         ExecStart = "${cfg.package}/bin/samp-server";
