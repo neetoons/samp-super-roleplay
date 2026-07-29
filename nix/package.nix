@@ -144,6 +144,11 @@ stdenv.mkDerivation {
 
     [ -d scriptfiles ] && cp -r scriptfiles $BASE/
 
+    if [ -d "${components.omp-mapandreas}/data" ]; then
+      mkdir -p $BASE/scriptfiles
+      cp ${components.omp-mapandreas}/data/SAfull.hmap $BASE/scriptfiles/SAfull.hmap
+    fi
+
     cp ${configFile} $BASE/config.json
 
     touch $BASE/components/pawncmd.cfg
