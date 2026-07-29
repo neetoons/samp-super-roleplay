@@ -1,3 +1,7 @@
+[u][b]2.0.0 (2026)[/b][/u]
+- Se parchea src/MapAndreas.hpp del componente omp-mapandreas (no el .inc de Pawn) porque el port a open.mp cambió los valores numéricos de las constantes de modo (MODE_FULL=3 en C++ vs 2 en el .inc original). El gamemode ya compila contra los valores del .inc (MODE_FULL=2), así que alinear el C++ con Pawn es más limpio que modificar el include y recompilar todo.
+- Se agrega SAfull.hmap (72MB, height-map de GTA:SA) al build, extraído del release v1.2.1 de philip1337/samp-plugin-mapandreas. El componente lo necesita en scriptfiles/ para inicializar en MODE_FULL.
+
 [u][b]1.15.04 (actual) (13/08/2017 13:09)[/b][/u]
 - Otros.
 
