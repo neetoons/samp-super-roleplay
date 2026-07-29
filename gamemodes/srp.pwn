@@ -144,7 +144,6 @@ L1:
 #include "core/misc/macros_h"
 #include "core/db/db_h"
 
-
 // Admin
 #include "core/administration/admin_levels_h"
 
@@ -158,7 +157,6 @@ L1:
 
 //Bank
 #include "core/bank/atm_h"
-
 
 // Player
 #include "core/player/player_h"
@@ -249,7 +247,6 @@ Y88b  d88P 888  888  888 Y88b 888      X88
 #include "core/dialog/showDialog" // se tiene que modular
 #include "core/dialog/response" // se tiene que modular
 
-
 /*
 
 888b     d888               888          888
@@ -260,7 +257,6 @@ Y88b  d88P 888  888  888 Y88b 888      X88
 888  Y8P  888 888  888 888  888 888  888 888 88888888 "Y8888b.
 888   "   888 Y88..88P Y88b 888 Y88b 888 888 Y8b.          X88
 888       888  "Y88P"   "Y88888  "Y88888 888  "Y8888   88888P'
-
 
 */
 
@@ -314,7 +310,6 @@ public OnGameModeInit()
     SendRconCommand("sleep 1");
     SetTimer("minconnecttime", 60000, 0);
     SetTimer("BajarSegundos", 1000, true );
-
 
      for ( new i; i < sizeof MinaInfo; i++ )
         {

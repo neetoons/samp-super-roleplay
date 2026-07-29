@@ -77,8 +77,10 @@
               self.packages.${system}.ysi
             ];
             shellHook = ''
+              export PATH="$PWD/tools:$PATH"
               echo "SA-MP Super Roleplay dev shell"
               echo "Compile: cd gamemodes && pawncc -Dgamemodes -i../pawno/include -i${self.packages.${system}.ysi}/include -d3 -Z \"-(+\" \"-;+\" srp.pwn"
+              echo "Format:  format-pawn <file.pwn> [file.inc ...]"
             '';
           };
         }

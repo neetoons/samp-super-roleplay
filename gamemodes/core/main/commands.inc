@@ -17,9 +17,6 @@
 #endif
 #define commands_included
 
-
-
-
 CMD:me(playerid, params[])
 {
     if (isnull(params)) return SendNotification(playerid, "~r~Modo de uso: ~w~/me [TEXTO]");
@@ -27,6 +24,7 @@ CMD:me(playerid, params[])
     SendPlayerAction(playerid, params);
     return 1;
 }
+
 alias:me("y")
 
 CMD:experiencia(playerid, params[])
@@ -35,6 +33,7 @@ CMD:experiencia(playerid, params[])
     ShowPlayerSkills(playerid, playerid);
     return 1;
 }
+
 alias:experiencia("exp", "skills")
 
 CMD:est(playerid, params[])
@@ -42,6 +41,7 @@ CMD:est(playerid, params[])
     ShowPlayerStats(playerid, playerid);
     return 1;
 }
+
 alias:est("estadisticas", "cuenta")
 
 CMD:web(playerid, params[])
@@ -74,18 +74,40 @@ CMD:ayuda(playerid, params[])
 {
     switch (YHash(params, false))
     {
-        case _I<general>: ShowDialog(playerid, DIALOG_HELP_GENERAL);
-        case _I<informacion>: ShowDialog(playerid, DIALOG_HELP_INFO);
-        case _I<personaje>: ShowDialog(playerid, DIALOG_HELP_CHARACTER);
-        case _I<propiedades>: ShowDialog(playerid, DIALOG_HELP_PROPERTIES);
-        case _I<reportar>: ShowDialog(playerid, DIALOG_HELP_REPORT);
-        case _I<trabajos>: ShowDialog(playerid, DIALOG_HELP_WORKS);
-        case _I<vehiculos>: ShowDialog(playerid, DIALOG_HELP_VEHICLES);
-        case _I<bandas>: ShowDialog(playerid, DIALOG_HELP_CREWS);
-        case _I<vip>: ShowDialog(playerid, DIALOG_HELP_SU);
-        case _I<verificacion>: ShowDialog(playerid, DIALOG_HELP_SECURE_LOGIN);
+        case _I<general>: {
+            ShowDialog(playerid, DIALOG_HELP_GENERAL);
+        }
+        case _I<informacion>: {
+            ShowDialog(playerid, DIALOG_HELP_INFO);
+        }
+        case _I<personaje>: {
+            ShowDialog(playerid, DIALOG_HELP_CHARACTER);
+        }
+        case _I<propiedades>: {
+            ShowDialog(playerid, DIALOG_HELP_PROPERTIES);
+        }
+        case _I<reportar>: {
+            ShowDialog(playerid, DIALOG_HELP_REPORT);
+        }
+        case _I<trabajos>: {
+            ShowDialog(playerid, DIALOG_HELP_WORKS);
+        }
+        case _I<vehiculos>: {
+            ShowDialog(playerid, DIALOG_HELP_VEHICLES);
+        }
+        case _I<bandas>: {
+            ShowDialog(playerid, DIALOG_HELP_CREWS);
+        }
+        case _I<vip>: {
+            ShowDialog(playerid, DIALOG_HELP_SU);
+        }
+        case _I<verificacion>: {
+            ShowDialog(playerid, DIALOG_HELP_SECURE_LOGIN);
+        }
 
-        default: ShowDialog(playerid, DIALOG_HELP);
+        default: {
+            ShowDialog(playerid, DIALOG_HELP);
+        }
     }
     return 1;
 }
@@ -159,10 +181,18 @@ CMD:pedir(playerid, params[])
 
     switch (Fast_Food_Positions[index][fast_food_INTERIOR_TYPE])
     {
-        case INTERIOR_BURGER_SHOT: ShowDialog(playerid, DIALOG_FOOD_BURGER);
-        case INTERIOR_PIZZA: ShowDialog(playerid, DIALOG_FOOD_PIZZA);
-        case INTERIOR_CLUCKIN_BELL: ShowDialog(playerid, DIALOG_FOOD_CLUCKIN);
-        case -1: ShowDialog(playerid, DIALOG_FOOD_BURGER);
+        case INTERIOR_BURGER_SHOT: {
+            ShowDialog(playerid, DIALOG_FOOD_BURGER);
+        }
+        case INTERIOR_PIZZA: {
+            ShowDialog(playerid, DIALOG_FOOD_PIZZA);
+        }
+        case INTERIOR_CLUCKIN_BELL: {
+            ShowDialog(playerid, DIALOG_FOOD_CLUCKIN);
+        }
+        case -1: {
+            ShowDialog(playerid, DIALOG_FOOD_BURGER);
+        }
     }
     return 1;
 }
@@ -303,6 +333,7 @@ CMD:pass(playerid, params[])
     ShowDialog(playerid, DIALOG_CHANGE_PASSWORD);
     return 1;
 }
+
 alias:pass("contra", "cpass")
 
 CMD:gcp(playerid, params[])
@@ -338,6 +369,7 @@ CMD:movil(playerid, params[])
     ShowDialog(playerid, DIALOG_PHONE);
     return 1;
 }
+
 alias:movil("celular", "telefono", "tlf")
 
 CMD:guia(playerid, params[])
@@ -503,9 +535,10 @@ HandleStaticPhoneNumbers(playerid, call_number)
 {
     switch (call_number)
     {
-        case 911:
+        case 911:{
         {
-            if (ACCOUNT_INFO[playerid][ac_LEVEL] < 2) return SendNotification(playerid, "Debes ser al menos nivel 2 para llamar a la policía.");
+            if (ACCOUNT_INFO[playerid][ac_LEVEL] < 2) return SendNotification(playerid,
+        }"Debes ser al menos nivel 2 para llamar a la policía.");
             PLAYER_TEMP[playerid][pt_PLAYER_IN_CALL] = true;
             PLAYER_TEMP[playerid][pt_POLICE_CALL_NAME] = true;
             PLAYER_TEMP[playerid][pt_POLICE_CALL_DESCRIPTION] = false;
@@ -530,19 +563,22 @@ HandleStaticPhoneNumbers(playerid, call_number)
             }
             return 1;
         }
-        case 6740:
+        case 6740:{
         {
-            SendClientMessage(playerid, -1, "{"#SILVER_COLOR"}No vuelvas a llamar al banco, cuidado.");
+            SendClientMessage(playerid, -1,
+        }"{"#SILVER_COLOR"}No vuelvas a llamar al banco, cuidado.");
             return 1;
         }
-        case 38350:
+        case 38350:{
         {
-            SendClientMessage(playerid, -1, "{"#SILVER_COLOR"}Aseguradora que asegura tus vehículos de mierda.");
+            SendClientMessage(playerid, -1,
+        }"{"#SILVER_COLOR"}Aseguradora que asegura tus vehículos de mierda.");
             return 1;
         }
-        case 666:
+        case 666:{
         {
-            SendClientMessage(playerid, -1, "{"#SILVER_COLOR"}Mirar a las estrellas es mirar al pasado, no mires.");
+            SendClientMessage(playerid, -1,
+        }"{"#SILVER_COLOR"}Mirar a las estrellas es mirar al pasado, no mires.");
             return 1;
         }
     }
@@ -720,22 +756,27 @@ CMD:colgar(playerid, params[])
 
     switch (PLAYER_TEMP[playerid][pt_PLAYER_PHONE_CALL_STATE])
     {
-        case CALL_STATE_WAITING_RESPONSE:
+        case CALL_STATE_WAITING_RESPONSE:{
         {
             EndPhoneCall(playerid);
-            SendNotification(playerid, "Colgaste.");
+            SendNotification(playerid,
+        }"Colgaste.");
         }
-        case CALL_STATE_INCOMING_CALL:
+        case CALL_STATE_INCOMING_CALL:{
         {
             EndPhoneCall(playerid);
-            SendNotification(playerid, "No has respondido la llamada.");
+            SendNotification(playerid,
+        }"No has respondido la llamada.");
         }
-        case CALL_STATE_ESTABLISHED:
+        case CALL_STATE_ESTABLISHED:{
         {
             EndPhoneCall(playerid);
-            SendNotification(playerid, "~r~Llamada finalizada~w~.");
+            SendNotification(playerid,
+        }"~r~Llamada finalizada~w~.");
         }
-        default: SendFormatNotification(playerid, "No estás en ninguna llamada.");
+        default: {
+            SendFormatNotification(playerid,
+        }"No estás en ninguna llamada.");
     }
     return 1;
 }
@@ -745,13 +786,13 @@ CMD:panel(playerid, params[])
     ShowDialog(playerid, DIALOG_PLAYER_CONFIG);
     return 1;
 }
+
 alias:panel("config", "configuracion", "ajustes")
 
 CMD:comprarcasa(playerid, params[])
 {
     if (PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] == -1) return SendNotification(playerid, "No estás en el lugar adecuado.");
     if (ENTER_EXIT[ PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] ][ee_INTERIOR_TYPE] == INTERIOR_NO_INFO) return SendNotification(playerid, "No estás en el lugar adecuado.");
-
 
     new site_index = GetBuyPropertySiteIndexByIntTyp(ENTER_EXIT[ PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] ][ee_INTERIOR_TYPE]);
     if (site_index == -1) return SendNotification(playerid, "No estás en el lugar adecuado.");
@@ -809,7 +850,6 @@ CMD:banco(playerid, params[])
 {
     if (PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] == -1) return SendNotification(playerid, "No estás en el lugar adecuado.");
     if (ENTER_EXIT[ PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] ][ee_INTERIOR_TYPE] == INTERIOR_NO_INFO) return SendNotification(playerid, "No estás en el lugar adecuado.");
-
 
     new index = GetBankLocalIndexByIntType(ENTER_EXIT[ PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] ][ee_INTERIOR_TYPE]);
     if (index == -1) return SendNotification(playerid, "No estás en el lugar adecuado.");
@@ -874,12 +914,13 @@ CMD:dar(playerid, params[])
 
     switch (YHash(option, false))
     {
-        case _I<dinero>:
+        case _I<dinero>:{
         {
             if (gettime() < PLAYER_TEMP[playerid][pt_LAST_GIVE_MONEY_TIME] + TIME_BETWEEN_GIVE_CASH)
             {
                 new time = TIME_BETWEEN_GIVE_CASH - (gettime() - PLAYER_TEMP[playerid][pt_LAST_GIVE_MONEY_TIME]);
-                SendFormatNotification(playerid, "Debes de esperar %s minutos para volver a dar dinero.", TimeConvert(time));
+                SendFormatNotification(playerid,
+        }"Debes de esperar %s minutos para volver a dar dinero.", TimeConvert(time));
                 return 1;
             }
 
@@ -897,9 +938,10 @@ CMD:dar(playerid, params[])
                 PLAYER_TEMP[playerid][pt_LAST_GIVE_MONEY_TIME] = gettime();
             }
         }
-        case _I<alimento>:
+        case _I<alimento>:{
         {
-            if (extra < 1 || extra > MAX_PLAYER_POCKET_OBJECTS) return SendNotification(playerid, "~r~Modo de uso: ~w~/dar alimento [ID o Nombre] [Slot /alimentos]");
+            if (extra < 1 || extra > MAX_PLAYER_POCKET_OBJECTS) return SendNotification(playerid,
+        }"~r~Modo de uso: ~w~/dar alimento [ID o Nombre] [Slot /alimentos]");
 
             extra--;
 
@@ -919,9 +961,10 @@ CMD:dar(playerid, params[])
 
             TransferPlayerPocketObject(playerid, extra, to_playerid, to_player_slot);
         }
-        case _I<medicamentos>:
+        case _I<medicamentos>:{
         {
-            if (extra <= 0 || extra > 10000000) return SendNotification(playerid, "Cantidad incorrecta.");
+            if (extra <= 0 || extra > 10000000) return SendNotification(playerid,
+        }"Cantidad incorrecta.");
             if (extra > PI[playerid][ac_MEDICINE]) return SendNotification(playerid, "No tienes esa cantidad.");
 
             PI[playerid][ac_MEDICINE] -= extra;
@@ -934,9 +977,10 @@ CMD:dar(playerid, params[])
             format(action, sizeof action, "le da algo a %s.", PLAYER_TEMP[to_playerid][pt_RP_NAME]);
             Auto_SendPlayerAction(playerid, action);
         }
-        case _I<marihuana>:
+        case _I<marihuana>:{
         {
-            if (extra <= 0 || extra > 10000000) return SendNotification(playerid, "Cantidad incorrecta.");
+            if (extra <= 0 || extra > 10000000) return SendNotification(playerid,
+        }"Cantidad incorrecta.");
             if (extra > PI[playerid][ac_CANNABIS]) return SendNotification(playerid, "No tienes esa cantidad.");
 
             PI[playerid][ac_CANNABIS] -= extra;
@@ -949,9 +993,10 @@ CMD:dar(playerid, params[])
             format(action, sizeof action, "le da algo a %s.", PLAYER_TEMP[to_playerid][pt_RP_NAME]);
             Auto_SendPlayerAction(playerid, action);
         }
-        case _I<crack>:
+        case _I<crack>:{
         {
-            if (extra <= 0 || extra > 10000000) return SendNotification(playerid, "Cantidad incorrecta.");
+            if (extra <= 0 || extra > 10000000) return SendNotification(playerid,
+        }"Cantidad incorrecta.");
             if (extra > PI[playerid][ac_CRACK]) return SendNotification(playerid, "No tienes esa cantidad.");
 
             PI[playerid][ac_CRACK] -= extra;
@@ -964,9 +1009,10 @@ CMD:dar(playerid, params[])
             format(action, sizeof action, "le da algo a %s.", PLAYER_TEMP[to_playerid][pt_RP_NAME]);
             Auto_SendPlayerAction(playerid, action);
         }
-        case _I<arma>:
+        case _I<arma>:{
         {
-            if (PLAYER_WORKS[playerid][WORK_POLICE][pwork_SET]) return SendNotification(playerid, "Los policías no pueden dar armas.");
+            if (PLAYER_WORKS[playerid][WORK_POLICE][pwork_SET]) return SendNotification(playerid,
+        }"Los policías no pueden dar armas.");
             if (extra < 0 || extra >= sizeof PLAYER_WEAPONS[]) return SendNotification(playerid, "~r~Modo de uso: ~w~/dar arma [ID o Nombre] [Slot /armas]");
 
             if (!PLAYER_WEAPONS[playerid][extra][player_weapon_VALID]) return SendNotification(playerid, "No tienes nigún arma en ese slot.");
@@ -988,9 +1034,10 @@ CMD:dar(playerid, params[])
 
             TransferPlayerWeapon(playerid, extra, to_playerid);
         }
-        case _I<kit>:
+        case _I<kit>:{
         {
-            if (extra <= 0 || extra > 10000000) return SendNotification(playerid, "Cantidad incorrecta.");
+            if (extra <= 0 || extra > 10000000) return SendNotification(playerid,
+        }"Cantidad incorrecta.");
             if (extra > PI[playerid][ac_MECHANIC_KITS]) return SendNotification(playerid, "No tienes esa cantidad.");
 
             PI[playerid][ac_MECHANIC_KITS] -= extra;
@@ -1003,9 +1050,10 @@ CMD:dar(playerid, params[])
             format(action, sizeof action, "le da algo a %s.", PLAYER_TEMP[to_playerid][pt_RP_NAME]);
             Auto_SendPlayerAction(playerid, action);
         }
-        case _I<botiquin>:
+        case _I<botiquin>:{
         {
-            if (extra <= 0 || extra > 10000000) return SendNotification(playerid, "Cantidad incorrecta.");
+            if (extra <= 0 || extra > 10000000) return SendNotification(playerid,
+        }"Cantidad incorrecta.");
             if (extra > PI[playerid][ac_MEDICAL_KITS]) return SendNotification(playerid, "No tienes esa cantidad.");
 
             PI[playerid][ac_MEDICAL_KITS] -= extra;
@@ -1018,7 +1066,9 @@ CMD:dar(playerid, params[])
             format(action, sizeof action, "le da algo a %s.", PLAYER_TEMP[to_playerid][pt_RP_NAME]);
             Auto_SendPlayerAction(playerid, action);
         }
-        default: SendNotification(playerid, "Error en los parámetros, utilice ~r~/man dar~w~.");
+        default: {
+            SendNotification(playerid,
+        }"Error en los parámetros, utilice ~r~/man dar~w~.");
     }
     return 1;
 }
@@ -1051,9 +1101,10 @@ CMD:vender(playerid, params[])
 
     switch (YHash(option, false))
     {
-        case _I<alimento>:
+        case _I<alimento>:{
         {
-            if (PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] < 1 || PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] > MAX_PLAYER_POCKET_OBJECTS) return SendNotification(playerid, "~r~Modo de uso: ~w~/vender alimento [ID o Nombre] [Slot /alimentos] [precio]");
+            if (PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] < 1 || PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] > MAX_PLAYER_POCKET_OBJECTS) return SendNotification(playerid,
+        }"~r~Modo de uso: ~w~/vender alimento [ID o Nombre] [Slot /alimentos] [precio]");
             PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] --;
 
             if (!PLAYER_POCKET[playerid][ PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] ][player_pocket_VALID]) return SendNotification(playerid, "No tienes nada en ese slot.");
@@ -1061,33 +1112,37 @@ CMD:vender(playerid, params[])
             SendFormatNotification(playerid, "Le has ofrecido una venta a ~g~%s~w~, espera a ver si la acepta.", PLAYER_TEMP[to_playerid][pt_RP_NAME]);
             ShowDialog(to_playerid, DIALOG_TRICKS_FOOD);
         }
-        case _I<medicamentos>:
+        case _I<medicamentos>:{
         {
-            if (PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] <= 0 || PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] > 10000000) return SendNotification(playerid, "Cantidad incorrecta.");
+            if (PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] <= 0 || PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] > 10000000) return SendNotification(playerid,
+        }"Cantidad incorrecta.");
             if (PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] > PI[playerid][ac_MEDICINE]) return SendNotification(playerid, "No tienes esa cantidad.");
 
             SendFormatNotification(playerid, "Le has ofrecido una venta a ~g~%s~w~, espera a ver si la acepta.", PLAYER_TEMP[to_playerid][pt_RP_NAME]);
             ShowDialog(to_playerid, DIALOG_TRICKS_MEDICINE);
         }
-        case _I<marihuana>:
+        case _I<marihuana>:{
         {
-            if (PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] <= 0 || PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] > 10000000) return SendNotification(playerid, "Cantidad incorrecta.");
+            if (PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] <= 0 || PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] > 10000000) return SendNotification(playerid,
+        }"Cantidad incorrecta.");
             if (PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] > PI[playerid][ac_CANNABIS]) return SendNotification(playerid, "No tienes esa cantidad.");
 
             SendFormatNotification(playerid, "Le has ofrecido una venta a ~g~%s~w~, espera a ver si la acepta.", PLAYER_TEMP[to_playerid][pt_RP_NAME]);
             ShowDialog(to_playerid, DIALOG_TRICKS_CANNABIS);
         }
-        case _I<crack>:
+        case _I<crack>:{
         {
-            if (PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] <= 0 || PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] > 10000000) return SendNotification(playerid, "Cantidad incorrecta.");
+            if (PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] <= 0 || PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] > 10000000) return SendNotification(playerid,
+        }"Cantidad incorrecta.");
             if (PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] > PI[playerid][ac_CRACK]) return SendNotification(playerid, "No tienes esa cantidad.");
 
             SendFormatNotification(playerid, "Le has ofrecido una venta a ~g~%s~w~, espera a ver si la acepta.", PLAYER_TEMP[to_playerid][pt_RP_NAME]);
             ShowDialog(to_playerid, DIALOG_TRICKS_CRACK);
         }
-        case _I<arma>:
+        case _I<arma>:{
         {
-            if (PLAYER_WORKS[playerid][WORK_POLICE][pwork_SET]) return SendNotification(playerid, "Los policías no pueden vender armas.");
+            if (PLAYER_WORKS[playerid][WORK_POLICE][pwork_SET]) return SendNotification(playerid,
+        }"Los policías no pueden vender armas.");
             if (PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] < 0 || PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] >= sizeof PLAYER_WEAPONS[]) return SendNotification(playerid, "Error en slot de /armas.");
 
             if (!PLAYER_WEAPONS[playerid][ PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] ][player_weapon_VALID]) return SendNotification(playerid, "No tienes nigún arma en ese slot.");
@@ -1097,15 +1152,18 @@ CMD:vender(playerid, params[])
             SendFormatNotification(playerid, "Le has ofrecido una venta a ~g~%s~w~, espera a ver si la acepta.", PLAYER_TEMP[to_playerid][pt_RP_NAME]);
             ShowDialog(to_playerid, DIALOG_TRICKS_WEAPON);
         }
-        case _I<coins>:
+        case _I<coins>:{
         {
-            if (PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] <= 0 || PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] > 10000000) return SendNotification(playerid, "Cantidad incorrecta.");
+            if (PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] <= 0 || PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] > 10000000) return SendNotification(playerid,
+        }"Cantidad incorrecta.");
             if (PLAYER_TEMP[to_playerid][pt_TRICK_SELLER_EXTRA] > PI[playerid][ac_COINS]) return SendNotification(playerid, "No tienes esa cantidad de "SERVER_COIN".");
 
             SendFormatNotification(playerid, "Le has ofrecido una venta a ~g~%s~w~, espera a ver si la acepta.", PLAYER_TEMP[to_playerid][pt_RP_NAME]);
             ShowDialog(to_playerid, DIALOG_TRICKS_SU);
         }
-        default: SendNotification(playerid, "Error en los parámetros, utilice ~r~/man vender~w~.");
+        default: {
+            SendNotification(playerid,
+        }"Error en los parámetros, utilice ~r~/man vender~w~.");
     }
     return 1;
 }
@@ -1143,9 +1201,10 @@ CMD:consumir(playerid, params[])
     {
         switch (YHash(option, false))
         {
-            case _I<medicamento>:
+            case _I<medicamento>:{
             {
-                if (PLAYER_TEMP[playerid][pt_COOLDOWN_MEDICINE] > gettime()) return SendFormatNotification(playerid, "Debes esperar %d segundos para volver a poder consumir medicamentos", PLAYER_TEMP[playerid][pt_COOLDOWN_MEDICINE] - gettime());
+                if (PLAYER_TEMP[playerid][pt_COOLDOWN_MEDICINE] > gettime()) return SendFormatNotification(playerid,
+            }"Debes esperar %d segundos para volver a poder consumir medicamentos", PLAYER_TEMP[playerid][pt_COOLDOWN_MEDICINE] - gettime());
 
                 if (PI[playerid][ac_MEDICINE] <= 0) return SendNotification(playerid, "No tienes medicamentos.");
 
@@ -1154,9 +1213,10 @@ CMD:consumir(playerid, params[])
                 GivePlayerHealthEx(playerid, 25.0);
                 Auto_SendPlayerAction(playerid, "se toma un medicamento.");
             }
-            case _I<marihuana>:
+            case _I<marihuana>:{
             {
-                if (PLAYER_TEMP[playerid][pt_COOLDOWN_WEED] > gettime()) return SendFormatNotification(playerid, "Debes esperar %d segundos para volver a poder consumir marihuana", PLAYER_TEMP[playerid][pt_COOLDOWN_WEED] - gettime());
+                if (PLAYER_TEMP[playerid][pt_COOLDOWN_WEED] > gettime()) return SendFormatNotification(playerid,
+            }"Debes esperar %d segundos para volver a poder consumir marihuana", PLAYER_TEMP[playerid][pt_COOLDOWN_WEED] - gettime());
 
                 if (PI[playerid][ac_CANNABIS] <= 0) return SendNotification(playerid, "No tienes marihuana.");
 
@@ -1167,9 +1227,10 @@ CMD:consumir(playerid, params[])
                 Auto_SendPlayerAction(playerid, "consume marihuana.");
                 GivePlayerDrunkLevel(playerid, 1000);
             }
-            case _I<crack>:
+            case _I<crack>:{
             {
-                if (PLAYER_TEMP[playerid][pt_COOLDOWN_CRACK] > gettime()) return SendFormatNotification(playerid, "Debes esperar %d segundos para volver a poder consumir crack", PLAYER_TEMP[playerid][pt_COOLDOWN_CRACK] - gettime());
+                if (PLAYER_TEMP[playerid][pt_COOLDOWN_CRACK] > gettime()) return SendFormatNotification(playerid,
+            }"Debes esperar %d segundos para volver a poder consumir crack", PLAYER_TEMP[playerid][pt_COOLDOWN_CRACK] - gettime());
 
                 if (PI[playerid][ac_CRACK] <= 0) return SendNotification(playerid, "No tienes crack.");
 
@@ -1179,9 +1240,13 @@ CMD:consumir(playerid, params[])
                 Auto_SendPlayerAction(playerid, "consume crack.");
                 GivePlayerDrunkLevel(playerid, 2000);
             }
-            case _I<alimento>: SendFormatNotification(playerid, "~r~Modo de uso: ~w~/consumir alimento [SLOT 1-%d]", MAX_PLAYER_POCKET_OBJECTS);
+            case _I<alimento>: {
+                SendFormatNotification(playerid,
+            }"~r~Modo de uso: ~w~/consumir alimento [SLOT 1-%d]", MAX_PLAYER_POCKET_OBJECTS);
 
-            default: SendNotification(playerid, "~r~Modo de uso: ~w~/consumir [medicamento - marihuana - crack - alimento]");
+            default: {
+                SendNotification(playerid,
+            }"~r~Modo de uso: ~w~/consumir [medicamento - marihuana - crack - alimento]");
         }
     }
     else SendNotification(playerid, "~r~Modo de uso: ~w~/consumir [medicamento - marihuana - crack - alimento]");
@@ -1192,7 +1257,7 @@ CMD:man(playerid, params[])
 {
     switch (YHash(params, false))
     {
-        case _I<dar>:
+        case _I<dar>:{
         {
             ShowPlayerDialog
             (
@@ -1200,7 +1265,7 @@ CMD:man(playerid, params[])
                 DIALOG_INFO,
                 DIALOG_STYLE_MSGBOX,
 
-                    "Manual",
+        }"Manual",
                         "\
                             Comando: dar\n\
                             Sintaxis: dar <opcion> <playerid o nombre> <extra>\n\
@@ -1224,7 +1289,7 @@ CMD:man(playerid, params[])
             );
             return 1;
         }
-        case _I<tirar>:
+        case _I<tirar>:{
         {
             ShowPlayerDialog
             (
@@ -1232,7 +1297,7 @@ CMD:man(playerid, params[])
                 DIALOG_INFO,
                 DIALOG_STYLE_MSGBOX,
 
-                    "Manual",
+        }"Manual",
                         "\
                             Comando: tirar\n\
                             Sintaxis: tirar <opcion> <extra>\n\
@@ -1255,7 +1320,7 @@ CMD:man(playerid, params[])
             );
             return 1;
         }
-        case _I<vender>:
+        case _I<vender>:{
         {
             ShowPlayerDialog
             (
@@ -1263,7 +1328,7 @@ CMD:man(playerid, params[])
                 DIALOG_INFO,
                 DIALOG_STYLE_MSGBOX,
 
-                    "Manual",
+        }"Manual",
                         "\
                             Comando: vender\n\
                             Sintaxis: vender <opcion> <playerid o nombre> <extra> <precio>\n\
@@ -1286,7 +1351,7 @@ CMD:man(playerid, params[])
             );
             return 1;
         }
-        case _I<guardar>:
+        case _I<guardar>:{
         {
             ShowPlayerDialog
             (
@@ -1294,7 +1359,7 @@ CMD:man(playerid, params[])
                 DIALOG_INFO,
                 DIALOG_STYLE_MSGBOX,
 
-                    "Manual",
+        }"Manual",
                         "\
                             Comando: guardar\n\
                             Sintaxis: dar <opcion> <extra>\n\
@@ -1315,7 +1380,9 @@ CMD:man(playerid, params[])
             );
             return 1;
         }
-        default: SendNotification(playerid, "~r~Modo de uso: ~w~/man [dar-tirar-vender-guardar]");
+        default: {
+            SendNotification(playerid,
+        }"~r~Modo de uso: ~w~/man [dar-tirar-vender-guardar]");
     }
     return 1;
 }
@@ -1328,9 +1395,10 @@ CMD:tirar(playerid, params[])
 
     switch (YHash(option, false))
     {
-        case _I<dinero>:
+        case _I<dinero>:{
         {
-            if (extra < 0 || extra > PI[playerid][ac_CASH]) return SendNotification(playerid, "Cantidad de dinero incorrecta.");
+            if (extra < 0 || extra > PI[playerid][ac_CASH]) return SendNotification(playerid,
+        }"Cantidad de dinero incorrecta.");
 
             if (GivePlayerCash(playerid, -extra, true, true))
 {
@@ -1339,9 +1407,10 @@ CMD:tirar(playerid, params[])
             }
             return 1;
         }
-        case _I<alimento>:
+        case _I<alimento>:{
         {
-            if (extra < 1 || extra > MAX_PLAYER_POCKET_OBJECTS) return SendFormatNotification(playerid, "~r~Modo de uso: ~w~/tirar alimento {FFFFFF}[SLOT 1-%d]", MAX_PLAYER_POCKET_OBJECTS);
+            if (extra < 1 || extra > MAX_PLAYER_POCKET_OBJECTS) return SendFormatNotification(playerid,
+        }"~r~Modo de uso: ~w~/tirar alimento {FFFFFF}[SLOT 1-%d]", MAX_PLAYER_POCKET_OBJECTS);
 
             extra--;
 
@@ -1351,9 +1420,10 @@ CMD:tirar(playerid, params[])
             DeletePlayerPocketObject(playerid, extra);
             return 1;
         }
-        case _I<medicamentos>:
+        case _I<medicamentos>:{
         {
-            if (extra <= 0 || extra > 10000000) return SendNotification(playerid, "Cantidad incorrecta.");
+            if (extra <= 0 || extra > 10000000) return SendNotification(playerid,
+        }"Cantidad incorrecta.");
             if (extra > PI[playerid][ac_MEDICINE]) return SendNotification(playerid, "No tienes esa cantidad.");
 
             PI[playerid][ac_MEDICINE] -= extra;
@@ -1361,9 +1431,10 @@ CMD:tirar(playerid, params[])
             SendFormatNotification(playerid, "Has tirado ~g~%d gramos~w~ de medicamentos.", extra);
             return 1;
         }
-        case _I<marihuana>:
+        case _I<marihuana>:{
         {
-            if (extra <= 0 || extra > 10000000) return SendNotification(playerid, "Cantidad incorrecta.");
+            if (extra <= 0 || extra > 10000000) return SendNotification(playerid,
+        }"Cantidad incorrecta.");
             if (extra > PI[playerid][ac_CANNABIS]) return SendNotification(playerid, "No tienes esa cantidad.");
 
             PI[playerid][ac_CANNABIS] -= extra;
@@ -1371,9 +1442,10 @@ CMD:tirar(playerid, params[])
             SendFormatNotification(playerid, "Has tirado ~g~%d gramos~w~ de marihuana.", extra);
             return 1;
         }
-        case _I<crack>:
+        case _I<crack>:{
         {
-            if (extra <= 0 || extra > 10000000) return SendNotification(playerid, "Cantidad incorrecta.");
+            if (extra <= 0 || extra > 10000000) return SendNotification(playerid,
+        }"Cantidad incorrecta.");
             if (extra > PI[playerid][ac_CRACK]) return SendNotification(playerid, "No tienes esa cantidad.");
 
             PI[playerid][ac_CRACK] -= extra;
@@ -1381,9 +1453,10 @@ CMD:tirar(playerid, params[])
             SendFormatNotification(playerid, "Has tirado ~g~%d gramos~w~ de crack.", extra);
             return 1;
         }
-        case _I<arma>:
+        case _I<arma>:{
         {
-            if (extra < 0 || extra >= sizeof PLAYER_WEAPONS[]) return SendNotification(playerid, "~r~Modo de uso: ~w~/tirar arma [slot /armas]");
+            if (extra < 0 || extra >= sizeof PLAYER_WEAPONS[]) return SendNotification(playerid,
+        }"~r~Modo de uso: ~w~/tirar arma [slot /armas]");
 
             if (!PLAYER_WEAPONS[playerid][extra][player_weapon_VALID]) return SendNotification(playerid, "No tienes nigún arma en ese slot.");
 
@@ -1396,9 +1469,10 @@ CMD:tirar(playerid, params[])
             RemovePlayerSlotWeapon(playerid, extra, true);
             return 1;
         }
-        case _I<kit>:
+        case _I<kit>:{
         {
-            if (extra <= 0 || extra > 10000000) return SendNotification(playerid, "Cantidad incorrecta.");
+            if (extra <= 0 || extra > 10000000) return SendNotification(playerid,
+        }"Cantidad incorrecta.");
             if (extra > PI[playerid][ac_MECHANIC_KITS]) return SendNotification(playerid, "No tienes esa cantidad.");
 
             PI[playerid][ac_MECHANIC_KITS] -= extra;
@@ -1406,9 +1480,10 @@ CMD:tirar(playerid, params[])
             SendFormatNotification(playerid, "Has tirado ~g~%d ~w~kits de reparación.", extra);
             return 1;
         }
-        case _I<botiquin>:
+        case _I<botiquin>:{
         {
-            if (extra <= 0 || extra > 10000000) return SendNotification(playerid, "Cantidad incorrecta.");
+            if (extra <= 0 || extra > 10000000) return SendNotification(playerid,
+        }"Cantidad incorrecta.");
             if (extra > PI[playerid][ac_MEDICAL_KITS]) return SendNotification(playerid, "No tienes esa cantidad.");
 
             PI[playerid][ac_MEDICAL_KITS] -= extra;
@@ -1416,13 +1491,12 @@ CMD:tirar(playerid, params[])
             SendFormatNotification(playerid, "Has tirado ~g~%d ~w~botiquines.", extra);
             return 1;
         }
-        default: SendNotification(playerid, "Error en los parámetros, utilice ~r~/man tirar~w~.");
+        default: {
+            SendNotification(playerid,
+        }"Error en los parámetros, utilice ~r~/man tirar~w~.");
     }
     return 1;
 }
-
-
-
 
 CMD:pvender(playerid, params[])
 {
@@ -1490,7 +1564,11 @@ CMD:armario(playerid, params[])
 
         new Float:z_pos = PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_Z];
         if (PROPERTY_INFO[index][property_DIS_DEFAULT_INTERIOR]) z_pos += PROPERTY_EMPTY_INTERIOR_Z_OFFSET;
-        if (IsPlayerInRangeOfPoint(playerid, 1.0, PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_X], PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_Y], z_pos))
+        if (IsPlayerInRangeOfPoint(playerid,
+            1.0,
+            PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_X],
+            PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_Y],
+            z_pos))
         {
             PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY] = index;
             ShowDialog(playerid, DIALOG_PROPERTY_CLOSET);
@@ -1531,7 +1609,11 @@ CMD:cargar(playerid, params[])
 {
         for (new i = 0; i != sizeof LoadTrucksPoints; i++)
         {
-            if (IsPlayerInRangeOfPoint(playerid, 3.0, LoadTrucksPoints[i][0], LoadTrucksPoints[i][1], LoadTrucksPoints[i][2]))
+            if (IsPlayerInRangeOfPoint(playerid,
+                3.0,
+                LoadTrucksPoints[i][0],
+                LoadTrucksPoints[i][1],
+                LoadTrucksPoints[i][2]))
             {
                 new Float:angle;
                 GetVehicleZAngle(vehicleid, angle);
@@ -1566,8 +1648,6 @@ CMD:cargar(playerid, params[])
     return 1;
 }
 
-
-
 CMD:gasolina(playerid, params[])
 {
     if (GetPlayerInterior(playerid) != 0) return SendNotification(playerid, "No estás en el lugar adecuado.");
@@ -1579,7 +1659,11 @@ CMD:gasolina(playerid, params[])
     new fuel_station = -1;
     for (new i = 0; i < sizeof Fuel_Stations; i++)
     {
-        if (IsPlayerInRangeOfPoint(playerid, 5.0, Fuel_Stations[i][fs_X], Fuel_Stations[i][fs_Y], Fuel_Stations[i][fs_Z]))
+        if (IsPlayerInRangeOfPoint(playerid,
+            5.0,
+            Fuel_Stations[i][fs_X],
+            Fuel_Stations[i][fs_Y],
+            Fuel_Stations[i][fs_Z]))
         {
             fuel_station = i;
             break;
@@ -1661,7 +1745,11 @@ CMD:bidon(playerid, params[])
     new fuel_station = -1;
     for (new i = 0; i < sizeof Fuel_Stations; i++)
     {
-        if (IsPlayerInRangeOfPoint(playerid, 5.0, Fuel_Stations[i][fs_X], Fuel_Stations[i][fs_Y], Fuel_Stations[i][fs_Z]))
+        if (IsPlayerInRangeOfPoint(playerid,
+            5.0,
+            Fuel_Stations[i][fs_X],
+            Fuel_Stations[i][fs_Y],
+            Fuel_Stations[i][fs_Z]))
         {
             fuel_station = i;
             break;
@@ -1767,6 +1855,7 @@ CMD:comprarnivel(playerid, params[])
     }
     return 1;
 }
+
 CMD:trabajar(playerid, params[])
 {
     if (GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return SendNotification(playerid, "Debes estar a pie.");
@@ -1804,7 +1893,11 @@ CMD:trabajar(playerid, params[])
 
         if (GetPlayerInterior(playerid) == obtain_work_coords[i][obtain_work_INTERIOR])
         {
-            if (IsPlayerInRangeOfPoint(playerid, 1.0, obtain_work_coords[i][obtain_work_X], obtain_work_coords[i][obtain_work_Y], obtain_work_coords[i][obtain_work_Z]))
+            if (IsPlayerInRangeOfPoint(playerid,
+                1.0,
+                obtain_work_coords[i][obtain_work_X],
+                obtain_work_coords[i][obtain_work_Y],
+                obtain_work_coords[i][obtain_work_Z]))
             {
                 if (work_info[i][work_info_LEVEL] > ACCOUNT_INFO[playerid][ac_LEVEL])
                 {
@@ -1881,6 +1974,7 @@ CMD:dimitir(playerid, params[])
     PLAYER_WORKS[playerid][work][pwork_SET] = false;
     return 1;
 }
+
 alias:dimitir("renunciar")
 
 CMD:pagar(playerid, params[])
@@ -2017,6 +2111,7 @@ CMD:aparcar(playerid, params[])
     SendNotification(playerid, "Has estacionado tu vehículo, cuando sea destruido volverá a aparecer aquí.");
     return 1;
 }
+
 alias:aparcar("estacionar")
 
 CMD:luces(playerid, params[])
@@ -2086,6 +2181,7 @@ CMD:motor(playerid, params[])
     else SendNotification(playerid, "No estás conduciendo ningún vehículo.");
     return 1;
 }
+
 alias:motor("arrancar")
 
 CMD:reparar(playerid, params[])
@@ -2122,7 +2218,6 @@ CMD:vmenu(playerid, params[])
             break;
         }
 
-
     if (!in_mechanic_area)
     {
         SendNotification(playerid, "Para reparar este vehículo tienes que estar en el taller.");
@@ -2149,7 +2244,10 @@ CMD:policia(playerid, params[])
     if (GetPlayerVirtualWorld(playerid) != 0) return SendNotification(playerid, "No estás en el lugar adecuado.");
     if (GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return SendNotification(playerid, "No estás depie.");
 
-    if (IsPlayerInRangeOfPoint(playerid, 1.0, 253.280288, 76.219017, 1003.640625) || IsPlayerInRangeOfPoint(playerid, 1.0, 266.547180, 119.652816, 1004.617187) || IsPlayerInRangeOfPoint(playerid, 1.0, 217.816406, 187.667922, 1003.031250))
+    if (
+        IsPlayerInRangeOfPoint(playerid, 1.0, 253.280288, 76.219017, 1003.640625) ||
+        IsPlayerInRangeOfPoint(playerid, 1.0, 266.547180, 119.652816, 1004.617187) ||
+        IsPlayerInRangeOfPoint(playerid, 1.0, 217.816406, 187.667922, 1003.031250))
     {
         if (!PLAYER_TEMP[playerid][pt_WORKING_IN]) ShowDialog(playerid, DIALOG_SELECT_POLICE_SKIN);
         else CallLocalFunction("EndPlayerJob", "iib", playerid, PLAYER_TEMP[playerid][pt_WORKING_IN], true);
@@ -2159,6 +2257,7 @@ CMD:policia(playerid, params[])
     SendNotification(playerid, "No estás en el lugar adecuado.");
     return 1;
 }
+
 CMD:talar(playerid, params[])
 {
     if (!PLAYER_WORKS[playerid][WORK_LUMBERJACK][pwork_SET]) return SendNotification(playerid, "No eres leñador.");
@@ -2191,14 +2290,17 @@ CMD:mecanico(playerid, params[])
     if (GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return SendNotification(playerid, "No estás depie.");
 
     for (new i; i != sizeof MechanicStartWorkingCoords; i++)
-        if (IsPlayerInRangeOfPoint(playerid, 1.0, MechanicStartWorkingCoords[i][0], MechanicStartWorkingCoords[i][1], MechanicStartWorkingCoords[i][2]))
+        if (IsPlayerInRangeOfPoint(playerid,
+            1.0,
+            MechanicStartWorkingCoords[i][0],
+            MechanicStartWorkingCoords[i][1],
+            MechanicStartWorkingCoords[i][2]))
         {
             if (!PLAYER_TEMP[playerid][pt_WORKING_IN]) CallLocalFunction("StartPlayerJob", "iii", playerid, WORK_MECHANIC, INVALID_VEHICLE_ID);
             else CallLocalFunction("EndPlayerJob", "iib", playerid, PLAYER_TEMP[playerid][pt_WORKING_IN], true);
 
             return 1;
         }
-
 
     SendNotification(playerid, "No estás en el lugar adecuado.");
     return 1;
@@ -2300,7 +2402,11 @@ CMD:piezas(playerid, params[])
     if (GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return SendNotification(playerid, "No estás depie.");
 
     for (new i; i != sizeof MechanicBuyPiecesCoords; i++)
-        if (IsPlayerInRangeOfPoint(playerid, 1.0, MechanicBuyPiecesCoords[i][0], MechanicBuyPiecesCoords[i][1], MechanicBuyPiecesCoords[i][2]))
+        if (IsPlayerInRangeOfPoint(playerid,
+            1.0,
+            MechanicBuyPiecesCoords[i][0],
+            MechanicBuyPiecesCoords[i][1],
+            MechanicBuyPiecesCoords[i][2]))
         {
             if (sscanf(params, "d", params[0])) return SendNotification(playerid, "~r~Modo de uso: ~w~/piezas [cantidad]");
             if (params[0] <= 0 || params[0] >= 10000) return SendNotification(playerid, "~r~Modo de uso: ~w~/piezas [cantidad > 0]");
@@ -2332,7 +2438,11 @@ CMD:kit(playerid, params[])
     if (GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return SendNotification(playerid, "No estás depie.");
 
     for (new i; i != sizeof MechanicBuyKitsCoords; i++)
-        if (IsPlayerInRangeOfPoint(playerid, 1.0, MechanicBuyKitsCoords[i][0], MechanicBuyKitsCoords[i][1], MechanicBuyKitsCoords[i][2]))
+        if (IsPlayerInRangeOfPoint(playerid,
+            1.0,
+            MechanicBuyKitsCoords[i][0],
+            MechanicBuyKitsCoords[i][1],
+            MechanicBuyKitsCoords[i][2]))
         {
             if (GivePlayerCash(playerid, -1000, true, true))
 {
@@ -2353,7 +2463,11 @@ CMD:botiquin(playerid, params[])
     if (!PLAYER_WORKS[playerid][WORK_MEDIC][pwork_SET] && PLAYER_TEMP[playerid][pt_WORKING_IN] != WORK_MEDIC) return SendNotification(playerid, "Solo los médicos pueden comprar botiquines.");
 
     for (new i; i != sizeof MedicalBuyKitsCoords; i++)
-        if (IsPlayerInRangeOfPoint(playerid, 1.0, MedicalBuyKitsCoords[i][0], MedicalBuyKitsCoords[i][1], MedicalBuyKitsCoords[i][2]))
+        if (IsPlayerInRangeOfPoint(playerid,
+            1.0,
+            MedicalBuyKitsCoords[i][0],
+            MedicalBuyKitsCoords[i][1],
+            MedicalBuyKitsCoords[i][2]))
         {
             if (GivePlayerCash(playerid, -5000, true, true))
 {
@@ -2367,7 +2481,6 @@ CMD:botiquin(playerid, params[])
     SendNotification(playerid, "No estás en el lugar adecuado.");
     return 1;
 }
-
 
 CMD:recoger(playerid, params[])
 {
@@ -2389,20 +2502,23 @@ CMD:recoger(playerid, params[])
             KillTimer(PLANTS[i][plant_TIMER]);
             switch (seed_info[ PLANTS[i][plant_TYPE] ][seed_info_PLANT_TYPE])
             {
-                case PLANT_TYPE_MEDICINE:
+                case PLANT_TYPE_MEDICINE:{
                 {
                     PI[playerid][ac_MEDICINE] += 2;
-                    SendNotification(playerid, "Has recogido la planta y has obtenido ~g~2 gramos de medicamento~w~.");
+                    SendNotification(playerid,
+                }"Has recogido la planta y has obtenido ~g~2 gramos de medicamento~w~.");
                 }
-                case PLANT_TYPE_CANNABIS:
+                case PLANT_TYPE_CANNABIS:{
                 {
                     PI[playerid][ac_CANNABIS] += 6;
-                    SendNotification(playerid, "Has recogido la planta y has obtenido ~g~6 gramos de marihuana~w~.");
+                    SendNotification(playerid,
+                }"Has recogido la planta y has obtenido ~g~6 gramos de marihuana~w~.");
                 }
-                case PLANT_TYPE_CRACK:
+                case PLANT_TYPE_CRACK:{
                 {
                     PI[playerid][ac_CRACK] += 4;
-                    SendNotification(playerid, "Has recogido la planta y has obtenido ~g~4 gramos de crack~w~.");
+                    SendNotification(playerid,
+                }"Has recogido la planta y has obtenido ~g~4 gramos de crack~w~.");
                 }
             }
 
@@ -2425,6 +2541,7 @@ CMD:animaciones(playerid, params[])
     ShowDialog(playerid, DIALOG_ANIMS);
     return 1;
 }
+
 alias:animaciones("anims", "acciones")
 CMD:parar(playerid, params[])
 {
@@ -2433,6 +2550,7 @@ CMD:parar(playerid, params[])
     ClearAnimations(playerid);
     return 1;
 }
+
 CMD:rendirse(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2440,6 +2558,7 @@ CMD:rendirse(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:blowjob(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2447,6 +2566,7 @@ CMD:blowjob(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:rodar(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2454,6 +2574,7 @@ CMD:rodar(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:borracho(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2461,6 +2582,7 @@ CMD:borracho(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:bomba(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2468,6 +2590,7 @@ CMD:bomba(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:apuntar(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2475,6 +2598,7 @@ CMD:apuntar(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:reir(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2482,6 +2606,7 @@ CMD:reir(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:amenazar(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2489,6 +2614,7 @@ CMD:amenazar(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:paja(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2496,6 +2622,7 @@ CMD:paja(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:herido(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2503,6 +2630,7 @@ CMD:herido(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:cruzarbrazos(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2510,6 +2638,7 @@ CMD:cruzarbrazos(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:recostarse(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2517,6 +2646,7 @@ CMD:recostarse(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:cubrirse(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2524,6 +2654,7 @@ CMD:cubrirse(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:vomitar(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2531,6 +2662,7 @@ CMD:vomitar(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:comer(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2538,6 +2670,7 @@ CMD:comer(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:despedir(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2545,6 +2678,7 @@ CMD:despedir(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:nalgada(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2552,6 +2686,7 @@ CMD:nalgada(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:agonizar(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2559,6 +2694,7 @@ CMD:agonizar(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:besar(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2566,6 +2702,7 @@ CMD:besar(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:crack(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2573,6 +2710,7 @@ CMD:crack(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:mear(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2580,6 +2718,7 @@ CMD:mear(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:sentarse(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2587,6 +2726,7 @@ CMD:sentarse(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:asiento(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2594,6 +2734,7 @@ CMD:asiento(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:fucku(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2601,6 +2742,7 @@ CMD:fucku(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:taichi(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2608,6 +2750,7 @@ CMD:taichi(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:beber(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2615,6 +2758,7 @@ CMD:beber(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:boxear(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2622,6 +2766,7 @@ CMD:boxear(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:saludar(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2629,6 +2774,7 @@ CMD:saludar(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:llorar(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2636,6 +2782,7 @@ CMD:llorar(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:dormir(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2644,6 +2791,7 @@ CMD:dormir(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:rapear(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2651,6 +2799,7 @@ CMD:rapear(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:astrip(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2658,6 +2807,7 @@ CMD:astrip(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:bailar(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2665,14 +2815,25 @@ CMD:bailar(playerid, params[])
 
     switch (params[0])
     {
-        case 1: SetPlayerSpecialAction(playerid,SPECIAL_ACTION_DANCE1);
-        case 2: SetPlayerSpecialAction(playerid,SPECIAL_ACTION_DANCE2);
-        case 3: SetPlayerSpecialAction(playerid,SPECIAL_ACTION_DANCE3);
-        case 4: SetPlayerSpecialAction(playerid,SPECIAL_ACTION_DANCE4);
-        default: SendClientMessage(playerid, 0xFF4500FF, "ERROR: /bailar [1-4]");
+        case 1: {
+            SetPlayerSpecialAction(playerid,SPECIAL_ACTION_DANCE1);
+        }
+        case 2: {
+            SetPlayerSpecialAction(playerid,SPECIAL_ACTION_DANCE2);
+        }
+        case 3: {
+            SetPlayerSpecialAction(playerid,SPECIAL_ACTION_DANCE3);
+        }
+        case 4: {
+            SetPlayerSpecialAction(playerid,SPECIAL_ACTION_DANCE4);
+        }
+        default: {
+            SendClientMessage(playerid, 0xFF4500FF,
+        }"ERROR: /bailar [1-4]");
     }
     return 1;
 }
+
 CMD:alentar(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2680,6 +2841,7 @@ CMD:alentar(playerid, params[])
     SendNotification(playerid, "Para cancelar la animacion utiliza /parar.");
     return 1;
 }
+
 CMD:hablar(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendNotification(playerid, "Ahora no puedes usar este comando.");
@@ -2761,7 +2923,11 @@ CMD:guardar(playerid, params[])
 
         new Float:z_pos = PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_Z];
         if (PROPERTY_INFO[index][property_DIS_DEFAULT_INTERIOR]) z_pos += PROPERTY_EMPTY_INTERIOR_Z_OFFSET;
-        if (IsPlayerInRangeOfPoint(playerid, NEARS_PLAYERS_DISTANCE, PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_X], PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_Y], z_pos))
+        if (IsPlayerInRangeOfPoint(playerid,
+            NEARS_PLAYERS_DISTANCE,
+            PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_X],
+            PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_Y],
+            z_pos))
         {
             new closet_slot = GetPropertyAvaibleClosetSlot(index);
             if (closet_slot == -1) return SendNotification(playerid, "No tienes suficiente espacio en tu /armario.");
@@ -2853,6 +3019,7 @@ CMD:maletero(playerid, params[])
     ShowDialog(playerid, DIALOG_VEHICLE_BOOT);
     return 1;
 }
+
 alias:maletero("baul")
 
 SetWantedPlayerMarkers(playerid)
@@ -2872,9 +3039,6 @@ SetWantedPlayerMarkers(playerid)
     }
     return 1;
 }
-
-
-
 
 CMD:nivel(playerid, params[])
 {
@@ -2922,6 +3086,7 @@ CMD:nivel(playerid, params[])
     SendPoliceRadioMessage(-1, -1, message);
     return 1;
 }
+
 alias:nivel("cargos", "c")
 
 CMD:esposar(playerid, params[])
@@ -3098,6 +3263,7 @@ CMD:ref(playerid, params[])
     SendPoliceRadioMessage(-1, -1, message);
     return 1;
 }
+
 alias:ref("refuerzos")
 
 CMD:control(playerid, params[])
@@ -3114,12 +3280,24 @@ CMD:control(playerid, params[])
     new modelid;
     switch (type)
     {
-        case 1: modelid = 1459;
-        case 2: modelid = 1238;
-        case 3: modelid = 1425;
-        case 4: modelid = 3265;
-        case 5: modelid = 3091;
-        default: return SendNotification(playerid, "Tipo de objeto no válido.");
+        case 1: {
+            modelid = 1459;
+        }
+        case 2: {
+            modelid = 1238;
+        }
+        case 3: {
+            modelid = 1425;
+        }
+        case 4: {
+            modelid = 3265;
+        }
+        case 5: {
+            modelid = 3091;
+        }
+        default: {
+            return SendNotification(playerid,
+        }"Tipo de objeto no válido.");
     }
 
     new index = GetFreePoliceObjectSlot();
@@ -3139,7 +3317,10 @@ CMD:control(playerid, params[])
     new info[3];
     info[1] = OBJECT_TYPE_POLICE;
     info[1] = index; // Index
-    Streamer_SetArrayData(STREAMER_TYPE_OBJECT, POLICE_OBJECTS[index][police_object_OBJECT_ID], E_STREAMER_EXTRA_ID, info);
+    Streamer_SetArrayData(STREAMER_TYPE_OBJECT,
+                          POLICE_OBJECTS[index][police_object_OBJECT_ID],
+                          E_STREAMER_EXTRA_ID,
+                          info);
     PLAYER_TEMP[playerid][pt_SELECTED_POLICE_OBJECT_INDEX] = index;
     EditDynamicObject(playerid, POLICE_OBJECTS[index][police_object_OBJECT_ID]);
 
@@ -3234,7 +3415,6 @@ CMD:arrestar(playerid, params[])
     return 1;
 }
 
-
 CMD:callsing(playerid, params[])
 {
     if (!PLAYER_WORKS[playerid][WORK_POLICE][pwork_SET]) return SendNotification(playerid, "No eres policía.");
@@ -3289,7 +3469,11 @@ CMD:equiparse(playerid, params[])
 {
     if (!PLAYER_WORKS[playerid][WORK_POLICE][pwork_SET]) return SendNotification(playerid, "No eres policía.");
 
-    if ((IsPlayerInRangeOfPoint(playerid, 2.0, 219.244018, 69.982215, 1005.039062) || IsPlayerInRangeOfPoint(playerid, 2.0, 262.945587, 109.785270, 1004.617187) || IsPlayerInRangeOfPoint(playerid, 2.0, 222.683914, 186.956054, 1003.031250)) && PLAYER_WORKS[playerid][WORK_POLICE][pwork_SET])
+    if (
+        (IsPlayerInRangeOfPoint(playerid, 2.0, 219.244018, 69.982215, 1005.039062) ||
+        IsPlayerInRangeOfPoint(playerid, 2.0, 262.945587, 109.785270, 1004.617187) ||
+        IsPlayerInRangeOfPoint(playerid, 2.0, 222.683914, 186.956054, 1003.031250)) &&
+        PLAYER_WORKS[playerid][WORK_POLICE][pwork_SET])
     {
         ShowDialog(playerid, DIALOG_POLICE_SHOP);
     }
@@ -3318,7 +3502,15 @@ CMD:entregar(playerid, params[])
     if (GetPlayerVehicleID(params[0]) != vehicleid) return SendNotification(playerid, "Para entregar a esta persona tiene que estar dentro del vehículo policial.");
     if (PI[params[0]][ac_WANTED_LEVEL] == 0) return SendNotification(playerid, "Esta persona no tiene nivel de búsqueda.");
 
-    if (IsPlayerInRangeOfPoint(playerid, 20.0, 1564.971923, -1694.916381, 5.617697) || IsPlayerInRangeOfPoint(playerid, 20.0, 6808.6948, 5335.9800 ,14.9625))
+    if (IsPlayerInRangeOfPoint(playerid,
+        20.0,
+        1564.971923,
+        -1694.916381,
+        5.617697) || IsPlayerInRangeOfPoint(playerid,
+        20.0,
+        6808.6948,
+        5335.9800 ,
+        14.9625))
     {
         SendNotification(playerid, "La persona ahora está en la cárcel.");
         PI[params[0]][ac_POLICE_JAIL_ID] = 0;
@@ -3454,8 +3646,6 @@ SendPoliceRadioMessage(radio, color, const message[])
     return 1;
 }
 
-
-
 // PROPERTY CONSTRUCTOR
 
 CMD:rproperty(playerid, params[])
@@ -3523,7 +3713,10 @@ CMD:cproperty(playerid, params[])
 
     if (sscanf(params, "dddd", PLAYER_TEMP[playerid][pt_PROPERTY_CINFO][0], PLAYER_TEMP[playerid][pt_PROPERTY_CINFO][1], PLAYER_TEMP[playerid][pt_PROPERTY_CINFO][2], PLAYER_TEMP[playerid][pt_PROPERTY_CINFO][3])) return SendNotification(playerid, "~r~Modo de uso:~w~ /cproperty <nivel> <precio> <vip level> <coins>");
 
-    GetPlayerPos(playerid, PLAYER_PROPERTY_CONSTRUCTOR[playerid][player_property_creator_EXT_X], PLAYER_PROPERTY_CONSTRUCTOR[playerid][player_property_creator_EXT_Y], PLAYER_PROPERTY_CONSTRUCTOR[playerid][player_property_creator_EXT_Z]);
+    GetPlayerPos(playerid,
+                 PLAYER_PROPERTY_CONSTRUCTOR[playerid][player_property_creator_EXT_X],
+                 PLAYER_PROPERTY_CONSTRUCTOR[playerid][player_property_creator_EXT_Y],
+                 PLAYER_PROPERTY_CONSTRUCTOR[playerid][player_property_creator_EXT_Z]);
     GetPlayerFacingAngle(playerid, PLAYER_PROPERTY_CONSTRUCTOR[playerid][player_property_creator_EXT_ANG]);
     PLAYER_PROPERTY_CONSTRUCTOR[playerid][player_property_creator_EXT_INT] = GetPlayerInterior(playerid);
 
@@ -3704,7 +3897,6 @@ CMD:reclutar(playerid, params[])
     return 1;
 }
 
-
 CMD:eco(playerid, params[])
 {
     ShowDialog(playerid, DIALOG_SERVER_ECO);
@@ -3805,6 +3997,7 @@ CMD:darskin(playerid, params[])
     SendFormatNotification(playerid, "Skin '%s (%d)' cambiado a '%d'.", ACCOUNT_INFO[to_player][ac_NAME], to_player, skin);
     return 1;
 }
+
 alias:darskin("setskin")
 
 CMD:setfstyle(playerid, params[])
@@ -3933,6 +4126,7 @@ CMD:revivir(playerid, params[])
     SendCmdLogToAdmins(playerid, "revivir", params);
     return 1;
 }
+
 alias:revivir("revive")
 
 CMD:tuning(playerid, params[])
@@ -4003,6 +4197,7 @@ CMD:desmuteard(playerid, params[])
     SendFormatNotification(playerid, "Jugador %s (%d) ha sido des-silenciado.", ACCOUNT_INFO[to_player][ac_NAME], to_player);
     return 1;
 }
+
 CMD:borrarop(playerid, params[])
 {
     new affected_objects;
@@ -4057,7 +4252,6 @@ CMD:dbyc(playerid, params[])
     SendFormatNotification(playerid, "Has borrado el historial policial de %s.", PLAYER_TEMP[to_player][pt_RP_NAME]);
     return 1;
 }
-
 
 CMD:byc(playerid, params[])
 {
@@ -4118,7 +4312,10 @@ CMD:cleanproperties(playerid, params[])
             info[0] = PICKUP_TYPE_PROPERTY;
             info[1] = i; // Index
             info[2] = 2; // Pickup Exterior
-            Streamer_SetArrayData(STREAMER_TYPE_PICKUP, PROPERTY_INFO[i][property_EXT_PICKUP_ID], E_STREAMER_EXTRA_ID, info);
+            Streamer_SetArrayData(STREAMER_TYPE_PICKUP,
+                                  PROPERTY_INFO[i][property_EXT_PICKUP_ID],
+                                  E_STREAMER_EXTRA_ID,
+                                  info);
 
             //
             total++;
@@ -4304,28 +4501,33 @@ CMD:notifica(playerid, params[])
 
     switch (YHash(params, false))
     {
-        case _I<cmd>:
+        case _I<cmd>:{
         {
             PLAYER_TEMP[playerid][pt_SEE_ACMD_LOG] ^= true;
-            SendFormatNotification(playerid, "Log de comandos %sactivado", PLAYER_TEMP[playerid][pt_SEE_ACMD_LOG] ? ("") : ("des"));
+            SendFormatNotification(playerid,
+        }"Log de comandos %sactivado", PLAYER_TEMP[playerid][pt_SEE_ACMD_LOG] ? ("") : ("des"));
         }
-        case _I<adm>:
+        case _I<adm>:{
         {
             PLAYER_TEMP[playerid][pt_SEE_ADM_LOG] ^= true;
-            SendFormatNotification(playerid, "Log admin general %sactivado", PLAYER_TEMP[playerid][pt_SEE_ADM_LOG] ? ("") : ("des"));
+            SendFormatNotification(playerid,
+        }"Log admin general %sactivado", PLAYER_TEMP[playerid][pt_SEE_ADM_LOG] ? ("") : ("des"));
         }
-        case _I<ac>:
+        case _I<ac>:{
         {
             PLAYER_TEMP[playerid][pt_SEE_AC_LOG] ^= true;
-            SendFormatNotification(playerid, "Log de anticheat %sactivado", PLAYER_TEMP[playerid][pt_SEE_AC_LOG] ? ("") : ("des"));
+            SendFormatNotification(playerid,
+        }"Log de anticheat %sactivado", PLAYER_TEMP[playerid][pt_SEE_AC_LOG] ? ("") : ("des"));
         }
-        case _I<chat>:
+        case _I<chat>:{
         {
             PLAYER_TEMP[playerid][pt_SEE_ADM_CHAT] ^= true;
-            SendFormatNotification(playerid, "Chat admin %sactivado", PLAYER_TEMP[playerid][pt_SEE_ADM_CHAT] ? ("") : ("des"));
+            SendFormatNotification(playerid,
+        }"Chat admin %sactivado", PLAYER_TEMP[playerid][pt_SEE_ADM_CHAT] ? ("") : ("des"));
         }
-        default:
-            SendNotification(playerid, "Uso: /notifica [cmd/log/ac/chat]");
+        default:{
+            SendNotification(playerid,
+        }"Uso: /notifica [cmd/log/ac/chat]");
     }
 
     return 1;
@@ -4369,7 +4571,6 @@ CMD:std(playerid, params[])
     return 1;
 }
 
-
 CMD:historial(playerid, params[])
 {
     //
@@ -4402,11 +4603,21 @@ CMD:historial(playerid, params[])
                     if (by == -1) name = "AC";
                     switch (type)
                     {
-                        case TYPE_WARNING: format(line_str, sizeof line_str, "%s\t%s\tAdv\t%s\n", name, date, text);
-                        case TYPE_KICK: format(line_str, sizeof line_str, "%s\t%s\tKick\t%s\n", name, date, text);
-                        case TYPE_BAN: format(line_str, sizeof line_str, "%s\t%s\tBan\t%s\n", name, date, text);
-                        case TYPE_TEMP_BAN: format(line_str, sizeof line_str, "%s\t%s\tTBan\t%s\n", name, date, text);
-                        case TYPE_UNBAN: format(line_str, sizeof line_str, "%s\t%s\tUnban\t%s\n", name, date, text);
+                        case TYPE_WARNING: {
+                            format(line_str, sizeof line_str,
+                        }"%s\t%s\tAdv\t%s\n", name, date, text);
+                        case TYPE_KICK: {
+                            format(line_str, sizeof line_str,
+                        }"%s\t%s\tKick\t%s\n", name, date, text);
+                        case TYPE_BAN: {
+                            format(line_str, sizeof line_str,
+                        }"%s\t%s\tBan\t%s\n", name, date, text);
+                        case TYPE_TEMP_BAN: {
+                            format(line_str, sizeof line_str,
+                        }"%s\t%s\tTBan\t%s\n", name, date, text);
+                        case TYPE_UNBAN: {
+                            format(line_str, sizeof line_str,
+                        }"%s\t%s\tUnban\t%s\n", name, date, text);
                     }
                     strcat(dialog, line_str);
                 }
@@ -4480,6 +4691,7 @@ CMD:placaex(playerid, params[])
     }
     return 1;
 }
+
 alias:placaex("policiaadmin")
 
 CMD:vehicles(playerid, params[])
@@ -4513,6 +4725,7 @@ CMD:vehicles(playerid, params[])
     ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_TABLIST_HEADERS, "Vehiculos", dialog, "OK", "");
     return 1;
 }
+
 alias:vehicles("vehiculos")
 
 CMD:reportar(playerid, params[])
@@ -4668,6 +4881,7 @@ CMD:aka(playerid, params[])
     MySQL_TQueryInline(srp_db, using inline OnInfoQueryLoad, QUERY_BUFFER);
     return 1;
 }
+
 alias:aka("cuentas", "multicuentas")
 
 CMD:adv(playerid, params[])
@@ -4677,7 +4891,6 @@ CMD:adv(playerid, params[])
     if (!IsPlayerConnected(to_player)) return SendFormatNotification(playerid, "Jugador (%d) desconectado", to_player);
     if (ACCOUNT_INFO[to_player][ac_ADMIN_LEVEL] > ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL]) return SendNotification(playerid, "El rango administrativo de este jugador es superior al tuyo.");
 
-
     AddPlayerBadHistory(ACCOUNT_INFO[to_player][ac_ID], ACCOUNT_INFO[playerid][ac_ID], TYPE_WARNING, reason);
 
     new dialog[170];
@@ -4686,11 +4899,11 @@ CMD:adv(playerid, params[])
 
     SendFormatNotification(playerid, "Jugador (nick: '%s' dbid: '%d', pid: '%d') advertido.", ACCOUNT_INFO[to_player][ac_NAME], ACCOUNT_INFO[to_player][ac_ID], to_player);
 
-
     new str[145]; format(str, 145, "{"#RED_COLOR"}[ADMIN] {FFFFFF}%s (%d) advirtió a %s (%d): %s", ACCOUNT_INFO[playerid][ac_NAME], playerid, ACCOUNT_INFO[to_player][ac_NAME], to_player, reason);
     SendAdminAd(-1, str);
     return 1;
 }
+
 alias:adv("advertencia", "san")
 
 CMD:kick(playerid, params[])
@@ -4703,7 +4916,6 @@ CMD:kick(playerid, params[])
     if (PLAYER_TEMP[to_player][pt_KICKED]) return SendNotification(playerid, "El jugador ya está expulsado.");
     if (!ACCOUNT_INFO[to_player][ac_ID]) return Kick(to_player);
 
-
     AddPlayerBadHistory(ACCOUNT_INFO[to_player][ac_ID], ACCOUNT_INFO[playerid][ac_ID], TYPE_KICK, reason);
 
     new dialog[170];
@@ -4712,7 +4924,6 @@ CMD:kick(playerid, params[])
     KickEx(to_player, 500);
 
     SendFormatNotification(playerid, "Jugador (nick: '%s' dbid: '%d', pid: '%d') expulsado.", ACCOUNT_INFO[to_player][ac_NAME], ACCOUNT_INFO[to_player][ac_ID], to_player);
-
 
     new str[145]; format(str, 145, "{"#RED_COLOR"}[ADMIN] {FFFFFF}%s (%d) expulsó a %s (%d): %s", ACCOUNT_INFO[playerid][ac_NAME], playerid, ACCOUNT_INFO[to_player][ac_NAME], to_player, reason);
     SendAdminAd(-1, str);
@@ -4743,10 +4954,10 @@ CMD:spec(playerid, params[])
     else PlayerSpectatePlayer(playerid, to_player);
     SendNotification(playerid, "Utiliza /specoff para terminar este modo.");
 
-
     SendCmdLogToAdmins(playerid, "spec", params);
     return 1;
 }
+
 alias:spec("specp", "spp")
 
 CMD:specoff(playerid, params[])
@@ -4758,6 +4969,7 @@ CMD:specoff(playerid, params[])
     PLAYER_TEMP[playerid][pt_TIMERS][3] = SetTimerEx("TogglePlayerControl", 2000, false, "ib", playerid, true);
     return 1;
 }
+
 alias:specoff("listo")
 
 CMD:freeze(playerid, params[])
@@ -4770,6 +4982,7 @@ CMD:freeze(playerid, params[])
     TogglePlayerControllableEx(to_player, false);
     return 1;
 }
+
 alias:freeze("congelar")
 
 CMD:unfreeze(playerid, params[])
@@ -4782,6 +4995,7 @@ CMD:unfreeze(playerid, params[])
     TogglePlayerControllableEx(to_player, true);
     return 1;
 }
+
 alias:unfreeze("descongelar")
 
 CMD:pest(playerid, params[])
@@ -4863,7 +5077,6 @@ CMD:unjail(playerid, params[])
     UnjailPlayer(to_player);
     SendFormatNotification(playerid, "El jugador %s (%d) ahora está en libertad.", ACCOUNT_INFO[to_player][ac_NAME], to_player);
 
-
     SendCmdLogToAdmins(playerid, "unjail", params);
     return 1;
 }
@@ -4893,8 +5106,8 @@ CMD:traerveh(playerid, params[])
     SetVehiclePosEx(to_car, gPos[0] + 2.0, gPos[1], gPos[2]);
     return 1;
 }
-alias:traerveh("mover", "getveh", "traervehiculo", "traerauto", "getcar")
 
+alias:traerveh("mover", "getveh", "traervehiculo", "traerauto", "getcar")
 
 ///    CMD:gotopos( playerid, params[] )
 //    {
@@ -4918,6 +5131,7 @@ CMD:gotoveh(playerid, params[])
     SetPlayerPosEx(playerid, gPos[0], gPos[1], gPos[2], 0.0, GLOBAL_VEHICLES[to_car][gb_vehicle_INTERIOR], 0);//GLOBAL_VEHICLES[to_car][gb_vehicle_WORLD]);
     return 1;
 }
+
 alias:gotoveh("irvehiculo", "gotocar", "iracarro")
 
 CMD:duty(playerid)
@@ -4950,11 +5164,21 @@ CMD:duty(playerid)
         new label_str[64];
         switch (ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL])
         {
-            case 1: format(label_str, sizeof label_str, "{0099FF}%s en servicio", ADMIN_LEVELS[ ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] ]);
-            case 2: format(label_str, sizeof label_str, "{FFFF00}%s en servicio", ADMIN_LEVELS[ ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] ]);
-            case 3: format(label_str, sizeof label_str, "{00CC00}%s en servicio", ADMIN_LEVELS[ ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] ]);
-            case 4: format(label_str, sizeof label_str, "{FFCC00}%s en servicio", ADMIN_LEVELS[ ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] ]);
-            case 5: format(label_str, sizeof label_str, "{FFFFCC}%s en servicio", ADMIN_LEVELS[ ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] ]);
+            case 1: {
+                format(label_str, sizeof label_str,
+            }"{0099FF}%s en servicio", ADMIN_LEVELS[ ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] ]);
+            case 2: {
+                format(label_str, sizeof label_str,
+            }"{FFFF00}%s en servicio", ADMIN_LEVELS[ ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] ]);
+            case 3: {
+                format(label_str, sizeof label_str,
+            }"{00CC00}%s en servicio", ADMIN_LEVELS[ ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] ]);
+            case 4: {
+                format(label_str, sizeof label_str,
+            }"{FFCC00}%s en servicio", ADMIN_LEVELS[ ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] ]);
+            case 5: {
+                format(label_str, sizeof label_str,
+            }"{FFFFCC}%s en servicio", ADMIN_LEVELS[ ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] ]);
         }
         PLAYER_TEMP[playerid][pt_ADMIN_LABEL] = CreateDynamic3DTextLabel(label_str, -1, 0.0, 0.0, 0.3, 20.0, playerid, .testlos = true);
 
@@ -4975,7 +5199,15 @@ CMD:goto(playerid, params[])
     GetPlayerPos(to_player, p[0], p[1], p[2]);
     GetPlayerFacingAngle(to_player, p[3]);
 
-    SetPlayerPosEx(playerid, p[0], p[1], p[2], p[3], GetPlayerInterior(to_player), GetPlayerVirtualWorld(to_player), false, true);
+    SetPlayerPosEx(playerid,
+                   p[0],
+                   p[1],
+                   p[2],
+                   p[3],
+                   GetPlayerInterior(to_player),
+                   GetPlayerVirtualWorld(to_player),
+                   false,
+                   true);
     SetPlayerFacingAngle(playerid, p[3] + 180.0);
 
     SetPlayerCityWeather(playerid);
@@ -4983,6 +5215,7 @@ CMD:goto(playerid, params[])
     SendCmdLogToAdmins(playerid, "goto", params);
     return 1;
 }
+
 alias:goto("ir")
 
 CMD:get(playerid, params[])
@@ -4996,7 +5229,15 @@ CMD:get(playerid, params[])
     GetPlayerPos(playerid, p[0], p[1], p[2]);
     GetPlayerFacingAngle(playerid, p[3]);
 
-    SetPlayerPosEx(to_player, p[0], p[1], p[2], p[3], GetPlayerInterior(playerid), GetPlayerVirtualWorld(playerid), false, true);
+    SetPlayerPosEx(to_player,
+                   p[0],
+                   p[1],
+                   p[2],
+                   p[3],
+                   GetPlayerInterior(playerid),
+                   GetPlayerVirtualWorld(playerid),
+                   false,
+                   true);
     SetPlayerFacingAngle(to_player, p[3] + 180.0);
 
     SetPlayerCityWeather(to_player);
@@ -5004,6 +5245,7 @@ CMD:get(playerid, params[])
     SendCmdLogToAdmins(playerid, "get", params);
     return 1;
 }
+
 alias:get("traer")
 
 CMD:unban(playerid, params[])
@@ -5117,7 +5359,12 @@ CMD:ban(playerid, params[])
     if (PLAYER_TEMP[to_player][pt_KICKED]) return SendNotification(playerid, "El jugador ya está expulsado.");
     if (!ACCOUNT_INFO[to_player][ac_ID]) return Kick(to_player);
 
-    AddPlayerBan(ACCOUNT_INFO[to_player][ac_ID], ACCOUNT_INFO[to_player][ac_NAME], ACCOUNT_INFO[to_player][ac_IP], ACCOUNT_INFO[playerid][ac_ID], TYPE_BAN, reason);
+    AddPlayerBan(ACCOUNT_INFO[to_player][ac_ID],
+                 ACCOUNT_INFO[to_player][ac_NAME],
+                 ACCOUNT_INFO[to_player][ac_IP],
+                 ACCOUNT_INFO[playerid][ac_ID],
+                 TYPE_BAN,
+                 reason);
 
     new dialog[250];
     format(dialog, sizeof dialog, "Has sido baneado, razón:\n%s\n", reason);
@@ -5138,6 +5385,7 @@ CMD:cls(playerid,params[])
     SendCmdLogToAdmins(playerid, "cls", params);
     return 1;
 }
+
 alias:cls("log")
 
 CMD:tban(playerid, params[])
@@ -5151,7 +5399,13 @@ CMD:tban(playerid, params[])
     if (PLAYER_TEMP[to_player][pt_KICKED]) return SendNotification(playerid, "El jugador ya está expulsado.");
     if (!ACCOUNT_INFO[to_player][ac_ID]) return Kick(to_player);
 
-    AddPlayerBan(ACCOUNT_INFO[to_player][ac_ID], ACCOUNT_INFO[to_player][ac_NAME], ACCOUNT_INFO[to_player][ac_IP], ACCOUNT_INFO[playerid][ac_ID], TYPE_TEMP_BAN, reason, days);
+    AddPlayerBan(ACCOUNT_INFO[to_player][ac_ID],
+                 ACCOUNT_INFO[to_player][ac_NAME],
+                 ACCOUNT_INFO[to_player][ac_IP],
+                 ACCOUNT_INFO[playerid][ac_ID],
+                 TYPE_TEMP_BAN,
+                 reason,
+                 days);
 
     new dialog[250];
     format(dialog, sizeof dialog, "Has sido baneado por %d días, razón:\n%s\n", days, reason);
@@ -5159,7 +5413,6 @@ CMD:tban(playerid, params[])
     KickEx(to_player, 500);
 
     SendFormatNotification(playerid, "Jugador (nick: '%s' dbid: '%d', pid: '%d') baneado por %d días.", ACCOUNT_INFO[to_player][ac_NAME], ACCOUNT_INFO[to_player][ac_ID], to_player, days);
-
 
     new str[145]; format(str, 145, "{"#RED_COLOR"}[ADMIN] {FFFFFF}%s (%d) baneó %d días a %s (%d): %s", ACCOUNT_INFO[playerid][ac_NAME], playerid, days, ACCOUNT_INFO[to_player][ac_NAME], to_player, reason);
     SendAdminAd(-1, str);
@@ -5384,6 +5637,7 @@ CMD:deletead(playerid, params[])
     MySQL_TQueryInline(srp_db, using inline OnShopChecked, QUERY_BUFFER);
     return 1;
 }
+
 alias:deletead("borrarad")
 
 CMD:settime(playerid, params[])
@@ -5436,6 +5690,7 @@ CMD:givemod(playerid, params[])
     SendCmdLogToAdmins(playerid, "givemod", params);
     return 1;
 }
+
 alias:givemod("staff")
 
 CMD:ac(playerid, params[])
@@ -5458,6 +5713,7 @@ CMD:setthirst(playerid, params[])
     SendCmdLogToAdmins(playerid, "setthirst", params);
     return 1;
 }
+
 alias:setthirst("setsed")
 
 CMD:sethunger(playerid, params[])
@@ -5474,6 +5730,7 @@ CMD:sethunger(playerid, params[])
     SendCmdLogToAdmins(playerid, "sethunger", params);
     return 1;
 }
+
 alias:sethunger("sethambre", "sethungry")
 
 CMD:setgas(playerid, params[])
@@ -5510,6 +5767,7 @@ CMD:repairveh(playerid, params[])
     SendCmdLogToAdmins(playerid, "repairveh", params);
     return 1;
 }
+
 alias:repairveh("repararveh")
 
 CMD:sethealth(playerid, params[])
@@ -5526,6 +5784,7 @@ CMD:sethealth(playerid, params[])
     SendCmdLogToAdmins(playerid, "sethealth", params);
     return 1;
 }
+
 alias:sethealth("setvida")
 
 CMD:setarmour(playerid, params[])
@@ -5542,6 +5801,7 @@ CMD:setarmour(playerid, params[])
     SendCmdLogToAdmins(playerid, "setarmour", params);
     return 1;
 }
+
 alias:setarmour("setchaleco")
 
 CMD:setlevel(playerid, params[])
@@ -5587,7 +5847,6 @@ CMD:setwork(playerid, params[])
     if (work < 0 || work >= sizeof work_info) return SendNotification(playerid, "El trabajo no es válido, para verlos usa /works.");
 
     if (PLAYER_TEMP[to_player][pt_WORKING_IN]) return SendNotification(playerid, "No se puede cambiar el trabajo del jugador porque está de servicio en su trabajo.");
-
 
     new player_jobs = CountPlayerJobs(to_player);
     if (ACCOUNT_INFO[to_player][ac_VIP])
@@ -5730,6 +5989,7 @@ CMD:asay(playerid, params[])
     SendCmdLogToAdmins(playerid, "asay", params);
     return 1;
 }
+
 alias:asay("global")
 
 CMD:spos(playerid, params[])
@@ -5740,8 +6000,6 @@ CMD:spos(playerid, params[])
     SetPlayerPosEx(playerid, p[0], p[1], p[2], p[3], interior, vw);
     return 1;
 }
-
-
 
 CMD:payday(playerid, params[])
 {
@@ -5809,6 +6067,7 @@ CMD:nombre(playerid, params[])
     ShowDialog(playerid, DIALOG_CHANGE_NAME);
     return 1;
 }
+
 alias:nombre("cname")
 
 CMD:correo(playerid, params[])
@@ -5816,6 +6075,7 @@ CMD:correo(playerid, params[])
     ShowDialog(playerid, DIALOG_CHANGE_EMAIL);
     return 1;
 }
+
 alias:correo("email", "mail")
 
 CMD:setnametemp(playerid, params[])
@@ -5918,7 +6178,6 @@ CMD:exproperty(playerid, params[])
 
     if (!PROPERTY_INFO[index][property_SOLD]) return SendNotification(playerid, "Esta propiedad ya está en venta.");
 
-
     PROPERTY_INFO[ index ][property_SOLD] = false;
     PROPERTY_INFO[ index ][property_CREW] = false;
     PROPERTY_INFO[ index ][property_OWNER_ID] = 0;
@@ -5935,7 +6194,10 @@ CMD:exproperty(playerid, params[])
     info[0] = PICKUP_TYPE_PROPERTY;
     info[1] = index; // Index
     info[2] = 2; // Pickup Exterior
-    Streamer_SetArrayData(STREAMER_TYPE_PICKUP, PROPERTY_INFO[ index ][property_EXT_PICKUP_ID], E_STREAMER_EXTRA_ID, info);
+    Streamer_SetArrayData(STREAMER_TYPE_PICKUP,
+                          PROPERTY_INFO[ index ][property_EXT_PICKUP_ID],
+                          E_STREAMER_EXTRA_ID,
+                          info);
 
     mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE properties SET id_player = NULL, id_territory = NULL WHERE id = %d;", PROPERTY_INFO[ index ][property_ID]);
     mysql_tquery(srp_db, QUERY_BUFFER);
@@ -5951,9 +6213,18 @@ CMD:gotoproperty(playerid, params[])
     if (sscanf(params, "d", int_type)) return SendNotification(playerid, "~r~Modo de uso:~w~ /gotoproperty <interior>");
     if (int_type < 0 || int_type >= sizeof PROPERTY_INTERIORS) return SendFormatNotification(playerid, "Error, rango de interior: 0-%d", sizeof(PROPERTY_INTERIORS) - 1);
 
-    SetPlayerPosEx(playerid, PROPERTY_INTERIORS[int_type][property_INT_X], PROPERTY_INTERIORS[int_type][property_INT_Y], PROPERTY_INTERIORS[int_type][property_INT_Z], PROPERTY_INTERIORS[int_type][property_INT_ANGLE], PROPERTY_INTERIORS[int_type][property_INT_INTERIOR], 0, false, true);
+    SetPlayerPosEx(playerid,
+                   PROPERTY_INTERIORS[int_type][property_INT_X],
+                   PROPERTY_INTERIORS[int_type][property_INT_Y],
+                   PROPERTY_INTERIORS[int_type][property_INT_Z],
+                   PROPERTY_INTERIORS[int_type][property_INT_ANGLE],
+                   PROPERTY_INTERIORS[int_type][property_INT_INTERIOR],
+                   0,
+                   false,
+                   true);
     return 1;
 }
+
 alias:gotoproperty("ircasa")
 
 CMD:setpass(playerid, params[])
@@ -6049,11 +6320,13 @@ CMD:delete(playerid, params[])
                             info[0] = PICKUP_TYPE_PROPERTY;
                             info[1] = index; // Index
                             info[2] = 2; // Pickup Exterior
-                            Streamer_SetArrayData(STREAMER_TYPE_PICKUP, PROPERTY_INFO[ index ][property_EXT_PICKUP_ID], E_STREAMER_EXTRA_ID, info);
+                            Streamer_SetArrayData(STREAMER_TYPE_PICKUP,
+                                                  PROPERTY_INFO[ index ][property_EXT_PICKUP_ID],
+                                                  E_STREAMER_EXTRA_ID,
+                                                  info);
 
                             ex_properties++;
                         }
-
 
                         SendFormatNotification(playerid, "CUENTA (Nombre '%s' DB-ID: '%d') ha sido eliminada.", name, id);
                         if (ex_properties > 0) SendFormatNotification(playerid, "Se han expropiado '%d' propiedades del jugador eliminado.", ex_properties);
@@ -6071,4 +6344,3 @@ CMD:delete(playerid, params[])
     MySQL_TQueryInline(srp_db, using inline OnInfoQueryLoad, QUERY_BUFFER);
     return 1;
 }
-

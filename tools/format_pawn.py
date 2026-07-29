@@ -167,23 +167,51 @@ def step_allman_braces(text):
     """
     Convert OTBS to Allman: move block-opening { to a new line.
 
-    Uses [^\\S\\n] (whitespace without newline) to avoid cascading
-    substitutions when previous steps insert newlines.
+    Preserves the indentation of the opening statement.
 
     Sequence:
-    1. `} else {` → `}\\nelse\\n{`           (3-way split)
-    2. `} else`  → `}\\nelse`               (separate } from else/else-if)
-    3. `) {`     → `)\\n{`                   (functions, if/for/while/switch)
-    4. `else {`  → `else\\n{`                 (else blocks)
-    5. `do {`    → `do\\n{`                   (do-while)
+    1. `} else {` → `}\\n<indent>else\\n<indent>{`
+    2. `} else`  → `}\\n<indent>else`
+    3. `) {`     → `)\\n<indent>{`
+    4. `else {`  → `else\\n<indent>{`
+    5. `do {`    → `do\\n<indent>{`
     """
 
+    def _indent(m):
+        ws = m.group(1)
+        return m.group(0).replace(m.group(2), ws + m.group(2), 1)
+
     def transform(code):
-        code = re.sub(r'\}[^\S\n]+(else)[^\S\n]*\{', r'}\n\1\n{', code)
-        code = re.sub(r'\}[^\S\n]+(else\b)', r'}\n\1', code)
-        code = re.sub(r'(\))[^\S\n]*\{', r'\1\n{', code)
-        code = re.sub(r'(\belse)[^\S\n]*\{', r'\1\n{', code)
-        code = re.sub(r'(\bdo)[^\S\n]*\{', r'\1\n{', code)
+        code = re.sub(
+            r'^([ \t]*)\}[^\S\n]+(else)[^\S\n]*\{',
+            lambda m: m.group(1) + '}\n' + m.group(1) + m.group(2) + '\n' + m.group(1) + '{',
+            code,
+            flags=re.MULTILINE,
+        )
+        code = re.sub(
+            r'^([ \t]*)\}[^\S\n]+(else\b)(?![^\S\n]*\{)',
+            lambda m: m.group(1) + '}\n' + m.group(1) + m.group(2),
+            code,
+            flags=re.MULTILINE,
+        )
+        code = re.sub(
+            r'^([ \t]*)(.*)\)[^\S\n]*\{',
+            lambda m: m.group(1) + m.group(2) + ')\n' + m.group(1) + '{',
+            code,
+            flags=re.MULTILINE,
+        )
+        code = re.sub(
+            r'^([ \t]*)(else)[^\S\n]*\{',
+            lambda m: m.group(1) + m.group(2) + '\n' + m.group(1) + '{',
+            code,
+            flags=re.MULTILINE,
+        )
+        code = re.sub(
+            r'^([ \t]*)(do)[^\S\n]*\{',
+            lambda m: m.group(1) + m.group(2) + '\n' + m.group(1) + '{',
+            code,
+            flags=re.MULTILINE,
+        )
         return code
 
     return stateful_transform(text, transform)
@@ -253,6 +281,56 @@ def step_case_braces(text):
         return '\n'.join(result)
 
     return stateful_transform(text, transform)
+
+
+def step_indent_braces(text):
+    """
+    Re-indent lone `{` to match the indentation of the preceding statement.
+
+    For multi-line conditions walks back to find the control-flow keyword
+    (if/for/while/switch) and uses its indentation.
+    """
+    lines = text.split('\n')
+    result = list(lines)
+    ctrl_re = re.compile(r'\b(if|for|while|switch)\s*\(')
+    scope_re = re.compile(r'^[ \t]*[{}][ \t]*$')
+    case_re = re.compile(r'^\s*(case\s|default\s*:)')
+
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+        if stripped != '{':
+            continue
+
+        j = i - 1
+        while j >= 0 and lines[j].strip() == '':
+            j -= 1
+        if j < 0:
+            continue
+
+        indent = re.match(r'^(\s*)', lines[j]).group(1)
+        indent_len = len(indent)
+
+        # Walk back looking for a control keyword at lesser indent.
+        # Stop at scope boundaries and case/default labels.
+        while j > 0:
+            k = j - 1
+            while k >= 0 and lines[k].strip() == '':
+                k -= 1
+            if k < 0:
+                break
+            if scope_re.match(lines[k]) or case_re.match(lines[k]):
+                break
+            prev_indent = len(re.match(r'^(\s*)', lines[k]).group(1))
+            if prev_indent <= indent_len:
+                if prev_indent < indent_len and ctrl_re.search(lines[k]):
+                    indent = re.match(r'^(\s*)', lines[k]).group(1)
+                indent_len = prev_indent
+                j = k
+            else:
+                break
+
+        result[i] = indent + '{'
+    return '\n'.join(result)
 
 
 def step_long_lines(text, max_len=120):
@@ -339,6 +417,7 @@ def format_path(path):
     text = step_increment(text)
     text = step_allman_braces(text)
     text = step_case_braces(text)
+    text = step_indent_braces(text)
     text = step_long_lines(text)
 
     if text != original:
@@ -358,6 +437,7 @@ def format_text(raw_text: str) -> str:
     text = step_increment(text)
     text = step_allman_braces(text)
     text = step_case_braces(text)
+    text = step_indent_braces(text)
     text = step_long_lines(text)
     return text
 
