@@ -271,7 +271,7 @@ in {
 
       autoReconnect = lib.mkOption {
         type = lib.types.bool;
-        default = false;
+        default = true;
         description = "Automatically reconnect to the database.";
       };
 
