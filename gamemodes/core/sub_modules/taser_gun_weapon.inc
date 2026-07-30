@@ -29,10 +29,10 @@ hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, 
 {
     new weaponId = weaponid;
     if (weaponId)
-{
+    {
         new slot = WEAPON_INFO[weaponId][weapon_info_SLOT];
         if (WEAPON_INFO[ PLAYER_WEAPONS[playerid][slot][player_weapon_ID] ][weapon_info_TYPE] == WEAPON_TASER_GUN)
-{
+        {
             PlayerPlaySound(playerid, 6003, 0.0, 0.0, 0.0);
         }
     }
@@ -43,12 +43,12 @@ hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 {
     new weaponId = GetPlayerWeapon(playerid);
     if (weaponId)
-{
+    {
         new slot = WEAPON_INFO[weaponId][weapon_info_SLOT];
         if (WEAPON_INFO[ PLAYER_WEAPONS[playerid][slot][player_weapon_ID] ][weapon_info_TYPE] == WEAPON_TASER_GUN)
-{
+        {
             if (ACCOUNT_INFO[damagedid][ac_STATE] != ROLEPLAY_STATE_CRACK && !pTazed[damagedid])
-{
+            {
                 pTazed[damagedid] = true;
                 PlayerPlaySound(damagedid, 6003, 0.0, 0.0, 0.0);
                 ApplyAnimation(damagedid, "CRACK", "crckidle4", 4.1, 1, 0, 0, 1, 0, 1);

@@ -25,6 +25,7 @@ enum PLAYER_TUNING_MENU_Info
     tuning_menu_ID,
     tuning_menu_PIECES,
 }
+
 new PLAYER_TUNING_MENU[MAX_PLAYERS][MAX_TUNING_PARTS_COMPONENTS][PLAYER_TUNING_MENU_Info];
 
 VehiclePaintjob(modelid)

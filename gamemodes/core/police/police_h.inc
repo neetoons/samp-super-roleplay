@@ -23,6 +23,7 @@ enum enum_POLICE_SHOP_WEAPONS
     police_shop_WEAPON_ID,
     police_shop_WEAPON_PRICE,
 }
+
 new POLICE_SHOP_WEAPONS[][enum_POLICE_SHOP_WEAPONS] =
 {
     {1, 3, 50},
@@ -42,13 +43,13 @@ new POLICE_SHOP_WEAPONS[][enum_POLICE_SHOP_WEAPONS] =
     {9, 47, 1000}
 };
 
-
 enum enum_POLICE_SKINS
 {
     police_skin_TYPE,
     police_skin_SKIN,
     police_skin_RANK,
 }
+
 new POLICE_SKINS[][enum_POLICE_SKINS] =
 {
     {SEX_MALE, 71, 1},
@@ -100,6 +101,7 @@ enum enum_POLICE_OBJECTS
     police_object_USER[24],
     police_object_OBJECT_ID,
 }
+
 new POLICE_OBJECTS[MAX_POLICE_OBJECTS][enum_POLICE_OBJECTS];
 
 enum enum_POLICE_GARAGE_DOORS
@@ -122,6 +124,7 @@ enum enum_POLICE_GARAGE_DOORS
     police_gdoor_OBJECT_ID,
     police_gdoor_TIMER,
 }
+
 new POLICE_GARAGE_DOORS[][enum_POLICE_GARAGE_DOORS] =
 {
     {3055, 1588.48853, -1637.85852, 14.57500, 0.0, 0.0, 0.0, 1588.48853, -1637.85852, 16.45880, 90.0, 0.0, 0.0, 1.3, false, INVALID_STREAMER_ID, -1},
@@ -143,6 +146,7 @@ enum enum_POLICE_DOORS
     police_door_OBJECT_ID,
     police_door_TIMER,
 }
+
 new POLICE_DOORS[][enum_POLICE_DOORS] =
 {
     {1495, 1582.6055, -1638.0713, 12.3384, 0.0, 0, 0, true, INVALID_STREAMER_ID, -1},//lspd

@@ -17,11 +17,14 @@ new
 
 hook OnSanAndreasVehicleLoad(vehicleid)
 {
-    if (GLOBAL_VEHICLES[vehicleid][gb_vehicle_TYPE] == VEHICLE_TYPE_WORK && WORK_VEHICLES[vehicleid][work_vehicle_WORK] == WORK_DELIVERYMAN && GLOBAL_VEHICLES[vehicleid][gb_vehicle_MODELID] == 482)
-{
+    if (
+        GLOBAL_VEHICLES[vehicleid][gb_vehicle_TYPE] == VEHICLE_TYPE_WORK &&
+        WORK_VEHICLES[vehicleid][work_vehicle_WORK] == WORK_DELIVERYMAN &&
+    GLOBAL_VEHICLES[vehicleid][gb_vehicle_MODELID] == 482)
+    {
         new slot = GetVehicleFreeObjectSlot(vehicleid);
         if (slot != -1)
-{
+        {
             VEHICLE_OBJECTS[vehicleid][slot][vobject_VALID] = true;
             VEHICLE_OBJECTS[vehicleid][slot][vobject_TYPE] = VOBJECT_TYPE_TEXT;
             VEHICLE_OBJECTS[vehicleid][slot][vobject_ID] = 0;
@@ -47,7 +50,7 @@ hook OnSanAndreasVehicleLoad(vehicleid)
 
         slot = GetVehicleFreeObjectSlot(vehicleid);
         if (slot != -1)
-{
+        {
             VEHICLE_OBJECTS[vehicleid][slot][vobject_VALID] = true;
             VEHICLE_OBJECTS[vehicleid][slot][vobject_TYPE] = VOBJECT_TYPE_TEXT;
             VEHICLE_OBJECTS[vehicleid][slot][vobject_ID] = 0;
@@ -73,7 +76,7 @@ hook OnSanAndreasVehicleLoad(vehicleid)
 
         slot = GetVehicleFreeObjectSlot(vehicleid);
         if (slot != -1)
-{
+        {
             VEHICLE_OBJECTS[vehicleid][slot][vobject_VALID] = true;
             VEHICLE_OBJECTS[vehicleid][slot][vobject_TYPE] = VOBJECT_TYPE_TEXT;
             VEHICLE_OBJECTS[vehicleid][slot][vobject_ID] = 0;
@@ -100,7 +103,7 @@ hook OnSanAndreasVehicleLoad(vehicleid)
         //ESPEJO
         slot = GetVehicleFreeObjectSlot(vehicleid);
         if (slot != -1)
-{
+        {
             VEHICLE_OBJECTS[vehicleid][slot][vobject_VALID] = true;
             VEHICLE_OBJECTS[vehicleid][slot][vobject_TYPE] = VOBJECT_TYPE_TEXT;
             VEHICLE_OBJECTS[vehicleid][slot][vobject_ID] = 0;
@@ -126,7 +129,7 @@ hook OnSanAndreasVehicleLoad(vehicleid)
 
         slot = GetVehicleFreeObjectSlot(vehicleid);
         if (slot != -1)
-{
+        {
             VEHICLE_OBJECTS[vehicleid][slot][vobject_VALID] = true;
             VEHICLE_OBJECTS[vehicleid][slot][vobject_TYPE] = VOBJECT_TYPE_TEXT;
             VEHICLE_OBJECTS[vehicleid][slot][vobject_ID] = 0;
@@ -152,7 +155,7 @@ hook OnSanAndreasVehicleLoad(vehicleid)
 
         slot = GetVehicleFreeObjectSlot(vehicleid);
         if (slot != -1)
-{
+        {
             VEHICLE_OBJECTS[vehicleid][slot][vobject_VALID] = true;
             VEHICLE_OBJECTS[vehicleid][slot][vobject_TYPE] = VOBJECT_TYPE_TEXT;
             VEHICLE_OBJECTS[vehicleid][slot][vobject_ID] = 0;
@@ -183,7 +186,13 @@ hook OnScriptInit()
     for (new i = 0; i != sizeof DeliveryManLoadPoints; i++)
     {
         CreateDynamic3DTextLabel("Usa {"#PRIMARY_COLOR"}/cargar {FFFFFF}para cargar la furgoneta", 0xFFFFFFFF, DeliveryManLoadPoints[i][0], DeliveryManLoadPoints[i][1], DeliveryManLoadPoints[i][2], 10.0, .testlos = true, .interiorid = 0);
-        CreateDynamicPickup(19135, 1, DeliveryManLoadPoints[i][0], DeliveryManLoadPoints[i][1], DeliveryManLoadPoints[i][2], -1, 0);
+        CreateDynamicPickup(19135,
+            1,
+            DeliveryManLoadPoints[i][0],
+            DeliveryManLoadPoints[i][1],
+            DeliveryManLoadPoints[i][2],
+            -1,
+        0);
     }
 }
 
@@ -191,7 +200,11 @@ public OnDeliveryManRequestLoad(playerid, vehicleid)
 {
     for (new i = 0; i != sizeof DeliveryManLoadPoints; i++)
     {
-        if (IsPlayerInRangeOfPoint(playerid, 3.0, DeliveryManLoadPoints[i][0], DeliveryManLoadPoints[i][1], DeliveryManLoadPoints[i][2]))
+        if (IsPlayerInRangeOfPoint(playerid,
+            3.0,
+            DeliveryManLoadPoints[i][0],
+            DeliveryManLoadPoints[i][1],
+        DeliveryManLoadPoints[i][2]))
         {
             new Float:angle;
             GetVehicleZAngle(vehicleid, angle);
@@ -211,7 +224,7 @@ public OnDeliveryManRequestLoad(playerid, vehicleid)
                 UpdateVehicleParams(vehicleid);
 
                 if (pDeliveryManLoadingTimer[playerid] != -1)
-{
+                {
                     KillTimer(pDeliveryManLoadingTimer[playerid]);
                     pDeliveryManLoadingTimer[playerid] = -1;
                 }
@@ -236,21 +249,21 @@ public OnDeliveryManRequestLoad(playerid, vehicleid)
 hook OnDeliveryManLoadingUp(playerid, vehicleid)
 {
     if (GetPlayerVehicleID(playerid) != vehicleid || pDeliveryManLoadingProgress[playerid] >= 100.0)
-{
+    {
         if (pDeliveryManLoadingTd[playerid] != PlayerText:INVALID_TEXT_DRAW)
-{
+        {
             PlayerTextDrawDestroy(playerid, pDeliveryManLoadingTd[playerid]);
             pDeliveryManLoadingTd[playerid] = PlayerText:INVALID_TEXT_DRAW;
         }
         if (pDeliveryManLoadingTimer[playerid] != -1)
-{
+        {
             KillTimer(pDeliveryManLoadingTimer[playerid]);
             pDeliveryManLoadingTimer[playerid] = -1;
         }
         pDeliveryManLoadingProgress[playerid] = 0.0;
 
         if (GetPlayerVehicleID(playerid) == vehicleid)
-{
+        {
             GLOBAL_VEHICLES[vehicleid][gb_vehicle_PARAMS_ENGINE] = 1;
             UpdateVehicleParams(vehicleid);
 
@@ -267,7 +280,7 @@ hook OnDeliveryManLoadingUp(playerid, vehicleid)
         }
     }
     else
-{
+    {
         pDeliveryManLoadingProgress[playerid] += frandom(10.0, 7.0, 2);
         if (pDeliveryManLoadingProgress[playerid] > 100.0) pDeliveryManLoadingProgress[playerid] = 100.0;
 
@@ -280,9 +293,9 @@ hook OnDeliveryManLoadingUp(playerid, vehicleid)
 hook StartPlayerJob(playerid, work, vehicleid)
 {
     if (work == WORK_DELIVERYMAN)
-{
+    {
         if (pDeliveryManLoadingTd[playerid] == PlayerText:INVALID_TEXT_DRAW)
-{
+        {
             pDeliveryManLoadingTd[playerid] = CreatePlayerTextDraw(playerid, 320.000000, 350.000000, "_");
             PlayerTextDrawLetterSize(playerid, pDeliveryManLoadingTd[playerid], 0.233249, 1.198665);
             PlayerTextDrawTextSize(playerid, pDeliveryManLoadingTd[playerid], 0.000000, 200.000000);
@@ -295,17 +308,16 @@ hook StartPlayerJob(playerid, work, vehicleid)
             PlayerTextDrawSetProportional(playerid, pDeliveryManLoadingTd[playerid], 1);
         }
 
-
         if (IsPlayerArmedWeaponsEnabled(playerid)) DisablePlayerArmedWeapons(playerid);
         RemovePlayerAttachedObject(playerid, 8);
         if (TRUCK_VEHICLE[vehicleid][truck_vehicle_LOADED])
         {
             if (TRUCK_VEHICLE[vehicleid][truck_vehicle_DELIVERED]) SendNotification(playerid, "La furgoneta ya ha entregado todos los paquetes, ve al punto de partida para cobrar.");
             else
-{
+            {
                 if (TRUCK_VEHICLE[vehicleid][truck_vehicle_CURRENT_POINT] == 0) SendNotification(playerid, "Ve a entregar el primer paquete al punto marcado.");
                 else
-{
+                {
                     SendFormatNotification(playerid, "Ve a entregar el siguiente paquete al punto marcado. Te quedan ~y~%d ~w~paquetes por entregar.", TRUCK_VEHICLE[vehicleid][truck_vehicle_TOTAL_POINTS] - TRUCK_VEHICLE[vehicleid][truck_vehicle_CURRENT_POINT]);
                 }
             }
@@ -319,15 +331,15 @@ hook StartPlayerJob(playerid, work, vehicleid)
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
     if (oldstate == PLAYER_STATE_DRIVER && PLAYER_TEMP[playerid][pt_WORKING_IN] == WORK_DELIVERYMAN)
-{
+    {
         if (PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID] != INVALID_VEHICLE_ID)
-{
+        {
             new vehicleid = PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID];
             if (TRUCK_VEHICLE[vehicleid][truck_vehicle_DRIVER_USER_ID] == ACCOUNT_INFO[playerid][ac_ID] && !TRUCK_VEHICLE[vehicleid][truck_vehicle_DELIVERED])
-{
+            {
                 new index = TRUCK_VEHICLE[vehicleid][truck_vehicle_POINT];
                 if (index != -1)
-{
+                {
                     new Float:distance = GetPlayerDistanceFromPoint
                     (
                         playerid,
@@ -337,10 +349,22 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
                     );
 
                     if (distance <= 30.0)
-{
+                    {
                         SetPlayerArmedWeapon(playerid, 0);
                         RemovePlayerAttachedObject(playerid, 8);
-                        SetPlayerAttachedObject(playerid, 8, 1220, 5, 0.020000, 0.150999, 0.184000, 8.100003, 20.200000, 5.300002, 0.494000, 0.450000, 0.531000);
+                        SetPlayerAttachedObject(playerid,
+                            8,
+                            1220,
+                            5,
+                            0.020000,
+                            0.150999,
+                            0.184000,
+                            8.100003,
+                            20.200000,
+                            5.300002,
+                            0.494000,
+                            0.450000,
+                        0.531000);
                         SetPlayerSpecialAction(playerid, SPECIAL_ACTION_CARRY);
                     }
                 }
@@ -352,14 +376,14 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 hook EndPlayerJob(playerid, work, bool:changeskin)
 {
     if (work == WORK_DELIVERYMAN)
-{
+    {
         RemovePlayerAttachedObject(playerid, 8);
         SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
         SetPlayerToys(playerid);
         if (PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID] != INVALID_VEHICLE_ID)
         {
             if (TRUCK_VEHICLE[ PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID] ][truck_vehicle_DRIVER_USER_ID] == ACCOUNT_INFO[playerid][ac_ID] && TRUCK_VEHICLE[ PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID] ][truck_vehicle_LOADING])
-{
+            {
                 SetVehicleToRespawnEx(PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID]);
             }
         }
@@ -369,12 +393,12 @@ hook EndPlayerJob(playerid, work, bool:changeskin)
             PLAYER_TEMP[playerid][pt_TRUCK_CHECKPOINT] = INVALID_STREAMER_ID;
         }
         if (pDeliveryManLoadingTd[playerid] != PlayerText:INVALID_TEXT_DRAW)
-{
+        {
             PlayerTextDrawDestroy(playerid, pDeliveryManLoadingTd[playerid]);
             pDeliveryManLoadingTd[playerid] = PlayerText:INVALID_TEXT_DRAW;
         }
         if (pDeliveryManLoadingTimer[playerid] != -1)
-{
+        {
             KillTimer(pDeliveryManLoadingTimer[playerid]);
             pDeliveryManLoadingTimer[playerid] = -1;
         }
@@ -402,12 +426,15 @@ SetPlayerDeliveryManCheckpoint(playerid, vehicleid)
     {
         new index = TRUCK_VEHICLE[vehicleid][truck_vehicle_POINT];
         if (index != -1)
-{
+        {
             PLAYER_TEMP[playerid][pt_TRUCK_CHECKPOINT] = CreateDynamicCP(PROPERTY_INFO[index][property_EXT_X], PROPERTY_INFO[index][property_EXT_Y], PROPERTY_INFO[index][property_EXT_Z], 2.0, 0, 0, playerid, 9999999999.0);
 
             new info[1];
             info[0] = CHECKPOINT_TYPE_DMAN;
-            Streamer_SetArrayData(STREAMER_TYPE_CP, PLAYER_TEMP[playerid][pt_TRUCK_CHECKPOINT], E_STREAMER_EXTRA_ID, info);
+            Streamer_SetArrayData(STREAMER_TYPE_CP,
+                PLAYER_TEMP[playerid][pt_TRUCK_CHECKPOINT],
+                E_STREAMER_EXTRA_ID,
+            info);
         }
     }
     Streamer_Update(playerid, STREAMER_TYPE_CP);
@@ -425,20 +452,20 @@ hook OnPlayerEnterDynamicCP(playerid, checkpointid)
 
             new vehicleid = PLAYER_TEMP[playerid][pt_LAST_VEHICLE_ID];
             if (vehicleid != INVALID_VEHICLE_ID)
-{
+            {
                 if (TRUCK_VEHICLE[vehicleid][truck_vehicle_DRIVER_USER_ID] == ACCOUNT_INFO[playerid][ac_ID])
-{
+                {
                     RemovePlayerAttachedObject(playerid, 8);
                     SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
                     TRUCK_VEHICLE[vehicleid][truck_vehicle_CURRENT_POINT] ++;
                     if (TRUCK_VEHICLE[vehicleid][truck_vehicle_CURRENT_POINT] >= TRUCK_VEHICLE[vehicleid][truck_vehicle_TOTAL_POINTS])
-{
+                    {
                         TRUCK_VEHICLE[vehicleid][truck_vehicle_POINT] = 0;
                         TRUCK_VEHICLE[vehicleid][truck_vehicle_DELIVERED] = true;
                         SendNotification(playerid, "Has terminado de entregar todos los paquetes, regresa al punto de partida para cobrar.");
                     }
                     else
-{
+                    {
                         TRUCK_VEHICLE[vehicleid][truck_vehicle_POINT] = GetRandomPropertyIndex();
                         TRUCK_VEHICLE[vehicleid][truck_vehicle_TOTAL_DISTANCE] += GetPlayerDistanceFromPoint(playerid, PROPERTY_INFO[ TRUCK_VEHICLE[vehicleid][truck_vehicle_POINT] ][property_EXT_X], PROPERTY_INFO[ TRUCK_VEHICLE[vehicleid][truck_vehicle_POINT] ][property_EXT_Y], PROPERTY_INFO[ TRUCK_VEHICLE[vehicleid][truck_vehicle_POINT] ][property_EXT_Z]);
                         SendFormatNotification(playerid, "Paquete entregado, ve a entregar el siguiente. Te quedan ~y~%d ~w~paquetes.", TRUCK_VEHICLE[vehicleid][truck_vehicle_TOTAL_POINTS] - TRUCK_VEHICLE[vehicleid][truck_vehicle_CURRENT_POINT]);
@@ -478,7 +505,7 @@ hook OnPlayerEnterDynamicCP(playerid, checkpointid)
             prize = floatround(floatmul(TRUCK_VEHICLE[vehicleid][truck_vehicle_TOTAL_DISTANCE], 0.6));
             prize += work_extra_payment;
             if (GivePlayerCash(playerid, prize, true, false))
-{
+            {
                 SetVehicleToRespawnEx(vehicleid);
                 PLAYER_WORKS[playerid][WORK_DELIVERYMAN][pwork_LEVEL] ++;
                 AddPlayerJobPoints(playerid, WORK_DELIVERYMAN);

@@ -90,7 +90,7 @@ hook OnPlayerDisconnect(playerid, reason)
 {
     pTaximeterShown[playerid] = false;
     for (new i = 0; i < sizeof pTaximeterTd[]; i++)
-{
+    {
         PlayerTextDrawDestroy(playerid, pTaximeterTd[playerid][i]);
     }
 }
@@ -111,9 +111,9 @@ ShowPlayerTaxiMeter(playerid)
 {
     UpdatePlayerTaxiMeterTextdraws(playerid);
     if (!IsInventoryOpened(playerid))
-{
+    {
         for (new i = 0; i < sizeof pTaximeterTd[]; i++)
-{
+        {
             PlayerTextDrawShow(playerid, pTaximeterTd[playerid][i]);
         }
         pTaximeterShown[playerid] = true;
@@ -184,7 +184,10 @@ public UpdateVehicleTaximeter(taxi, driver, passenger)
             }
 
             TAXI_METER_VEHICLE[taxi][veh_taxi_meter_ENABLED] = true;
-            GetVehiclePos(taxi, TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_X], TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_Y], TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_Z]);
+            GetVehiclePos(taxi,
+                TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_X],
+                TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_Y],
+            TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_Z]);
             KillTimer(TAXI_METER_VEHICLE[taxi][veh_taxi_meter_TIMER]);
             TAXI_METER_VEHICLE[taxi][veh_taxi_meter_TIMER] = SetTimerEx("UpdateVehicleTaximeter", 4000, true, "iii", taxi, GLOBAL_VEHICLES[taxi][gb_vehicle_DRIVER], new_passenger);
         }
@@ -247,7 +250,10 @@ public UpdateVehicleTaximeter(taxi, driver, passenger)
             }
 
             TAXI_METER_VEHICLE[taxi][veh_taxi_meter_ENABLED] = true;
-            GetVehiclePos(taxi, TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_X], TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_Y], TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_Z]);
+            GetVehiclePos(taxi,
+                TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_X],
+                TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_Y],
+            TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_Z]);
             KillTimer(TAXI_METER_VEHICLE[taxi][veh_taxi_meter_TIMER]);
             TAXI_METER_VEHICLE[taxi][veh_taxi_meter_TIMER] = SetTimerEx("UpdateVehicleTaximeter", 4000, true, "iii", taxi, GLOBAL_VEHICLES[taxi][gb_vehicle_DRIVER], new_passenger);
         }
@@ -310,7 +316,10 @@ public UpdateVehicleTaximeter(taxi, driver, passenger)
             }
 
             TAXI_METER_VEHICLE[taxi][veh_taxi_meter_ENABLED] = true;
-            GetVehiclePos(taxi, TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_X], TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_Y], TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_Z]);
+            GetVehiclePos(taxi,
+                TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_X],
+                TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_Y],
+            TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_Z]);
             KillTimer(TAXI_METER_VEHICLE[taxi][veh_taxi_meter_TIMER]);
             TAXI_METER_VEHICLE[taxi][veh_taxi_meter_TIMER] = SetTimerEx("UpdateVehicleTaximeter", 4000, true, "iii", taxi, GLOBAL_VEHICLES[taxi][gb_vehicle_DRIVER], new_passenger);
         }
@@ -355,7 +364,10 @@ public UpdateVehicleTaximeter(taxi, driver, passenger)
             }
 
             TAXI_METER_VEHICLE[taxi][veh_taxi_meter_ENABLED] = true;
-            GetVehiclePos(taxi, TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_X], TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_Y], TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_Z]);
+            GetVehiclePos(taxi,
+                TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_X],
+                TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_Y],
+            TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_Z]);
             KillTimer(TAXI_METER_VEHICLE[taxi][veh_taxi_meter_TIMER]);
             TAXI_METER_VEHICLE[taxi][veh_taxi_meter_TIMER] = SetTimerEx("UpdateVehicleTaximeter", 4000, true, "iii", taxi, GLOBAL_VEHICLES[taxi][gb_vehicle_DRIVER], new_passenger);
         }
@@ -367,7 +379,10 @@ public UpdateVehicleTaximeter(taxi, driver, passenger)
     TAXI_METER_VEHICLE[taxi][veh_taxi_meter_DISTANCE] += distance;
     TAXI_METER_VEHICLE[taxi][veh_taxi_meter_PAYMENT] = TAXI_METER_VEHICLE[taxi][veh_taxi_meter_PRICE] * floatround(TAXI_METER_VEHICLE[taxi][veh_taxi_meter_DISTANCE], floatround_round);
 
-    GetVehiclePos(taxi, TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_X], TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_Y], TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_Z]);
+    GetVehiclePos(taxi,
+        TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_X],
+        TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_Y],
+    TAXI_METER_VEHICLE[taxi][veh_taxi_meter_OLD_Z]);
 
     UpdatePlayerTaxiMeterTextdraws(driver);
     UpdatePlayerTaxiMeterTextdraws(passenger);
@@ -378,7 +393,7 @@ HidePlayerTaxiMeter(playerid)
 {
     pTaximeterShown[playerid] = false;
     for (new i = 0; i < sizeof pTaximeterTd[]; i++)
-{
+    {
         PlayerTextDrawHide(playerid, pTaximeterTd[playerid][i]);
     }
     PLAYER_TEMP[playerid][pt_TAXI_METER_ENABLED] = false;
@@ -388,19 +403,19 @@ HidePlayerTaxiMeter(playerid)
 PlayerTaximeter_UpdateShown(playerid)
 {
     if (PLAYER_TEMP[playerid][pt_TAXI_METER_ENABLED])
-{
+    {
         if (!IsInventoryOpened(playerid) && !pTaximeterShown[playerid])
-{
+        {
             for (new i = 0; i < sizeof pTaximeterTd[]; i++)
-{
+            {
                 PlayerTextDrawShow(playerid, pTaximeterTd[playerid][i]);
             }
             pTaximeterShown[playerid] = true;
         }
         else if (IsInventoryOpened(playerid) && pTaximeterShown[playerid])
-{
+        {
             for (new i = 0; i < sizeof pTaximeterTd[]; i++)
-{
+            {
                 PlayerTextDrawHide(playerid, pTaximeterTd[playerid][i]);
             }
             pTaximeterShown[playerid] = false;

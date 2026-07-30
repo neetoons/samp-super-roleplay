@@ -553,9 +553,9 @@ hook OnPlayerDisconnect(playerid, reason)
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
     if (newstate == PLAYER_STATE_SPECTATING || newstate == PLAYER_STATE_WASTED)
-{
+    {
         if (pFurnitureShopOpened[playerid])
-{
+        {
             CancelSelectTextDrawEx(playerid);
         }
     }
@@ -565,7 +565,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 {
     if (clickedid == Text:INVALID_TEXT_DRAW && pFurnitureShopOpened[playerid])
-{
+    {
         DestroyPlayerFurnitureShop(playerid);
     }
 }
@@ -573,7 +573,7 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 {
     if (pFurnitureShopOpened[playerid])
-{
+    {
         if (playertextid == pFurnitureShopTd[playerid][3])
 { //<< CAT
             pFurnitureShopCurrentType[playerid] --;
@@ -609,9 +609,9 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
             new dialog_body[(MAX_SU_PROPERTIES * 128) + 1], count = 0;
             dialog_body = "Propiedad\tMuebles\n";
             for (new i = 0; i < sizeof PROPERTY_INFO; i++)
-{
+            {
                 if (PROPERTY_INFO[i][property_SOLD] && PROPERTY_INFO[i][property_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
-{
+                {
                     new string[64];
                     format(string, sizeof string, "%d. %s [ID: %d]\t%d/%d muebles\n", count + 1, PROPERTY_INFO[i][property_NAME], PROPERTY_INFO[i][property_ID], CountPropertyObjects(PROPERTY_INFO[i][property_ID]), ACCOUNT_INFO[playerid][ac_VIP] ? MAX_SU_PROPERTY_OBJECTS : MAX_NU_PROPERTY_OBJECTS);
                     strcat(dialog_body, string);
@@ -624,7 +624,7 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
             if (count == 0) return SendNotification(playerid, "No tienes ninguna propiedad.");
 
             for (new i = 0; i < sizeof pFurnitureShopTd[]; i++)
-{
+            {
                 PlayerTextDrawHide(playerid, pFurnitureShopTd[playerid][i]);
             }
 
@@ -641,17 +641,17 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
     if (dialogid == DIALOG_FSHOP_SELECT_PROPERTY)
-{
+    {
         if (response)
-{
+        {
             new property_index = PLAYER_TEMP[playerid][pt_PLAYER_GPS_SELECTED_PROPERTY][listitem];
             new limit = ACCOUNT_INFO[playerid][ac_VIP] ? MAX_SU_PROPERTY_OBJECTS : MAX_NU_PROPERTY_OBJECTS;
             if (CountPropertyObjects(PROPERTY_INFO[property_index][property_ID]) >= limit) SendNotification(playerid, "No puedes añadir más muebles a esta propiedad.");
             else
-{
+            {
                 new objectIndex = GetCurrentFurnitureObjectIndex(playerid);
                 if (GivePlayerCash(playerid, -FurnitureObjectsInfo[objectIndex][foi_PRICE], true, true))
-{
+                {
                     RegisterPropertyObject(property_index, PROPERTY_INFO[property_index][property_ID], FurnitureObjectsInfo[objectIndex][foi_MODELID]);
                     SendNotification(playerid, "~g~¡El mueble será entregado en tu propiedad! ~w~Puedes seguir comprando o presionar ~y~'ESC' ~w~para salir.");
                 }
@@ -659,7 +659,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
             }
         }
         for (new i = 0; i < sizeof pFurnitureShopTd[]; i++)
-{
+        {
             PlayerTextDrawShow(playerid, pFurnitureShopTd[playerid][i]);
         }
         return Y_HOOKS_BREAK_RETURN_1;
@@ -670,16 +670,16 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 DestroyPlayerFurnitureShop(playerid)
 {
     for (new i = 0; i < sizeof pFurnitureShopTd[]; i++)
-{
+    {
         if (pFurnitureShopTd[playerid][i] != PlayerText:INVALID_TEXT_DRAW)
-{
+        {
             PlayerTextDrawDestroy(playerid, pFurnitureShopTd[playerid][i]);
             pFurnitureShopTd[playerid][i] = PlayerText:INVALID_TEXT_DRAW;
         }
     }
 
     if (pFurnitureShopPickup[playerid] != INVALID_STREAMER_ID)
-{
+    {
         DestroyDynamicPickup(pFurnitureShopPickup[playerid]);
         pFurnitureShopPickup[playerid] = INVALID_STREAMER_ID;
     }
@@ -706,14 +706,14 @@ UpdatePlayerFurnitureShop(playerid, bool:camera = true)
     PlayerTextDrawSetString(playerid, pFurnitureShopTd[playerid][2], string);
 
     if (pFurnitureShopPickup[playerid] != INVALID_STREAMER_ID)
-{
+    {
         DestroyDynamicPickup(pFurnitureShopPickup[playerid]);
         pFurnitureShopPickup[playerid] = INVALID_STREAMER_ID;
     }
 
     new objectIndex = GetCurrentFurnitureObjectIndex(playerid);
     if (objectIndex != -1)
-{
+    {
         format(string, sizeof string, "Mueble_(%d/%d)", pFurnitureShopCurrentModel[playerid] + 1, CountFurnitureObjectsInfoType(pFurnitureShopCurrentType[playerid]));
         FixTextDrawString(string);
         PlayerTextDrawSetString(playerid, pFurnitureShopTd[playerid][5], string);
@@ -754,7 +754,7 @@ UpdatePlayerFurnitureShop(playerid, bool:camera = true)
         );
     }
     else
-{
+    {
         format(string, sizeof string, "Mueble");
         FixTextDrawString(string);
         PlayerTextDrawSetString(playerid, pFurnitureShopTd[playerid][5], string);
@@ -893,9 +893,9 @@ CreatePlayerFurnitureShop(playerid)
     CreatePFurnitureShopTextDraws(playerid);
     SetPlayerVirtualWorld(playerid, playerid + MAX_PLAYERS);
     for (new i = 0; i < sizeof pFurnitureShopTd[]; i++)
-{
+    {
         if (pFurnitureShopTd[playerid][i] != PlayerText:INVALID_TEXT_DRAW)
-{
+        {
             PlayerTextDrawShow(playerid, pFurnitureShopTd[playerid][i]);
         }
     }
@@ -910,9 +910,9 @@ CountFurnitureObjectsInfoType(type)
 {
     new count = 0;
     for (new i = 0; i < sizeof FurnitureObjectsInfo; i++)
-{
+    {
         if (_:FurnitureObjectsInfo[i][foi_TYPE] == type)
-{
+        {
             count++;
         }
     }
@@ -923,11 +923,11 @@ GetCurrentFurnitureObjectIndex(playerid)
 {
     new count;
     for (new i = 0; i < sizeof FurnitureObjectsInfo; i++)
-{
+    {
         if (_:FurnitureObjectsInfo[i][foi_TYPE] == pFurnitureShopCurrentType[playerid])
-{
+        {
             if (count == pFurnitureShopCurrentModel[playerid])
-{
+            {
                 return i;
             }
             count++;
@@ -946,8 +946,14 @@ InterpolatePCameraToFurType(playerid)
     InterpolateCameraPos(playerid, p[0], p[1], p[2], FurnitureTypesInfo[type][fti_CAM_X], FurnitureTypesInfo[type][fti_CAM_Y], FurnitureTypesInfo[type][fti_CAM_Z], FURNITURE_CAMERA_MOVE_TIME);
     InterpolateCameraLookAt(playerid, p[3], p[4], p[5], FurnitureTypesInfo[type][fti_CAM_LOOK_AT_X], FurnitureTypesInfo[type][fti_CAM_LOOK_AT_Y], FurnitureTypesInfo[type][fti_CAM_LOOK_AT_Z], FURNITURE_CAMERA_MOVE_TIME);*/
 
-    SetPlayerCameraPos(playerid, FurnitureTypesInfo[type][fti_CAM_X], FurnitureTypesInfo[type][fti_CAM_Y], FurnitureTypesInfo[type][fti_CAM_Z]);
-    SetPlayerCameraLookAt(playerid, FurnitureTypesInfo[type][fti_CAM_LOOK_AT_X], FurnitureTypesInfo[type][fti_CAM_LOOK_AT_Y], FurnitureTypesInfo[type][fti_CAM_LOOK_AT_Z]);
+    SetPlayerCameraPos(playerid,
+        FurnitureTypesInfo[type][fti_CAM_X],
+        FurnitureTypesInfo[type][fti_CAM_Y],
+    FurnitureTypesInfo[type][fti_CAM_Z]);
+    SetPlayerCameraLookAt(playerid,
+        FurnitureTypesInfo[type][fti_CAM_LOOK_AT_X],
+        FurnitureTypesInfo[type][fti_CAM_LOOK_AT_Y],
+    FurnitureTypesInfo[type][fti_CAM_LOOK_AT_Z]);
 }
 
 CMD:muebles(playerid, params[])
@@ -962,9 +968,9 @@ CMD:muebles(playerid, params[])
 GetPObjectModelPrice(modelid)
 {
     for (new i = 0; i < sizeof FurnitureObjectsInfo; i++)
-{
+    {
         if (FurnitureObjectsInfo[i][foi_MODELID] == modelid)
-{
+        {
             return FurnitureObjectsInfo[i][foi_PRICE];
         }
     }

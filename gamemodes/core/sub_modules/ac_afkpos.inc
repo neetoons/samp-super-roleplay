@@ -28,7 +28,7 @@ new
 hook OnPlayerDisconnect(playerid, reason)
 {
     if (pAFKPosTimer[playerid] != -1)
-{
+    {
         KillTimer(pAFKPosTimer[playerid]);
         pAFKPosTimer[playerid] = -1;
     }
@@ -43,7 +43,7 @@ hook OnPlayerSpawn(playerid)
 hook OnPlayerDeath(playerid, killerid, reason)
 {
     if (pAFKPosTimer[playerid] != -1)
-{
+    {
         KillTimer(pAFKPosTimer[playerid]);
         pAFKPosTimer[playerid] = -1;
     }
@@ -52,13 +52,16 @@ hook OnPlayerDeath(playerid, killerid, reason)
 SetAFKPosInfo(playerid)
 {
     if (pAFKPosTimer[playerid] != -1)
-{
+    {
         KillTimer(pAFKPosTimer[playerid]);
         pAFKPosTimer[playerid] = -1;
     }
     if (ac_Info[CHEAT_AFKPOS][ac_Enabled])
-{
-        GetPlayerPos(playerid, PAFKLastPositions[playerid][0], PAFKLastPositions[playerid][1], PAFKLastPositions[playerid][2]);
+    {
+        GetPlayerPos(playerid,
+            PAFKLastPositions[playerid][0],
+            PAFKLastPositions[playerid][1],
+        PAFKLastPositions[playerid][2]);
         pAFKPosTimer[playerid] = SetTimerEx("CheckAFKPos", CHECK_AFK_POS_INTERVAL, false, "i", playerid);
     }
 }
@@ -68,9 +71,12 @@ public CheckAFKPos(playerid)
 {
     pAFKPosTimer[playerid] = -1;
     if (ac_Info[CHEAT_AFKPOS][ac_Enabled])
-{
-        if (ACCOUNT_INFO[playerid][ac_STATE] != ROLEPLAY_STATE_JAIL && GetPlayerDistanceFromPoint(playerid, PAFKLastPositions[playerid][0], PAFKLastPositions[playerid][1], PAFKLastPositions[playerid][2]) <= AFK_POS_DISTANCE)
-{
+    {
+        if (ACCOUNT_INFO[playerid][ac_STATE] != ROLEPLAY_STATE_JAIL && GetPlayerDistanceFromPoint(playerid,
+            PAFKLastPositions[playerid][0],
+            PAFKLastPositions[playerid][1],
+        PAFKLastPositions[playerid][2]) <= AFK_POS_DISTANCE)
+        {
             new now = gettime();
             if (now > PLAYER_AC_INFO[playerid][CHEAT_AFKPOS][p_ac_info_IMMUNITY])
             {

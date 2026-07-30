@@ -362,11 +362,11 @@ hook OnPlayerDeath(playerid, killerid, reason)
 hook OnPlayerObtainWork(playerid, work)
 {
     if (PLAYER_WORKS[playerid][work][pwork_LEVEL] <= 0 && WorksTutorials_Count[work] > 0)
-{
+    {
         StartPlayerWorkTutorial(playerid, work);
     }
     else
-{
+    {
         SendFormatNotification(playerid, "¡Felicidades! Has conseguido tu trabajo de ~b~%s~w~.", work_info[work][work_info_NAME]);
         SendNotification(playerid, "Puedes utilizar ~y~/ayuda trabajos ~w~para ver como trabajar aquí.");
     }
@@ -379,7 +379,14 @@ hook OnPlayerSpawn(playerid)
         ACCOUNT_INFO[playerid][ac_STATE] = pWorkTutorialInfo[playerid][wti_RP_STATE];
         PI[playerid][ac_LOCAL_INTERIOR] = pWorkTutorialInfo[playerid][wti_LOCAL_INTERIOR];
         PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] = pWorkTutorialInfo[playerid][wti_INTERIOR_INDEX];
-        SetPlayerPosEx(playerid, pWorkTutorialInfo[playerid][wti_X], pWorkTutorialInfo[playerid][wti_Y], pWorkTutorialInfo[playerid][wti_Z], pWorkTutorialInfo[playerid][wti_ANGLE], pWorkTutorialInfo[playerid][wti_INTERIOR], pWorkTutorialInfo[playerid][wti_WORLD], 1);
+        SetPlayerPosEx(playerid,
+            pWorkTutorialInfo[playerid][wti_X],
+            pWorkTutorialInfo[playerid][wti_Y],
+            pWorkTutorialInfo[playerid][wti_Z],
+            pWorkTutorialInfo[playerid][wti_ANGLE],
+            pWorkTutorialInfo[playerid][wti_INTERIOR],
+            pWorkTutorialInfo[playerid][wti_WORLD],
+        1);
 
         new tmp_pWorkTutorialInfo[E_workTutorialInfo];
         pWorkTutorialInfo[playerid] = tmp_pWorkTutorialInfo;
@@ -387,7 +394,7 @@ hook OnPlayerSpawn(playerid)
 }
 
 DestroyPlayerWorkTutorial(playerid)
-    {
+{
         if (pWorkTutorialTimer[playerid] != -1)
         {
             KillTimer(pWorkTutorialTimer[playerid]);
@@ -435,7 +442,19 @@ StartPlayerWorkTutorial(playerid, work)
     pWorkTutorialInfo[playerid][wti_Z] = obtain_work_coords[work][obtain_work_Z];
     pWorkTutorialInfo[playerid][wti_ANGLE] = PI[playerid][ac_ANGLE];
 
-    SetSpawnInfo(playerid, NO_TEAM, PI[playerid][ac_SKIN], PI[playerid][ac_POS_X], PI[playerid][ac_POS_Y], PI[playerid][ac_POS_Z], PI[playerid][ac_ANGLE], 0, 0, 0, 0, 0, 0);
+    SetSpawnInfo(playerid,
+        NO_TEAM,
+        PI[playerid][ac_SKIN],
+        PI[playerid][ac_POS_X],
+        PI[playerid][ac_POS_Y],
+        PI[playerid][ac_POS_Z],
+        PI[playerid][ac_ANGLE],
+        0,
+        0,
+        0,
+        0,
+        0,
+    0);
 
     DestroyPlayerWorkTutorial(playerid);
 
@@ -460,7 +479,7 @@ StartPlayerWorkTutorial(playerid, work)
 UpdatePlayerWorkTutorial(playerid)
 {
     if (pWorkTutorialTimer[playerid] != -1)
-{
+    {
         KillTimer(pWorkTutorialTimer[playerid]);
         pWorkTutorialTimer[playerid] = -1;
     }
@@ -473,10 +492,26 @@ UpdatePlayerWorkTutorial(playerid)
     tutorialInfo = WorksTutorials_Data[work][step];
     if (tutorialInfo[wt_Time] <= 0) tutorialInfo[wt_Time] = WORK_TUTORIAL_DEFAULT_TIME;
 
-    if (tutorialInfo[wt_camTo_X] != 0.0 && tutorialInfo[wt_camTo_Y] != 0.0 && tutorialInfo[wt_camTo_Z] != 0.0) InterpolateCameraPos(playerid, tutorialInfo[wt_cam_X], tutorialInfo[wt_cam_Y], tutorialInfo[wt_cam_Z], tutorialInfo[wt_camTo_X], tutorialInfo[wt_camTo_Y], tutorialInfo[wt_camTo_Z], tutorialInfo[wt_Time], CAMERA_MOVE);
+    if (tutorialInfo[wt_camTo_X] != 0.0 && tutorialInfo[wt_camTo_Y] != 0.0 && tutorialInfo[wt_camTo_Z] != 0.0) InterpolateCameraPos(playerid,
+        tutorialInfo[wt_cam_X],
+        tutorialInfo[wt_cam_Y],
+        tutorialInfo[wt_cam_Z],
+        tutorialInfo[wt_camTo_X],
+        tutorialInfo[wt_camTo_Y],
+        tutorialInfo[wt_camTo_Z],
+        tutorialInfo[wt_Time],
+    CAMERA_MOVE);
     else SetPlayerCameraPos(playerid, tutorialInfo[wt_cam_X], tutorialInfo[wt_cam_Y], tutorialInfo[wt_cam_Z]);
 
-    if (tutorialInfo[wt_camTo_LX] != 0.0 && tutorialInfo[wt_camTo_LY] != 0.0 && tutorialInfo[wt_camTo_LZ] != 0.0) InterpolateCameraLookAt(playerid, tutorialInfo[wt_cam_LX], tutorialInfo[wt_cam_LY], tutorialInfo[wt_cam_LZ], tutorialInfo[wt_camTo_LX], tutorialInfo[wt_camTo_LY], tutorialInfo[wt_camTo_LZ], tutorialInfo[wt_Time], CAMERA_MOVE);
+    if (tutorialInfo[wt_camTo_LX] != 0.0 && tutorialInfo[wt_camTo_LY] != 0.0 && tutorialInfo[wt_camTo_LZ] != 0.0) InterpolateCameraLookAt(playerid,
+        tutorialInfo[wt_cam_LX],
+        tutorialInfo[wt_cam_LY],
+        tutorialInfo[wt_cam_LZ],
+        tutorialInfo[wt_camTo_LX],
+        tutorialInfo[wt_camTo_LY],
+        tutorialInfo[wt_camTo_LZ],
+        tutorialInfo[wt_Time],
+    CAMERA_MOVE);
     else SetPlayerCameraLookAt(playerid, tutorialInfo[wt_cam_LX], tutorialInfo[wt_cam_LY], tutorialInfo[wt_cam_LZ]);
 
     SetPlayerInterior(playerid, tutorialInfo[wt_Interior]);
@@ -486,13 +521,13 @@ UpdatePlayerWorkTutorial(playerid)
     if (strlen(tutorialInfo[wt_Audio]) > 0) PlayAudioStreamForPlayer(playerid, tutorialInfo[wt_Audio]);
 
     if (strlen(tutorialInfo[wt_Message]) > 0)
-{
+    {
         PlayerTextDrawShow(playerid, pWorkTutorialTd[playerid]);
         FixTextDrawString(tutorialInfo[wt_Message]);
         PlayerTextDrawSetString(playerid, pWorkTutorialTd[playerid], tutorialInfo[wt_Message]);
     }
     else
-{
+    {
         PlayerTextDrawHide(playerid, pWorkTutorialTd[playerid]);
         PlayerTextDrawSetString(playerid, pWorkTutorialTd[playerid], "_");
     }
@@ -509,11 +544,11 @@ public OnPWorkTutorialRequestNextStep(playerid)
         step = pWorkTutorialStep[playerid];
 
     if (step >= WorksTutorials_Count[work] - 1)
-{
+    {
         DestroyPlayerWorkTutorial(playerid);
     }
     else
-{
+    {
         pWorkTutorialStep[playerid] ++;
         UpdatePlayerWorkTutorial(playerid);
     }

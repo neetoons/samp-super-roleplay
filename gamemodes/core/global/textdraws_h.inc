@@ -12,4 +12,5 @@ enum Textdraws_Enum
     Text:textdraw_HUD[HUD_TEXTDRAWS_SIZE],
     Text:textdraw_COMBAT_MODE
 }
+
 new Textdraws[Textdraws_Enum];

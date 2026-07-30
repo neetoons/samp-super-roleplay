@@ -18,7 +18,7 @@
 
 new Server_Rules[][RuleInfo] =
 {
-    {
+{
         "RolePlay_(RP)",
             "Un_modo_de_juego_donde_vamos_a_crear_nuestro~n~\
             propio_personaje,_y_hacernos_un_hueco_en_el~n~\

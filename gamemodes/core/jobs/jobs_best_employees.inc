@@ -41,9 +41,17 @@ forward OnJobsRecordsRequestUpdate();
 hook OnScriptInit()
 {
     for (new i = 0; i < sizeof JobsRecordsBoards; i++)
-{
+    {
         new tmpobjid;
-        CreateDynamicObject(3077, JobsRecordsBoards[i][jobBoard_X], JobsRecordsBoards[i][jobBoard_Y], JobsRecordsBoards[i][jobBoard_Z], JobsRecordsBoards[i][jobBoard_RX], JobsRecordsBoards[i][jobBoard_RY], JobsRecordsBoards[i][jobBoard_RZ], JobsRecordsBoards[i][jobBoard_WORLD], JobsRecordsBoards[i][jobBoard_INTERIOR]);
+        CreateDynamicObject(3077,
+            JobsRecordsBoards[i][jobBoard_X],
+            JobsRecordsBoards[i][jobBoard_Y],
+            JobsRecordsBoards[i][jobBoard_Z],
+            JobsRecordsBoards[i][jobBoard_RX],
+            JobsRecordsBoards[i][jobBoard_RY],
+            JobsRecordsBoards[i][jobBoard_RZ],
+            JobsRecordsBoards[i][jobBoard_WORLD],
+        JobsRecordsBoards[i][jobBoard_INTERIOR]);
 
         new Float:pos[3], Float:rot[3];
 
@@ -79,7 +87,7 @@ hook OnScriptInit()
 hook OnInfoVarsLoaded()
 {
     if (JobsPointsLastReset == 0)
-{
+    {
         JobsPointsLastReset = gettime();
         SaveInfoVars();
     }
@@ -92,7 +100,7 @@ hook OnPlayerDisconnect(playerid, reason)
 {
     new tmp[E_PlayerWorksPoints];
     for (new i = 0; i < sizeof PlayerWorksPoints[]; i++)
-{
+    {
         PlayerWorksPoints[playerid][i] = tmp;
     }
 }
@@ -118,7 +126,7 @@ LoadPlayerWorksPoints(playerid)
 
                 PlayerWorksPoints[playerid][work][pworksPoints_POINTS] = points;
                 if (last_prize > 0)
-{
+                {
                     SendFormatNotification(playerid, "~g~¡Felicidades! ~w~Has ganado ~y~%s$ ~w~como premio por el esfuerzo realizado en tu trabajo de ~y~%s.",
                         number_format_thousand(last_prize),
                         work_info[work][work_info_NAME]
@@ -149,7 +157,7 @@ AddPlayerJobPoints(playerid, work, points = 1, bool:message = true)
     UpdateJobBoard(work, true);
 
     if (message)
-{
+    {
         SendFormatNotification(playerid, "~w~Llevas ~y~%d %s ~w~para el premio de mejores empleados.", PlayerWorksPoints[playerid][work][pworksPoints_POINTS], GetJobsBestEmployeesPointsName(work));
     }
 }
@@ -158,7 +166,7 @@ GetJobsBestEmployeesPointsName(work)
 {
     new pointsName[32] = "puntos";
     switch (work)
-{
+    {
         case WORK_TRUCK: pointsName = "recorridos";
     }
     return pointsName;
@@ -170,11 +178,11 @@ UpdateJobBoard(work, bool:check_time = false)
     {
         new resetSecondsLeft = GetJobsRecordsResestSecondsLeft();
         if (check_time && resetSecondsLeft <= 0)
-{
+        {
             OnJobsRecordsRequestUpdate();
         }
         else
-{
+        {
             new resetString[128];
             format(resetString, sizeof resetString, "Se reestablece en %s.", TimeConvertExAsText(resetSecondsLeft, true));
 
@@ -217,9 +225,9 @@ UpdateJobBoard(work, bool:check_time = false)
 SetWorkBoardsString(work, const reset_string[], const top_string[])
 {
     for (new i = 0; i < sizeof JobsRecordsBoards; i++)
-{
+    {
         if (JobsRecordsBoards[i][jobBoard_WORK] == work)
-{
+        {
             SetDynamicObjectMaterialText(JobsRecordsBoards[i][jobBoard_RESET_OBJECTID], 0, reset_string, 130, "Arial", 20, 1, 0xFFFFFFFF, 0x00000000, 0);
             SetDynamicObjectMaterialText(JobsRecordsBoards[i][jobBoard_TOP_OBJECTID], 0, top_string, 130, "Segoe UI", 30, 1, 0xFFFFFFFF, 0x00000000, 0);
         }
@@ -230,10 +238,10 @@ public OnJobsRecordsRequestUpdate()
 {
     new resetSecondsLeft = GetJobsRecordsResestSecondsLeft();
     if (resetSecondsLeft <= 0)
-{
+    {
         //obtener los premiados
         for (new i = 1; i < sizeof(work_info); i++)
-{
+        {
             inline OnQueryLoaded()
             {
                 new rows;
@@ -250,10 +258,10 @@ public OnJobsRecordsRequestUpdate()
                             cache_get_value_name_int(j, "playerid", playerid);
 
                             if (connected && ACCOUNT_INFO[playerid][ac_ID] == pid)
-{
+                            {
                                 GivePlayerCash(playerid, currentPrize, true, false);
                                 if (j == 0 && work_info[i][work_info_TOP1_COINS_PRIZE] > 0)
-{
+                                {
                                     PI[playerid][ac_COINS] += work_info[i][work_info_TOP1_COINS_PRIZE];
 
                                     mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET coins = %d WHERE id = %d;", PI[playerid][ac_COINS], ACCOUNT_INFO[playerid][ac_ID]);
@@ -267,7 +275,7 @@ public OnJobsRecordsRequestUpdate()
                                     );
                                 }
                                 else
-{
+                                {
                                     SendFormatNotification(playerid, "~g~¡Felicidades! ~w~Has quedado en el puesto ~y~n|%d ~w~de mejores empleados en el trabajo de ~y~%s y has recibido ~y~%s$ ~w~como premio.",
                                         j + 1,
                                         work_info[i][work_info_NAME],
@@ -276,7 +284,7 @@ public OnJobsRecordsRequestUpdate()
                                 }
                             }
                             else
-{
+                            {
                                 mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pworks_points SET last_prize = last_prize + %d WHERE id_player = %d AND id_work = %d;", currentPrize, pid, i);
                                 mysql_tquery(srp_db, QUERY_BUFFER);
 
@@ -284,7 +292,7 @@ public OnJobsRecordsRequestUpdate()
                                 mysql_tquery(srp_db, QUERY_BUFFER);
 
                                 if (j == 0 && work_info[i][work_info_TOP1_COINS_PRIZE] > 0)
-{
+                                {
                                     mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET coins = coins + %d WHERE id = %d;", work_info[i][work_info_TOP1_COINS_PRIZE], pid);
                                     mysql_tquery(srp_db, QUERY_BUFFER);
                                 }
@@ -317,10 +325,10 @@ public OnJobsRecordsRequestUpdate()
         SaveInfoVars();
     }
     else
-{
+    {
         //actualizar pizarras
         for (new i = 1; i < sizeof(work_info); i++)
-{
+        {
             UpdateJobBoard(i);
         }
     }

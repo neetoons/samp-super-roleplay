@@ -25,12 +25,12 @@ new
 HasPlayerShield(playerid)
 {
     for (new i = 0; i != sizeof PLAYER_WEAPONS[]; i++)
-{
+    {
         new weaponid = PLAYER_WEAPONS[playerid][i][player_weapon_ID];
         if (weaponid != 0)
-{
+        {
             if (WEAPON_INFO[weaponid][weapon_info_SPECIAL] && WEAPON_INFO[weaponid][weapon_info_TYPE] == WEAPON_SHIELD)
-{
+            {
                 return true;
             }
         }
@@ -46,15 +46,15 @@ IsPlayerShieldInUse(playerid)
 ResetPlayerShield(playerid)
 {
     for (new i = 0; i < sizeof pShieldCurrentObject[]; i++)
-{
+    {
         if (pShieldCurrentObject[playerid][i] != INVALID_STREAMER_ID)
-{
+        {
             DestroyDynamicObject(pShieldCurrentObject[playerid][i]);
             pShieldCurrentObject[playerid][i] = INVALID_STREAMER_ID;
         }
     }
     if (pInShield[playerid])
-{
+    {
         pInShield[playerid] = false;
         ClearAnimations(playerid, 1);
     }
@@ -100,7 +100,7 @@ hook OnPlayerDisconnect(playerid, reason)
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
     if (newstate == PLAYER_STATE_SPECTATING || newstate == PLAYER_STATE_WASTED)
-{
+    {
         ResetPlayerShield(playerid);
     }
     return 1;
@@ -109,19 +109,19 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
     if ((newkeys & KEY_WALK) && !(oldkeys & KEY_WALK))
-{
+    {
         if (GetPlayerState(playerid) == PLAYER_STATE_ONFOOT && !pInShield[playerid] && HasPlayerShield(playerid))
-{
+        {
             if (ACCOUNT_INFO[playerid][ac_STATE] != ROLEPLAY_STATE_JAIL && ACCOUNT_INFO[playerid][ac_STATE] != ROLEPLAY_STATE_CRACK)
-{
+            {
                 SetPlayerShield(playerid);
             }
         }
     }
     else if ((oldkeys & KEY_WALK) && !(newkeys & KEY_WALK))
-{
+    {
         if (pInShield[playerid])
-{
+        {
             ResetPlayerShield(playerid);
         }
     }

@@ -26,6 +26,7 @@ enum atm_bank_info
     Float:atm_RY,
     Float:atm_RZ
 }
+
 new ATM_BANK[][atm_bank_info] =
 {
     {2754, 2833.38672, 2402.91553, 10.93546,   0.00000, 0.00000, 131.44171},
@@ -68,6 +69,7 @@ enum Bank_Interior_Info
     bank_WORLD,
     bank_INTERIOR,
 }
+
 new Bank_Interior_Positions[][Bank_Interior_Info] =
 {
     {INTERIOR_BANK_LS, 1407.356201, 1320.171142, 1501.083984, 5, 5},

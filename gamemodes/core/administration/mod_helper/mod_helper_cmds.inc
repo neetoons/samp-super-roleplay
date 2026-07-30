@@ -16,7 +16,6 @@
 #endif
 #define mod_helper_cmds_included
 
-
 flags:trabajos(CMD_HELPER_MODERATOR)
 flags:getid(CMD_HELPER_MODERATOR)
 flags:getname(CMD_HELPER_MODERATOR)

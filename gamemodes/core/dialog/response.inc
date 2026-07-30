@@ -80,7 +80,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                         PLAYER_TEMP[playerid][pt_READING_GUIDE] = true;
                         PLAYER_TEMP[playerid][pt_GUIDE_STEP] = 0;
                         SendNotification(playerid, "Lee detenidamente la guía, para pasar de concepto haz clic en siguiente.");
-                        SetPlayerRulesTextDraw(playerid, Server_Rules[ PLAYER_TEMP[playerid][pt_GUIDE_STEP] ][Rule_Title], Server_Rules[ PLAYER_TEMP[playerid][pt_GUIDE_STEP] ][Rule_Info], Server_Rules[ PLAYER_TEMP[playerid][pt_GUIDE_STEP] ][Rule_Pages], PLAYER_TEMP[playerid][pt_GUIDE_STEP] + 1, sizeof(Server_Rules) );
+                        SetPlayerRulesTextDraw(playerid,
+                            Server_Rules[ PLAYER_TEMP[playerid][pt_GUIDE_STEP] ][Rule_Title],
+                            Server_Rules[ PLAYER_TEMP[playerid][pt_GUIDE_STEP] ][Rule_Info],
+                            Server_Rules[ PLAYER_TEMP[playerid][pt_GUIDE_STEP] ][Rule_Pages],
+                            PLAYER_TEMP[playerid][pt_GUIDE_STEP] + 1,
+                        sizeof(Server_Rules) );
                         SelectTextDrawEx(playerid, 0xe8d08fFF);
                     }
                 }
@@ -228,7 +233,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     if (PI[playerid][ac_HUNGRY] >= 99.0 && PI[playerid][ac_THIRST] >= 99.0) return SendNotification(playerid, "¿Es que quieres reventar?");
 
                     if (GivePlayerCash(playerid, -PIZZA_FOOD[listitem][food_PRICE], true, true))
-{
+                    {
                         Add_Hungry_Thirst(playerid, PIZZA_FOOD[listitem][food_HUNGRY], PIZZA_FOOD[listitem][food_THIRST]);
 
                         PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);
@@ -261,7 +266,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     if (PI[playerid][ac_HUNGRY] >= 99.0 && PI[playerid][ac_THIRST] >= 99.0) return SendNotification(playerid, "¿Es que quieres reventar?");
 
                     if (GivePlayerCash(playerid, -BURGER_SHOT_FOOD[listitem][food_PRICE], true, true))
-{
+                    {
                         Add_Hungry_Thirst(playerid, BURGER_SHOT_FOOD[listitem][food_HUNGRY], BURGER_SHOT_FOOD[listitem][food_THIRST]);
 
                         PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);
@@ -294,7 +299,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     if (PI[playerid][ac_HUNGRY] >= 99.0 && PI[playerid][ac_THIRST] >= 99.0) return SendNotification(playerid, "¿Es que quieres reventar?");
 
                     if (GivePlayerCash(playerid, -CLUCKIN_BELL_FOOD[listitem][food_PRICE], true, true))
-{
+                    {
                         Add_Hungry_Thirst(playerid, CLUCKIN_BELL_FOOD[listitem][food_HUNGRY], CLUCKIN_BELL_FOOD[listitem][food_THIRST]);
 
                         PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);
@@ -563,10 +568,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 }
 
                 if (GivePlayerCash(playerid, inputtext[0], true, false))
-{
+                {
                     PI[playerid][ac_BANK_MONEY] -= inputtext[0];
 
-                    RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID], ACCOUNT_INFO[playerid][ac_ID], BANK_TRANSACTION_WITHDRAW, inputtext[0]);
+                    RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID],
+                        ACCOUNT_INFO[playerid][ac_ID],
+                        BANK_TRANSACTION_WITHDRAW,
+                    inputtext[0]);
 
                     SendFormatNotification(playerid, "Operación realizada con éxito, has retirado ~g~%s dólares~w~.", number_format_thousand(inputtext[0]));
                     PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);
@@ -613,10 +621,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 }
 
                 if (GivePlayerCash(playerid, -inputtext[0], true, true))
-{
+                {
                     PI[playerid][ac_BANK_MONEY] += inputtext[0];
 
-                    RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID], ACCOUNT_INFO[playerid][ac_ID], BANK_TRANSACTION_DEPOSIT, inputtext[0]);
+                    RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID],
+                        ACCOUNT_INFO[playerid][ac_ID],
+                        BANK_TRANSACTION_DEPOSIT,
+                    inputtext[0]);
 
                     SendFormatNotification(playerid, "Operación realizada con éxito, has depositado ~g~%s dólares~w~.", number_format_thousand(inputtext[0]));
                     PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);
@@ -747,14 +758,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     }
                 }
 
-
                 mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_money = bank_money + %d WHERE bank_account = %d;", inputtext[0], PLAYER_TEMP[playerid][pt_SELECT_BANK_TRANSFER_ACCOUNT]);
                 mysql_tquery(srp_db, QUERY_BUFFER);
 
                 mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_money = %d WHERE id = %d;", PI[playerid][ac_BANK_MONEY], ACCOUNT_INFO[playerid][ac_ID]);
                 mysql_tquery(srp_db, QUERY_BUFFER);
 
-                RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID], PLAYER_TEMP[playerid][pt_SELECT_BANK_TRANSFER_ID], BANK_TRANSACTION_TRANSFER, inputtext[0]);
+                RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID],
+                    PLAYER_TEMP[playerid][pt_SELECT_BANK_TRANSFER_ID],
+                    BANK_TRANSACTION_TRANSFER,
+                inputtext[0]);
 
                 SendFormatNotification(playerid, "Operación realizada con éxito, has transferido ~g~%s dólares ~w~al número de cuenta ~g~%s~w~.", number_format_thousand(inputtext[0]), number_format_thousand(PLAYER_TEMP[playerid][pt_SELECT_BANK_TRANSFER_ACCOUNT]));
                 PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);
@@ -775,13 +788,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 if (PI[playerid][ac_CASH] >= 500)
                 {
                     if (GivePlayerCash(playerid, -500, true, true))
-{
+                    {
                         PI[playerid][ac_BANK_MONEY] = 500;
                         PI[playerid][ac_BANK_ACCOUNT] = getBankAccountNumber(ACCOUNT_INFO[playerid][ac_ID]);
                         mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_account = %d, bank_money = %d WHERE id = %d;", PI[playerid][ac_BANK_ACCOUNT], PI[playerid][ac_BANK_MONEY], ACCOUNT_INFO[playerid][ac_ID]);
                         mysql_tquery(srp_db, QUERY_BUFFER);
 
-                        RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID], ACCOUNT_INFO[playerid][ac_ID], BANK_TRANSACTION_CREATE_ACCOUNT, 500);
+                        RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID],
+                            ACCOUNT_INFO[playerid][ac_ID],
+                            BANK_TRANSACTION_CREATE_ACCOUNT,
+                        500);
 
                         PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);
                         SendFormatNotification(playerid, "Tu cuenta bancaria ha sido creada con éxito, tu número de cuenta es ~g~%s~w~.", number_format_thousand(PI[playerid][ac_BANK_ACCOUNT]));
@@ -819,8 +835,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                                 return 1;
                             }
 
-                            if (GivePlayerCash(playerid, -Supermarket_Product_List[listitem][product_PRICE], true, true))
-{
+                            if (GivePlayerCash(playerid,
+                                -Supermarket_Product_List[listitem][product_PRICE],
+                                true,
+                            true))
+                            {
                                 PLAYER_POCKET[playerid][slot][player_pocket_VALID] = true;
                                 format(PLAYER_POCKET[playerid][slot][player_pocket_object_NAME], 24, "%s", Supermarket_Product_List[listitem][product_NAME]);
                                 PLAYER_POCKET[playerid][slot][player_pocket_object_HUNGRY] = Supermarket_Product_List[listitem][product_HUNGRY];
@@ -849,8 +868,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                                 return 1;
                             }
 
-                            if (GivePlayerCash(playerid, -Supermarket_Product_List[listitem][product_PRICE], true, true))
-{
+                            if (GivePlayerCash(playerid,
+                                -Supermarket_Product_List[listitem][product_PRICE],
+                                true,
+                            true))
+                            {
                                 PI[playerid][ac_PHONE_NUMBER] = getPhoneNumber(ACCOUNT_INFO[playerid][ac_ID]);
                                 PI[playerid][ac_PHONE_STATE] = PHONE_STATE_ON;
                                 PI[playerid][ac_PHONE_VISIBLE_NUMBER] = true;
@@ -880,8 +902,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                                 return 1;
                             }
 
-                            if (GivePlayerCash(playerid, -Supermarket_Product_List[listitem][product_PRICE], true, true))
-{
+                            if (GivePlayerCash(playerid,
+                                -Supermarket_Product_List[listitem][product_PRICE],
+                                true,
+                            true))
+                            {
                                 PI[playerid][ac_GPS] = true;
                                 SendFormatNotification(playerid, "Has comprado un ~b~%s ~w~por ~b~%d dólares~w~, usa ~b~/GPS ~w~para usarlo.", Supermarket_Product_List[listitem][product_NAME], Supermarket_Product_List[listitem][product_PRICE]);
                                 PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);
@@ -904,8 +929,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                                 return 1;
                             }
 
-                            if (GivePlayerCash(playerid, -Supermarket_Product_List[listitem][product_PRICE], true, true))
-{
+                            if (GivePlayerCash(playerid,
+                                -Supermarket_Product_List[listitem][product_PRICE],
+                                true,
+                            true))
+                            {
                                 PI[playerid][ac_MP3] = true;
                                 SendFormatNotification(playerid, "Has comprado un ~b~%s ~w~por ~b~%d dólares~w~, usa ~b~/MP3 ~w~para usarlo.", Supermarket_Product_List[listitem][product_NAME], Supermarket_Product_List[listitem][product_PRICE]);
                                 PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);
@@ -928,8 +956,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                                 return 1;
                             }
 
-                            if (GivePlayerCash(playerid, -Supermarket_Product_List[listitem][product_PRICE], true, true))
-{
+                            if (GivePlayerCash(playerid,
+                                -Supermarket_Product_List[listitem][product_PRICE],
+                                true,
+                            true))
+                            {
                                 PI[playerid][ac_SPEAKERS] = true;
                                 SendFormatNotification(playerid, "Has comprado ~b~%s ~w~por ~b~%d dólares~w~, ~w~usa ~b~/amp3 ~w~para usarlo.", Supermarket_Product_List[listitem][product_NAME], Supermarket_Product_List[listitem][product_PRICE]);
                                 PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);
@@ -952,8 +983,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                                 return 1;
                             }
 
-                            if (GivePlayerCash(playerid, -Supermarket_Product_List[listitem][product_PRICE], true, true))
-{
+                            if (GivePlayerCash(playerid,
+                                -Supermarket_Product_List[listitem][product_PRICE],
+                                true,
+                            true))
+                            {
                                 PI[playerid][ac_PHONE_RESOLVER] = true;
                                 SendFormatNotification(playerid, "Has comprado una ~b~%s ~w~por ~b~%d dólares~w~, ~w~usa ~b~/guia ~w~para usarla.", Supermarket_Product_List[listitem][product_NAME], Supermarket_Product_List[listitem][product_PRICE]);
                                 PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);
@@ -987,9 +1021,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
         }
         case DIALOG_PLAYER_WEAPONS_OPTIONS: {
             if (response)
-{
+            {
                 switch (listitem)
-{
+                {
                     case 0: ShowNearsPlayersToPlayer(playerid, NEAR_PLAYERS_WEAPON_GIVE);
                     case 1: ShowNearsPlayersToPlayer(playerid, NEAR_PLAYERS_WEAPON_SELL);
                     case 2: ShowDialog(playerid, DIALOG_PLAYER_WEAPONS_DELETE);
@@ -1170,7 +1204,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 new slot = GetEmptyPlayerPhoneBookSlot(playerid);
                 if (slot == -1) return SendNotification(playerid, "Memoria de la agenda llena.");
 
-
                 PLAYER_PHONE_BOOK[playerid][slot][phone_book_contact_VALID] = true;
                 format(PLAYER_PHONE_BOOK[playerid][slot][phone_book_contact_NAME], 24, "%s", inputtext);
                 PLAYER_PHONE_BOOK[playerid][slot][phone_book_contact_PHONE_NUMBER] = PLAYER_TEMP[playerid][pt_PLAYER_PHONE_BOOK_ADD_NUMBER];
@@ -1316,7 +1349,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
                     mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_money = %d WHERE id = %d;", PI[playerid][ac_BANK_MONEY], ACCOUNT_INFO[playerid][ac_ID]);
                     mysql_tquery(srp_db, QUERY_BUFFER);
-                    RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID], ACCOUNT_INFO[playerid][ac_ID], BANK_TRANSACTION_BUY_PROPERTY, PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_PRICE]);
+                    RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID],
+                        ACCOUNT_INFO[playerid][ac_ID],
+                        BANK_TRANSACTION_BUY_PROPERTY,
+                    PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_PRICE]);
                 }
                 else
                 {
@@ -1328,14 +1364,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     SendFormatNotification(playerid, "Has gastado %d "SERVER_COIN" en la compra de esta propiedad.", PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_EXTRA]);
                 }
 
-
                 PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_SOLD] = true;
                 PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_CREW] = false;
                 PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_OWNER_ID] = ACCOUNT_INFO[playerid][ac_ID];
                 CreatePropertyInfo(PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX], ACCOUNT_INFO[playerid][ac_ID], ACCOUNT_INFO[playerid][ac_NAME], 0, "");
                 mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE properties SET id_player = %d, id_territory = NULL WHERE id = %d;", ACCOUNT_INFO[playerid][ac_ID], PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_ID]);
                 mysql_tquery(srp_db, QUERY_BUFFER);
-
 
                 SendFormatNotification(playerid, "~g~¡Propiedad %d comprada!~n~~n~ ~w~Ahora puedes ir a tu casa, si no sabes donde es puedes marcarla con el ~b~/GPS~w~.", PROPERTY_INFO[PLAYER_TEMP[playerid][pt_BUY_HOUSE_INDEX]][property_ID]);
                 PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);
@@ -1398,7 +1432,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
                 PLAYER_GPS[playerid][slot][player_gps_VALID] = true;
                 format(PLAYER_GPS[playerid][slot][player_gps_NAME], 24, "%s", inputtext);
-                GetPlayerPos(playerid, PLAYER_GPS[playerid][slot][player_gps_X], PLAYER_GPS[playerid][slot][player_gps_Y], PLAYER_GPS[playerid][slot][player_gps_Z]);
+                GetPlayerPos(playerid,
+                    PLAYER_GPS[playerid][slot][player_gps_X],
+                    PLAYER_GPS[playerid][slot][player_gps_Y],
+                PLAYER_GPS[playerid][slot][player_gps_Z]);
                 PLAYER_GPS[playerid][slot][player_gps_WORLD] = GetPlayerVirtualWorld(playerid);
                 PLAYER_GPS[playerid][slot][player_gps_INTERIOR] = GetPlayerInterior(playerid);
                 RegisterNewPlayer_GPS_Site(playerid, slot);
@@ -1528,7 +1565,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
         }
         case DIALOG_PLAYER_GPS_SITE_0: //Hospitales
         {
-            if (response) SetPlayer_GPS_Checkpoint(playerid, Hospital_Spawn_Positions[ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][hspi_X], Hospital_Spawn_Positions[ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][hspi_Y], Hospital_Spawn_Positions[ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][hspi_Z], 0, 0);
+            if (response) SetPlayer_GPS_Checkpoint(playerid,
+                Hospital_Spawn_Positions[ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][hspi_X],
+                Hospital_Spawn_Positions[ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][hspi_Y],
+                Hospital_Spawn_Positions[ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][hspi_Z],
+                0,
+            0);
             else ShowDialog(playerid, DIALOG_PLAYER_GPS_SITES);
             return 1;
         }
@@ -1537,20 +1579,35 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
             if (response)
             {
                 if (PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] == -1) return ShowDialog(playerid, DIALOG_PLAYER_GPS);
-                SetPlayer_GPS_Checkpoint(playerid, ENTER_EXIT[ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][ee_EXT_X], ENTER_EXIT[ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][ee_EXT_Y], ENTER_EXIT[ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][ee_EXT_Z], ENTER_EXIT[ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][ee_EXT_WORLD], ENTER_EXIT[ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][ee_EXT_INTERIOR]);
+                SetPlayer_GPS_Checkpoint(playerid,
+                    ENTER_EXIT[ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][ee_EXT_X],
+                    ENTER_EXIT[ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][ee_EXT_Y],
+                    ENTER_EXIT[ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][ee_EXT_Z],
+                    ENTER_EXIT[ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][ee_EXT_WORLD],
+                ENTER_EXIT[ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][ee_EXT_INTERIOR]);
             }
             else ShowDialog(playerid, DIALOG_PLAYER_GPS_SITES);
             return 1;
         }
         case DIALOG_PLAYER_GPS_SITE_5: //Cajeros
         {
-            if (response) SetPlayer_GPS_Checkpoint(playerid, ATM_BANK[listitem][atm_X], ATM_BANK[listitem][atm_Y], ATM_BANK[listitem][atm_Z], 0, 0);
+            if (response) SetPlayer_GPS_Checkpoint(playerid,
+                ATM_BANK[listitem][atm_X],
+                ATM_BANK[listitem][atm_Y],
+                ATM_BANK[listitem][atm_Z],
+                0,
+            0);
             else ShowDialog(playerid, DIALOG_PLAYER_GPS_SITES);
             return 1;
         }
         case DIALOG_PLAYER_GPS_SITE_6: //Gasolineras
         {
-            if (response) SetPlayer_GPS_Checkpoint(playerid, Fuel_Stations[ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][fs_X], Fuel_Stations[ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][fs_Y], Fuel_Stations[ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][fs_Z], 0, 0);
+            if (response) SetPlayer_GPS_Checkpoint(playerid,
+                Fuel_Stations[ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][fs_X],
+                Fuel_Stations[ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][fs_Y],
+                Fuel_Stations[ PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] ][fs_Z],
+                0,
+            0);
             else ShowDialog(playerid, DIALOG_PLAYER_GPS_SITES);
             return 1;
         }
@@ -1565,7 +1622,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
         }
         case DIALOG_PLAYER_GPS_SITE_7: //Concesionarios
         {
-            if (response) SetPlayer_GPS_Checkpoint(playerid, SELL_VEHICLES_SHOPS_SPAWN[listitem][0], SELL_VEHICLES_SHOPS_SPAWN[listitem][1], SELL_VEHICLES_SHOPS_SPAWN[listitem][2], 0, 0);
+            if (response) SetPlayer_GPS_Checkpoint(playerid,
+                SELL_VEHICLES_SHOPS_SPAWN[listitem][0],
+                SELL_VEHICLES_SHOPS_SPAWN[listitem][1],
+                SELL_VEHICLES_SHOPS_SPAWN[listitem][2],
+                0,
+            0);
             else ShowDialog(playerid, DIALOG_PLAYER_GPS_SITES);
             return 1;
         }
@@ -1576,7 +1638,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 if (PLAYER_TEMP[playerid][pt_PLAYER_GPS_SELECTED_PROPERTY][listitem] == -1) return ShowDialog(playerid, DIALOG_PLAYER_GPS);
 
                 new index = GetPropertyIndexByID(PLAYER_TEMP[playerid][pt_PLAYER_GPS_SELECTED_PROPERTY][listitem]);
-                if (index != -1) SetPlayer_GPS_Checkpoint(playerid, PROPERTY_INFO[index][property_EXT_X], PROPERTY_INFO[index][property_EXT_Y], PROPERTY_INFO[index][property_EXT_Z], 0, PROPERTY_INFO[index][property_EXT_INTERIOR]);
+                if (index != -1) SetPlayer_GPS_Checkpoint(playerid,
+                    PROPERTY_INFO[index][property_EXT_X],
+                    PROPERTY_INFO[index][property_EXT_Y],
+                    PROPERTY_INFO[index][property_EXT_Z],
+                    0,
+                PROPERTY_INFO[index][property_EXT_INTERIOR]);
             }
             else ShowDialog(playerid, DIALOG_PLAYER_GPS);
             return 1;
@@ -1599,7 +1666,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
                 new Float:pos[3];
                 GetVehiclePos(vehicleid, pos[0], pos[1], pos[2]);
-                SetPlayer_GPS_Checkpoint(playerid, pos[0], pos[1], pos[2], GLOBAL_VEHICLES[vehicleid][gb_vehicle_WORLD], 0);
+                SetPlayer_GPS_Checkpoint(playerid,
+                    pos[0],
+                    pos[1],
+                    pos[2],
+                    GLOBAL_VEHICLES[vehicleid][gb_vehicle_WORLD],
+                0);
             }
             else ShowDialog(playerid, DIALOG_PLAYER_GPS);
             return 1;
@@ -1620,15 +1692,26 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                             {
                                 if ( ACCOUNT_INFO[i][ac_STATE] == ROLEPLAY_STATE_GUEST_PROPERTY && PI[i][ac_LOCAL_INTERIOR] == PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_ID])
                                 {
-                                    if (PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_POLICE_FORCED] && (PLAYER_WORKS[i][WORK_POLICE][pwork_SET] && PLAYER_TEMP[i][pt_WORKING_IN] == WORK_POLICE))
-{
+                                    if (
+                                        PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_POLICE_FORCED] &&
+                                        (PLAYER_WORKS[i][WORK_POLICE][pwork_SET] &&
+                                    PLAYER_TEMP[i][pt_WORKING_IN] == WORK_POLICE))
+                                    {
                                         continue;
                                     }
 
                                     ACCOUNT_INFO[i][ac_STATE] = ROLEPLAY_STATE_NORMAL;
                                     PI[i][ac_LOCAL_INTERIOR] = 0;
                                     PLAYER_TEMP[i][pt_PROPERTY_INDEX] = -1;
-                                    SetPlayerPosEx(i, PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_X], PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_Y], PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_Z], PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_ANGLE], PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_INTERIOR], 0, PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_FREEZE], false);
+                                    SetPlayerPosEx(i,
+                                        PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_X],
+                                        PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_Y],
+                                        PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_Z],
+                                        PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_ANGLE],
+                                        PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_INTERIOR],
+                                        0,
+                                        PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_FREEZE],
+                                    false);
                                     StopAudioStreamForPlayer(i);
                                     SendFormatNotification(i, "~r~%s~w~ te ha echado de su propiedad.", PLAYER_TEMP[playerid][pt_RP_NAME]);
                                     total++;
@@ -1657,14 +1740,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     }
                     case 4: {
                         if (PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_DIS_DEFAULT_INTERIOR])
-{
+                        {
                             SetPropertyDefaultFurniture(PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED], true);
                             SendNotification(playerid, "Se han vuelto a crear los muebles por defecto de esta propiedad.");
                         }
                         else
-{
+                        {
                             if (PROPERTY_INTERIORS[ PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_ID_INTERIOR] ][property_EMPTY_INTERIOR])
-{
+                            {
                                 SetPropertyDefaultFurniture(PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED], false);
                                 SendNotification(playerid, "Se han eliminado los muebles por defecto de esta propiedad.");
                             }
@@ -1676,14 +1759,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                         if (!PI[playerid][ac_CREW]) return SendNotification(playerid, "No perteneces a ninguna banda.");
                         if (!CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_PERMISSION][CREW_RANK_ADD_PROPERTIES]) return SendNotification(playerid, "No tienes permiso.");
 
-
                         for (new i = 0; i != MAX_TERRITORIES; i++)
                         {
                             if (!TERRITORIES[i][territory_VALID]) continue;
                             if (!TERRITORIES[i][territory_OCCUPIED]) continue;
                             if (TERRITORIES[i][territory_CREW_ID] != PI[playerid][ac_CREW]) continue;
 
-                            if (IsPointInDynamicArea(TERRITORIES[i][territory_AREA], PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_X], PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_Y], PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_Z]))
+                            if (IsPointInDynamicArea(TERRITORIES[i][territory_AREA],
+                                PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_X],
+                                PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_Y],
+                            PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_Z]))
                             {
                                 PLAYER_TEMP[playerid][pt_PLAYER_TERRITORY_PRO] = i;
                                 ShowDialog(playerid, DIALOG_CREW_PROPERTY_CONFIRM);
@@ -1803,7 +1888,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     PI[playerid][ac_BANK_MONEY] -= SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_PRICE];
                     mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_money = %d WHERE id = %d;", PI[playerid][ac_BANK_MONEY], ACCOUNT_INFO[playerid][ac_ID]);
                     mysql_tquery(srp_db, QUERY_BUFFER);
-                    RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID], ACCOUNT_INFO[playerid][ac_ID], BANK_TRANSACTION_BUY_VEHICLE, SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_PRICE]);
+                    RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID],
+                        ACCOUNT_INFO[playerid][ac_ID],
+                        BANK_TRANSACTION_BUY_VEHICLE,
+                    SELL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_VEHICLE_ID] ][sell_vehicle_PRICE]);
                 }
 
                 SendNotification(playerid, "~g~¡Vehículo comprado! ~n~~n~~w~Utiliza ~y~/ayuda vehiculos ~w~para ver que puedes hacer con tu vehículo.");
@@ -1906,7 +1994,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 info[0] = PICKUP_TYPE_PROPERTY;
                 info[1] = PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED]; // Index
                 info[2] = 2; // Pickup Exterior
-                Streamer_SetArrayData(STREAMER_TYPE_PICKUP, PROPERTY_INFO[PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED]][property_EXT_PICKUP_ID], E_STREAMER_EXTRA_ID, info);
+                Streamer_SetArrayData(STREAMER_TYPE_PICKUP,
+                    PROPERTY_INFO[PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED]][property_EXT_PICKUP_ID],
+                    E_STREAMER_EXTRA_ID,
+                info);
 
                 new Float:price, payment;
                 price = PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_PRICE_BASE];
@@ -1927,7 +2018,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE properties SET id_player = NULL, id_territory = NULL WHERE id = %d;", PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_ID]);
                 mysql_tquery(srp_db, QUERY_BUFFER);
 
-                RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID], ACCOUNT_INFO[playerid][ac_ID], BANK_TRANSACTION_SOLD_PROPERTY, payment);
+                RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID],
+                    ACCOUNT_INFO[playerid][ac_ID],
+                    BANK_TRANSACTION_SOLD_PROPERTY,
+                payment);
                 SendFormatNotification(playerid, "Has vendido esta propiedad, has recibido %s$ en tu cuenta bancaria.", number_format_thousand(payment));
                 PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);
 
@@ -2016,9 +2110,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     label_str,
                     sizeof label_str,
                     "\
-                        Propiedad {"#PRIMARY_COLOR"}#%d\n\n\
-                        {FFFFFF}Propietario: {"#PRIMARY_COLOR"}%s\n\
-                        {FFFFFF}Presiona {"#PRIMARY_COLOR"}~k~~CONVERSATION_YES~ {FFFFFF}para entrar.\
+                    Propiedad {"#PRIMARY_COLOR"}#%d\n\n\
+                    {FFFFFF}Propietario: {"#PRIMARY_COLOR"}%s\n\
+                    {FFFFFF}Presiona {"#PRIMARY_COLOR"}~k~~CONVERSATION_YES~ {FFFFFF}para entrar.\
                     ", PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_ID], ACCOUNT_INFO[playerid][ac_NAME]
                 );
                 UpdateDynamic3DTextLabelText(PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_LABEL_ID], 0xFFFFFFFF, label_str);
@@ -2045,7 +2139,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
                 PI[playerid][ac_BANK_MONEY] -= price;
                 PI[seller][ac_BANK_MONEY] += price;
-                RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID], ACCOUNT_INFO[seller][ac_ID], BANK_TRANSACTION_TRANSFER, price);
+                RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID],
+                    ACCOUNT_INFO[seller][ac_ID],
+                    BANK_TRANSACTION_TRANSFER,
+                price);
 
                 mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_money = %d WHERE id = %d;", PI[playerid][ac_BANK_MONEY], ACCOUNT_INFO[playerid][ac_ID]);
                 mysql_tquery(srp_db, QUERY_BUFFER);
@@ -2110,7 +2207,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
                 DestroyVehicleEx(PLAYER_TEMP[playerid][pt_PLAYER_VEHICLE_SELECTED]);
 
-
                 if (PI[playerid][ac_PHONE_NUMBER])
                 {
                     new message[64]; format(message, sizeof message, "VEHICULO VENDIDO: +%s$", number_format_thousand(payment));
@@ -2120,7 +2216,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 PI[playerid][ac_BANK_MONEY] += payment;
                 mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_money = %d WHERE id = %d;", PI[playerid][ac_BANK_MONEY], ACCOUNT_INFO[playerid][ac_ID]);
                 mysql_tquery(srp_db, QUERY_BUFFER);
-                RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID], ACCOUNT_INFO[playerid][ac_ID], BANK_TRANSACTION_SOLD_VEHICLE, payment);
+                RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID],
+                    ACCOUNT_INFO[playerid][ac_ID],
+                    BANK_TRANSACTION_SOLD_VEHICLE,
+                payment);
 
                 SendFormatNotification(playerid, "Has vendido este vehículo, has recibido %s$ en tu cuenta bancaria.", number_format_thousand(payment));
                 PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);
@@ -2216,7 +2315,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE pvehicles SET id_player = %d WHERE id = %d;", ACCOUNT_INFO[playerid][ac_ID], PLAYER_VEHICLES[ PLAYER_TEMP[playerid][pt_PLAYER_VEHICLE_SELECTED] ][player_vehicle_ID]);
                 mysql_tquery(srp_db, QUERY_BUFFER);
 
-
                 // Banco
                 new price = PLAYER_TEMP[playerid][pt_NOTARY_PRICE], seller = PLAYER_TEMP[playerid][pt_NOTARY_TO_PLAYER];
 
@@ -2235,14 +2333,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
                 PI[playerid][ac_BANK_MONEY] -= price;
                 PI[seller][ac_BANK_MONEY] += price;
-                RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID], ACCOUNT_INFO[seller][ac_ID], BANK_TRANSACTION_TRANSFER, price);
+                RegisterBankAccountTransaction(ACCOUNT_INFO[playerid][ac_ID],
+                    ACCOUNT_INFO[seller][ac_ID],
+                    BANK_TRANSACTION_TRANSFER,
+                price);
 
                 mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_money = %d WHERE id = %d;", PI[playerid][ac_BANK_MONEY], ACCOUNT_INFO[playerid][ac_ID]);
                 mysql_tquery(srp_db, QUERY_BUFFER);
 
                 mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET bank_money = %d WHERE id = %d;", PI[seller][ac_BANK_MONEY], ACCOUNT_INFO[seller][ac_ID]);
                 mysql_tquery(srp_db, QUERY_BUFFER);
-
 
                 SendFormatNotification(playerid, "~g~¡Vehículo %s comprado!~n~~n~~w~Utiliza ~b~/GPS ~w~para localizarlo.", VEHICLE_INFO[ GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_PLAYER_VEHICLE_SELECTED] ][gb_vehicle_MODELID] - 400 ][vehicle_info_NAME]);
                 SendFormatNotification(seller, "~g~¡Vehículo vendido!~n~~n~~w~Has recibido ~g~%s dólares ~w~en tu cuenta bancaria.", number_format_thousand(price));
@@ -2305,7 +2405,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 if (!GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_VALID]) return 1;
 
                 new Float:Vehicle_Pos[3];
-                GetVehiclePos(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID], Vehicle_Pos[0], Vehicle_Pos[1], Vehicle_Pos[2]);
+                GetVehiclePos(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID],
+                    Vehicle_Pos[0],
+                    Vehicle_Pos[1],
+                Vehicle_Pos[2]);
 
                 if (!IsPlayerInRangeOfPoint(playerid, 5.0, Vehicle_Pos[0], Vehicle_Pos[1], Vehicle_Pos[2])) return SendNotification(playerid, "El vehículo está demasiado lejos.");
 
@@ -2325,7 +2428,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 if (!GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_VALID]) return 1;
 
                 new Float:Vehicle_Pos[3];
-                GetVehiclePos(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID], Vehicle_Pos[0], Vehicle_Pos[1], Vehicle_Pos[2]);
+                GetVehiclePos(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID],
+                    Vehicle_Pos[0],
+                    Vehicle_Pos[1],
+                Vehicle_Pos[2]);
 
                 if (!IsPlayerInRangeOfPoint(playerid, 5.0, Vehicle_Pos[0], Vehicle_Pos[1], Vehicle_Pos[2])) return SendNotification(playerid, "El vehículo está demasiado lejos.");
 
@@ -2368,7 +2474,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 if (!GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_VALID]) return 1;
 
                 new Float:Vehicle_Pos[3];
-                GetVehiclePos(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID], Vehicle_Pos[0], Vehicle_Pos[1], Vehicle_Pos[2]);
+                GetVehiclePos(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID],
+                    Vehicle_Pos[0],
+                    Vehicle_Pos[1],
+                Vehicle_Pos[2]);
 
                 if (!IsPlayerInRangeOfPoint(playerid, 5.0, Vehicle_Pos[0], Vehicle_Pos[1], Vehicle_Pos[2])) return SendNotification(playerid, "El vehículo está demasiado lejos.");
 
@@ -2485,7 +2594,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
             if (!GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_VALID]) return 1;
 
             new Float:Vehicle_Pos[3];
-            GetVehiclePos(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID], Vehicle_Pos[0], Vehicle_Pos[1], Vehicle_Pos[2]);
+            GetVehiclePos(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID],
+                Vehicle_Pos[0],
+                Vehicle_Pos[1],
+            Vehicle_Pos[2]);
 
             if (!IsPlayerInRangeOfPoint(playerid, 5.0, Vehicle_Pos[0], Vehicle_Pos[1], Vehicle_Pos[2])) return SendNotification(playerid, "El vehículo está demasiado lejos.");
 
@@ -2583,7 +2695,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
             if (!GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_VALID]) return 1;
 
             new Float:Vehicle_Pos[3];
-            GetVehiclePos(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID], Vehicle_Pos[0], Vehicle_Pos[1], Vehicle_Pos[2]);
+            GetVehiclePos(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID],
+                Vehicle_Pos[0],
+                Vehicle_Pos[1],
+            Vehicle_Pos[2]);
 
             if (!IsPlayerInRangeOfPoint(playerid, 5.0, Vehicle_Pos[0], Vehicle_Pos[1], Vehicle_Pos[2])) return SendNotification(playerid, "El vehículo está demasiado lejos.");
 
@@ -2645,7 +2760,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
             if (!GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_VALID]) return 1;
 
             new Float:Vehicle_Pos[3];
-            GetVehiclePos(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID], Vehicle_Pos[0], Vehicle_Pos[1], Vehicle_Pos[2]);
+            GetVehiclePos(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID],
+                Vehicle_Pos[0],
+                Vehicle_Pos[1],
+            Vehicle_Pos[2]);
 
             if (!IsPlayerInRangeOfPoint(playerid, 5.0, Vehicle_Pos[0], Vehicle_Pos[1], Vehicle_Pos[2])) return SendNotification(playerid, "El vehículo está demasiado lejos.");
 
@@ -2694,7 +2812,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
             if (!GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_VALID]) return 1;
 
             new Float:Vehicle_Pos[3];
-            GetVehiclePos(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID], Vehicle_Pos[0], Vehicle_Pos[1], Vehicle_Pos[2]);
+            GetVehiclePos(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID],
+                Vehicle_Pos[0],
+                Vehicle_Pos[1],
+            Vehicle_Pos[2]);
 
             if (!IsPlayerInRangeOfPoint(playerid, 5.0, Vehicle_Pos[0], Vehicle_Pos[1], Vehicle_Pos[2])) return SendNotification(playerid, "El vehículo está demasiado lejos.");
 
@@ -2746,7 +2867,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
             if (!GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_VALID]) return 1;
 
             new Float:Vehicle_Pos[3];
-            GetVehiclePos(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID], Vehicle_Pos[0], Vehicle_Pos[1], Vehicle_Pos[2]);
+            GetVehiclePos(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID],
+                Vehicle_Pos[0],
+                Vehicle_Pos[1],
+            Vehicle_Pos[2]);
 
             if (!IsPlayerInRangeOfPoint(playerid, 5.0, Vehicle_Pos[0], Vehicle_Pos[1], Vehicle_Pos[2])) return SendNotification(playerid, "El vehículo está demasiado lejos.");
 
@@ -2835,15 +2959,24 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     SendClientMessage(PLAYER_TEMP[playerid][pt_MECHANIC_PID], -1, "{"#SILVER_COLOR"}La persona ha aceptado pero el vehículo está muy lejos.");
                     return 1;
                 }
-                if (GetVehicleDistanceFromPoint(PLAYER_TEMP[playerid][pt_MECHANIC_VEHICLE_ID], pos[0], pos[1], pos[2]) > 10.0)
+                if (GetVehicleDistanceFromPoint(PLAYER_TEMP[playerid][pt_MECHANIC_VEHICLE_ID],
+                    pos[0],
+                    pos[1],
+                pos[2]) > 10.0)
                 {
                     SendNotification(playerid, "El vehículo está muy lejos del mecánico.");
                     SendClientMessage(PLAYER_TEMP[playerid][pt_MECHANIC_PID], -1, "{"#SILVER_COLOR"}La persona ha aceptado pero estás muy lejos del vehículo.");
                     return 1;
                 }
 
-                if (GivePlayerCash(playerid, -PLAYER_TEMP[playerid][pt_MECHANIC_PRICE], true, true) && GivePlayerCash(PLAYER_TEMP[playerid][pt_MECHANIC_PID], PLAYER_TEMP[playerid][pt_MECHANIC_PRICE], true, false))
-{
+                if (GivePlayerCash(playerid,
+                    -PLAYER_TEMP[playerid][pt_MECHANIC_PRICE],
+                    true,
+                    true) && GivePlayerCash(PLAYER_TEMP[playerid][pt_MECHANIC_PID],
+                    PLAYER_TEMP[playerid][pt_MECHANIC_PRICE],
+                    true,
+                false))
+                {
                     switch (PLAYER_TEMP[playerid][pt_MECHANIC_TYPE])
                     {
                         case MECHANIC_OPTION_REPAIR:
@@ -2929,7 +3062,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
             if (!GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_VALID]) return 1;
 
             new Float:Vehicle_Pos[3];
-            GetVehiclePos(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID], Vehicle_Pos[0], Vehicle_Pos[1], Vehicle_Pos[2]);
+            GetVehiclePos(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID],
+                Vehicle_Pos[0],
+                Vehicle_Pos[1],
+            Vehicle_Pos[2]);
 
             if (!IsPlayerInRangeOfPoint(playerid, 5.0, Vehicle_Pos[0], Vehicle_Pos[1], Vehicle_Pos[2])) return SendNotification(playerid, "El vehículo está demasiado lejos.");
 
@@ -2946,7 +3082,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
             if (!GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_VALID]) return 1;
 
             new Float:Vehicle_Pos[3];
-            GetVehiclePos(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID], Vehicle_Pos[0], Vehicle_Pos[1], Vehicle_Pos[2]);
+            GetVehiclePos(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID],
+                Vehicle_Pos[0],
+                Vehicle_Pos[1],
+            Vehicle_Pos[2]);
 
             if (!IsPlayerInRangeOfPoint(playerid, 5.0, Vehicle_Pos[0], Vehicle_Pos[1], Vehicle_Pos[2])) return SendNotification(playerid, "El vehículo está demasiado lejos.");
 
@@ -2980,7 +3119,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
             if (!GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_VALID]) return 1;
 
             new Float:Vehicle_Pos[3];
-            GetVehiclePos(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID], Vehicle_Pos[0], Vehicle_Pos[1], Vehicle_Pos[2]);
+            GetVehiclePos(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID],
+                Vehicle_Pos[0],
+                Vehicle_Pos[1],
+            Vehicle_Pos[2]);
 
             if (!IsPlayerInRangeOfPoint(playerid, 5.0, Vehicle_Pos[0], Vehicle_Pos[1], Vehicle_Pos[2])) return SendNotification(playerid, "El vehículo está demasiado lejos.");
 
@@ -3016,7 +3158,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
             if (!GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_VALID]) return 1;
 
             new Float:Vehicle_Pos[3];
-            GetVehiclePos(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID], Vehicle_Pos[0], Vehicle_Pos[1], Vehicle_Pos[2]);
+            GetVehiclePos(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID],
+                Vehicle_Pos[0],
+                Vehicle_Pos[1],
+            Vehicle_Pos[2]);
 
             if (!IsPlayerInRangeOfPoint(playerid, 5.0, Vehicle_Pos[0], Vehicle_Pos[1], Vehicle_Pos[2])) return SendNotification(playerid, "El vehículo está demasiado lejos.");
 
@@ -3117,7 +3262,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 if (price > PI[playerid][ac_CASH]) return SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar las semillas.", number_format_thousand(price - PI[playerid][ac_CASH]));
 
                 if (GivePlayerCash(playerid, -price, true, true))
-{
+                {
                     switch (seed_info[ PLAYER_TEMP[playerid][pt_SELECTED_BUY_SEED_ID] ][seed_info_PLANT_TYPE])
                     {
                         case PLANT_TYPE_MEDICINE: PI[playerid][ac_SEED_MEDICINE] += inputtext[0];
@@ -3171,9 +3316,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
                 SendFormatNotification(playerid, "Vas a plantar '%s' y vas a necesitar %d semillas.", plant_info[listitem][plant_info_NAME], plant_info[listitem][plant_info_SEEDS]);
 
-
-                new Float:offset = floatdiv(PLAYER_WORKS[playerid][WORK_FARMER][pwork_LEVEL], 10);
-                if (offset > 30.0) offset = 30.0;
+                floatdiv(PLAYER_WORKS[playerid][WORK_FARMER][pwork_LEVEL], 10);
+                //floatdiv(PLAYER_WORKS[playerid][WORK_FARMER][pwork_LEVEL], 10); // never used
+                //if (offset > 30.0) offset = 30.0; //never used
 
                 PLAYER_TEMP[playerid][pt_PLANTING_PLANT_SELECTED] = listitem;
                 PLAYER_TEMP[playerid][pt_PLANTING] = true;
@@ -3223,7 +3368,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     return 1;
                 }
 
-
                 if (PI[playerid][ac_CASH] >= BLACK_MARKT_WEAPONS[listitem][black_market_WEAPON_PRICE])
                 {
                     new weapon_slot = WEAPON_INFO[ BLACK_MARKT_WEAPONS[listitem][black_market_WEAPON_ID] ][weapon_info_SLOT];
@@ -3236,7 +3380,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     PI[playerid][ac_CAN_BUY_BM] = gettime() + 300;
 
                     if (GivePlayerCash(playerid, -BLACK_MARKT_WEAPONS[listitem][black_market_WEAPON_PRICE], true, true))
-{
+                    {
                         PI[playerid][ac_BLACK_MARKET_LEVEL] ++;
 
                         if (WEAPON_INFO[ BLACK_MARKT_WEAPONS[listitem][black_market_WEAPON_ID] ][weapon_info_AMMO]) GivePlayerWeaponEx(playerid, BLACK_MARKT_WEAPONS[listitem][black_market_WEAPON_ID], 50);
@@ -3289,7 +3433,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 }
 
                 if (GivePlayerCash(playerid, -price, true, true))
-{
+                {
                     GivePlayerWeaponEx(playerid, PLAYER_WEAPONS[playerid][ PLAYER_TEMP[playerid][pt_SELECTED_DIALOG_WEAPON_SLOT] ][player_weapon_ID], inputtext[0]);
 
                     SendFormatNotification(playerid, "Has comprado ~y~%s~w~ balas para tu ~y~%s~w~ por %s dólares.", number_format_thousand(inputtext[0]), WEAPON_INFO[ PLAYER_WEAPONS[playerid][ PLAYER_TEMP[playerid][pt_SELECTED_DIALOG_WEAPON_SLOT] ][player_weapon_ID] ][weapon_info_NAME], number_format_thousand(price));
@@ -3401,7 +3545,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 if (!IsPlayerInRangeOfPoint(playerid, 2.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "El vendedor está demasiado lejos.");
                 if (PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pt_GAME_STATE] != GAME_STATE_NORMAL) return SendNotification(playerid, "El vendedor no está disponible.");
 
-
                 new to_player_slot = GetEmptyPlayerPocketSlot(playerid);
                 if (to_player_slot == -1)
                 {
@@ -3410,9 +3553,18 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     return 1;
                 }
 
-                if (GivePlayerCash(playerid, -PLAYER_TEMP[playerid][pt_TRICK_PRICE], true, true) && GivePlayerCash(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID], PLAYER_TEMP[playerid][pt_TRICK_PRICE], true, false))
-{
-                    TransferPlayerPocketObject(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID], PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA], playerid, to_player_slot);
+                if (GivePlayerCash(playerid,
+                    -PLAYER_TEMP[playerid][pt_TRICK_PRICE],
+                    true,
+                    true) && GivePlayerCash(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID],
+                    PLAYER_TEMP[playerid][pt_TRICK_PRICE],
+                    true,
+                false))
+                {
+                    TransferPlayerPocketObject(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID],
+                        PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA],
+                        playerid,
+                    to_player_slot);
                     SendFormatNotification(playerid, "Te has gastado ~g~%s$~w~ con esta compra.", number_format_thousand(PLAYER_TEMP[playerid][pt_TRICK_PRICE]));
                     SendFormatNotification(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID], "Has ganado ~g~%s$~w~ con esta venta.", number_format_thousand(PLAYER_TEMP[playerid][pt_TRICK_PRICE]));
 
@@ -3443,9 +3595,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 if (!IsPlayerInRangeOfPoint(playerid, 2.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "El vendedor está demasiado lejos.");
                 if (PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pt_GAME_STATE] != GAME_STATE_NORMAL) return SendNotification(playerid, "El vendedor no está disponible.");
 
-
-                if (GivePlayerCash(playerid, -PLAYER_TEMP[playerid][pt_TRICK_PRICE], true, true) && GivePlayerCash(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID], PLAYER_TEMP[playerid][pt_TRICK_PRICE], true, false))
-{
+                if (GivePlayerCash(playerid,
+                    -PLAYER_TEMP[playerid][pt_TRICK_PRICE],
+                    true,
+                    true) && GivePlayerCash(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID],
+                    PLAYER_TEMP[playerid][pt_TRICK_PRICE],
+                    true,
+                false))
+                {
                     PI[playerid][ac_MEDICINE] += PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA];
                     PI[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][ac_MEDICINE] -= PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA];
 
@@ -3479,8 +3636,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 if (!IsPlayerInRangeOfPoint(playerid, 2.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "El vendedor está demasiado lejos.");
                 if (PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pt_GAME_STATE] != GAME_STATE_NORMAL) return SendNotification(playerid, "El vendedor no está disponible.");
 
-                if (GivePlayerCash(playerid, -PLAYER_TEMP[playerid][pt_TRICK_PRICE], true, true) && GivePlayerCash(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID], PLAYER_TEMP[playerid][pt_TRICK_PRICE], true, false))
-{
+                if (GivePlayerCash(playerid,
+                    -PLAYER_TEMP[playerid][pt_TRICK_PRICE],
+                    true,
+                    true) && GivePlayerCash(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID],
+                    PLAYER_TEMP[playerid][pt_TRICK_PRICE],
+                    true,
+                false))
+                {
                     PI[playerid][ac_CANNABIS] += PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA];
                     PI[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][ac_CANNABIS] -= PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA];
 
@@ -3514,8 +3677,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 if (!IsPlayerInRangeOfPoint(playerid, 2.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "El vendedor está demasiado lejos.");
                 if (PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pt_GAME_STATE] != GAME_STATE_NORMAL) return SendNotification(playerid, "El vendedor no está disponible.");
 
-                if (GivePlayerCash(playerid, -PLAYER_TEMP[playerid][pt_TRICK_PRICE], true, true) && GivePlayerCash(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID], PLAYER_TEMP[playerid][pt_TRICK_PRICE], true, false))
-{
+                if (GivePlayerCash(playerid,
+                    -PLAYER_TEMP[playerid][pt_TRICK_PRICE],
+                    true,
+                    true) && GivePlayerCash(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID],
+                    PLAYER_TEMP[playerid][pt_TRICK_PRICE],
+                    true,
+                false))
+                {
                     PI[playerid][ac_CRACK] += PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA];
                     PI[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][ac_CRACK] -= PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA];
 
@@ -3549,12 +3718,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 if (!IsPlayerInRangeOfPoint(playerid, 2.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "El vendedor está demasiado lejos.");
                 if (PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pt_GAME_STATE] != GAME_STATE_NORMAL) return SendNotification(playerid, "El vendedor no está disponible.");
 
-
                 PI[playerid][ac_COINS] += PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA];
                 PI[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][ac_COINS] -= PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA];
 
-                if (GivePlayerCash(playerid, -PLAYER_TEMP[playerid][pt_TRICK_PRICE], true, true) && GivePlayerCash(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID], PLAYER_TEMP[playerid][pt_TRICK_PRICE], true, false))
-{
+                if (GivePlayerCash(playerid,
+                    -PLAYER_TEMP[playerid][pt_TRICK_PRICE],
+                    true,
+                    true) && GivePlayerCash(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID],
+                    PLAYER_TEMP[playerid][pt_TRICK_PRICE],
+                    true,
+                false))
+                {
                     mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET coins = %d WHERE id = %d;", PI[playerid][ac_COINS], ACCOUNT_INFO[playerid][ac_ID]);
                     mysql_tquery(srp_db, QUERY_BUFFER);
 
@@ -3591,7 +3765,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 if (!IsPlayerInRangeOfPoint(playerid, 2.0, pos[0], pos[1], pos[2])) return SendNotification(playerid, "El vendedor está demasiado lejos.");
                 if (PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pt_GAME_STATE] != GAME_STATE_NORMAL) return SendNotification(playerid, "El vendedor no está disponible.");
 
-
                 if (PLAYER_WEAPONS[playerid][ PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA] ][player_weapon_VALID])
                 {
                     PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
@@ -3599,8 +3772,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     return 1;
                 }
 
-                if (GivePlayerCash(playerid, -PLAYER_TEMP[playerid][pt_TRICK_PRICE], true, true) && GivePlayerCash(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID], PLAYER_TEMP[playerid][pt_TRICK_PRICE], true, false))
-{
+                if (GivePlayerCash(playerid,
+                    -PLAYER_TEMP[playerid][pt_TRICK_PRICE],
+                    true,
+                    true) && GivePlayerCash(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID],
+                    PLAYER_TEMP[playerid][pt_TRICK_PRICE],
+                    true,
+                false))
+                {
                     TransferPlayerWeapon(PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID], PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA], playerid);
 
                     SendFormatNotification(playerid, "Has gastado ~g~%s$~w~ con esta compra.", number_format_thousand(PLAYER_TEMP[playerid][pt_TRICK_PRICE]));
@@ -3664,7 +3843,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
                         new string[128];
                         switch (VEHICLE_BOOT[ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE] ][ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE_BOOT_SLOT] ][vehicle_boot_TYPE])
-{
+                        {
                             case BOOT_TYPE_WEAPON: {
                                 new to_slot = WEAPON_INFO[ VEHICLE_BOOT[ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE] ][ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE_BOOT_SLOT] ][vehicle_boot_INT] ][weapon_info_SLOT];
                                 if (PLAYER_WEAPONS[playerid][to_slot][player_weapon_VALID])
@@ -3914,7 +4093,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 }
 
                 if (GivePlayerCash(playerid, -price, true, true))
-{
+                {
                     GivePlayerWeaponEx(playerid, PLAYER_WEAPONS[playerid][ PLAYER_TEMP[playerid][pt_SELECTED_DIALOG_WEAPON_SLOT] ][player_weapon_ID], inputtext[0]);
 
                     SendFormatNotification(playerid, "Has comprado ~y~\"%s\"~w~ balas para tu ~y~\"%s\"~w~ por ~g~\"%s$\"~w~.", number_format_thousand(inputtext[0]), WEAPON_INFO[ PLAYER_WEAPONS[playerid][ PLAYER_TEMP[playerid][pt_SELECTED_DIALOG_WEAPON_SLOT] ][player_weapon_ID] ][weapon_info_NAME], number_format_thousand(price));
@@ -3932,7 +4111,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 if (PI[playerid][ac_ARMOUR] > 99.5) return SendNotification(playerid, "Ya tienes un chaleco antibalas");
 
                 if (GivePlayerCash(playerid, -300, true, true))
-{
+                {
                     SetPlayerArmourEx(playerid, 100.0);
                     SendNotification(playerid, "Has comprado un ~b~chaleco antibalas~w~ por 300 dólares.");
                 }
@@ -3949,7 +4128,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     return 1;
                 }
 
-
                 if (PI[playerid][ac_CASH] >= POLICE_SHOP_WEAPONS[listitem][police_shop_WEAPON_PRICE])
                 {
                     new weapon_slot = WEAPON_INFO[ POLICE_SHOP_WEAPONS[listitem][police_shop_WEAPON_ID] ][weapon_info_SLOT];
@@ -3960,7 +4138,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     }
 
                     if (GivePlayerCash(playerid, -POLICE_SHOP_WEAPONS[listitem][police_shop_WEAPON_PRICE], true, true))
-{
+                    {
                         if (WEAPON_INFO[ POLICE_SHOP_WEAPONS[listitem][police_shop_WEAPON_ID] ][weapon_info_AMMO]) GivePlayerWeaponEx(playerid, POLICE_SHOP_WEAPONS[listitem][police_shop_WEAPON_ID], 100);
                         else GivePlayerWeaponEx(playerid, POLICE_SHOP_WEAPONS[listitem][police_shop_WEAPON_ID], 1);
 
@@ -4013,17 +4191,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                             format(header, sizeof header,
 
                                 "\
-                                    Trabajo: %s\n\
-                                    Tipo: %s\n\
-                                    Nivel necesario: %d\n\
-                                    Paga extra: por cada %s trabajos realizados recibes %s$ extra.\n\
-                                    Puedes localizar donde adquirir este trabajo desde el GPS.\n\
+                                Trabajo: %s\n\
+                                Tipo: %s\n\
+                                Nivel necesario: %d\n\
+                                Paga extra: por cada %s trabajos realizados recibes %s$ extra.\n\
+                                Puedes localizar donde adquirir este trabajo desde el GPS.\n\
                                 ",
-                                    work_info[work][work_info_NAME],
-                                    (work_info[work][work_info_TYPE] == WORK_TYPE_NORMAL) ? ("normal") : ("complementario"),
-                                    work_info[work][work_info_LEVEL],
-                                    number_format_thousand(work_info[work][work_info_EXTRA_PAY_EXP]),
-                                    number_format_thousand(work_info[work][work_info_EXTRA_PAY])
+                                work_info[work][work_info_NAME],
+                                (work_info[work][work_info_TYPE] == WORK_TYPE_NORMAL) ? ("normal") : ("complementario"),
+                                work_info[work][work_info_LEVEL],
+                                number_format_thousand(work_info[work][work_info_EXTRA_PAY_EXP]),
+                                number_format_thousand(work_info[work][work_info_EXTRA_PAY])
                             );
                         }
                         else // con limite
@@ -4031,18 +4209,18 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                             format(header, sizeof header,
 
                                 "\
-                                    Trabajo: %s\n\
-                                    Tipo: %s\n\
-                                    Nivel necesario: %d\n\
-                                    Paga extra: por cada %s trabajos realizados recibes %s$ extra con un límite de %s$.\n\
-                                    Puedes localizar donde adquirir este trabajo desde el GPS.\n\
+                                Trabajo: %s\n\
+                                Tipo: %s\n\
+                                Nivel necesario: %d\n\
+                                Paga extra: por cada %s trabajos realizados recibes %s$ extra con un límite de %s$.\n\
+                                Puedes localizar donde adquirir este trabajo desde el GPS.\n\
                                 ",
-                                    work_info[work][work_info_NAME],
-                                    (work_info[work][work_info_TYPE] == WORK_TYPE_NORMAL) ? ("normal") : ("complementario"),
-                                    work_info[work][work_info_LEVEL],
-                                    number_format_thousand(work_info[work][work_info_EXTRA_PAY_EXP]),
-                                    number_format_thousand(work_info[work][work_info_EXTRA_PAY]),
-                                    number_format_thousand(work_info[work][work_info_EXTRA_PAY_LIMIT])
+                                work_info[work][work_info_NAME],
+                                (work_info[work][work_info_TYPE] == WORK_TYPE_NORMAL) ? ("normal") : ("complementario"),
+                                work_info[work][work_info_LEVEL],
+                                number_format_thousand(work_info[work][work_info_EXTRA_PAY_EXP]),
+                                number_format_thousand(work_info[work][work_info_EXTRA_PAY]),
+                                number_format_thousand(work_info[work][work_info_EXTRA_PAY_LIMIT])
                             );
                         }
                     }
@@ -4051,14 +4229,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                         format(header, sizeof header,
 
                             "\
-                                Trabajo: %s\n\
-                                Tipo: %s\n\
-                                Nivel necesario: %d\n\
-                                Puedes localizar donde adquirir este trabajo desde el GPS.\n\
+                            Trabajo: %s\n\
+                            Tipo: %s\n\
+                            Nivel necesario: %d\n\
+                            Puedes localizar donde adquirir este trabajo desde el GPS.\n\
                             ",
-                                work_info[work][work_info_NAME],
-                                (work_info[work][work_info_TYPE] == WORK_TYPE_NORMAL) ? ("normal") : ("complementario"),
-                                work_info[work][work_info_LEVEL]
+                            work_info[work][work_info_NAME],
+                            (work_info[work][work_info_TYPE] == WORK_TYPE_NORMAL) ? ("normal") : ("complementario"),
+                            work_info[work][work_info_LEVEL]
                         );
                     }
                 }
@@ -4080,7 +4258,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                             mide en precio por km, puedes ajustarlo con el comando /tarifa.\n\
                             \n\
                             ",
-                                header
+                            header
                         );
                     }
                     case WORK_TRUCK:
@@ -4094,7 +4272,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                             Según tu experiencia en el trabajo podrás transportar diferentes productos de más valor.\n\
                             \n\
                             ",
-                                header
+                            header
                         );
                     }
                     case WORK_MECHANIC:
@@ -4122,7 +4300,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                             Para tunearlos o remover componentes tendrás que haber realizado al menos 100 reparaciones en vehículos ajenos.\n\
                             \n\
                             ",
-                                header
+                            header
                         );
                     }
                     case WORK_HARVESTER:
@@ -4135,7 +4313,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                             Súbete a una cosechadora y empieza a cosechar.\n\
                             \n\
                             ",
-                                header
+                            header
                         );
                     }
                     case WORK_FUMIGATOR:
@@ -4148,7 +4326,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                             Súbete a un avión y empieza a fumigar.\n\
                             \n\
                             ",
-                                header
+                            header
                         );
                     }
                     case WORK_TRASH:
@@ -4164,7 +4342,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                             Dependiendo de tu experiencia recogerás más rápido la basura.\n\
                             \n\
                             ",
-                                header
+                            header
                         );
                     }
                     case WORK_LUMBERJACK:
@@ -4178,7 +4356,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                             Dependiendo de tu experiencia tu velocidad talando irá aumentando.\n\
                             \n\
                             ",
-                                header
+                            header
                         );
                     }
                     case WORK_FARMER:
@@ -4198,7 +4376,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                             Cuida tus plantas, la gente puede destuirlas si le disparan.\n\
                             \n\
                             ",
-                                header
+                            header
                         );
                     }
                     case WORK_POLICE:
@@ -4233,7 +4411,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                             Los policías recibirán la paga en el payday, su paga dependerá de su rango.\n\
                             \n\
                             ",
-                                header
+                            header
                         );
                     }
                     case WORK_PIZZA:
@@ -4246,7 +4424,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                             Súbete a una moto y empieza a repartir pizzas.\n\
                             \n\
                             ",
-                                header
+                            header
                         );
                     }
                     case WORK_MEDIC:
@@ -4263,7 +4441,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                             Cuando estás de servicio solo puedes conducir ambulancias.\n\
                             \n\
                             ",
-                                header
+                            header
                         );
                     }
                     case WORK_WAREHOUSE:
@@ -4277,7 +4455,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                             Selecciona uno de estos pedidos y coge todos los productos para llevarlos a la cinta transportadora.\n\
                             \n\
                             ",
-                                header
+                            header
                         );
                     }
                     case WORK_DELIVERYMAN:
@@ -4291,7 +4469,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                             Según tu experiencia en el trabajo ganarás más dinero por cada reparto.\n\
                             \n\
                             ",
-                                header
+                            header
                         );
                     }
                 }
@@ -4639,8 +4817,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 if (500 > PI[playerid][ac_CASH]) return SendNotification(playerid, "Necesitas 500$ para poner el anuncio.");
 
                 if (GivePlayerCash(playerid, -500, true, true))
-{
-                    AddNewAd(playerid, PLAYER_TEMP[playerid][pt_SHOP_ADD_TYPE], inputtext[0], PLAYER_TEMP[playerid][pt_SHOP_ADD_TEXT], PLAYER_TEMP[playerid][pt_SHOP_ADD_MODELID], PLAYER_TEMP[playerid][pt_SHOP_ADD_VCOL1], PLAYER_TEMP[playerid][pt_SHOP_ADD_VCOL2]);
+                {
+                    AddNewAd(playerid,
+                        PLAYER_TEMP[playerid][pt_SHOP_ADD_TYPE],
+                        inputtext[0],
+                        PLAYER_TEMP[playerid][pt_SHOP_ADD_TEXT],
+                        PLAYER_TEMP[playerid][pt_SHOP_ADD_MODELID],
+                        PLAYER_TEMP[playerid][pt_SHOP_ADD_VCOL1],
+                    PLAYER_TEMP[playerid][pt_SHOP_ADD_VCOL2]);
                     SendNotification(playerid, "Tu anuncio se ha publicado correctamente.");
                 }
             }
@@ -4668,7 +4852,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 }
 
                 if (GivePlayerCash(playerid, -veh_money, true, true))
-{
+                {
                     new crane_point = random(sizeof(CRANE_POINTS[]));
                     GLOBAL_VEHICLES[vehicleid][gb_vehicle_SPAWN_X] = CRANE_POINTS[crane_point][0];
                     GLOBAL_VEHICLES[vehicleid][gb_vehicle_SPAWN_Y] = CRANE_POINTS[crane_point][1];
@@ -4749,7 +4933,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 }
 
                 if (GivePlayerCash(playerid, -600000, true, true))
-{
+                {
                     CREW_INFO[index][crew_VALID] = true;
                     format(CREW_INFO[index][crew_NAME], 32, "%s", PLAYER_TEMP[playerid][pt_CREATE_CREW_NAME]);
                     CREW_INFO[index][crew_COLOR] = RandomColors[ PLAYER_TEMP[playerid][pt_CREATE_CREW_COLOR] ];
@@ -4945,11 +5129,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 mysql_tquery(srp_db, QUERY_BUFFER);
                 //actualizar nombre casas pickups
 
-
                 new message[145], label_str[256];
                 format(message, sizeof message, "{%06x}[Banda] {FFFFFF}%s (%s) cambió el nombre de la banda a '%s'.", CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_COLOR] >>> 8, PLAYER_TEMP[playerid][pt_RP_NAME], CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PI[playerid][ac_CREW_RANK] ][crew_rank_NAME], CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_NAME]);
                 SendMessageToCrewMembers(PI[playerid][ac_CREW], -1, message);
-
 
                 for (new i = 0; i != MAX_PROPERTIES; i++)
                 {
@@ -4962,9 +5144,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                         label_str,
                         sizeof label_str,
                         "\
-                            Propiedad {"#PRIMARY_COLOR"}#%d\n\n\
-                            {FFFFFF}Banda: {"#PRIMARY_COLOR"}%s\n\
-                            {FFFFFF}Presiona {"#PRIMARY_COLOR"}~k~~CONVERSATION_YES~ {FFFFFF}para entrar.\
+                        Propiedad {"#PRIMARY_COLOR"}#%d\n\n\
+                        {FFFFFF}Banda: {"#PRIMARY_COLOR"}%s\n\
+                        {FFFFFF}Presiona {"#PRIMARY_COLOR"}~k~~CONVERSATION_YES~ {FFFFFF}para entrar.\
                         ", PROPERTY_INFO[i][property_ID], CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_NAME]
                     );
 
@@ -5357,7 +5539,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     return 1;
                 }
 
-
                 CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PLAYER_TEMP[playerid][pt_CREW_SELECTED_RANK] ][crew_rank_VALID] = true;
                 format(CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PLAYER_TEMP[playerid][pt_CREW_SELECTED_RANK] ][crew_rank_NAME], 32, "%s", rank_name);
 
@@ -5482,7 +5663,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
                 CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_COLOR] = RandomColors[listitem];
 
-
                 new r, g, b, a,        new_territory_color;
                 HexToRGBA(CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_COLOR], r, g, b, a);
                 new_territory_color = RGBAToHex(r, g, b, 135);
@@ -5586,7 +5766,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     info[0] = PICKUP_TYPE_PROPERTY;
                     info[1] = i; // Index
                     info[2] = 2; // Pickup Exterior
-                    Streamer_SetArrayData(STREAMER_TYPE_PICKUP, PROPERTY_INFO[ i ][property_EXT_PICKUP_ID], E_STREAMER_EXTRA_ID, info);
+                    Streamer_SetArrayData(STREAMER_TYPE_PICKUP,
+                        PROPERTY_INFO[ i ][property_EXT_PICKUP_ID],
+                        E_STREAMER_EXTRA_ID,
+                    info);
 
                     mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE properties SET id_player = NULL, id_territory = NULL WHERE id = %d;", PROPERTY_INFO[i][property_ID]);
                     mysql_tquery(srp_db, QUERY_BUFFER);
@@ -5830,7 +6013,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 if (!IsPointInDynamicArea(TERRITORIES[ PLAYER_TEMP[playerid][pt_PLAYER_TERRITORY_PRO] ][territory_AREA], PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_X], PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_Y], PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_Z])) return SendNotification(playerid, "La propiedad no está dentro de un territorio de tu banda.");
                 if (PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_OWNER_ID] != ACCOUNT_INFO[playerid][ac_ID]) return SendNotification(playerid, "Esta no es tu propiedad.");
 
-
                 new index = PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED];
                 PROPERTY_INFO[ index ][property_CREW] = true;
                 PROPERTY_INFO[ index ][property_OWNER_ID] = 0;
@@ -5843,9 +6025,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     label_str,
                     sizeof label_str,
                     "\
-                        Propiedad {"#PRIMARY_COLOR"}#%d\n\n\
-                        {FFFFFF}Banda: {"#PRIMARY_COLOR"}%s\n\
-                        {FFFFFF}Presiona {"#PRIMARY_COLOR"}~k~~CONVERSATION_YES~ {FFFFFF}para entrar.\
+                    Propiedad {"#PRIMARY_COLOR"}#%d\n\n\
+                    {FFFFFF}Banda: {"#PRIMARY_COLOR"}%s\n\
+                    {FFFFFF}Presiona {"#PRIMARY_COLOR"}~k~~CONVERSATION_YES~ {FFFFFF}para entrar.\
                     ", PROPERTY_INFO[index][property_ID], CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_NAME]
                 );
                 UpdateDynamic3DTextLabelText(PROPERTY_INFO[ index ][property_EXT_LABEL_ID], 0xFFFFFFFF, label_str);
@@ -5888,7 +6070,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     if (!PROPERTY_INFO[i][property_CREW]) continue;
                     if (PROPERTY_INFO[i][property_CREW_ID] != PI[playerid][ac_CREW]) continue;
 
-                    if (IsPointInDynamicArea(TERRITORIES[ PLAYER_TEMP[playerid][pt_PLAYER_TERRITORY_PRO] ][territory_AREA], PROPERTY_INFO[i][property_EXT_X], PROPERTY_INFO[i][property_EXT_Y], PROPERTY_INFO[i][property_EXT_Z]))
+                    if (IsPointInDynamicArea(TERRITORIES[ PLAYER_TEMP[playerid][pt_PLAYER_TERRITORY_PRO] ][territory_AREA],
+                        PROPERTY_INFO[i][property_EXT_X],
+                        PROPERTY_INFO[i][property_EXT_Y],
+                    PROPERTY_INFO[i][property_EXT_Z]))
                     {
                         PROPERTY_INFO[ i ][property_SOLD] = false;
                         PROPERTY_INFO[ i ][property_CREW] = false;
@@ -5906,7 +6091,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                         info[0] = PICKUP_TYPE_PROPERTY;
                         info[1] = i; // Index
                         info[2] = 2; // Pickup Exterior
-                        Streamer_SetArrayData(STREAMER_TYPE_PICKUP, PROPERTY_INFO[ i ][property_EXT_PICKUP_ID], E_STREAMER_EXTRA_ID, info);
+                        Streamer_SetArrayData(STREAMER_TYPE_PICKUP,
+                            PROPERTY_INFO[ i ][property_EXT_PICKUP_ID],
+                            E_STREAMER_EXTRA_ID,
+                        info);
 
                         mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE properties SET id_player = NULL, id_territory = NULL WHERE id = %d;", PROPERTY_INFO[ i ][property_ID]);
                         mysql_tquery(srp_db, QUERY_BUFFER);
@@ -5956,7 +6144,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 info[0] = PICKUP_TYPE_PROPERTY;
                 info[1] = PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED]; // Index
                 info[2] = 2; // Pickup Exterior
-                Streamer_SetArrayData(STREAMER_TYPE_PICKUP, PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_PICKUP_ID], E_STREAMER_EXTRA_ID, info);
+                Streamer_SetArrayData(STREAMER_TYPE_PICKUP,
+                    PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_EXT_PICKUP_ID],
+                    E_STREAMER_EXTRA_ID,
+                info);
 
                 mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE properties SET id_player = NULL, id_territory = NULL WHERE id = %d;", PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_ID]);
                 mysql_tquery(srp_db, QUERY_BUFFER);
@@ -5983,8 +6174,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     return 1;
                 }
 
-                if (GivePlayerCash(playerid, -PLAYER_TEMP[playerid][pt_POLICE_PEN_IM], true, true) && GivePlayerCash(PLAYER_TEMP[playerid][pt_POLICE_PEN_PID], PLAYER_TEMP[playerid][pt_POLICE_PEN_IM]/2, true, false))
-{
+                if (GivePlayerCash(playerid,
+                    -PLAYER_TEMP[playerid][pt_POLICE_PEN_IM],
+                    true,
+                    true) && GivePlayerCash(PLAYER_TEMP[playerid][pt_POLICE_PEN_PID],
+                    PLAYER_TEMP[playerid][pt_POLICE_PEN_IM]/2,
+                    true,
+                false))
+                {
                     SetPlayerWantedLevelEx(playerid, 0);
 
                     SendNotification(playerid, "La multa ha sido pagada.");
@@ -6166,7 +6363,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                         }
 
                         if (GivePlayerCash(playerid, -500, true, true))
-{
+                        {
                             VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][slot][vobject_VALID] = true;
                             VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][slot][vobject_TYPE] = VOBJECT_TYPE_TEXT;
                             VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][slot][vobject_ID] = 0;
@@ -6293,7 +6490,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 }
 
                 if (GivePlayerCash(playerid, -2000, true, true))
-{
+                {
                     VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][slot][vobject_VALID] = true;
                     VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][slot][vobject_ID] = 0;
                     if (PLAYER_TEMP[playerid][pt_COUNTRY_TYPE] == 0)
@@ -6680,8 +6877,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
             return 1;
         }
 
-
-
         case DIALOG_PLAYER_CONFIG:
         {
             if (response)
@@ -6703,12 +6898,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                         {
                             PI[playerid][ac_CONFIG_HUD] = false;
                             for (new i = 0; i < HUD_TEXTDRAWS_SIZE; i++)
-{
+                            {
                                 TextDrawHideForPlayer(playerid, Textdraws[textdraw_HUD][i]);
                             }
 
                             for (new i = 0; i < HUD_PTEXTDRAWS_SIZE; i++)
-{
+                            {
                                 PlayerTextDrawHide(playerid, PlayerTextdraws[playerid][ptextdraw_HUD][i]);
                             }
                         }
@@ -6716,12 +6911,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                         {
                             PI[playerid][ac_CONFIG_HUD] = true;
                             for (new i = 0; i < HUD_TEXTDRAWS_SIZE; i++)
-{
+                            {
                                 TextDrawShowForPlayer(playerid, Textdraws[textdraw_HUD][i]);
                             }
 
                             for (new i = 0; i < HUD_PTEXTDRAWS_SIZE; i++)
-{
+                            {
                                 PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_HUD][i]);
                             }
                         }
@@ -6977,7 +7172,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                         {
                             printf("/cname: %d, '%s'", ACCOUNT_INFO[playerid][ac_ID], name);
                             if (SetPlayerName(playerid, name) == 1)
-{
+                            {
                                 format(PLAYER_TEMP[playerid][pt_NAME], 24, "%s", name);
                                 format(ACCOUNT_INFO[playerid][ac_NAME], 24, "%s", name);
                                 PLAYER_TEMP[playerid][pt_RP_NAME] = RP_GetPlayerName(playerid);
@@ -6993,9 +7188,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                                         label_str,
                                         sizeof label_str,
                                         "\
-                                            Propiedad {"#PRIMARY_COLOR"}#%d\n\n\
-                                            {FFFFFF}Propietario: {"#PRIMARY_COLOR"}%s\n\
-                                            {FFFFFF}Presiona {"#PRIMARY_COLOR"}~k~~CONVERSATION_YES~ {FFFFFF}para entrar.\
+                                        Propiedad {"#PRIMARY_COLOR"}#%d\n\n\
+                                        {FFFFFF}Propietario: {"#PRIMARY_COLOR"}%s\n\
+                                        {FFFFFF}Presiona {"#PRIMARY_COLOR"}~k~~CONVERSATION_YES~ {FFFFFF}para entrar.\
                                         ", PROPERTY_INFO[i][property_ID], ACCOUNT_INFO[playerid][ac_NAME]
                                     );
                                     UpdateDynamic3DTextLabelText(PROPERTY_INFO[i][property_EXT_LABEL_ID], 0xFFFFFFFF, label_str);
@@ -7013,8 +7208,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     }
                 }
                 mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id FROM player WHERE name = '%e';", name);
-                 MySQL_TQueryInline(srp_db, using inline OnDialogQueryLoad, QUERY_BUFFER, "s", name);
-
+                MySQL_TQueryInline(srp_db, using inline OnDialogQueryLoad, QUERY_BUFFER, "s", name);
             }
             return 1;
         }
@@ -7116,7 +7310,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
                         new string[128];
                         switch (PROPERTY_CLOSET[ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY] ][ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY_SLOT] ][property_closet_TYPE])
-{
+                        {
                             case BOOT_TYPE_WEAPON: {
                                 new to_slot = WEAPON_INFO[ PROPERTY_CLOSET[ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY] ][ PLAYER_TEMP[playerid][pt_DIALOG_CLOSET_PROPERTY_SLOT] ][property_closet_INT] ][weapon_info_SLOT];
                                 if (PLAYER_WEAPONS[playerid][to_slot][player_weapon_VALID])

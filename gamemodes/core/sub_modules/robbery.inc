@@ -22,13 +22,13 @@
 hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
 {
     if (PI[playerid][ac_CREW])
-{
+    {
         new now = gettime(), crewIndex = PLAYER_TEMP[playerid][pt_CREW_INDEX];
         new enterExitIndex = PLAYER_TEMP[playerid][pt_INTERIOR_INDEX];
         if (enterExitIndex != -1 && ENTER_EXIT[enterExitIndex][ee_ROBBABLE])
-{
+        {
             if (ENTER_EXIT[enterExitIndex][ee_TIMER] == -1)
-{
+            {
                 if (now > CREW_INFO[crewIndex][crew_LAST_ROBBERY] + 300)
 { // 5 min
 
@@ -36,7 +36,7 @@ hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, 
 { // 30 min
                         new attackers_in_shop = CountCrewPlayersInShop(crewIndex, enterExitIndex);
                         if (attackers_in_shop >= 2)
-{
+                        {
                             //COMENZAR ATRACO
                             StartShopAttack(crewIndex, enterExitIndex);
                             return Y_HOOKS_CONTINUE_RETURN_1;
@@ -46,12 +46,12 @@ hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, 
                 }
             }
             else
-{
+            {
                 //esta siendo atracada
                 if (crewIndex == ENTER_EXIT[enterExitIndex][ee_LAST_CREW_INDEX_ROBBERY])
-{
+                {
                     if (now > PLAYER_TEMP[playerid][pt_LAST_SHOT_ROBBERY] + 1)
-{
+                    {
                         PLAYER_TEMP[playerid][pt_LAST_SHOT_ROBBERY] = now;
                         ENTER_EXIT[enterExitIndex][ee_ROBBERY_PROGRESS] += frandom(3.0, 1.5, 2);
                     }
@@ -65,22 +65,22 @@ hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, 
 hook OnPlayerEnterInterior(playerid, index)
 {
     if (ENTER_EXIT[index][ee_TIMER] != -1)
-{
+    {
         if (ENTER_EXIT[index][ee_STEP] == 2)
-{
+        {
             new Float:x, Float:y, Float:z;
             x = ENTER_EXIT[index][ee_INT_X];
             y = ENTER_EXIT[index][ee_INT_Y];
             z = ENTER_EXIT[index][ee_INT_Z];
             if (ENTER_EXIT[index][ee_MAIN_ACTOR] != INVALID_ACTOR_ID)
-{
+            {
                 GetDynamicActorPos(ENTER_EXIT[index][ee_MAIN_ACTOR], x, y, z);
             }
             PlayerPlaySoundEx(playerid, 3401, x, y, z);
         }
 
         if (PI[playerid][ac_CREW] && ENTER_EXIT[index][ee_LAST_CREW_INDEX_ROBBERY] == PLAYER_TEMP[playerid][pt_CREW_INDEX])
-{
+        {
             TextDrawShowForPlayer(playerid, Textdraws[textdraw_TERRITORY_BOX]);
             TextDrawShowForPlayer(playerid, ENTER_EXIT[index][ee_TEXTDRAW]);
         }
@@ -90,10 +90,10 @@ hook OnPlayerEnterInterior(playerid, index)
 hook OnPlayerExitInterior(playerid, index)
 {
     if (ENTER_EXIT[index][ee_TIMER] != -1)
-{
+    {
         PlayerPlaySoundEx(playerid, 0, 0.0, 0.0, 0.0);
         if (PI[playerid][ac_CREW])
-{
+        {
             TextDrawHideForPlayer(playerid, Textdraws[textdraw_TERRITORY_BOX]);
             TextDrawHideForPlayer(playerid, ENTER_EXIT[index][ee_TEXTDRAW]);
         }
@@ -134,7 +134,7 @@ StartShopAttack(crew_index, enter_exit_index)
     ENTER_EXIT[enter_exit_index][ee_STEP] = 0;
     ENTER_EXIT[enter_exit_index][ee_ROBBERY_PROGRESS] = frandom(8.0, 4.0, 2);
     if (ENTER_EXIT[enter_exit_index][ee_TIMER] != -1)
-{
+    {
         KillTimer(ENTER_EXIT[enter_exit_index][ee_TIMER]);
         ENTER_EXIT[enter_exit_index][ee_TIMER] = -1;
     }
@@ -149,7 +149,10 @@ StartShopAttack(crew_index, enter_exit_index)
     {
         if (IsPlayerConnected(i))
         {
-            if (PI[i][ac_CREW] && PLAYER_TEMP[i][pt_CREW_INDEX] == crew_index && PLAYER_TEMP[i][pt_INTERIOR_INDEX] == enter_exit_index)
+            if (
+                PI[i][ac_CREW] &&
+                PLAYER_TEMP[i][pt_CREW_INDEX] == crew_index &&
+            PLAYER_TEMP[i][pt_INTERIOR_INDEX] == enter_exit_index)
             {
                 TextDrawShowForPlayer(i, Textdraws[textdraw_TERRITORY_BOX]);
                 TextDrawShowForPlayer(i, ENTER_EXIT[enter_exit_index][ee_TEXTDRAW]);
@@ -158,7 +161,7 @@ StartShopAttack(crew_index, enter_exit_index)
     }
 
     if (ENTER_EXIT[enter_exit_index][ee_MAIN_ACTOR] != INVALID_ACTOR_ID)
-{
+    {
         ApplyDynamicActorAnimation(ENTER_EXIT[enter_exit_index][ee_MAIN_ACTOR], "SHOP", "SHP_Rob_React", 4.1, 0, 1, 1, 1, 0);
     }
 
@@ -171,29 +174,29 @@ public UpdateShopAttack(crew_index, enter_exit_index)
     ENTER_EXIT[enter_exit_index][ee_ROBBERY_PROGRESS] += frandom(0.8, 0.3, 2);
 
     if (ENTER_EXIT[enter_exit_index][ee_STEP] < 2)
-{
+    {
         //CONTAR
         new attackers_in_shop = CountCrewPlayersInShop(crew_index, enter_exit_index);
         if (attackers_in_shop <= 0)
-{
+        {
             FinishShopAttack(enter_exit_index);
             return 1;
         }
     }
 
     if (ENTER_EXIT[enter_exit_index][ee_ROBBERY_PROGRESS] >= 120.0 && ENTER_EXIT[enter_exit_index][ee_STEP] == 2)
-{
+    {
         FinishShopAttack(enter_exit_index);
     }
     else if (ENTER_EXIT[enter_exit_index][ee_ROBBERY_PROGRESS] >= 90.0 && ENTER_EXIT[enter_exit_index][ee_STEP] == 1)
-{
+    {
         new Float:x, Float:y, Float:z;
         x = ENTER_EXIT[enter_exit_index][ee_INT_X];
         y = ENTER_EXIT[enter_exit_index][ee_INT_Y];
         z = ENTER_EXIT[enter_exit_index][ee_INT_Z];
 
         if (ENTER_EXIT[enter_exit_index][ee_MAIN_ACTOR] != INVALID_ACTOR_ID)
-{
+        {
             ApplyDynamicActorAnimation(ENTER_EXIT[enter_exit_index][ee_MAIN_ACTOR], "PED", "cower", 4.1, 0, 1, 1, 1, 0);
             GetDynamicActorPos(ENTER_EXIT[enter_exit_index][ee_MAIN_ACTOR], x, y, z);
         }
@@ -214,7 +217,7 @@ public UpdateShopAttack(crew_index, enter_exit_index)
                 {
                     PlayerPlaySoundEx(i, 3401, x, y, z);
                     if (PI[i][ac_CREW] && PLAYER_TEMP[i][pt_CREW_INDEX] == crew_index)
-{
+                    {
                         GivePlayerCash(i, prize, true, false);
                         SendClientMessage(i, -1, prize_message);
 
@@ -236,9 +239,9 @@ public UpdateShopAttack(crew_index, enter_exit_index)
         ENTER_EXIT[enter_exit_index][ee_STEP] = 2;
     }
     else if (ENTER_EXIT[enter_exit_index][ee_ROBBERY_PROGRESS] >= 80.0 && ENTER_EXIT[enter_exit_index][ee_STEP] == 0)
-{
+    {
         if (ENTER_EXIT[enter_exit_index][ee_MAIN_ACTOR] != INVALID_ACTOR_ID)
-{
+        {
             ApplyDynamicActorAnimation(ENTER_EXIT[enter_exit_index][ee_MAIN_ACTOR], "SHOP", "SHP_Rob_GiveCash", 4.1, 0, 1, 1, 1, 0);
         }
         ENTER_EXIT[enter_exit_index][ee_STEP] = 1;
@@ -256,13 +259,13 @@ public UpdateShopAttack(crew_index, enter_exit_index)
 FinishShopAttack(enter_exit_index)
 {
     if (ENTER_EXIT[enter_exit_index][ee_TIMER] != -1)
-{
+    {
         KillTimer(ENTER_EXIT[enter_exit_index][ee_TIMER]);
         ENTER_EXIT[enter_exit_index][ee_TIMER] = -1;
     }
 
     if (ENTER_EXIT[enter_exit_index][ee_MAIN_ACTOR] != INVALID_ACTOR_ID)
-{
+    {
         ClearDynamicActorAnimations(ENTER_EXIT[enter_exit_index][ee_MAIN_ACTOR]);
     }
 

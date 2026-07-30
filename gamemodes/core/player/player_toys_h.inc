@@ -38,6 +38,7 @@ enum Player_Toys_Info
     player_toy_COLOR_1,
     player_toy_COLOR_2,
 }
+
 new PLAYER_TOYS[MAX_PLAYERS][MAX_SU_TOYS][Player_Toys_Info]; //PTOYS = PlayerToys
 
 new Toys_Bones[][24] =
@@ -69,6 +70,7 @@ enum Toys_Info
     shop_toy_price_base,
     shop_toy_price,
 }
+
 new Toys_Shop[][Toys_Info] =
 {
     {"motorcyclehelmet2", 18976, 2000, 0},

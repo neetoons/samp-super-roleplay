@@ -51,8 +51,8 @@ enum Property_Info_Enum
     bool:property_POLICE_FORCED,
     property_POLICE_FORCE_TIMER
 }
-new PROPERTY_INFO[MAX_PROPERTIES][Property_Info_Enum];
 
+new PROPERTY_INFO[MAX_PROPERTIES][Property_Info_Enum];
 
 /* PROPERTY CONSTRUCTOR */
 #define PROPERTY_EMPTY_INTERIOR_Z_OFFSET 20.0
@@ -69,6 +69,7 @@ enum PROPERTY_INTERIOR_ENUM
     bool:property_INT_FREEZE,
     bool:property_EMPTY_INTERIOR
 }
+
 new PROPERTY_INTERIORS[][PROPERTY_INTERIOR_ENUM] =
 {
     {6, 180000, 140.249008, 1366.197509, 1083.859375, 0.0, 5, false, true},
@@ -99,6 +100,7 @@ enum PROPERTY_CLOSET_POS_ENUM
     Float:property_closet_Y,
     Float:property_closet_Z
 }
+
 new PROPERTY_CLOSET_POS[][PROPERTY_CLOSET_POS_ENUM] = //de momento posicion de la puerte se cambiara porxiamn
 {
     {145.103408, 1384.249877, 1088.367187},
@@ -150,4 +152,5 @@ enum PLAYER_PROPERTY_CONSTRUCTOR_ENU
     Float:player_property_creator_EXT_ANG,
     player_property_creator_EXT_INT,
 }
+
 new PLAYER_PROPERTY_CONSTRUCTOR[MAX_PLAYERS][PLAYER_PROPERTY_CONSTRUCTOR_ENU];

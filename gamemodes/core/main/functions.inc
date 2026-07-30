@@ -17,7 +17,6 @@
 #endif
 #define functions_included
 
-
 #define MIN_SECONDS_BETWEEN_COMMANDS 1 // Deben pasar al menos 1 segundos entre comando y comando.
 
 #define PlayerTask_Interval_Seconds 10
@@ -118,6 +117,7 @@ UpdatePlayerHud(playerid)
     }
     return 1;
 }
+
 UpdateVehicleParams(vehicleid)
 {
     return SetVehicleParamsEx(vehicleid, GLOBAL_VEHICLES[vehicleid][gb_vehicle_PARAMS_ENGINE], GLOBAL_VEHICLES[vehicleid][gb_vehicle_PARAMS_LIGHTS], GLOBAL_VEHICLES[vehicleid][gb_vehicle_PARAMS_ALARM], GLOBAL_VEHICLES[vehicleid][gb_vehicle_PARAMS_DOORS], GLOBAL_VEHICLES[vehicleid][gb_vehicle_PARAMS_BONNET], GLOBAL_VEHICLES[vehicleid][gb_vehicle_PARAMS_BOOT], GLOBAL_VEHICLES[vehicleid][gb_vehicle_PARAMS_OBJECTIVE]);
@@ -172,12 +172,17 @@ SetVehicleToRespawnEx(vehicleid)
     GLOBAL_VEHICLES[vehicleid][gb_vehicle_ATTACHED_TO] = INVALID_VEHICLE_ID;
     return SetVehicleToRespawn(vehicleid);
 }
+
 UpdatePlayerLoadingTruckSize(playerid)
 {
-    PlayerTextDrawTextSize(playerid, PlayerTextdraws[playerid][ptextdraw_TRUCK_LOAD][3], 253.0 + ( PLAYER_TEMP[playerid][pt_TRUCK_LOADING_VALUE] * 1.34), 0.000000);
+    PlayerTextDrawTextSize(playerid,
+        PlayerTextdraws[playerid][ptextdraw_TRUCK_LOAD][3],
+        253.0 + ( PLAYER_TEMP[playerid][pt_TRUCK_LOADING_VALUE] * 1.34),
+    0.000000);
     PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_TRUCK_LOAD][3]);
     return 1;
 }
+
 CreatePropertyInfo(i, pid, pname[], cid, cname[])
 {
     if (PROPERTY_INFO[i][property_EXT_LABEL_ID] != Text3D:INVALID_STREAMER_ID)
@@ -261,6 +266,7 @@ CreatePropertyInfo(i, pid, pname[], cid, cname[])
     PROPERTY_INFO[i][property_POLICE_FORCE_TIMER] = -1;
     return 1;
 }
+
 ExitPlayerPropertyConstructor(playerid)
 {
     CancelSelectTextDrawEx(playerid);
@@ -323,12 +329,12 @@ Create_PlayerPropertyConstructo(playerid)
     (
         srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER,
         "\
-            INSERT INTO properties (ext_x, ext_y, ext_z, ext_angle, ext_interior, ext_freeze, id_interior, price, level, extra, vip_level)\
-            VALUES (%f, %f, %f, %f, %d, %d, %d, %d, %d, %d, %d);\
+        INSERT INTO properties (ext_x, ext_y, ext_z, ext_angle, ext_interior, ext_freeze, id_interior, price, level, extra, vip_level)\
+        VALUES (%f, %f, %f, %f, %d, %d, %d, %d, %d, %d, %d);\
         ",
-            PROPERTY_INFO[slot][property_EXT_X], PROPERTY_INFO[slot][property_EXT_Y], PROPERTY_INFO[slot][property_EXT_Z], PROPERTY_INFO[slot][property_EXT_ANGLE],
-            PROPERTY_INFO[slot][property_EXT_INTERIOR], PROPERTY_INFO[slot][property_EXT_FREEZE], PROPERTY_INFO[slot][property_ID_INTERIOR],
-            PROPERTY_INFO[slot][property_PRICE_BASE], PROPERTY_INFO[slot][property_LEVEL], PROPERTY_INFO[slot][property_EXTRA], PROPERTY_INFO[slot][property_VIP_LEVEL]
+        PROPERTY_INFO[slot][property_EXT_X], PROPERTY_INFO[slot][property_EXT_Y], PROPERTY_INFO[slot][property_EXT_Z], PROPERTY_INFO[slot][property_EXT_ANGLE],
+        PROPERTY_INFO[slot][property_EXT_INTERIOR], PROPERTY_INFO[slot][property_EXT_FREEZE], PROPERTY_INFO[slot][property_ID_INTERIOR],
+        PROPERTY_INFO[slot][property_PRICE_BASE], PROPERTY_INFO[slot][property_LEVEL], PROPERTY_INFO[slot][property_EXTRA], PROPERTY_INFO[slot][property_VIP_LEVEL]
     );
     MySQL_TQueryInline(srp_db, using inline OnPropertyInserted, QUERY_BUFFER);
     return 1;
@@ -352,6 +358,7 @@ SpaceFix(text[])
     }
     return str;
 }
+
 UpdatePlayerToy(playerid, index)
 {
     RemovePlayerAttachedObject(playerid, index);
@@ -404,6 +411,7 @@ EditPlayerToy(playerid)
     EditAttachedObject(playerid, PLAYER_TEMP[playerid][pt_SELECTED_TOY_SLOT]);
     return 1;
 }
+
 GetCrewIndexById(id)
 {
     for (new x = 0; x != MAX_CREWS; x++)
@@ -417,6 +425,7 @@ GetCrewIndexById(id)
     }
     return -1;
 }
+
 stock Float:frandom(Float:max, Float:min, dp)
 {
     new
@@ -425,7 +434,6 @@ stock Float:frandom(Float:max, Float:min, dp)
         imax = floatround(max * mul);
     return float(random(imax - imin) + imin) / mul;
 }
-
 
 SetTaxiPlayerMarkers(playerid)
 {
@@ -578,11 +586,21 @@ public TruckLoadUp(playerid, vehicleid)
     SetPlayerTruckCheckpoint(playerid, vehicleid);
     return 1;
 }
+
 ExitPlayerWardrobe(playerid)
 {
-    SetPlayerPosEx(playerid, PI[playerid][ac_POS_X], PI[playerid][ac_POS_Y], PI[playerid][ac_POS_Z], PI[playerid][ac_ANGLE], ENTER_EXIT[ PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] ][ee_INT_INTERIOR], ENTER_EXIT[ PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] ][ee_INT_WORLD], false, true);
+    SetPlayerPosEx(playerid,
+        PI[playerid][ac_POS_X],
+        PI[playerid][ac_POS_Y],
+        PI[playerid][ac_POS_Z],
+        PI[playerid][ac_ANGLE],
+        ENTER_EXIT[ PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] ][ee_INT_INTERIOR],
+        ENTER_EXIT[ PLAYER_TEMP[playerid][pt_INTERIOR_INDEX] ][ee_INT_WORLD],
+        false,
+    true);
     return 1;
 }
+
 LoadPlayerPocketData(playerid)
 {
     if (ACCOUNT_INFO[playerid][ac_ID] == 0) return 0;
@@ -607,7 +625,6 @@ LoadPlayerPocketData(playerid)
     MySQL_TQueryInline(srp_db,  using inline OnPfoodsLoad, QUERY_BUFFER);
     return 1;
 }
-
 
 LoadPlayerGPSData(playerid)
 {
@@ -637,10 +654,6 @@ LoadPlayerGPSData(playerid)
     return 1;
 }
 
-
-
-
-
 GetEmptyPlayerToySlot(playerid)
 {
     for (new i = 0; i != MAX_SU_TOYS; i++)
@@ -650,8 +663,6 @@ GetEmptyPlayerToySlot(playerid)
     return -1;
 }
 
-
-
 stock ConvertTime_SecondsToHours(sec, &hours, &minutes, &seconds)
 {
     hours = floatround(sec / 3600);
@@ -660,147 +671,6 @@ stock ConvertTime_SecondsToHours(sec, &hours, &minutes, &seconds)
        return 1;
 }
 
-
-
-
-
-public OnPlayerClickTextDraw(playerid, Text:clickedid)
-{
-    if (clickedid == Text:INVALID_TEXT_DRAW)
-    {
-        PLAYER_TEMP[playerid][pt_SELECT_TEXTDRAW] = false;
-
-        if (PLAYER_TEMP[playerid][pt_READING_GUIDE])
-        {
-            SendNotification(playerid, "Antes de continuar debes leer el tutorial de conceptos.");
-            SelectTextDrawEx(playerid, 0xe8d08fFF);
-            return 1;
-        }
-
-        if (PLAYER_TEMP[playerid][pt_REGISTER_SELECTING_SKIN])
-        {
-            SendNotification(playerid, "Antes de continuar debes elegir tu sexo y tu ropa.");
-            SelectTextDrawEx(playerid, 0xe8d08fFF);
-            return 1;
-        }
-
-        if (PLAYER_PROPERTY_CONSTRUCTOR[playerid][player_property_creator_ENABLED])
-        {
-            ExitPlayerPropertyConstructor(playerid);
-            return 1;
-        }
-
-        if (PLAYER_TEMP[playerid][pt_CLOTHING_SHOP] != -1) // Tiene abierto el menú de ropa
-        {
-            ClosePlayerClothingMenu(playerid);
-            ExitPlayerWardrobe(playerid);
-        }
-
-        if (PLAYER_TEMP[playerid][pt_TOYS_SHOP]) ClosePlayerToysMenu(playerid);
-
-        if (PLAYER_TEMP[playerid][pt_SHOP]) HidePlayerShop(playerid);
-
-        if (PLAYER_TEMP[playerid][pt_TUNING_GARAGE_SHOP])
-        {
-            CancelPlayerTuningShop(playerid);
-            ShowDialog(playerid, DIALOG_VOBJECT_MENU);
-        }
-        return 1;
-    }
-
-    if (PLAYER_TEMP[playerid][pt_SHOP] && (PLAYER_TEMP[playerid][pt_SHOP_STATE] == PLAYER_SHOP_STATE_ALL || PLAYER_TEMP[playerid][pt_SHOP_STATE] == PLAYER_SHOP_STATE_MY_ADS))
-    {
-        for (new i = 0; i != 6; i++)
-        {
-            if (clickedid == Textdraws[textdraw_SHOP_ARTICLES_BOX][i])
-            {
-                if (!PLAYER_TEMP[playerid][pt_SHOP_ARTICLE_ID][i]) return SendNotification(playerid, "Este anuncio ya no está disponible.");
-
-                inline OnShopChecked()
-                {
-                    new rows;
-                    if (cache_get_row_count(rows))
-                    {
-                        if (rows)
-                        {
-                            PLAYER_TEMP[playerid][pt_SHOP_SELECTED_ARTICLE_ID] = PLAYER_TEMP[playerid][pt_SHOP_ARTICLE_ID][i];
-                            PLAYER_TEMP[playerid][pt_SHOP_STATE] = PLAYER_SHOP_STATE_AD;
-                            UpdatePlayerShop(playerid);
-                        }
-                        else SendNotification(playerid, "Este anuncio ya no está disponible.");
-                    }
-                    else SendNotification(playerid, "Este anuncio ya no está disponible.");
-                }
-                mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id FROM shop WHERE id = %d;", PLAYER_TEMP[playerid][pt_SHOP_ARTICLE_ID][i]);
-                MySQL_TQueryInline(srp_db,  using inline OnShopChecked, QUERY_BUFFER);
-                break;
-            }
-        }
-        return 1;
-    }
-
-    if (PLAYER_TEMP[playerid][pt_TUNING_GARAGE_SHOP])
-    {
-        if (clickedid == Textdraws[textdraw_SHOP_TUNING][2]) //Comprar
-        {
-            new slot = GetVehicleFreeObjectSlot(PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID]);
-            if (!ACCOUNT_INFO[playerid][ac_VIP] && slot >= MAX_NU_VOBJECTS)
-            {
-                PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
-                SendFormatNotification(playerid, "¡Los jugadores ~y~VIP ~w~pueden tener hasta %d objetos en vehículos! Usa ~y~/ayuda ~w~si quieres ser ~y~VIP.", MAX_SU_VOBJECTS);
-                return 1;
-            }
-            if (slot == -1)
-            {
-                SendNotification(playerid, "No hay más espacio para objetos en este vehículo.");
-                return 1;
-            }
-
-            if (Tuning_Shop_Objects[ PLAYER_TEMP[playerid][pt_SELECT_TUNING_OBJECT] ][tuning_object_PRICE] > PI[playerid][ac_CASH])
-            {
-                PlayerPlaySoundEx(playerid, 1085, 0.0, 0.0, 0.0);
-                SendFormatNotification(playerid, "No tienes dinero suficiente, te faltan ~r~%s$~w~ para poder comprar este objeto.", number_format_thousand(Tuning_Shop_Objects[ PLAYER_TEMP[playerid][pt_SELECT_TUNING_OBJECT] ][tuning_object_PRICE] - PI[playerid][ac_CASH]));
-                return 1;
-            }
-
-            if (GivePlayerCash(playerid, -Tuning_Shop_Objects[ PLAYER_TEMP[playerid][pt_SELECT_TUNING_OBJECT] ][tuning_object_PRICE], true, true))
-{
-                VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][slot][vobject_VALID] = true;
-                VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][slot][vobject_TYPE] = VOBJECT_TYPE_OBJECT;
-                VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][slot][vobject_ID] = 0;
-                VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][slot][vobject_MODELID] = Tuning_Shop_Objects[ PLAYER_TEMP[playerid][pt_SELECT_TUNING_OBJECT] ][tuning_object_MODELID];
-                format(VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][slot][vobject_NAME], 32, "%s", Tuning_Shop_Objects[ PLAYER_TEMP[playerid][pt_SELECT_TUNING_OBJECT] ][tuning_object_NAME]);
-                VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][slot][vobject_ATTACHED] = true;
-                UpdateVehicleAttachedObject(PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID], slot);
-
-                RegisterNewVehicleObject(PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID], slot);
-                CancelPlayerTuningShop(playerid);
-
-                SendNotification(playerid, "Ajusta el objeto y haz clic en el icono de guardar, si pulsas ~r~'ESCAPE' ~w~no se guardará la configuración.");
-                SendNotification(playerid, "Mantén presionado ~r~'W' ~w~para mover la cámara.");
-                EditVehicleObject(playerid, PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID], slot);
-            }
-            return 1;
-        }
-        else if (clickedid == Textdraws[textdraw_SHOP_TUNING][3]) //Siguiente
-        {
-            if (PLAYER_TEMP[playerid][pt_SELECT_TUNING_OBJECT] == (sizeof(Tuning_Shop_Objects) - 1)) PLAYER_TEMP[playerid][pt_SELECT_TUNING_OBJECT] = 0;
-            else PLAYER_TEMP[playerid][pt_SELECT_TUNING_OBJECT] ++;
-            UpdateTuningShop(playerid);
-            return 1;
-        }
-        else if (clickedid == Textdraws[textdraw_SHOP_TUNING][4]) //Anterior
-        {
-            if (PLAYER_TEMP[playerid][pt_SELECT_TUNING_OBJECT] == 0) PLAYER_TEMP[playerid][pt_SELECT_TUNING_OBJECT] = sizeof(Tuning_Shop_Objects) - 1;
-            else PLAYER_TEMP[playerid][pt_SELECT_TUNING_OBJECT] --;
-            UpdateTuningShop(playerid);
-            return 1;
-        }
-        return 1;
-    }
-
-    return 1;
-}
 LoadPlayerVehicles(playerid)
 {
     if (ACCOUNT_INFO[playerid][ac_ID] == 0) return 0;
@@ -1010,6 +880,7 @@ LoadPlayerVehicles(playerid)
     MySQL_TQueryInline(srp_db, using inline OnPlayerVehiclesLoad, QUERY_BUFFER);
     return 1;
 }
+
 LoadPlayerToys(playerid)
 {
     if (ACCOUNT_INFO[playerid][ac_ID] == 0) return 0;
@@ -1045,6 +916,7 @@ LoadPlayerToys(playerid)
     MySQL_TQueryInline(srp_db,  using inline OnPlayerToysLoad, QUERY_BUFFER);
     return 1;
 }
+
 LoadPlayerPhoneBook(playerid)
 {
     if (ACCOUNT_INFO[playerid][ac_ID] == 0) return 0;
@@ -1072,6 +944,7 @@ LoadPlayerPhoneBook(playerid)
     MySQL_TQueryInline(srp_db,  using inline OnPhoneBookLoad, QUERY_BUFFER);
     return 1;
 }
+
 Auto_SendPlayerAction(playerid, action[])
 {
     new str_text[145];
@@ -1079,6 +952,7 @@ Auto_SendPlayerAction(playerid, action[])
     ProxDetector(playerid, 15.0, str_text, 0xC2A2DAFF, 0xC2A2DAFF, 0xC2A2DAFF, 0xC2A2DAFF, 0xC2A2DAFF);
     return 1;
 }
+
 RemovePlayerSlotWeapon(playerid, slot, bool:db_delete = false)
 {
     if (db_delete)
@@ -1099,6 +973,7 @@ RemovePlayerSlotWeapon(playerid, slot, bool:db_delete = false)
     SetPlayerArmedWeapon(playerid, current_weapon);
     return 1;
 }
+
 SetPlayerPosEx(playerid, Float:x, Float:y, Float:z, Float:angle, interior, world, freeze = 0, addoffset = 0)
 {
     PLAYER_AC_INFO[playerid][CHEAT_POS][p_ac_info_IMMUNITY] = gettime() + 3;
@@ -1130,37 +1005,52 @@ SetPlayerPosEx(playerid, Float:x, Float:y, Float:z, Float:angle, interior, world
     }
     return 1;
 }
-const RPC_VehicleDestroy = 136;
 
+const RPC_VehicleDestroy = 136;
 
 SetPropertyDefaultFurniture(index, bool:toggle)
 {
     if (PROPERTY_INFO[index][property_DIS_DEFAULT_INTERIOR] != !toggle)
-{
+    {
         PROPERTY_INFO[index][property_DIS_DEFAULT_INTERIOR] = !toggle;
         mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE properties SET dis_default_interior = %d WHERE id = %d;", PROPERTY_INFO[index][property_DIS_DEFAULT_INTERIOR], PROPERTY_INFO[index][property_ID]);
         mysql_tquery(srp_db, QUERY_BUFFER);
 
         new Float:z_pos = PROPERTY_INTERIORS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_INT_Z];
         if (PROPERTY_INFO[index][property_DIS_DEFAULT_INTERIOR]) z_pos += PROPERTY_EMPTY_INTERIOR_Z_OFFSET;
-        Streamer_SetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, PROPERTY_INFO[index][property_INT_LABEL_ID], E_STREAMER_Z, z_pos + 0.25);
+        Streamer_SetFloatData(STREAMER_TYPE_3D_TEXT_LABEL,
+            PROPERTY_INFO[index][property_INT_LABEL_ID],
+            E_STREAMER_Z,
+        z_pos + 0.25);
         Streamer_SetFloatData(STREAMER_TYPE_PICKUP, PROPERTY_INFO[index][property_INT_PICKUP_ID], E_STREAMER_Z, z_pos);
 
         for (new i = 0, j = GetPlayerPoolSize(); i <= j; i++)
         {
-            if (IsPlayerConnected(i) && (ACCOUNT_INFO[i][ac_STATE] == ROLEPLAY_STATE_OWN_PROPERTY || ACCOUNT_INFO[i][ac_STATE] == ROLEPLAY_STATE_GUEST_PROPERTY) && PI[i][ac_LOCAL_INTERIOR] == PROPERTY_INFO[index][property_ID])
+            if (
+                IsPlayerConnected(i) &&
+                (ACCOUNT_INFO[i][ac_STATE] == ROLEPLAY_STATE_OWN_PROPERTY ||
+                ACCOUNT_INFO[i][ac_STATE] == ROLEPLAY_STATE_GUEST_PROPERTY) &&
+            PI[i][ac_LOCAL_INTERIOR] == PROPERTY_INFO[index][property_ID])
             {
                 new Float:pos[3], Float:angle;
                 GetPlayerPos(i, pos[0], pos[1], pos[2]);
                 GetPlayerFacingAngle(i, angle);
 
-                SetPlayerPosEx(i, pos[0], pos[1], pos[2] + (PROPERTY_INFO[index][property_DIS_DEFAULT_INTERIOR] ? PROPERTY_EMPTY_INTERIOR_Z_OFFSET : -PROPERTY_EMPTY_INTERIOR_Z_OFFSET), angle, GetPlayerInterior(i), GetPlayerVirtualWorld(i), 1);
+                SetPlayerPosEx(i,
+                    pos[0],
+                    pos[1],
+                    pos[2] + (PROPERTY_INFO[index][property_DIS_DEFAULT_INTERIOR] ? PROPERTY_EMPTY_INTERIOR_Z_OFFSET : -PROPERTY_EMPTY_INTERIOR_Z_OFFSET),
+                    angle,
+                    GetPlayerInterior(i),
+                    GetPlayerVirtualWorld(i),
+                1);
             }
         }
 
         CallLocalFunction("OnDefaultPFurChanged", "i", index);
     }
 }
+
 SetPlayerHealthEx(playerid, Float:health)
 {
     PLAYER_AC_INFO[playerid][CHEAT_PLAYER_HEALTH][p_ac_info_IMMUNITY] = gettime() + 3;
@@ -1214,116 +1104,8 @@ TransferPlayerWeapon(from_playerid, slot, to_playerid)
     return 1;
 }
 
-PlayerPayday(playerid)
-{
-    new
-        dialog_body[80],
-        dialog_header[630],
-        dialog_string[140],
-        date[24],
-        money = 300 * ACCOUNT_INFO[playerid][ac_LEVEL];
 
-    if (money > 4500) money = 4500;
-    money += minrand(100, 200);
 
-    getDateTime(date);
-
-    format(dialog_body, sizeof dialog_body, "{ABD9C6}Pago diario (%s)", date);
-
-    strcat(dialog_header, "\n{FF6746}____ [ PAGA DEL GOBIERNO ] ____\n");
-
-    format(dialog_string, sizeof dialog_string, "{FFFFFF}Paga del gobierno: {FFFF7F}%s dólares\n", number_format_thousand(money));
-    strcat(dialog_header, dialog_string);
-
-    if (!ACCOUNT_INFO[playerid][ac_VIP])
-    {
-        strcat(dialog_header, "\n\n{FF6746}____ [ VEHÍCULOS ] ____\n");
-
-        for (new i = 0, j = GetVehiclePoolSize(); i <= j; i++)
-        {
-            if (!PLAYER_VEHICLES[i][player_vehicle_VALID]) continue;
-            if (PLAYER_VEHICLES[i][player_vehicle_OWNER_ID] != ACCOUNT_INFO[playerid][ac_ID]) continue;
-
-            new veh_money = VEHICLE_INFO[GLOBAL_VEHICLES[i][gb_vehicle_MODELID] - 400][vehicle_info_PRICE] / 100;
-            money -= veh_money;
-
-            format(dialog_string, sizeof dialog_string, "{FFFFFF}Seguro del vehículo %s: {FF6746}-%s dólares\n", VEHICLE_INFO[GLOBAL_VEHICLES[i][gb_vehicle_MODELID] - 400][vehicle_info_NAME], number_format_thousand(veh_money));
-            strcat(dialog_header, dialog_string);
-        }
-
-        strcat(dialog_header, "\n\n{FF6746}____ [ PROPIEDADES ] ____\n");
-
-        for (new i = 0; i != MAX_PROPERTIES; i++)
-        {
-            if (!PROPERTY_INFO[i][property_VALID]) continue;
-            if (PROPERTY_INFO[i][property_OWNER_ID] != ACCOUNT_INFO[playerid][ac_ID]) continue;
-
-            if (PROPERTY_INFO[i][property_VIP_LEVEL]) format(dialog_string, sizeof dialog_string, "{FFFFFF}Seguro de la propiedad %s: {FFFF7F}PROPIEDAD VIP, NO SE PAGA SEGURO.\n", PROPERTY_INFO[i][property_NAME]);
-            else
-            {
-                new property_money = PROPERTY_INFO[i][property_PRICE_BASE] / 200;
-                money -= property_money;
-
-                format(dialog_string, sizeof dialog_string, "{FFFFFF}Seguro de la propiedad %s: {FF6746}-%s dólares\n", PROPERTY_INFO[i][property_NAME], number_format_thousand(property_money));
-            }
-            strcat(dialog_header, dialog_string);
-        }
-    }
-
-    if (PLAYER_WORKS[playerid][WORK_POLICE][pwork_SET])
-    {
-        new work_payment;
-        if (work_info[WORK_POLICE][work_info_EXTRA_PAY] > 0 && work_info[WORK_POLICE][work_info_EXTRA_PAY_EXP] > 0)
-        {
-            work_payment = (work_info[WORK_POLICE][work_info_EXTRA_PAY] * floatround(floatdiv(PLAYER_WORKS[playerid][WORK_POLICE][pwork_LEVEL], work_info[WORK_POLICE][work_info_EXTRA_PAY_EXP])));
-            if (work_info[WORK_POLICE][work_info_EXTRA_PAY_LIMIT] != 0) if (work_payment > work_info[WORK_POLICE][work_info_EXTRA_PAY_LIMIT]) work_payment = work_info[WORK_POLICE][work_info_EXTRA_PAY_LIMIT];
-        }
-
-        money += work_payment;
-
-        strcat(dialog_header, "\n\n{FF6746}____ [ TRABAJOS ] ____\n");
-
-        format(dialog_string, sizeof dialog_string, "{FFFFFF}Paga por ser policía: {FFFF7F}%s dólares\n", number_format_thousand(work_payment));
-        strcat(dialog_header, dialog_string);
-    }
-
-    if (PI[playerid][ac_CREW])
-    {
-        new
-            territories = GetCrewTerritories(PI[playerid][ac_CREW]),
-            graffitis = CountCrewGraffitis(PI[playerid][ac_CREW]);
-
-        if (territories > 0 || graffitis > 0)
-        {
-            money += territories * 70;
-            money += graffitis * 40;
-
-            strcat(dialog_header, "\n\n{FF6746}____ [ TERRITORIOS ] ____\n");
-
-            if (territories > 0) format(dialog_string, sizeof dialog_string, "{FFFFFF}Paga por territorios en posesión (%d): {FFFF7F}%d dólares\n", territories, territories * 70);
-            if (graffitis > 0) format(dialog_string, sizeof dialog_string, "{FFFFFF}Paga por graffitis (%d): {FFFF7F}%d dólares\n", graffitis, graffitis * 40);
-            strcat(dialog_header, dialog_string);
-        }
-    }
-
-    if (money + PI[playerid][ac_CASH] <= 0)
-    {
-        money = 0;
-        PI[playerid][ac_CASH] = 0;
-    }
-
-    strcat(dialog_header, "\n\n{FF6746}____ [ RESUMEN ] ____\n");
-
-    if (money > 0) format(dialog_string, sizeof dialog_string, "{FFFFFF}Has ganado: {FFFF7F}%s dólares", number_format_thousand(money));
-    else format(dialog_string, sizeof dialog_string, "{FFFFFF}Has perdido: {FF6746}%s dólares", number_format_thousand(money));
-
-    strcat(dialog_header, dialog_string);
-
-    ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, dialog_body, dialog_header, "Aceptar", "");
-
-    GivePlayerCash(playerid, money, true, money < 0 ? true : false);
-    return 1;
-}
 PlayerWantedColor(playerid)
 {
     if (PI[playerid][ac_WANTED_LEVEL] > 0)
@@ -1357,6 +1139,7 @@ KickEx(playerid, time = 0)
     }
     return 1;
 }
+
 DisablePlayerPoliceMark(playerid)
 {
     for (new i = 0, j = GetPlayerPoolSize(); i <= j; i++)
@@ -1471,43 +1254,43 @@ ShowPlayerStats(playerid, pid)
     format(dialog, sizeof dialog,
 
         "\
-            ID: %d\n\
-            Nombre: %s\n\
-            Correo electrónico: %s\n\
-            Fecha registro: %s\n\
-            Últ. conexión: %s\n\
-            Tiempo jugando: %.1f horas\n\
-            Nivel: %d\n\
-            Reputación: %d/%d\n\
-            Siguiente reputación: %s\n\
-            Trabajo(s): %s\n\
-            Banda: %s\n\
-            Dinero: %s$\n\
-            Dinero en banco: %s$\n\
-            Monedas "SERVER_COIN": %d\n\
-            VIP: %s\n\
-            \n\
-            Para estadísticas de tus trabajos utiliza /exp.\n\
-            Para ver tus pertenencias usa /inv o pulsa N.\n\
-            \n\
+        ID: %d\n\
+        Nombre: %s\n\
+        Correo electrónico: %s\n\
+        Fecha registro: %s\n\
+        Últ. conexión: %s\n\
+        Tiempo jugando: %.1f horas\n\
+        Nivel: %d\n\
+        Reputación: %d/%d\n\
+        Siguiente reputación: %s\n\
+        Trabajo(s): %s\n\
+        Banda: %s\n\
+        Dinero: %s$\n\
+        Dinero en banco: %s$\n\
+        Monedas "SERVER_COIN": %d\n\
+        VIP: %s\n\
+        \n\
+        Para estadísticas de tus trabajos utiliza /exp.\n\
+        Para ver tus pertenencias usa /inv o pulsa N.\n\
+        \n\
         ",
 
-            ACCOUNT_INFO[pid][ac_ID],
-            ACCOUNT_INFO[pid][ac_NAME],
-            ACCOUNT_INFO[pid][ac_EMAIL],
-            ACCOUNT_INFO[pid][ac_REG_DATE],
-            ACCOUNT_INFO[pid][ac_LAST_CONNECTION],
-            hours,
-            ACCOUNT_INFO[pid][ac_LEVEL],
-            ACCOUNT_INFO[pid][ac_REP],
-            neccessary_rep,
-            next_rep,
-            getPlayerWorks(pid),
-            getPlayerCrew(pid),
-            number_format_thousand(PI[pid][ac_CASH]),
-            number_format_thousand(PI[pid][ac_BANK_MONEY]),
-            PI[pid][ac_COINS],
-            getPlayerVip(pid)
+        ACCOUNT_INFO[pid][ac_ID],
+        ACCOUNT_INFO[pid][ac_NAME],
+        ACCOUNT_INFO[pid][ac_EMAIL],
+        ACCOUNT_INFO[pid][ac_REG_DATE],
+        ACCOUNT_INFO[pid][ac_LAST_CONNECTION],
+        hours,
+        ACCOUNT_INFO[pid][ac_LEVEL],
+        ACCOUNT_INFO[pid][ac_REP],
+        neccessary_rep,
+        next_rep,
+        getPlayerWorks(pid),
+        getPlayerCrew(pid),
+        number_format_thousand(PI[pid][ac_CASH]),
+        number_format_thousand(PI[pid][ac_BANK_MONEY]),
+        PI[pid][ac_COINS],
+        getPlayerVip(pid)
 
     );
 
@@ -1578,8 +1361,6 @@ AddPlayerBan(account_id, account_name[], account_ip[], by_account_id, type, text
     return 1;
 }
 
-
-
 RegisterVehicleBootObject(vehicleid, boot_slot, type, int, extra)
 {
     if (!PLAYER_VEHICLES[vehicleid][player_vehicle_ID]) return 0;
@@ -1601,7 +1382,11 @@ RegisterVehicleBootObject(vehicleid, boot_slot, type, int, extra)
 
 SavePlayerWeaponInVehicleBoot(playerid, weapon_slot, vehicleid, boot_slot)
 {
-    RegisterVehicleBootObject(vehicleid, boot_slot, BOOT_TYPE_WEAPON, PLAYER_WEAPONS[playerid][weapon_slot][player_weapon_ID], PLAYER_WEAPONS[playerid][weapon_slot][player_weapon_AMMO]);
+    RegisterVehicleBootObject(vehicleid,
+        boot_slot,
+        BOOT_TYPE_WEAPON,
+        PLAYER_WEAPONS[playerid][weapon_slot][player_weapon_ID],
+    PLAYER_WEAPONS[playerid][weapon_slot][player_weapon_AMMO]);
     RemovePlayerSlotWeapon(playerid, weapon_slot, true);
     return 1;
 }
@@ -1635,7 +1420,11 @@ RegisterPropertyClosetObject(index, closet_slot, type, int, extra)
 
 SaveWeaponInPropertyCloset(playerid, weapon_slot, index, closet_slot)
 {
-    RegisterPropertyClosetObject(index, closet_slot, CLOSET_TYPE_WEAPON, PLAYER_WEAPONS[playerid][weapon_slot][player_weapon_ID], PLAYER_WEAPONS[playerid][weapon_slot][player_weapon_AMMO]);
+    RegisterPropertyClosetObject(index,
+        closet_slot,
+        CLOSET_TYPE_WEAPON,
+        PLAYER_WEAPONS[playerid][weapon_slot][player_weapon_ID],
+    PLAYER_WEAPONS[playerid][weapon_slot][player_weapon_AMMO]);
     RemovePlayerSlotWeapon(playerid, weapon_slot, true);
     return 1;
 }
@@ -1794,7 +1583,11 @@ GetPlayerZones(playerid, city[], zone[])
 
     for (new i = 0; i < sizeof(g_Cities); i++)
     {
-        if (    (f_Pos[0] >= g_Cities[i][z_MinX] && f_Pos[0] < g_Cities[i][z_MaxX]) && (f_Pos[1] >= g_Cities[i][z_MinY] && f_Pos[1] < g_Cities[i][z_MaxY]) )
+        if (
+            (f_Pos[0] >= g_Cities[i][z_MinX] &&
+            f_Pos[0] < g_Cities[i][z_MaxX]) &&
+            (f_Pos[1] >= g_Cities[i][z_MinY] &&
+        f_Pos[1] < g_Cities[i][z_MaxY]))
         {
             format(city, 45, g_Cities[i][z_Name]);
             break;
@@ -1803,7 +1596,11 @@ GetPlayerZones(playerid, city[], zone[])
 
     for (new i = 0; i < sizeof(g_Zones); i++)
     {
-        if (    (f_Pos[0] >= g_Zones[i][z_MinX] && f_Pos[0] < g_Zones[i][z_MaxX]) && (f_Pos[1] >= g_Zones[i][z_MinY] && f_Pos[1] < g_Zones[i][z_MaxY]) )
+        if (
+            (f_Pos[0] >= g_Zones[i][z_MinX] &&
+            f_Pos[0] < g_Zones[i][z_MaxX]) &&
+            (f_Pos[1] >= g_Zones[i][z_MinY] &&
+        f_Pos[1] < g_Zones[i][z_MaxY]))
         {
             format(zone, 45, g_Zones[i][z_Name]);
             break;
@@ -1855,7 +1652,14 @@ JailPlayer(playerid, time = 0)
 
     SetPlayerWantedLevelEx(playerid, 0);
     PLAYER_TEMP[playerid][pt_ENTER_JAIL_TIME] = gettime();
-    SetPlayerPosEx(playerid, JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID] ][jail_X], JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_Y], JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_Z], JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_ANGLE], JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_INTERIOR], 0, true);
+    SetPlayerPosEx(playerid,
+        JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID] ][jail_X],
+        JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_Y],
+        JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_Z],
+        JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_ANGLE],
+        JAIL_POSITIONS[ PI[playerid][ac_POLICE_JAIL_ID]  ][jail_INTERIOR],
+        0,
+    true);
 
     KillTimer(PLAYER_TEMP[playerid][pt_TIMERS][15]);
     PLAYER_TEMP[playerid][pt_TIMERS][15] = SetTimerEx("UnjailPlayer", PI[playerid][ac_POLICE_JAIL_TIME] * 1000, false, "i", playerid);
@@ -1940,12 +1744,10 @@ RespawnGlobalUnoccupiedVehicles()
     return 1;
 }
 
-
-
 CMD:kill(playerid, params[])
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK)
-{
+    {
         new now = gettime();
         if (now < PLAYER_TEMP[playerid][pt_DEATH_TIME] + 30)
         {
@@ -1985,11 +1787,11 @@ getRandomSalt(salt[], length = sizeof salt)
 GetTickDiff(newtick, oldtick)
 {
     if (oldtick < 0 && newtick >= 0)
-{
+    {
         return newtick - oldtick;
     }
-else if (oldtick >= 0 && newtick < 0 || oldtick > newtick)
-{
+    else if (oldtick >= 0 && newtick < 0 || oldtick > newtick)
+    {
         return (cellmax - oldtick + 1) - (cellmin - newtick);
     }
     return newtick - oldtick;
@@ -2056,7 +1858,6 @@ UpdatePlayerShop(playerid)
             PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_BUTTONS][3]);
             PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_BUTTONS][4]);
 
-
             DestroyArticleShopTextDraws(playerid);
 
             //
@@ -2092,20 +1893,34 @@ UpdatePlayerShop(playerid)
                         }
 
                         PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_MODEL][i] = CreatePlayerTextDraw(playerid, Td_Pos[0], Td_Pos[1], "");
-                        PlayerTextDrawTextSize(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_MODEL][i], 62.000000, 55.000000);
+                        PlayerTextDrawTextSize(playerid,
+                            PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_MODEL][i],
+                            62.000000,
+                        55.000000);
                         PlayerTextDrawAlignment(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_MODEL][i], 1);
                         PlayerTextDrawColor(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_MODEL][i], -1);
                         if (connected) PlayerTextDrawBackgroundColor(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_MODEL][i], 0xCCCCCCFF);
                         else PlayerTextDrawBackgroundColor(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_MODEL][i], 0x666666FF);
                         PlayerTextDrawFont(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_MODEL][i], 5);
                         PlayerTextDrawSetPreviewModel(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_MODEL][i], modelid);
-                        PlayerTextDrawSetPreviewRot(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_MODEL][i], rx, ry, rz, zoom);
-                        PlayerTextDrawSetPreviewVehCol(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_MODEL][i], vcol1, vcol2);
+                        PlayerTextDrawSetPreviewRot(playerid,
+                            PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_MODEL][i],
+                            rx,
+                            ry,
+                            rz,
+                        zoom);
+                        PlayerTextDrawSetPreviewVehCol(playerid,
+                            PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_MODEL][i],
+                            vcol1,
+                        vcol2);
                         PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_MODEL][i]);
 
                         format(td_str, sizeof td_str, "%s$", number_format_thousand(price));
                         PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_PRICE][i] = CreatePlayerTextDraw(playerid, Td_Pos[0] + 31.0, Td_Pos[1] + 55.0, td_str);
-                        PlayerTextDrawLetterSize(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_PRICE][i], 0.229333, 0.957037);
+                        PlayerTextDrawLetterSize(playerid,
+                            PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_PRICE][i],
+                            0.229333,
+                        0.957037);
                         PlayerTextDrawAlignment(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_PRICE][i], 2);
                         PlayerTextDrawColor(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_PRICE][i], -1);
                         PlayerTextDrawSetShadow(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_PRICE][i], 0);
@@ -2171,7 +1986,6 @@ UpdatePlayerShop(playerid)
             PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_BUTTONS][3]);
             PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_BUTTONS][4]);
 
-
             DestroyArticleShopTextDraws(playerid);
 
             //
@@ -2208,20 +2022,34 @@ UpdatePlayerShop(playerid)
                         }
 
                         PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_MODEL][i] = CreatePlayerTextDraw(playerid, Td_Pos[0], Td_Pos[1], "");
-                        PlayerTextDrawTextSize(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_MODEL][i], 62.000000, 55.000000);
+                        PlayerTextDrawTextSize(playerid,
+                            PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_MODEL][i],
+                            62.000000,
+                        55.000000);
                         PlayerTextDrawAlignment(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_MODEL][i], 1);
                         PlayerTextDrawColor(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_MODEL][i], -1);
                         if (connected) PlayerTextDrawBackgroundColor(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_MODEL][i], 0xCCCCCCFF);
                         else PlayerTextDrawBackgroundColor(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_MODEL][i], 0x666666FF);
                         PlayerTextDrawFont(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_MODEL][i], 5);
                         PlayerTextDrawSetPreviewModel(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_MODEL][i], modelid);
-                        PlayerTextDrawSetPreviewRot(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_MODEL][i], rx, ry, rz, zoom);
-                        PlayerTextDrawSetPreviewVehCol(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_MODEL][i], vcol1, vcol2);
+                        PlayerTextDrawSetPreviewRot(playerid,
+                            PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_MODEL][i],
+                            rx,
+                            ry,
+                            rz,
+                        zoom);
+                        PlayerTextDrawSetPreviewVehCol(playerid,
+                            PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_MODEL][i],
+                            vcol1,
+                        vcol2);
                         PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_MODEL][i]);
 
                         format(td_str, sizeof td_str, "%s$", number_format_thousand(price));
                         PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_PRICE][i] = CreatePlayerTextDraw(playerid, Td_Pos[0] + 31.0, Td_Pos[1] + 55.0, td_str);
-                        PlayerTextDrawLetterSize(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_PRICE][i], 0.229333, 0.957037);
+                        PlayerTextDrawLetterSize(playerid,
+                            PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_PRICE][i],
+                            0.229333,
+                        0.957037);
                         PlayerTextDrawAlignment(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_PRICE][i], 2);
                         PlayerTextDrawColor(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_PRICE][i], -1);
                         PlayerTextDrawSetShadow(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLES_PRICE][i], 0);
@@ -2296,8 +2124,14 @@ UpdatePlayerShop(playerid)
                             PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLE_MODELID] = PlayerText:INVALID_TEXT_DRAW;
                         }
                         PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLE_MODELID] = CreatePlayerTextDraw(playerid, 212.000000, 179.000000, "");
-                        PlayerTextDrawLetterSize(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLE_MODELID], 0.000000, 0.000000);
-                        PlayerTextDrawTextSize(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLE_MODELID], 92.000000, 91.000000);
+                        PlayerTextDrawLetterSize(playerid,
+                            PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLE_MODELID],
+                            0.000000,
+                        0.000000);
+                        PlayerTextDrawTextSize(playerid,
+                            PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLE_MODELID],
+                            92.000000,
+                        91.000000);
                         PlayerTextDrawAlignment(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLE_MODELID], 1);
                         PlayerTextDrawColor(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLE_MODELID], -1);
                         PlayerTextDrawSetShadow(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLE_MODELID], 0);
@@ -2307,8 +2141,16 @@ UpdatePlayerShop(playerid)
                         PlayerTextDrawSetProportional(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLE_MODELID], 0);
                         PlayerTextDrawSetShadow(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLE_MODELID], 0);
                         PlayerTextDrawSetPreviewModel(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLE_MODELID], modelid);
-                        PlayerTextDrawSetPreviewRot(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLE_MODELID], rx, ry, rz, zoom);
-                        PlayerTextDrawSetPreviewVehCol(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLE_MODELID], vcol1, vcol2);
+                        PlayerTextDrawSetPreviewRot(playerid,
+                            PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLE_MODELID],
+                            rx,
+                            ry,
+                            rz,
+                        zoom);
+                        PlayerTextDrawSetPreviewVehCol(playerid,
+                            PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLE_MODELID],
+                            vcol1,
+                        vcol2);
                         PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_SHOP_ARTICLE_MODELID]);
                         TextDrawShowForPlayer(playerid, Textdraws[textdraw_SHOP_ARTICLE_BOX]);
 
@@ -2430,15 +2272,20 @@ td_str_legal(const text[])
 {
     for (new i = 0; i != strlen(text); i++)
     {
-        if ((text[i] >= 91 && text[i] <= 96) || (text[i] >= 58 && text[i] <= 64) || (text[i] < 48 && text[i] != 32) || text[i] > 122)
+        if (
+            (text[i] >= 91 &&
+            text[i] <= 96) ||
+            (text[i] >= 58 &&
+            text[i] <= 64) ||
+            (text[i] < 48 &&
+            text[i] != 32) ||
+        text[i] > 122)
         {
             return false;
         }
     }
     return true;
 }
-
-
 
 CountPlayerJobs(playerid)
 {
@@ -2634,7 +2481,6 @@ GetAvaibleCrewIndex()
     return -1;
 }
 
-
 NewCrewRegister(index, playerid)
 {
     if (!CREW_INFO[index][crew_VALID]) return 0;
@@ -2682,13 +2528,13 @@ RegisterNewCrewRank(index, rank)
     (
         srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER,
         "\
-            INSERT INTO crew_ranks (id_crew, rank_pos, rank_name, permission0, permission1, permission2, permission3, permission4, permission5, permission6, permission7, permission8, permission9, permission10)\
-            VALUES (%d, %d, '%e', %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d);\
+        INSERT INTO crew_ranks (id_crew, rank_pos, rank_name, permission0, permission1, permission2, permission3, permission4, permission5, permission6, permission7, permission8, permission9, permission10)\
+        VALUES (%d, %d, '%e', %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d);\
         ",
-            CREW_INFO[index][crew_ID], rank, CREW_RANK_INFO[index][rank][crew_rank_NAME], CREW_RANK_INFO[index][rank][crew_rank_PERMISSION][0], CREW_RANK_INFO[index][rank][crew_rank_PERMISSION][1],
-            CREW_RANK_INFO[index][rank][crew_rank_PERMISSION][2], CREW_RANK_INFO[index][rank][crew_rank_PERMISSION][3], CREW_RANK_INFO[index][rank][crew_rank_PERMISSION][4],
-            CREW_RANK_INFO[index][rank][crew_rank_PERMISSION][5], CREW_RANK_INFO[index][rank][crew_rank_PERMISSION][6], CREW_RANK_INFO[index][rank][crew_rank_PERMISSION][7],
-            CREW_RANK_INFO[index][rank][crew_rank_PERMISSION][8], CREW_RANK_INFO[index][rank][crew_rank_PERMISSION][9], CREW_RANK_INFO[index][rank][crew_rank_PERMISSION][10]
+        CREW_INFO[index][crew_ID], rank, CREW_RANK_INFO[index][rank][crew_rank_NAME], CREW_RANK_INFO[index][rank][crew_rank_PERMISSION][0], CREW_RANK_INFO[index][rank][crew_rank_PERMISSION][1],
+        CREW_RANK_INFO[index][rank][crew_rank_PERMISSION][2], CREW_RANK_INFO[index][rank][crew_rank_PERMISSION][3], CREW_RANK_INFO[index][rank][crew_rank_PERMISSION][4],
+        CREW_RANK_INFO[index][rank][crew_rank_PERMISSION][5], CREW_RANK_INFO[index][rank][crew_rank_PERMISSION][6], CREW_RANK_INFO[index][rank][crew_rank_PERMISSION][7],
+        CREW_RANK_INFO[index][rank][crew_rank_PERMISSION][8], CREW_RANK_INFO[index][rank][crew_rank_PERMISSION][9], CREW_RANK_INFO[index][rank][crew_rank_PERMISSION][10]
     );
     MySQL_TQueryInline(srp_db, using inline OnCrewRankInserted, QUERY_BUFFER);
     return 1;
@@ -2723,7 +2569,6 @@ HidePlayerGangZones(playerid)
     }
     return 1;
 }
-
 
 UpdateGangZoneColor(index)
 {
@@ -2864,7 +2709,6 @@ LoadServerInfo()
         fclose(ECO);
     }
 
-
     new File:AC = fopen("SERVER/AC.txt", io_read), ac_str[128], ac_num;
     if (AC)
     {
@@ -2938,14 +2782,14 @@ UpdateEconomy(type = -1)
                     format
                     (
                         label_str,
-                            sizeof label_str,
-                            "\
-                                {"#PRIMARY_COLOR"}Membresía VIP requerida\n\
-                                \n\
-                                {"#PRIMARY_COLOR"}%s\n\n\
-                                {FFFFFF}Coste: {"#PRIMARY_COLOR"}%d "SERVER_COIN"\n\
-                                {FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\
-                            ", VEHICLE_INFO[GLOBAL_VEHICLES[i][gb_vehicle_MODELID] - 400][vehicle_info_NAME], SELL_VEHICLES[i][sell_vehicle_EXTRA], SELL_VEHICLES[i][sell_vehicle_LEVEL]
+                        sizeof label_str,
+                        "\
+                        {"#PRIMARY_COLOR"}Membresía VIP requerida\n\
+                        \n\
+                        {"#PRIMARY_COLOR"}%s\n\n\
+                        {FFFFFF}Coste: {"#PRIMARY_COLOR"}%d "SERVER_COIN"\n\
+                        {FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\
+                        ", VEHICLE_INFO[GLOBAL_VEHICLES[i][gb_vehicle_MODELID] - 400][vehicle_info_NAME], SELL_VEHICLES[i][sell_vehicle_EXTRA], SELL_VEHICLES[i][sell_vehicle_LEVEL]
                     );
                 }
                 else
@@ -2953,14 +2797,14 @@ UpdateEconomy(type = -1)
                     format
                     (
                         label_str,
-                            sizeof label_str,
-                            "\
-                                {"#PRIMARY_COLOR"}Membresía VIP requerida\n\
-                                \n\
-                                {"#PRIMARY_COLOR"}%s\n\n\
-                                {FFFFFF}Precio: {"#PRIMARY_COLOR"}%s$\n\
-                                {FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\
-                            ", VEHICLE_INFO[GLOBAL_VEHICLES[i][gb_vehicle_MODELID] - 400][vehicle_info_NAME], number_format_thousand(SELL_VEHICLES[i][sell_vehicle_PRICE]), SELL_VEHICLES[i][sell_vehicle_LEVEL]
+                        sizeof label_str,
+                        "\
+                        {"#PRIMARY_COLOR"}Membresía VIP requerida\n\
+                        \n\
+                        {"#PRIMARY_COLOR"}%s\n\n\
+                        {FFFFFF}Precio: {"#PRIMARY_COLOR"}%s$\n\
+                        {FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\
+                        ", VEHICLE_INFO[GLOBAL_VEHICLES[i][gb_vehicle_MODELID] - 400][vehicle_info_NAME], number_format_thousand(SELL_VEHICLES[i][sell_vehicle_PRICE]), SELL_VEHICLES[i][sell_vehicle_LEVEL]
                     );
                 }
             }
@@ -2971,12 +2815,12 @@ UpdateEconomy(type = -1)
                     format
                     (
                         label_str,
-                            sizeof label_str,
-                            "\
-                                {"#PRIMARY_COLOR"}%s\n\n\
-                                {FFFFFF}Coste: {"#PRIMARY_COLOR"}%d "SERVER_COIN"\n\
-                                {FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\
-                            ", VEHICLE_INFO[GLOBAL_VEHICLES[i][gb_vehicle_MODELID] - 400][vehicle_info_NAME], SELL_VEHICLES[i][sell_vehicle_EXTRA], SELL_VEHICLES[i][sell_vehicle_LEVEL]
+                        sizeof label_str,
+                        "\
+                        {"#PRIMARY_COLOR"}%s\n\n\
+                        {FFFFFF}Coste: {"#PRIMARY_COLOR"}%d "SERVER_COIN"\n\
+                        {FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\
+                        ", VEHICLE_INFO[GLOBAL_VEHICLES[i][gb_vehicle_MODELID] - 400][vehicle_info_NAME], SELL_VEHICLES[i][sell_vehicle_EXTRA], SELL_VEHICLES[i][sell_vehicle_LEVEL]
                     );
                 }
                 else
@@ -2984,12 +2828,12 @@ UpdateEconomy(type = -1)
                     format
                     (
                         label_str,
-                            sizeof label_str,
-                            "\
-                                {"#PRIMARY_COLOR"}%s\n\n\
-                                {FFFFFF}Precio: {"#PRIMARY_COLOR"}%s$\n\
-                                {FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\
-                            ", VEHICLE_INFO[GLOBAL_VEHICLES[i][gb_vehicle_MODELID] - 400][vehicle_info_NAME], number_format_thousand(SELL_VEHICLES[i][sell_vehicle_PRICE]), SELL_VEHICLES[i][sell_vehicle_LEVEL]
+                        sizeof label_str,
+                        "\
+                        {"#PRIMARY_COLOR"}%s\n\n\
+                        {FFFFFF}Precio: {"#PRIMARY_COLOR"}%s$\n\
+                        {FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\
+                        ", VEHICLE_INFO[GLOBAL_VEHICLES[i][gb_vehicle_MODELID] - 400][vehicle_info_NAME], number_format_thousand(SELL_VEHICLES[i][sell_vehicle_PRICE]), SELL_VEHICLES[i][sell_vehicle_LEVEL]
                     );
                 }
             }
@@ -3046,14 +2890,14 @@ UpdateEconomy(type = -1)
                             format
                             (
                                 label_str,
-                                    sizeof label_str,
-                                    "\
-                                        {"#PRIMARY_COLOR"}Membresía VIP requerida\n\
-                                        \n\
-                                        {"#PRIMARY_COLOR"}%s\n\n\
-                                        {FFFFFF}Coste: {"#PRIMARY_COLOR"}%d "SERVER_COIN"\n\
-                                        {FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\
-                                    ", VEHICLE_INFO[GLOBAL_VEHICLES[i][gb_vehicle_MODELID] - 400][vehicle_info_NAME], SELL_VEHICLES[i][sell_vehicle_EXTRA], SELL_VEHICLES[i][sell_vehicle_LEVEL]
+                                sizeof label_str,
+                                "\
+                                {"#PRIMARY_COLOR"}Membresía VIP requerida\n\
+                                \n\
+                                {"#PRIMARY_COLOR"}%s\n\n\
+                                {FFFFFF}Coste: {"#PRIMARY_COLOR"}%d "SERVER_COIN"\n\
+                                {FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\
+                                ", VEHICLE_INFO[GLOBAL_VEHICLES[i][gb_vehicle_MODELID] - 400][vehicle_info_NAME], SELL_VEHICLES[i][sell_vehicle_EXTRA], SELL_VEHICLES[i][sell_vehicle_LEVEL]
                             );
                         }
                         else
@@ -3061,14 +2905,14 @@ UpdateEconomy(type = -1)
                             format
                             (
                                 label_str,
-                                    sizeof label_str,
-                                    "\
-                                        {"#PRIMARY_COLOR"}Membresía VIP requerida\n\
-                                        \n\
-                                        {"#PRIMARY_COLOR"}%s\n\n\
-                                        {FFFFFF}Precio: {"#PRIMARY_COLOR"}%s$\n\
-                                        {FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\
-                                    ", VEHICLE_INFO[GLOBAL_VEHICLES[i][gb_vehicle_MODELID] - 400][vehicle_info_NAME], number_format_thousand(SELL_VEHICLES[i][sell_vehicle_PRICE]), SELL_VEHICLES[i][sell_vehicle_LEVEL]
+                                sizeof label_str,
+                                "\
+                                {"#PRIMARY_COLOR"}Membresía VIP requerida\n\
+                                \n\
+                                {"#PRIMARY_COLOR"}%s\n\n\
+                                {FFFFFF}Precio: {"#PRIMARY_COLOR"}%s$\n\
+                                {FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\
+                                ", VEHICLE_INFO[GLOBAL_VEHICLES[i][gb_vehicle_MODELID] - 400][vehicle_info_NAME], number_format_thousand(SELL_VEHICLES[i][sell_vehicle_PRICE]), SELL_VEHICLES[i][sell_vehicle_LEVEL]
                             );
                         }
                     }
@@ -3079,12 +2923,12 @@ UpdateEconomy(type = -1)
                             format
                             (
                                 label_str,
-                                    sizeof label_str,
-                                    "\
-                                        {"#PRIMARY_COLOR"}%s\n\n\
-                                        {FFFFFF}Coste: {"#PRIMARY_COLOR"}%d "SERVER_COIN"\n\
-                                        {FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\
-                                    ", VEHICLE_INFO[GLOBAL_VEHICLES[i][gb_vehicle_MODELID] - 400][vehicle_info_NAME], SELL_VEHICLES[i][sell_vehicle_EXTRA], SELL_VEHICLES[i][sell_vehicle_LEVEL]
+                                sizeof label_str,
+                                "\
+                                {"#PRIMARY_COLOR"}%s\n\n\
+                                {FFFFFF}Coste: {"#PRIMARY_COLOR"}%d "SERVER_COIN"\n\
+                                {FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\
+                                ", VEHICLE_INFO[GLOBAL_VEHICLES[i][gb_vehicle_MODELID] - 400][vehicle_info_NAME], SELL_VEHICLES[i][sell_vehicle_EXTRA], SELL_VEHICLES[i][sell_vehicle_LEVEL]
                             );
                         }
                         else
@@ -3092,12 +2936,12 @@ UpdateEconomy(type = -1)
                             format
                             (
                                 label_str,
-                                    sizeof label_str,
-                                    "\
-                                        {"#PRIMARY_COLOR"}%s\n\n\
-                                        {FFFFFF}Precio: {"#PRIMARY_COLOR"}%s$\n\
-                                        {FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\
-                                    ", VEHICLE_INFO[GLOBAL_VEHICLES[i][gb_vehicle_MODELID] - 400][vehicle_info_NAME], number_format_thousand(SELL_VEHICLES[i][sell_vehicle_PRICE]), SELL_VEHICLES[i][sell_vehicle_LEVEL]
+                                sizeof label_str,
+                                "\
+                                {"#PRIMARY_COLOR"}%s\n\n\
+                                {FFFFFF}Precio: {"#PRIMARY_COLOR"}%s$\n\
+                                {FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\
+                                ", VEHICLE_INFO[GLOBAL_VEHICLES[i][gb_vehicle_MODELID] - 400][vehicle_info_NAME], number_format_thousand(SELL_VEHICLES[i][sell_vehicle_PRICE]), SELL_VEHICLES[i][sell_vehicle_LEVEL]
                             );
                         }
                     }
@@ -3351,7 +3195,10 @@ EditVehicleObject(playerid, vehicleid, slot)
     }
 
     PLAYER_TEMP[playerid][pt_TUNING_EDIT_SLOT] = slot;
-    GetVehiclePos(vehicleid, GLOBAL_VEHICLES[vehicleid][gb_vehicle_POS][0], GLOBAL_VEHICLES[vehicleid][gb_vehicle_POS][1], GLOBAL_VEHICLES[vehicleid][gb_vehicle_POS][2]);
+    GetVehiclePos(vehicleid,
+        GLOBAL_VEHICLES[vehicleid][gb_vehicle_POS][0],
+        GLOBAL_VEHICLES[vehicleid][gb_vehicle_POS][1],
+    GLOBAL_VEHICLES[vehicleid][gb_vehicle_POS][2]);
 
     new Float:pos[3];
     pos[0] = GLOBAL_VEHICLES[vehicleid][gb_vehicle_POS][0] + VEHICLE_OBJECTS[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][ PLAYER_TEMP[playerid][pt_TUNING_EDIT_SLOT] ][vobject_OFFSET][0];
@@ -3384,7 +3231,10 @@ SetVehicleVirtualWorldEx(vehicleid, worldid)
         if (!VEHICLE_OBJECTS[vehicleid][i][vobject_VALID]) continue;
         if (VEHICLE_OBJECTS[vehicleid][i][vobject_OBJECT_ID] == INVALID_STREAMER_ID) continue;
 
-        Streamer_SetIntData(STREAMER_TYPE_OBJECT, VEHICLE_OBJECTS[vehicleid][i][vobject_OBJECT_ID], E_STREAMER_WORLD_ID, GLOBAL_VEHICLES[vehicleid][gb_vehicle_WORLD]);
+        Streamer_SetIntData(STREAMER_TYPE_OBJECT,
+            VEHICLE_OBJECTS[vehicleid][i][vobject_OBJECT_ID],
+            E_STREAMER_WORLD_ID,
+        GLOBAL_VEHICLES[vehicleid][gb_vehicle_WORLD]);
     }
 
     SetVehicleVirtualWorld(vehicleid, worldid);
@@ -3697,15 +3547,15 @@ RegisterNewVehicleObject(vehicleid, slot)
     (
         srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER,
         "\
-            INSERT INTO vobjects (id_vehicle, type, name, modelid, off_x, off_y, off_z, rot_x, rot_y, rot_z, attached, color0, color1, color2, color3, color4, text, font, fontsize, fontbold, fontcolor)\
-            VALUES(%d, %d, '%e', %d, %f, %f, %f, %f, %f, %f, %d, %d, %d, %d, %d, %d, '%e', '%e', %d, %d, %d);\
+        INSERT INTO vobjects (id_vehicle, type, name, modelid, off_x, off_y, off_z, rot_x, rot_y, rot_z, attached, color0, color1, color2, color3, color4, text, font, fontsize, fontbold, fontcolor)\
+        VALUES(%d, %d, '%e', %d, %f, %f, %f, %f, %f, %f, %d, %d, %d, %d, %d, %d, '%e', '%e', %d, %d, %d);\
         ",
-            PLAYER_VEHICLES[vehicleid][player_vehicle_ID], VEHICLE_OBJECTS[vehicleid][slot][vobject_TYPE], VEHICLE_OBJECTS[vehicleid][slot][vobject_NAME], VEHICLE_OBJECTS[vehicleid][slot][vobject_MODELID],
-            VEHICLE_OBJECTS[vehicleid][slot][vobject_OFFSET][0], VEHICLE_OBJECTS[vehicleid][slot][vobject_OFFSET][1], VEHICLE_OBJECTS[vehicleid][slot][vobject_OFFSET][2],
-            VEHICLE_OBJECTS[vehicleid][slot][vobject_ROT][0], VEHICLE_OBJECTS[vehicleid][slot][vobject_ROT][1], VEHICLE_OBJECTS[vehicleid][slot][vobject_ROT][2],
-            VEHICLE_OBJECTS[vehicleid][slot][vobject_ATTACHED], VEHICLE_OBJECTS[vehicleid][slot][vobject_COLORS][0], VEHICLE_OBJECTS[vehicleid][slot][vobject_COLORS][1], VEHICLE_OBJECTS[vehicleid][slot][vobject_COLORS][2],
-            VEHICLE_OBJECTS[vehicleid][slot][vobject_COLORS][3], VEHICLE_OBJECTS[vehicleid][slot][vobject_COLORS][4], VEHICLE_OBJECTS[vehicleid][slot][vobject_text_TEXT], VEHICLE_OBJECTS[vehicleid][slot][vobject_text_FONT],
-            VEHICLE_OBJECTS[vehicleid][slot][vobject_text_FONT_SIZE], VEHICLE_OBJECTS[vehicleid][slot][vobject_text_BOLD], VEHICLE_OBJECTS[vehicleid][slot][vobject_text_FONT_COLOR]
+        PLAYER_VEHICLES[vehicleid][player_vehicle_ID], VEHICLE_OBJECTS[vehicleid][slot][vobject_TYPE], VEHICLE_OBJECTS[vehicleid][slot][vobject_NAME], VEHICLE_OBJECTS[vehicleid][slot][vobject_MODELID],
+        VEHICLE_OBJECTS[vehicleid][slot][vobject_OFFSET][0], VEHICLE_OBJECTS[vehicleid][slot][vobject_OFFSET][1], VEHICLE_OBJECTS[vehicleid][slot][vobject_OFFSET][2],
+        VEHICLE_OBJECTS[vehicleid][slot][vobject_ROT][0], VEHICLE_OBJECTS[vehicleid][slot][vobject_ROT][1], VEHICLE_OBJECTS[vehicleid][slot][vobject_ROT][2],
+        VEHICLE_OBJECTS[vehicleid][slot][vobject_ATTACHED], VEHICLE_OBJECTS[vehicleid][slot][vobject_COLORS][0], VEHICLE_OBJECTS[vehicleid][slot][vobject_COLORS][1], VEHICLE_OBJECTS[vehicleid][slot][vobject_COLORS][2],
+        VEHICLE_OBJECTS[vehicleid][slot][vobject_COLORS][3], VEHICLE_OBJECTS[vehicleid][slot][vobject_COLORS][4], VEHICLE_OBJECTS[vehicleid][slot][vobject_text_TEXT], VEHICLE_OBJECTS[vehicleid][slot][vobject_text_FONT],
+        VEHICLE_OBJECTS[vehicleid][slot][vobject_text_FONT_SIZE], VEHICLE_OBJECTS[vehicleid][slot][vobject_text_BOLD], VEHICLE_OBJECTS[vehicleid][slot][vobject_text_FONT_COLOR]
     );
     MySQL_TQueryInline(srp_db, using inline OnVobjectInserted, QUERY_BUFFER);
     return 1;
@@ -3717,45 +3567,43 @@ UpdateVehicleObject(vehicleid, slot)
     (
         srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER,
         "\
-            UPDATE vobjects SET \
-                id_vehicle = %d,\
-                type = %d,\
-                name = '%e',\
-                modelid = %d,\
-                off_x = %f,\
-                off_y = %f,\
-                off_z = %f,\
-                rot_x = %f,\
-                rot_y = %f,\
-                rot_z = %f,\
-                attached = %d,\
-                color0 = %d,\
-                color1 = %d,\
-                color2 = %d,\
-                color3 = %d,\
-                color4 = %d,\
-                text = '%e',\
-                font = '%e',\
-                fontsize = %d,\
-                fontbold = %d,\
-                fontcolor = %d \
-            WHERE id = %d;\
+        UPDATE vobjects SET \
+        id_vehicle = %d,\
+        type = %d,\
+        name = '%e',\
+        modelid = %d,\
+        off_x = %f,\
+        off_y = %f,\
+        off_z = %f,\
+        rot_x = %f,\
+        rot_y = %f,\
+        rot_z = %f,\
+        attached = %d,\
+        color0 = %d,\
+        color1 = %d,\
+        color2 = %d,\
+        color3 = %d,\
+        color4 = %d,\
+        text = '%e',\
+        font = '%e',\
+        fontsize = %d,\
+        fontbold = %d,\
+        fontcolor = %d \
+        WHERE id = %d;\
         ",
-            PLAYER_VEHICLES[vehicleid][player_vehicle_ID], VEHICLE_OBJECTS[vehicleid][slot][vobject_TYPE], VEHICLE_OBJECTS[vehicleid][slot][vobject_NAME], VEHICLE_OBJECTS[vehicleid][slot][vobject_MODELID],
-            VEHICLE_OBJECTS[vehicleid][slot][vobject_OFFSET][0], VEHICLE_OBJECTS[vehicleid][slot][vobject_OFFSET][1], VEHICLE_OBJECTS[vehicleid][slot][vobject_OFFSET][2],
-            VEHICLE_OBJECTS[vehicleid][slot][vobject_ROT][0], VEHICLE_OBJECTS[vehicleid][slot][vobject_ROT][1], VEHICLE_OBJECTS[vehicleid][slot][vobject_ROT][2],
-            VEHICLE_OBJECTS[vehicleid][slot][vobject_ATTACHED], VEHICLE_OBJECTS[vehicleid][slot][vobject_COLORS][0], VEHICLE_OBJECTS[vehicleid][slot][vobject_COLORS][1],
-            VEHICLE_OBJECTS[vehicleid][slot][vobject_COLORS][2], VEHICLE_OBJECTS[vehicleid][slot][vobject_COLORS][3], VEHICLE_OBJECTS[vehicleid][slot][vobject_COLORS][4],
-            VEHICLE_OBJECTS[vehicleid][slot][vobject_text_TEXT], VEHICLE_OBJECTS[vehicleid][slot][vobject_text_FONT], VEHICLE_OBJECTS[vehicleid][slot][vobject_text_FONT_SIZE],
-            VEHICLE_OBJECTS[vehicleid][slot][vobject_text_BOLD], VEHICLE_OBJECTS[vehicleid][slot][vobject_text_FONT_COLOR],
+        PLAYER_VEHICLES[vehicleid][player_vehicle_ID], VEHICLE_OBJECTS[vehicleid][slot][vobject_TYPE], VEHICLE_OBJECTS[vehicleid][slot][vobject_NAME], VEHICLE_OBJECTS[vehicleid][slot][vobject_MODELID],
+        VEHICLE_OBJECTS[vehicleid][slot][vobject_OFFSET][0], VEHICLE_OBJECTS[vehicleid][slot][vobject_OFFSET][1], VEHICLE_OBJECTS[vehicleid][slot][vobject_OFFSET][2],
+        VEHICLE_OBJECTS[vehicleid][slot][vobject_ROT][0], VEHICLE_OBJECTS[vehicleid][slot][vobject_ROT][1], VEHICLE_OBJECTS[vehicleid][slot][vobject_ROT][2],
+        VEHICLE_OBJECTS[vehicleid][slot][vobject_ATTACHED], VEHICLE_OBJECTS[vehicleid][slot][vobject_COLORS][0], VEHICLE_OBJECTS[vehicleid][slot][vobject_COLORS][1],
+        VEHICLE_OBJECTS[vehicleid][slot][vobject_COLORS][2], VEHICLE_OBJECTS[vehicleid][slot][vobject_COLORS][3], VEHICLE_OBJECTS[vehicleid][slot][vobject_COLORS][4],
+        VEHICLE_OBJECTS[vehicleid][slot][vobject_text_TEXT], VEHICLE_OBJECTS[vehicleid][slot][vobject_text_FONT], VEHICLE_OBJECTS[vehicleid][slot][vobject_text_FONT_SIZE],
+        VEHICLE_OBJECTS[vehicleid][slot][vobject_text_BOLD], VEHICLE_OBJECTS[vehicleid][slot][vobject_text_FONT_COLOR],
 
-            VEHICLE_OBJECTS[vehicleid][slot][vobject_ID]
+        VEHICLE_OBJECTS[vehicleid][slot][vobject_ID]
     );
     mysql_tquery(srp_db, QUERY_BUFFER);
     return 1;
 }
-
-
 
 GetRulePagePositions(lines, &Float:pos_descripcion, &Float:pos_pages, &Float:pos_title)
 {
@@ -3921,7 +3769,7 @@ FixTextDrawString(message[], bool:space = false)
             case '&': message[pos] = 38;
             case ' ': {
                 if (space)
-{
+                {
                     message[pos] = '_';
                 }
             }
@@ -3936,7 +3784,13 @@ PlayerPlaySoundEx(playerid, sound, Float:X, Float:Y, Float:Z)
     return 1;
 }
 
-PlayAudioStreamForPlayerEx(playerid, url[], Float:posX = 0.0, Float:posY = 0.0, Float:posZ = 0.0, Float:distance = 50.0, usepos = 0)
+PlayAudioStreamForPlayerEx(playerid,
+    url[],
+    Float:posX = 0.0,
+    Float:posY = 0.0,
+    Float:posZ = 0.0,
+    Float:distance = 50.0,
+usepos = 0)
 {
     if (PI[playerid][ac_CONFIG_AUDIO]) PlayAudioStreamForPlayer(playerid, url, posX, posY, posZ, distance, usepos);
     return 1;
@@ -4008,13 +3862,13 @@ UpdateUnnocupiedPropertyLabel(index)
                 label_str,
                 sizeof label_str,
                 "\
-                    {"#PRIMARY_COLOR"}Membresía VIP requerida\n\
-                    \n\
-                    {FFFFFF}Propiedad {"#PRIMARY_COLOR"}#%d {FFFFFF}está en venta\n\n\
-                    Interior: {"#PRIMARY_COLOR"}%d\n\
-                    {FFFFFF}Coste: {"#PRIMARY_COLOR"}%d "SERVER_COIN"\n\
-                    {FFFFFF}Nivel necesario: {"#PRIMARY_COLOR"}%d\n\
-                    {FFFFFF}Usa {"#PRIMARY_COLOR"}/ayuda {FFFFFF}para ver como adquirirla.\
+                {"#PRIMARY_COLOR"}Membresía VIP requerida\n\
+                \n\
+                {FFFFFF}Propiedad {"#PRIMARY_COLOR"}#%d {FFFFFF}está en venta\n\n\
+                Interior: {"#PRIMARY_COLOR"}%d\n\
+                {FFFFFF}Coste: {"#PRIMARY_COLOR"}%d "SERVER_COIN"\n\
+                {FFFFFF}Nivel necesario: {"#PRIMARY_COLOR"}%d\n\
+                {FFFFFF}Usa {"#PRIMARY_COLOR"}/ayuda {FFFFFF}para ver como adquirirla.\
                 ", PROPERTY_INFO[index][property_ID], PROPERTY_INFO[index][property_ID_INTERIOR], PROPERTY_INFO[index][property_EXTRA], PROPERTY_INFO[index][property_LEVEL]
             );
         }
@@ -4025,13 +3879,13 @@ UpdateUnnocupiedPropertyLabel(index)
                 label_str,
                 sizeof label_str,
                 "\
-                    {"#PRIMARY_COLOR"}Membresía VIP requerida\n\
-                    \n\
-                    {FFFFFF}Propiedad {"#PRIMARY_COLOR"}#%d {FFFFFF}está en venta\n\n\
-                    Interior: {"#PRIMARY_COLOR"}%d\n\
-                    {FFFFFF}Precio: {"#PRIMARY_COLOR"}%s$\n\
-                    {FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\n\
-                    {FFFFFF}Usa {"#PRIMARY_COLOR"}/ayuda {FFFFFF}para ver como adquirirla.\
+                {"#PRIMARY_COLOR"}Membresía VIP requerida\n\
+                \n\
+                {FFFFFF}Propiedad {"#PRIMARY_COLOR"}#%d {FFFFFF}está en venta\n\n\
+                Interior: {"#PRIMARY_COLOR"}%d\n\
+                {FFFFFF}Precio: {"#PRIMARY_COLOR"}%s$\n\
+                {FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\n\
+                {FFFFFF}Usa {"#PRIMARY_COLOR"}/ayuda {FFFFFF}para ver como adquirirla.\
                 ", PROPERTY_INFO[index][property_ID], PROPERTY_INFO[index][property_ID_INTERIOR], number_format_thousand(PROPERTY_INFO[index][property_PRICE]), PROPERTY_INFO[index][property_LEVEL]
             );
         }
@@ -4045,11 +3899,11 @@ UpdateUnnocupiedPropertyLabel(index)
                 label_str,
                 sizeof label_str,
                 "\
-                    {FFFFFF}Propiedad {"#PRIMARY_COLOR"}#%d {FFFFFF}está en venta\n\n\
-                    Interior: {"#PRIMARY_COLOR"}%d\n\
-                    {FFFFFF}Coste: {"#PRIMARY_COLOR"}%d "SERVER_COIN"\n\
-                    {FFFFFF}Nivel necesario: {"#PRIMARY_COLOR"}%d\n\
-                    {FFFFFF}Usa {"#PRIMARY_COLOR"}/ayuda {FFFFFF}para ver como adquirirla.\
+                {FFFFFF}Propiedad {"#PRIMARY_COLOR"}#%d {FFFFFF}está en venta\n\n\
+                Interior: {"#PRIMARY_COLOR"}%d\n\
+                {FFFFFF}Coste: {"#PRIMARY_COLOR"}%d "SERVER_COIN"\n\
+                {FFFFFF}Nivel necesario: {"#PRIMARY_COLOR"}%d\n\
+                {FFFFFF}Usa {"#PRIMARY_COLOR"}/ayuda {FFFFFF}para ver como adquirirla.\
                 ", PROPERTY_INFO[index][property_ID], PROPERTY_INFO[index][property_ID_INTERIOR], PROPERTY_INFO[index][property_EXTRA], PROPERTY_INFO[index][property_LEVEL]
             );
         }
@@ -4060,11 +3914,11 @@ UpdateUnnocupiedPropertyLabel(index)
                 label_str,
                 sizeof label_str,
                 "\
-                    {FFFFFF}Propiedad {"#PRIMARY_COLOR"}#%d {FFFFFF}está en venta\n\n\
-                    Interior: {"#PRIMARY_COLOR"}%d\n\
-                    {FFFFFF}Precio: {"#PRIMARY_COLOR"}%s$\n\
-                    {FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\n\
-                    {FFFFFF}Usa {"#PRIMARY_COLOR"}/ayuda {FFFFFF}para ver como adquirirla.\
+                {FFFFFF}Propiedad {"#PRIMARY_COLOR"}#%d {FFFFFF}está en venta\n\n\
+                Interior: {"#PRIMARY_COLOR"}%d\n\
+                {FFFFFF}Precio: {"#PRIMARY_COLOR"}%s$\n\
+                {FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\n\
+                {FFFFFF}Usa {"#PRIMARY_COLOR"}/ayuda {FFFFFF}para ver como adquirirla.\
                 ", PROPERTY_INFO[index][property_ID], PROPERTY_INFO[index][property_ID_INTERIOR], number_format_thousand(PROPERTY_INFO[index][property_PRICE]), PROPERTY_INFO[index][property_LEVEL]
             );
         }
@@ -4072,7 +3926,6 @@ UpdateUnnocupiedPropertyLabel(index)
     UpdateDynamic3DTextLabelText(PROPERTY_INFO[index][property_EXT_LABEL_ID], 0xFFFFFFFF, label_str);
     return 1;
 }
-
 
 FreezePlayer(playerid, ms = 2000)
 {
@@ -4094,15 +3947,16 @@ SetPlayerNormalColor(playerid)
     return 1;
 }
 
-
-
 SendAdminAd(color, const text[])
 {
     for (new i = 0, j = GetPlayerPoolSize(); i <= j; i++)
     {
         if (IsPlayerConnected(i))
         {
-            if ((PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_NORMAL || PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_DEAD) && PI[i][ac_CONFIG_ADMIN])
+            if (
+                (PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_NORMAL ||
+                PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_DEAD) &&
+            PI[i][ac_CONFIG_ADMIN])
             {
                 SendClientMessage(i, color, text);
             }
@@ -4110,6 +3964,7 @@ SendAdminAd(color, const text[])
     }
     return 1;
 }
+
 GetFreePoliceObjectSlot()
 {
     for (new i = 0; i != MAX_POLICE_OBJECTS; i++)
@@ -4138,7 +3993,10 @@ PlayMp3(playerid, url[], song_name[])
         {
             if (IsPlayerConnected(i))
             {
-                if ( (ACCOUNT_INFO[i][ac_STATE] == ROLEPLAY_STATE_OWN_PROPERTY || ACCOUNT_INFO[i][ac_STATE] == ROLEPLAY_STATE_GUEST_PROPERTY) && PI[i][ac_LOCAL_INTERIOR] == PI[playerid][ac_LOCAL_INTERIOR])
+                if (
+                    (ACCOUNT_INFO[i][ac_STATE] == ROLEPLAY_STATE_OWN_PROPERTY ||
+                    ACCOUNT_INFO[i][ac_STATE] == ROLEPLAY_STATE_GUEST_PROPERTY) &&
+                PI[i][ac_LOCAL_INTERIOR] == PI[playerid][ac_LOCAL_INTERIOR])
                 {
                     PlayAudioStreamForPlayerEx(i, url);
                     SendFormatNotification(i, "~b~Reproduciendo '%s'~n~~n~~w~Utiliza ~r~/stop ~w~para parar la música.", song_name);
@@ -4177,7 +4035,10 @@ PlayMp3(playerid, url[], song_name[])
         {
             if (IsPlayerConnected(i))
             {
-                if ((PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_NORMAL || PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_DEAD) && PI[i][ac_CONFIG_AUDIO])
+                if (
+                    (PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_NORMAL ||
+                    PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_DEAD) &&
+                PI[i][ac_CONFIG_AUDIO])
                 {
                     if (GetPlayerDistanceFromPoint(i, pos[0], pos[1], pos[2]) <= 30.0)
                     {
@@ -4247,7 +4108,10 @@ Set_FUMIGATOR_Checkpoint(playerid)
 
     new info[1];
     info[0] = CHECKPOINT_TYPE_FUMIGATOR;
-    Streamer_SetArrayData(STREAMER_TYPE_RACE_CP, PLAYER_TEMP[playerid][pt_FUMIGATOR_CHECKPOINT], E_STREAMER_EXTRA_ID, info);
+    Streamer_SetArrayData(STREAMER_TYPE_RACE_CP,
+        PLAYER_TEMP[playerid][pt_FUMIGATOR_CHECKPOINT],
+        E_STREAMER_EXTRA_ID,
+    info);
 
     return 1;
 }
@@ -4392,7 +4256,19 @@ LoginPlayer(playerid)
     SetPlayerVirtualWorld(playerid, 0);
     SetPlayerNormalColor(playerid);
     StopAudioStreamForPlayer(playerid);
-    SetSpawnInfo(playerid, NO_TEAM, PI[playerid][ac_SKIN], PI[playerid][ac_POS_X], PI[playerid][ac_POS_Y], PI[playerid][ac_POS_Z], PI[playerid][ac_ANGLE], 0, 0, 0, 0, 0, 0);
+    SetSpawnInfo(playerid,
+        NO_TEAM,
+        PI[playerid][ac_SKIN],
+        PI[playerid][ac_POS_X],
+        PI[playerid][ac_POS_Y],
+        PI[playerid][ac_POS_Z],
+        PI[playerid][ac_ANGLE],
+        0,
+        0,
+        0,
+        0,
+        0,
+    0);
     SetPlayerInterior(playerid, PI[playerid][ac_INTERIOR]);
 
     PLAYER_TEMP[playerid][pt_BAD_LOGIN_ATTEMP] = 0;
@@ -4538,150 +4414,150 @@ SavePlayerData(playerid)
         (
             srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER,
             "\
-                UPDATE player SET \
-                    name = '%e',\
-                    ip = '%e',\
-                    email = '%e',\
-                    salt = '%e',\
-                    pass = '%e',\
-                    last_connection = '%e',\
-                    last_connection_timestamp = %d,\
-                    state = %d,\
-                    time_playing = %d,\
-                    level = %d,\
-                    rep = %d,\
-                    connected = %d,\
-                    playerid = %d,\
-                    doubt_channel = %d,\
-                    time_for_rep = %d,\
-                    admin_level = %d,\
-                    payday_rep = %d,\
-                    vip = %d,\
-                    vip_expire_date = %s,\
-                    skin = %d,\
-                    cash = %d,\
-                    pos_x = %f,\
-                    pos_y = %f,\
-                    pos_z = %f,\
-                    angle = %f,\
-                    interior = %d,\
-                    local_interior = %d,\
-                    fight_style = %d,\
-                    health = %f,\
-                    armour = %f,\
-                    gender = %d,\
-                    hungry = %f,\
-                    thirst = %f,\
-                    black_market_level = %d,\
-                    wanted_level = %d,\
-                    police_jail_time = %d,\
-                    police_duty = %d,\
-                    police_jail_id = %d,\
-                    drive_license_points = %d,\
-                    bank_account = %d,\
-                    bank_money = %d,\
-                    phone_number = %d,\
-                    phone_state = %d,\
-                    phone_visible_number = %d,\
-                    gps = %d,\
-                    maso = %d,\
-                    mp3 = %d,\
-                    phone_resolver = %d,\
-                    speakers = %d,\
-                    mechanic_pieces = %d,\
-                    fuel_drum = %d,\
-                    seed_medicine = %d,\
-                    seed_cannabis = %d,\
-                    seed_crack = %d,\
-                    medicine = %d,\
-                    cannabis = %d,\
-                    crack = %d,\
-                    config_sounds = %d,\
-                    config_audio = %d,\
-                    config_time = %d,\
-                    config_hud = %d,\
-                    config_admin = %d,\
-                    config_secure_login = %d,\
-                    mute = %d,\
-                    placa_pd = %d,\
-                    can_buy_bm = %d,\
-                    crew = %s,\
-                    crew_rank = %d,\
-                    mechanic_kits = %d,\
-                    medical_kits = %d \
-                WHERE id = %d;\
+            UPDATE player SET \
+            name = '%e',\
+            ip = '%e',\
+            email = '%e',\
+            salt = '%e',\
+            pass = '%e',\
+            last_connection = '%e',\
+            last_connection_timestamp = %d,\
+            state = %d,\
+            time_playing = %d,\
+            level = %d,\
+            rep = %d,\
+            connected = %d,\
+            playerid = %d,\
+            doubt_channel = %d,\
+            time_for_rep = %d,\
+            admin_level = %d,\
+            payday_rep = %d,\
+            vip = %d,\
+            vip_expire_date = %s,\
+            skin = %d,\
+            cash = %d,\
+            pos_x = %f,\
+            pos_y = %f,\
+            pos_z = %f,\
+            angle = %f,\
+            interior = %d,\
+            local_interior = %d,\
+            fight_style = %d,\
+            health = %f,\
+            armour = %f,\
+            gender = %d,\
+            hungry = %f,\
+            thirst = %f,\
+            black_market_level = %d,\
+            wanted_level = %d,\
+            police_jail_time = %d,\
+            police_duty = %d,\
+            police_jail_id = %d,\
+            drive_license_points = %d,\
+            bank_account = %d,\
+            bank_money = %d,\
+            phone_number = %d,\
+            phone_state = %d,\
+            phone_visible_number = %d,\
+            gps = %d,\
+            maso = %d,\
+            mp3 = %d,\
+            phone_resolver = %d,\
+            speakers = %d,\
+            mechanic_pieces = %d,\
+            fuel_drum = %d,\
+            seed_medicine = %d,\
+            seed_cannabis = %d,\
+            seed_crack = %d,\
+            medicine = %d,\
+            cannabis = %d,\
+            crack = %d,\
+            config_sounds = %d,\
+            config_audio = %d,\
+            config_time = %d,\
+            config_hud = %d,\
+            config_admin = %d,\
+            config_secure_login = %d,\
+            mute = %d,\
+            placa_pd = %d,\
+            can_buy_bm = %d,\
+            crew = %s,\
+            crew_rank = %d,\
+            mechanic_kits = %d,\
+            medical_kits = %d \
+            WHERE id = %d;\
             ",
-                ACCOUNT_INFO[playerid][ac_NAME],
-                ACCOUNT_INFO[playerid][ac_IP],
-                ACCOUNT_INFO[playerid][ac_EMAIL],
-                ACCOUNT_INFO[playerid][ac_SALT],
-                ACCOUNT_INFO[playerid][ac_PASS],
-                ACCOUNT_INFO[playerid][ac_LAST_CONNECTION],
-                ACCOUNT_INFO[playerid][ac_LAST_CONNECTION_TIMESTAMP],
-                ACCOUNT_INFO[playerid][ac_STATE],
-                ACCOUNT_INFO[playerid][ac_TIME_PLAYING],
-                ACCOUNT_INFO[playerid][ac_LEVEL],
-                ACCOUNT_INFO[playerid][ac_REP],
-                PI[playerid][ac_CONNECTED],
-                PI[playerid][ac_PLAYERID],
-                ACCOUNT_INFO[playerid][ac_DOUBT_CHANNEL],
-                ACCOUNT_INFO[playerid][ac_TIME_FOR_REP],
-                ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL],
-                ACCOUNT_INFO[playerid][ac_PAYDAY_REP],
-                ACCOUNT_INFO[playerid][ac_VIP],
-                tmp_vip_expire_date,
-                PI[playerid][ac_SKIN],
-                PI[playerid][ac_CASH],
-                PI[playerid][ac_POS_X],
-                PI[playerid][ac_POS_Y],
-                PI[playerid][ac_POS_Z],
-                PI[playerid][ac_ANGLE],
-                PI[playerid][ac_INTERIOR],
-                PI[playerid][ac_LOCAL_INTERIOR],
-                PI[playerid][ac_FIGHT_STYLE],
-                PI[playerid][ac_HEALTH],
-                PI[playerid][ac_ARMOUR],
-                PI[playerid][ac_GENDER],
-                PI[playerid][ac_HUNGRY],
-                PI[playerid][ac_THIRST],
-                PI[playerid][ac_BLACK_MARKET_LEVEL],
-                PI[playerid][ac_WANTED_LEVEL],
-                PI[playerid][ac_POLICE_JAIL_TIME],
-                PI[playerid][ac_POLICE_DUTY],
-                PI[playerid][ac_POLICE_JAIL_ID],
-                PI[playerid][ac_DRIVE_LICENSE_POINTS],
-                PI[playerid][ac_BANK_ACCOUNT],
-                PI[playerid][ac_BANK_MONEY],
-                PI[playerid][ac_PHONE_NUMBER],
-                PI[playerid][ac_PHONE_STATE],
-                PI[playerid][ac_PHONE_VISIBLE_NUMBER],
-                PI[playerid][ac_GPS],
-                PI[playerid][ac_Maso],
-                PI[playerid][ac_MP3],
-                PI[playerid][ac_PHONE_RESOLVER],
-                PI[playerid][ac_SPEAKERS],
-                PI[playerid][ac_MECHANIC_PIECES],
-                PI[playerid][ac_FUEL_DRUM],
-                PI[playerid][ac_SEED_MEDICINE],
-                PI[playerid][ac_SEED_CANNABIS],
-                PI[playerid][ac_SEED_CRACK],
-                PI[playerid][ac_MEDICINE],
-                PI[playerid][ac_CANNABIS],
-                PI[playerid][ac_CRACK],
-                PI[playerid][ac_CONFIG_SOUNDS],
-                PI[playerid][ac_CONFIG_AUDIO],
-                PI[playerid][ac_CONFIG_TIME],
-                PI[playerid][ac_CONFIG_HUD],
-                PI[playerid][ac_CONFIG_ADMIN],
-                PI[playerid][ac_CONFIG_SECURE_LOGIN],
-                PI[playerid][ac_MUTE],
-                PI[playerid][ac_PLACA_PD],
-                PI[playerid][ac_CAN_BUY_BM],
-                tmp_crew,
-                PI[playerid][ac_CREW_RANK],
-                PI[playerid][ac_MECHANIC_KITS],
-                PI[playerid][ac_MEDICAL_KITS],
-                ACCOUNT_INFO[playerid][ac_ID]
+            ACCOUNT_INFO[playerid][ac_NAME],
+            ACCOUNT_INFO[playerid][ac_IP],
+            ACCOUNT_INFO[playerid][ac_EMAIL],
+            ACCOUNT_INFO[playerid][ac_SALT],
+            ACCOUNT_INFO[playerid][ac_PASS],
+            ACCOUNT_INFO[playerid][ac_LAST_CONNECTION],
+            ACCOUNT_INFO[playerid][ac_LAST_CONNECTION_TIMESTAMP],
+            ACCOUNT_INFO[playerid][ac_STATE],
+            ACCOUNT_INFO[playerid][ac_TIME_PLAYING],
+            ACCOUNT_INFO[playerid][ac_LEVEL],
+            ACCOUNT_INFO[playerid][ac_REP],
+            PI[playerid][ac_CONNECTED],
+            PI[playerid][ac_PLAYERID],
+            ACCOUNT_INFO[playerid][ac_DOUBT_CHANNEL],
+            ACCOUNT_INFO[playerid][ac_TIME_FOR_REP],
+            ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL],
+            ACCOUNT_INFO[playerid][ac_PAYDAY_REP],
+            ACCOUNT_INFO[playerid][ac_VIP],
+            tmp_vip_expire_date,
+            PI[playerid][ac_SKIN],
+            PI[playerid][ac_CASH],
+            PI[playerid][ac_POS_X],
+            PI[playerid][ac_POS_Y],
+            PI[playerid][ac_POS_Z],
+            PI[playerid][ac_ANGLE],
+            PI[playerid][ac_INTERIOR],
+            PI[playerid][ac_LOCAL_INTERIOR],
+            PI[playerid][ac_FIGHT_STYLE],
+            PI[playerid][ac_HEALTH],
+            PI[playerid][ac_ARMOUR],
+            PI[playerid][ac_GENDER],
+            PI[playerid][ac_HUNGRY],
+            PI[playerid][ac_THIRST],
+            PI[playerid][ac_BLACK_MARKET_LEVEL],
+            PI[playerid][ac_WANTED_LEVEL],
+            PI[playerid][ac_POLICE_JAIL_TIME],
+            PI[playerid][ac_POLICE_DUTY],
+            PI[playerid][ac_POLICE_JAIL_ID],
+            PI[playerid][ac_DRIVE_LICENSE_POINTS],
+            PI[playerid][ac_BANK_ACCOUNT],
+            PI[playerid][ac_BANK_MONEY],
+            PI[playerid][ac_PHONE_NUMBER],
+            PI[playerid][ac_PHONE_STATE],
+            PI[playerid][ac_PHONE_VISIBLE_NUMBER],
+            PI[playerid][ac_GPS],
+            PI[playerid][ac_Maso],
+            PI[playerid][ac_MP3],
+            PI[playerid][ac_PHONE_RESOLVER],
+            PI[playerid][ac_SPEAKERS],
+            PI[playerid][ac_MECHANIC_PIECES],
+            PI[playerid][ac_FUEL_DRUM],
+            PI[playerid][ac_SEED_MEDICINE],
+            PI[playerid][ac_SEED_CANNABIS],
+            PI[playerid][ac_SEED_CRACK],
+            PI[playerid][ac_MEDICINE],
+            PI[playerid][ac_CANNABIS],
+            PI[playerid][ac_CRACK],
+            PI[playerid][ac_CONFIG_SOUNDS],
+            PI[playerid][ac_CONFIG_AUDIO],
+            PI[playerid][ac_CONFIG_TIME],
+            PI[playerid][ac_CONFIG_HUD],
+            PI[playerid][ac_CONFIG_ADMIN],
+            PI[playerid][ac_CONFIG_SECURE_LOGIN],
+            PI[playerid][ac_MUTE],
+            PI[playerid][ac_PLACA_PD],
+            PI[playerid][ac_CAN_BUY_BM],
+            tmp_crew,
+            PI[playerid][ac_CREW_RANK],
+            PI[playerid][ac_MECHANIC_KITS],
+            PI[playerid][ac_MEDICAL_KITS],
+            ACCOUNT_INFO[playerid][ac_ID]
         );
         Logger_Log(QUERY_BUFFER);
         mysql_tquery(srp_db, QUERY_BUFFER);
@@ -4771,7 +4647,7 @@ GetBootTypeName(type)
 {
     new name[24];
     switch (type)
-{
+    {
         case BOOT_TYPE_WEAPON: name = "Arma";
         case BOOT_TYPE_MEDICINES: name = "Medicamentos";
         case BOOT_TYPE_CANNABIS: name = "Marihuana";
@@ -4784,7 +4660,7 @@ GetClosetTypeName(type)
 {
     new name[24];
     switch (type)
-{
+    {
         case CLOSET_TYPE_WEAPON: name = "Arma";
         case CLOSET_TYPE_MEDICINES: name = "Medicamentos";
         case CLOSET_TYPE_CANNABIS: name = "Marihuana";
@@ -4807,7 +4683,7 @@ stock HexToInt(const string[])//DracoBlue
    if (string[0] == 0) return 0;
    new i, cur=1, res = 0;
    for (i=strlen(string);i>0;i--)
-{
+   {
      if (string[i-1]<58) res=res+cur*(string[i-1]-48); else res=res+cur*(string[i-1]-65+10);
      cur=cur*16;
    }
@@ -4879,7 +4755,7 @@ stock CountPolicesOnDuty()
             if (PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_NORMAL)
             {
                 if (PLAYER_WORKS[i][WORK_POLICE][pwork_SET] && PLAYER_TEMP[i][pt_WORKING_IN] == WORK_POLICE)
-{
+                {
                     count++;
                 }
             }
@@ -4914,7 +4790,7 @@ GetRandomPropertyIndex()
 {
     new index = -1;
     while (index == -1)
-{
+    {
         new tmpIndex = random(MAX_PROPERTIES);
         if (PROPERTY_INFO[tmpIndex][property_VALID]) index = tmpIndex;
     }
@@ -4924,7 +4800,7 @@ GetRandomPropertyIndex()
 IRPC:RPC_VehicleDestroy(playerid, BitStream:bs)
 {
     if (ac_Info[CHEAT_DESTROY_VEHICLE][ac_Enabled])
-{
+    {
         new vehicleid;
         BS_ReadUint16(bs, vehicleid);
 
@@ -4935,7 +4811,11 @@ IRPC:RPC_VehicleDestroy(playerid, BitStream:bs)
 
         if (ACCOUNT_INFO[playerid][ac_LEVEL] < 3)
         {
-            if ( (vehicleid == GetPlayerVehicleID(playerid) && GLOBAL_VEHICLES[vehicleid][gb_vehicle_DRIVER] == playerid) || (PLAYER_VEHICLES[vehicleid][player_vehicle_VALID] && PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID]) )
+            if (
+                (vehicleid == GetPlayerVehicleID(playerid) &&
+                GLOBAL_VEHICLES[vehicleid][gb_vehicle_DRIVER] == playerid) ||
+                (PLAYER_VEHICLES[vehicleid][player_vehicle_VALID] &&
+            PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID]))
             {
                 return 1;
             }
@@ -4970,14 +4850,12 @@ IRPC:RPC_VehicleDestroy(playerid, BitStream:bs)
     return 1;
 }
 
-
-
 GetVehicleComponentIndexFromId(vehicleid, id)
 {
     for (new i = 0; i != MAX_VEHICLE_COMPONENTS; i++)
     {
         if (GLOBAL_VEHICLES[vehicleid][gb_vehicle_COMPONENTS][i] && GLOBAL_VEHICLES[vehicleid][gb_vehicle_COMPONENTS][i] == id)
-{
+        {
             return i;
         }
     }
@@ -4987,7 +4865,7 @@ GetVehicleComponentIndexFromId(vehicleid, id)
 GetTerritoryIndexById(id)
 {
     for (new i = 0; i != MAX_TERRITORIES; i++)
-{
+    {
         if (TERRITORIES[i][territory_VALID] && TERRITORIES[i][territory_ID] == id) return i;
     }
     return -1;
@@ -5003,10 +4881,10 @@ SendClientMessageEx(playerid, colour, const message[], {Float, _}:...)
 stock TimeConvert(seconds)
 {
     new tmp[16];
-     new minutes = floatround(seconds/60);
-      seconds -= minutes*60;
-       format(tmp, sizeof(tmp), "%d:%02d", minutes, seconds);
-       return tmp;
+    new minutes = floatround(seconds/60);
+    seconds -= minutes*60;
+    format(tmp, sizeof(tmp), "%d:%02d", minutes, seconds);
+    return tmp;
 }
 
 stock TimeConvertEx(sec, &days, &hours, &minutes, &seconds)
@@ -5015,7 +4893,7 @@ stock TimeConvertEx(sec, &days, &hours, &minutes, &seconds)
     hours = floatround((sec - (days * 86400)) / 3600);
     minutes = floatround((sec - (days * 86400) - (hours * 3600)) / 60);
     seconds = sec % 60;
-       return 1;
+    return 1;
 }
 
 stock TimeConvertExAsText(sec, bool:lastMinute = false)
@@ -5023,13 +4901,13 @@ stock TimeConvertExAsText(sec, bool:lastMinute = false)
     new string[128] = "", auxString[32];
 
     if (lastMinute && sec < 60)
-{
+    {
         string = "menos de 1 minuto";
         return string;
     }
 
     if (sec <= 0)
-{
+    {
         string = "nada";
         return string;
     }
@@ -5038,32 +4916,32 @@ stock TimeConvertExAsText(sec, bool:lastMinute = false)
     TimeConvertEx(sec, days, hours, minutes, seconds);
 
     if (days)
-{
+    {
         format(auxString, sizeof auxString, "%d días", days);
         strcat(string, auxString);
     }
 
     if (hours)
-{
+    {
         if (strlen(string) > 0) strcat(string, " ");
         format(auxString, sizeof auxString, "%d horas", hours);
         strcat(string, auxString);
     }
 
     if (minutes)
-{
+    {
         if (strlen(string) > 0) strcat(string, " ");
         format(auxString, sizeof auxString, "%d minutos", minutes);
         strcat(string, auxString);
     }
 
     if (seconds)
-{
+    {
         if (strlen(string) > 0) strcat(string, " ");
         format(auxString, sizeof auxString, "%d segundos", seconds);
         strcat(string, auxString);
     }
-       return string;
+    return string;
 }
 
 ProxDetector(playerid, Float:radi, string[], col1, col2, col3, col4, col5, div = 0)
@@ -5159,23 +5037,23 @@ IsValidEmail(const string[])
     if (len < 5) return 0;
     new pos = 0, at_found = 0, dot_after_at = 0;
     while (pos < len)
-{
+    {
         new c = string[pos];
         if (c == '@')
-{
+        {
             if (at_found) return 0;
             at_found = 1;
         }
-else if (c == '.' && at_found)
-{
+        else if (c == '.' && at_found)
+        {
             dot_after_at = 1;
         }
-else if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9' || c == '_' || c == '.')
-{
+        else if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9' || c == '_' || c == '.')
+        {
             // valid char
         }
-else
-{
+        else
+        {
             return 0;
         }
         pos++;
@@ -5183,11 +5061,17 @@ else
     if (!at_found || !dot_after_at) return 0;
     new last_dot = -1;
     for (new i = len - 1; i >= 0; i--)
-{
+    {
         if (string[i] == '.')
-{ last_dot = i; break; }
+        {
+            last_dot = i;
+            break;
+        }
     }
-    if (last_dot == -1 || len - last_dot - 1 < 2 || len - last_dot - 1 > 4) return 0;
+    if (last_dot == -1 || len - last_dot - 1 < 2 || len - last_dot - 1 > 4)
+    {
+        return 0;
+    }
     return 1;
 }
 
@@ -5204,13 +5088,13 @@ IsValidName(name[])
     }
     return true;
 }
+
 */
 
 OnPlayerCheatDetected(playerid, cheat, Float:extra = 0.0)
 {
     if (ACCOUNT_INFO[playerid][ac_ADMIN_LEVEL] >= ADMIN_LEVEL_AC_IMMUNITY) return 1;
     if (PLAYER_TEMP[playerid][pt_KICKED]) return 1;
-
 
     if (gettime() < PLAYER_TEMP[playerid][pt_LAST_CHEAT_DETECTED_TIME] + 5) return 1;
 
@@ -5245,8 +5129,9 @@ OnPlayerCheatDetected(playerid, cheat, Float:extra = 0.0)
 stock ConvertTime_SecondsToHoursFloat(sec, &Float:hours)
 {
     hours = floatdiv(float(sec), 3600);
-       return 1;
+    return 1;
 }
+
 stock number_format_thousand(e_number) // By adri1 - SFR3 4.3
 {
     new f_string[24], bool:negative;
@@ -5289,12 +5174,6 @@ stock minrand(min, max) //By Alex "Y_Less" Cole
 {
     return random(max - min) + min;
 }
-
-
-
-
-
-
 
 ResetPlayerWeaponsEx(playerid)
 {
@@ -5345,8 +5224,6 @@ DestroyVehicleEx(vehicleid)
     return false;
 }
 
-
-
 SelectTextDrawEx(playerid, color)
 {
     PLAYER_TEMP[playerid][pt_SELECT_TEXTDRAW] = true;
@@ -5358,26 +5235,22 @@ GetDatabasePages(count, limit)
     return floatround(floatdiv(count, limit), floatround_ceil);
 }
 
-
-
 SetPlayerWeapon(playerid, slot)
 {
     if (WEAPON_INFO[ PLAYER_WEAPONS[playerid][slot][player_weapon_ID] ][weapon_info_SPECIAL])
-{
+    {
         switch (WEAPON_INFO[ PLAYER_WEAPONS[playerid][slot][player_weapon_ID] ][weapon_info_TYPE])
-{
+        {
             case WEAPON_TASER_GUN: {
                 GivePlayerWeapon(playerid, 23, PLAYER_WEAPONS[playerid][slot][player_weapon_AMMO]);
             }
         }
     }
     else
-{
+    {
         if (PLAYER_WEAPONS[playerid][slot][player_weapon_AMMO] > 0) GivePlayerWeapon(playerid, PLAYER_WEAPONS[playerid][slot][player_weapon_ID], PLAYER_WEAPONS[playerid][slot][player_weapon_AMMO]);
     }
 }
-
-
 
 GetPropertyIndexByID(id)
 {
@@ -5407,8 +5280,6 @@ convertPhoneNumber(playerid, number)
     return f_string;
 }
 
-
-
 SendMessageToDoubtChannel(playerid, message[])
 {
     new str[145];
@@ -5420,7 +5291,10 @@ SendMessageToDoubtChannel(playerid, message[])
     {
         if (IsPlayerConnected(i))
         {
-            if ((PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_NORMAL || PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_DEAD) && PI[i][ac_DOUBT_CHANNEL])
+            if (
+                (PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_NORMAL ||
+                PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_DEAD) &&
+            PI[i][ac_DOUBT_CHANNEL])
             {
                 SendClientMessage(i, 0x77c7ffFF, str);
             }
@@ -5482,68 +5356,75 @@ SavePlayerVehicles(playerid, destroy = false)
         if (!PLAYER_VEHICLES[i][player_vehicle_VALID]) continue;
         if (PLAYER_VEHICLES[i][player_vehicle_OWNER_ID] != ACCOUNT_INFO[playerid][ac_ID]) continue;
 
-        GetVehiclePos(i, GLOBAL_VEHICLES[i][gb_vehicle_SPAWN_X], GLOBAL_VEHICLES[i][gb_vehicle_SPAWN_Y], GLOBAL_VEHICLES[i][gb_vehicle_SPAWN_Z]);
+        GetVehiclePos(i,
+            GLOBAL_VEHICLES[i][gb_vehicle_SPAWN_X],
+            GLOBAL_VEHICLES[i][gb_vehicle_SPAWN_Y],
+        GLOBAL_VEHICLES[i][gb_vehicle_SPAWN_Z]);
         GetVehicleZAngle(i, GLOBAL_VEHICLES[i][gb_vehicle_SPAWN_ANGLE]);
         GetVehicleHealth(i, GLOBAL_VEHICLES[i][gb_vehicle_HEALTH]);
         if (GLOBAL_VEHICLES[i][gb_vehicle_HEALTH] > 1000.0) GLOBAL_VEHICLES[i][gb_vehicle_HEALTH] = 1000.0;
         if (GLOBAL_VEHICLES[i][gb_vehicle_HEALTH] < MIN_VEHICLE_HEALTH) GLOBAL_VEHICLES[i][gb_vehicle_HEALTH] = MIN_VEHICLE_HEALTH;
-        GetVehicleDamageStatus(i, GLOBAL_VEHICLES[i][gb_vehicle_DAMAGE_PANELS], GLOBAL_VEHICLES[i][gb_vehicle_DAMAGE_DOORS], GLOBAL_VEHICLES[i][gb_vehicle_DAMAGE_LIGHTS], GLOBAL_VEHICLES[i][gb_vehicle_DAMAGE_TIRES]);
+        GetVehicleDamageStatus(i,
+            GLOBAL_VEHICLES[i][gb_vehicle_DAMAGE_PANELS],
+            GLOBAL_VEHICLES[i][gb_vehicle_DAMAGE_DOORS],
+            GLOBAL_VEHICLES[i][gb_vehicle_DAMAGE_LIGHTS],
+        GLOBAL_VEHICLES[i][gb_vehicle_DAMAGE_TIRES]);
         GLOBAL_VEHICLES[i][gb_vehicle_WORLD] = 0;//GetVehicleVirtualWorld(i);
 
         mysql_format
         (
             srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER,
             "\
-                UPDATE pvehicles SET \
-                    id_player = %d,\
-                    plate = '%e',\
-                    modelid = %d,\
-                    spawn_x = %f,\
-                    spawn_y = %f,\
-                    spawn_z = %f,\
-                    spawn_angle = %f,\
-                    health = %f,\
-                    damage_panels = %d,\
-                    damage_doors = %d,\
-                    damage_lights = %d,\
-                    damage_tires = %d,\
-                    color1 = %d,\
-                    color2 = %d,\
-                    paintjob = %d,\
-                    gas = %f,\
-                    max_gas = %f,\
-                    closed = %d,\
-                    interior = %d,\
-                    world = %d,\
-                    state = %d,\
-                    slot0 = %d,\
-                    slot1 = %d,\
-                    slot2 = %d,\
-                    slot3 = %d,\
-                    slot4 = %d,\
-                    slot5 = %d,\
-                    slot6 = %d,\
-                    slot7 = %d,\
-                    slot8 = %d,\
-                    slot9 = %d,\
-                    slot10 = %d,\
-                    slot11 = %d,\
-                    slot12 = %d,\
-                    slot13 = %d,\
-                    clamp = %d \
-                WHERE id = %d;\
+            UPDATE pvehicles SET \
+            id_player = %d,\
+            plate = '%e',\
+            modelid = %d,\
+            spawn_x = %f,\
+            spawn_y = %f,\
+            spawn_z = %f,\
+            spawn_angle = %f,\
+            health = %f,\
+            damage_panels = %d,\
+            damage_doors = %d,\
+            damage_lights = %d,\
+            damage_tires = %d,\
+            color1 = %d,\
+            color2 = %d,\
+            paintjob = %d,\
+            gas = %f,\
+            max_gas = %f,\
+            closed = %d,\
+            interior = %d,\
+            world = %d,\
+            state = %d,\
+            slot0 = %d,\
+            slot1 = %d,\
+            slot2 = %d,\
+            slot3 = %d,\
+            slot4 = %d,\
+            slot5 = %d,\
+            slot6 = %d,\
+            slot7 = %d,\
+            slot8 = %d,\
+            slot9 = %d,\
+            slot10 = %d,\
+            slot11 = %d,\
+            slot12 = %d,\
+            slot13 = %d,\
+            clamp = %d \
+            WHERE id = %d;\
             ",
-                PLAYER_VEHICLES[i][player_vehicle_OWNER_ID], GLOBAL_VEHICLES[i][gb_vehicle_NUMBER_PLATE], GLOBAL_VEHICLES[i][gb_vehicle_MODELID], GLOBAL_VEHICLES[i][gb_vehicle_SPAWN_X],
-                GLOBAL_VEHICLES[i][gb_vehicle_SPAWN_Y], GLOBAL_VEHICLES[i][gb_vehicle_SPAWN_Z], GLOBAL_VEHICLES[i][gb_vehicle_SPAWN_ANGLE], GLOBAL_VEHICLES[i][gb_vehicle_HEALTH],
-                GLOBAL_VEHICLES[i][gb_vehicle_DAMAGE_PANELS], GLOBAL_VEHICLES[i][gb_vehicle_DAMAGE_DOORS], GLOBAL_VEHICLES[i][gb_vehicle_DAMAGE_LIGHTS], GLOBAL_VEHICLES[i][gb_vehicle_DAMAGE_TIRES],
-                GLOBAL_VEHICLES[i][gb_vehicle_COLOR_1], GLOBAL_VEHICLES[i][gb_vehicle_COLOR_2], GLOBAL_VEHICLES[i][gb_vehicle_PAINTJOB], GLOBAL_VEHICLES[i][gb_vehicle_GAS], GLOBAL_VEHICLES[i][gb_vehicle_MAX_GAS],
-                GLOBAL_VEHICLES[i][gb_vehicle_PARAMS_DOORS], GLOBAL_VEHICLES[i][gb_vehicle_INTERIOR], GLOBAL_VEHICLES[i][gb_vehicle_WORLD], GLOBAL_VEHICLES[i][gb_vehicle_STATE],
-                GLOBAL_VEHICLES[i][gb_vehicle_COMPONENTS][0], GLOBAL_VEHICLES[i][gb_vehicle_COMPONENTS][1], GLOBAL_VEHICLES[i][gb_vehicle_COMPONENTS][2], GLOBAL_VEHICLES[i][gb_vehicle_COMPONENTS][3],
-                GLOBAL_VEHICLES[i][gb_vehicle_COMPONENTS][4], GLOBAL_VEHICLES[i][gb_vehicle_COMPONENTS][5], GLOBAL_VEHICLES[i][gb_vehicle_COMPONENTS][6], GLOBAL_VEHICLES[i][gb_vehicle_COMPONENTS][7],
-                GLOBAL_VEHICLES[i][gb_vehicle_COMPONENTS][8], GLOBAL_VEHICLES[i][gb_vehicle_COMPONENTS][9], GLOBAL_VEHICLES[i][gb_vehicle_COMPONENTS][10], GLOBAL_VEHICLES[i][gb_vehicle_COMPONENTS][11],
-                GLOBAL_VEHICLES[i][gb_vehicle_COMPONENTS][12], GLOBAL_VEHICLES[i][gb_vehicle_COMPONENTS][13], PLAYER_VEHICLES[i][player_vehicle_CLAMP],
+            PLAYER_VEHICLES[i][player_vehicle_OWNER_ID], GLOBAL_VEHICLES[i][gb_vehicle_NUMBER_PLATE], GLOBAL_VEHICLES[i][gb_vehicle_MODELID], GLOBAL_VEHICLES[i][gb_vehicle_SPAWN_X],
+            GLOBAL_VEHICLES[i][gb_vehicle_SPAWN_Y], GLOBAL_VEHICLES[i][gb_vehicle_SPAWN_Z], GLOBAL_VEHICLES[i][gb_vehicle_SPAWN_ANGLE], GLOBAL_VEHICLES[i][gb_vehicle_HEALTH],
+            GLOBAL_VEHICLES[i][gb_vehicle_DAMAGE_PANELS], GLOBAL_VEHICLES[i][gb_vehicle_DAMAGE_DOORS], GLOBAL_VEHICLES[i][gb_vehicle_DAMAGE_LIGHTS], GLOBAL_VEHICLES[i][gb_vehicle_DAMAGE_TIRES],
+            GLOBAL_VEHICLES[i][gb_vehicle_COLOR_1], GLOBAL_VEHICLES[i][gb_vehicle_COLOR_2], GLOBAL_VEHICLES[i][gb_vehicle_PAINTJOB], GLOBAL_VEHICLES[i][gb_vehicle_GAS], GLOBAL_VEHICLES[i][gb_vehicle_MAX_GAS],
+            GLOBAL_VEHICLES[i][gb_vehicle_PARAMS_DOORS], GLOBAL_VEHICLES[i][gb_vehicle_INTERIOR], GLOBAL_VEHICLES[i][gb_vehicle_WORLD], GLOBAL_VEHICLES[i][gb_vehicle_STATE],
+            GLOBAL_VEHICLES[i][gb_vehicle_COMPONENTS][0], GLOBAL_VEHICLES[i][gb_vehicle_COMPONENTS][1], GLOBAL_VEHICLES[i][gb_vehicle_COMPONENTS][2], GLOBAL_VEHICLES[i][gb_vehicle_COMPONENTS][3],
+            GLOBAL_VEHICLES[i][gb_vehicle_COMPONENTS][4], GLOBAL_VEHICLES[i][gb_vehicle_COMPONENTS][5], GLOBAL_VEHICLES[i][gb_vehicle_COMPONENTS][6], GLOBAL_VEHICLES[i][gb_vehicle_COMPONENTS][7],
+            GLOBAL_VEHICLES[i][gb_vehicle_COMPONENTS][8], GLOBAL_VEHICLES[i][gb_vehicle_COMPONENTS][9], GLOBAL_VEHICLES[i][gb_vehicle_COMPONENTS][10], GLOBAL_VEHICLES[i][gb_vehicle_COMPONENTS][11],
+            GLOBAL_VEHICLES[i][gb_vehicle_COMPONENTS][12], GLOBAL_VEHICLES[i][gb_vehicle_COMPONENTS][13], PLAYER_VEHICLES[i][player_vehicle_CLAMP],
 
-                PLAYER_VEHICLES[i][player_vehicle_ID]
+            PLAYER_VEHICLES[i][player_vehicle_ID]
         );
         mysql_tquery(srp_db, QUERY_BUFFER);
 
@@ -5551,8 +5432,6 @@ SavePlayerVehicles(playerid, destroy = false)
     }
     return 1;
 }
-
-
 
 SavePlayerToys(playerid)
 {
@@ -5565,23 +5444,23 @@ SavePlayerToys(playerid)
         (
             srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER,
             "\
-                UPDATE ptoys SET \
-                    name = '%e',\
-                    attached = %d,\
-                    modelid = %d,\
-                    bone = %d,\
-                    offset_x = %f,\
-                    offset_y = %f,\
-                    offset_z = %f,\
-                    rot_x = %f,\
-                    rot_y = %f,\
-                    rot_z = %f,\
-                    scale_x = %f,\
-                    scale_y = %f,\
-                    scale_z = %f,\
-                    color1 = %d,\
-                    color2 = %d \
-                WHERE id = %d;\
+            UPDATE ptoys SET \
+            name = '%e',\
+            attached = %d,\
+            modelid = %d,\
+            bone = %d,\
+            offset_x = %f,\
+            offset_y = %f,\
+            offset_z = %f,\
+            rot_x = %f,\
+            rot_y = %f,\
+            rot_z = %f,\
+            scale_x = %f,\
+            scale_y = %f,\
+            scale_z = %f,\
+            color1 = %d,\
+            color2 = %d \
+            WHERE id = %d;\
             ",
             PLAYER_TOYS[playerid][i][player_toy_NAME], PLAYER_TOYS[playerid][i][player_toy_ATTACHED], PLAYER_TOYS[playerid][i][player_toy_MODELID],
             PLAYER_TOYS[playerid][i][player_toy_BONE], PLAYER_TOYS[playerid][i][player_toy_OFFSET_X], PLAYER_TOYS[playerid][i][player_toy_OFFSET_Y],
@@ -5645,7 +5524,14 @@ public UnjailPlayer(playerid)
         {
             PI[playerid][ac_LOCAL_INTERIOR] = ENTER_EXIT[i][ee_ID];
             PLAYER_TEMP[playerid][pt_PROPERTY_INDEX] = -1;
-            SetPlayerPosEx(playerid, ENTER_EXIT[i][ee_INT_X], ENTER_EXIT[i][ee_INT_Y], ENTER_EXIT[i][ee_INT_Z], ENTER_EXIT[i][ee_INT_ANGLE] + 180.0, ENTER_EXIT[i][ee_INT_INTERIOR], ENTER_EXIT[i][ee_INT_WORLD], true);
+            SetPlayerPosEx(playerid,
+                ENTER_EXIT[i][ee_INT_X],
+                ENTER_EXIT[i][ee_INT_Y],
+                ENTER_EXIT[i][ee_INT_Z],
+                ENTER_EXIT[i][ee_INT_ANGLE] + 180.0,
+                ENTER_EXIT[i][ee_INT_INTERIOR],
+                ENTER_EXIT[i][ee_INT_WORLD],
+            true);
             StopAudioStreamForPlayer(playerid);
             break;
         }
@@ -5853,8 +5739,14 @@ public UpdatePlayer_GPS_Map(playerid)
             if (IsValidDynamicCP(PLAYER_TEMP[playerid][pt_TRUCK_CHECKPOINT]))
             {
                 new Float:gps_cp_pos[2];
-                Streamer_GetFloatData(STREAMER_TYPE_CP, PLAYER_TEMP[playerid][pt_TRUCK_CHECKPOINT], E_STREAMER_X, gps_cp_pos[0]);
-                Streamer_GetFloatData(STREAMER_TYPE_CP, PLAYER_TEMP[playerid][pt_TRUCK_CHECKPOINT], E_STREAMER_Y, gps_cp_pos[1]);
+                Streamer_GetFloatData(STREAMER_TYPE_CP,
+                    PLAYER_TEMP[playerid][pt_TRUCK_CHECKPOINT],
+                    E_STREAMER_X,
+                gps_cp_pos[0]);
+                Streamer_GetFloatData(STREAMER_TYPE_CP,
+                    PLAYER_TEMP[playerid][pt_TRUCK_CHECKPOINT],
+                    E_STREAMER_Y,
+                gps_cp_pos[1]);
                 SetPlayerPoint_GPS_Map(2, playerid, "LD_SPAC:white", 0xaa0000ff, 3.0, 3.0, gps_cp_pos[0], gps_cp_pos[1]);
             }
             else
@@ -5871,8 +5763,14 @@ public UpdatePlayer_GPS_Map(playerid)
             if (IsValidDynamicRaceCP(PLAYER_TEMP[playerid][pt_HARVERT_CHECKPOINT]))
             {
                 new Float:gps_cp_pos[2];
-                Streamer_GetFloatData(STREAMER_TYPE_RACE_CP, PLAYER_TEMP[playerid][pt_HARVERT_CHECKPOINT], E_STREAMER_X, gps_cp_pos[0]);
-                Streamer_GetFloatData(STREAMER_TYPE_RACE_CP, PLAYER_TEMP[playerid][pt_HARVERT_CHECKPOINT], E_STREAMER_Y, gps_cp_pos[1]);
+                Streamer_GetFloatData(STREAMER_TYPE_RACE_CP,
+                    PLAYER_TEMP[playerid][pt_HARVERT_CHECKPOINT],
+                    E_STREAMER_X,
+                gps_cp_pos[0]);
+                Streamer_GetFloatData(STREAMER_TYPE_RACE_CP,
+                    PLAYER_TEMP[playerid][pt_HARVERT_CHECKPOINT],
+                    E_STREAMER_Y,
+                gps_cp_pos[1]);
                 SetPlayerPoint_GPS_Map(2, playerid, "LD_SPAC:white", 0xaa0000ff, 3.0, 3.0, gps_cp_pos[0], gps_cp_pos[1]);
             }
             else
@@ -5889,8 +5787,14 @@ public UpdatePlayer_GPS_Map(playerid)
             if (IsValidDynamicRaceCP(PLAYER_TEMP[playerid][pt_FUMIGATOR_CHECKPOINT]))
             {
                 new Float:gps_cp_pos[2];
-                Streamer_GetFloatData(STREAMER_TYPE_RACE_CP, PLAYER_TEMP[playerid][pt_FUMIGATOR_CHECKPOINT], E_STREAMER_X, gps_cp_pos[0]);
-                Streamer_GetFloatData(STREAMER_TYPE_RACE_CP, PLAYER_TEMP[playerid][pt_FUMIGATOR_CHECKPOINT], E_STREAMER_Y, gps_cp_pos[1]);
+                Streamer_GetFloatData(STREAMER_TYPE_RACE_CP,
+                    PLAYER_TEMP[playerid][pt_FUMIGATOR_CHECKPOINT],
+                    E_STREAMER_X,
+                gps_cp_pos[0]);
+                Streamer_GetFloatData(STREAMER_TYPE_RACE_CP,
+                    PLAYER_TEMP[playerid][pt_FUMIGATOR_CHECKPOINT],
+                    E_STREAMER_Y,
+                gps_cp_pos[1]);
                 SetPlayerPoint_GPS_Map(2, playerid, "LD_SPAC:white", 0xaa0000ff, 3.0, 3.0, gps_cp_pos[0], gps_cp_pos[1]);
             }
             else
@@ -5907,8 +5811,14 @@ public UpdatePlayer_GPS_Map(playerid)
             if (IsValidDynamicCP(PLAYER_TEMP[playerid][pt_TRASH_CHECKPOINT]))
             {
                 new Float:gps_cp_pos[2];
-                Streamer_GetFloatData(STREAMER_TYPE_CP, PLAYER_TEMP[playerid][pt_TRASH_CHECKPOINT], E_STREAMER_X, gps_cp_pos[0]);
-                Streamer_GetFloatData(STREAMER_TYPE_CP, PLAYER_TEMP[playerid][pt_TRASH_CHECKPOINT], E_STREAMER_Y, gps_cp_pos[1]);
+                Streamer_GetFloatData(STREAMER_TYPE_CP,
+                    PLAYER_TEMP[playerid][pt_TRASH_CHECKPOINT],
+                    E_STREAMER_X,
+                gps_cp_pos[0]);
+                Streamer_GetFloatData(STREAMER_TYPE_CP,
+                    PLAYER_TEMP[playerid][pt_TRASH_CHECKPOINT],
+                    E_STREAMER_Y,
+                gps_cp_pos[1]);
                 SetPlayerPoint_GPS_Map(2, playerid, "LD_SPAC:white", 0xaa0000ff, 3.0, 3.0, gps_cp_pos[0], gps_cp_pos[1]);
             }
             else
@@ -5925,8 +5835,14 @@ public UpdatePlayer_GPS_Map(playerid)
             if (IsValidDynamicCP(PLAYER_TEMP[playerid][pt_LUMBERJACK_CHECKPOINT]))
             {
                 new Float:gps_cp_pos[2];
-                Streamer_GetFloatData(STREAMER_TYPE_CP, PLAYER_TEMP[playerid][pt_LUMBERJACK_CHECKPOINT], E_STREAMER_X, gps_cp_pos[0]);
-                Streamer_GetFloatData(STREAMER_TYPE_CP, PLAYER_TEMP[playerid][pt_LUMBERJACK_CHECKPOINT], E_STREAMER_Y, gps_cp_pos[1]);
+                Streamer_GetFloatData(STREAMER_TYPE_CP,
+                    PLAYER_TEMP[playerid][pt_LUMBERJACK_CHECKPOINT],
+                    E_STREAMER_X,
+                gps_cp_pos[0]);
+                Streamer_GetFloatData(STREAMER_TYPE_CP,
+                    PLAYER_TEMP[playerid][pt_LUMBERJACK_CHECKPOINT],
+                    E_STREAMER_Y,
+                gps_cp_pos[1]);
                 SetPlayerPoint_GPS_Map(2, playerid, "LD_SPAC:white", 0xaa0000ff, 3.0, 3.0, gps_cp_pos[0], gps_cp_pos[1]);
             }
             else
@@ -5943,8 +5859,14 @@ public UpdatePlayer_GPS_Map(playerid)
             if (IsValidDynamicCP(PLAYER_TEMP[playerid][pt_PIZZA_CHECKPOINT]))
             {
                 new Float:gps_cp_pos[2];
-                Streamer_GetFloatData(STREAMER_TYPE_CP, PLAYER_TEMP[playerid][pt_PIZZA_CHECKPOINT], E_STREAMER_X, gps_cp_pos[0]);
-                Streamer_GetFloatData(STREAMER_TYPE_CP, PLAYER_TEMP[playerid][pt_PIZZA_CHECKPOINT], E_STREAMER_Y, gps_cp_pos[1]);
+                Streamer_GetFloatData(STREAMER_TYPE_CP,
+                    PLAYER_TEMP[playerid][pt_PIZZA_CHECKPOINT],
+                    E_STREAMER_X,
+                gps_cp_pos[0]);
+                Streamer_GetFloatData(STREAMER_TYPE_CP,
+                    PLAYER_TEMP[playerid][pt_PIZZA_CHECKPOINT],
+                    E_STREAMER_Y,
+                gps_cp_pos[1]);
                 SetPlayerPoint_GPS_Map(2, playerid, "LD_SPAC:white", 0xaa0000ff, 3.0, 3.0, gps_cp_pos[0], gps_cp_pos[1]);
             }
             else
@@ -6025,7 +5947,7 @@ public UpdatePlayer_GPS_Map(playerid)
                                     if (PLAYER_TEMP[i][pt_INTERIOR_INDEX] == -1)
                                     {
                                         printf("[debug] Player id %d tiene interior index -1 estando en ROLEPLAY_STATE_INTERIOR");
-                                            continue;
+                                        continue;
                                     }
                                     player_pos[0] = ENTER_EXIT[ PLAYER_TEMP[i][pt_INTERIOR_INDEX] ][ee_EXT_X];
                                     player_pos[1] = ENTER_EXIT[ PLAYER_TEMP[i][pt_INTERIOR_INDEX] ][ee_EXT_Y];
@@ -6035,7 +5957,7 @@ public UpdatePlayer_GPS_Map(playerid)
                                     if (PLAYER_TEMP[i][pt_PROPERTY_INDEX] == -1)
                                     {
                                         printf("[debug] Player id %d tiene property index -1 estando en pt_PROPERTY_INDEX");
-                                            continue;
+                                        continue;
                                     }
                                     player_pos[0] = PROPERTY_INFO[ PLAYER_TEMP[i][pt_PROPERTY_INDEX] ][property_EXT_X];
                                     player_pos[1] = PROPERTY_INFO[ PLAYER_TEMP[i][pt_PROPERTY_INDEX] ][property_EXT_Y];
@@ -6267,7 +6189,6 @@ UpdateToysShop(playerid)
     new td_str[128]; format(td_str, sizeof td_str, "Modelo:_%s~n~Precio:_%s$", Toys_Shop[ PLAYER_TEMP[playerid][pt_TOYS_SHOP_TOY_SELECTED] ][shop_toy_model], number_format_thousand( Toys_Shop[ PLAYER_TEMP[playerid][pt_TOYS_SHOP_TOY_SELECTED] ][shop_toy_price] ));
     PlayerTextDrawSetString(playerid, PlayerTextdraws[playerid][ptextdraw_TOYS_SHOP][4], td_str);
 
-
     if (PI[playerid][ac_CASH] < Toys_Shop[ PLAYER_TEMP[playerid][pt_TOYS_SHOP_TOY_SELECTED] ][shop_toy_price]) PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_TOYS_SHOP][5], -900267777);
     else PlayerTextDrawBoxColor(playerid, PlayerTextdraws[playerid][ptextdraw_TOYS_SHOP][5], 1855979775);
     PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_TOYS_SHOP][5]);
@@ -6281,7 +6202,11 @@ GetPlayerFastFoodIndex(playerid)
 {
     for (new i = 0; i != sizeof Fast_Food_Positions; i++)
     {
-        if (IsPlayerInRangeOfPoint(playerid, 1.0, Fast_Food_Positions[i][fast_food_X], Fast_Food_Positions[i][fast_food_Y], Fast_Food_Positions[i][fast_food_Z]))
+        if (IsPlayerInRangeOfPoint(playerid,
+            1.0,
+            Fast_Food_Positions[i][fast_food_X],
+            Fast_Food_Positions[i][fast_food_Y],
+        Fast_Food_Positions[i][fast_food_Z]))
         {
             return i;
         }
@@ -6359,7 +6284,10 @@ SetPlayerPoint_GPS_Map(index, playerid, const icon[], color, Float:icon_size_X, 
 
     PlayerTextdraws[playerid][ptextdraw_PLAYER_GPS_MAP][index] = CreatePlayerTextDraw(playerid, td_X, td_Y, icon);
     PlayerTextDrawLetterSize(playerid, PlayerTextdraws[playerid][ptextdraw_PLAYER_GPS_MAP][index], 0.160333, 1.280592);
-    PlayerTextDrawTextSize(playerid, PlayerTextdraws[playerid][ptextdraw_PLAYER_GPS_MAP][index], icon_size_X, icon_size_Y);
+    PlayerTextDrawTextSize(playerid,
+        PlayerTextdraws[playerid][ptextdraw_PLAYER_GPS_MAP][index],
+        icon_size_X,
+    icon_size_Y);
     PlayerTextDrawAlignment(playerid, PlayerTextdraws[playerid][ptextdraw_PLAYER_GPS_MAP][index], 1);
     PlayerTextDrawColor(playerid, PlayerTextdraws[playerid][ptextdraw_PLAYER_GPS_MAP][index], color);
     PlayerTextDrawSetShadow(playerid, PlayerTextdraws[playerid][ptextdraw_PLAYER_GPS_MAP][index], 0);
@@ -6475,9 +6403,12 @@ SetRolePlayNames(playerid)
 
 CreatePlayerTextDraws(playerid)
 {
-    for (new i; i < sizeof(PlayerTextdraws[]); i++) PlayerTextdraws[playerid][Player_Textdraws_Enum:i] = INVALID_TEXT_DRAW;
+    for (new i; i < sizeof(PlayerTextdraws[]); i++)
+    {
+        PlayerTextdraws[playerid][Player_Textdraws_Enum:i] = INVALID_TEXT_DRAW;
+    }
 
-     MensajeTD[playerid] = CreatePlayerTextDraw(playerid, 320.000000, 365.000000, "_");
+    MensajeTD[playerid] = CreatePlayerTextDraw(playerid, 320.000000, 365.000000, "_");
     PlayerTextDrawLetterSize(playerid, MensajeTD[playerid], 0.298333, 1.976000);
     PlayerTextDrawAlignment(playerid, MensajeTD[playerid], 2);
     PlayerTextDrawColor(playerid,MensajeTD[playerid], -1);
@@ -6529,7 +6460,6 @@ CreatePlayerTextDraws(playerid)
     PlayerTextDrawFont(playerid, PlayerTextdraws[playerid][ptextdraw_HOSPITAL][2], 1);
     PlayerTextDrawSetProportional(playerid, PlayerTextdraws[playerid][ptextdraw_HOSPITAL][2], 1);
     PlayerTextDrawSetShadow(playerid, PlayerTextdraws[playerid][ptextdraw_HOSPITAL][2], 0);
-
 
     PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][0] = CreatePlayerTextDraw(playerid, 320.000000, 350.000000, "I");
     PlayerTextDrawLetterSize(playerid, PlayerTextdraws[playerid][ptextdraw_CLOTHING_SHOP][0], 27.410259, 5.897183);
@@ -6745,7 +6675,6 @@ CreatePlayerTextDraws(playerid)
     PlayerTextDrawSetProportional(playerid, PlayerTextdraws[playerid][ptextdraw_REGISTER_SKIN][9], 1);
     PlayerTextDrawSetShadow(playerid, PlayerTextdraws[playerid][ptextdraw_REGISTER_SKIN][9], 0);
 
-
     PlayerTextdraws[playerid][ptextdraw_TOYS_SHOP][0] = CreatePlayerTextDraw(playerid, 320.000000, 159.000000, "box");
     PlayerTextDrawLetterSize(playerid, PlayerTextdraws[playerid][ptextdraw_TOYS_SHOP][0], 0.000000, 15.033352);
     PlayerTextDrawTextSize(playerid, PlayerTextdraws[playerid][ptextdraw_TOYS_SHOP][0], 0.000000, 240.000000);
@@ -6786,7 +6715,12 @@ CreatePlayerTextDraws(playerid)
     PlayerTextDrawSetProportional(playerid, PlayerTextdraws[playerid][ptextdraw_TOYS_SHOP][2], 0);
     PlayerTextDrawSetShadow(playerid, PlayerTextdraws[playerid][ptextdraw_TOYS_SHOP][2], 0);
     PlayerTextDrawSetPreviewModel(playerid, PlayerTextdraws[playerid][ptextdraw_TOYS_SHOP][2], 18864);
-    PlayerTextDrawSetPreviewRot(playerid, PlayerTextdraws[playerid][ptextdraw_TOYS_SHOP][2], 344.000000, 0.000000, 109.000000, 1.000000);
+    PlayerTextDrawSetPreviewRot(playerid,
+        PlayerTextdraws[playerid][ptextdraw_TOYS_SHOP][2],
+        344.000000,
+        0.000000,
+        109.000000,
+    1.000000);
 
     PlayerTextdraws[playerid][ptextdraw_TOYS_SHOP][3] = CreatePlayerTextDraw(playerid, 217.000000, 186.000000, "");
     PlayerTextDrawLetterSize(playerid, PlayerTextdraws[playerid][ptextdraw_TOYS_SHOP][3], 0.000000, 0.000000);
@@ -6800,7 +6734,12 @@ CreatePlayerTextDraws(playerid)
     PlayerTextDrawSetProportional(playerid, PlayerTextdraws[playerid][ptextdraw_TOYS_SHOP][3], 0);
     PlayerTextDrawSetShadow(playerid, PlayerTextdraws[playerid][ptextdraw_TOYS_SHOP][3], 0);
     PlayerTextDrawSetPreviewModel(playerid, PlayerTextdraws[playerid][ptextdraw_TOYS_SHOP][3], Toys_Shop[0][shop_toy_model]);
-    PlayerTextDrawSetPreviewRot(playerid, PlayerTextdraws[playerid][ptextdraw_TOYS_SHOP][3], 344.000000, 0.000000, 109.000000, 1.000000);
+    PlayerTextDrawSetPreviewRot(playerid,
+        PlayerTextdraws[playerid][ptextdraw_TOYS_SHOP][3],
+        344.000000,
+        0.000000,
+        109.000000,
+    1.000000);
 
     PlayerTextdraws[playerid][ptextdraw_TOYS_SHOP][4] = CreatePlayerTextDraw(playerid, 311.000000, 207.000000, "Modelo:__~n~Precio:__$");
     PlayerTextDrawLetterSize(playerid, PlayerTextdraws[playerid][ptextdraw_TOYS_SHOP][4], 0.219000, 1.081481);
@@ -6883,10 +6822,15 @@ CreatePlayerTextDraws(playerid)
     PlayerTextDrawSetProportional(playerid, PlayerTextdraws[playerid][ptextdraw_TOYS_SHOP][9], 1);
     PlayerTextDrawSetShadow(playerid, PlayerTextdraws[playerid][ptextdraw_TOYS_SHOP][9], 0);
 
-
     PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][0] = CreatePlayerTextDraw(playerid, 553.000000, 176.000000, "box");
-    PlayerTextDrawLetterSize(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][0], 0.000000, 8.766664);
-    PlayerTextDrawTextSize(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][0], 0.000000, 108.000000);
+    PlayerTextDrawLetterSize(playerid,
+        PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][0],
+        0.000000,
+    8.766664);
+    PlayerTextDrawTextSize(playerid,
+        PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][0],
+        0.000000,
+    108.000000);
     PlayerTextDrawAlignment(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][0], 2);
     PlayerTextDrawColor(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][0], -1);
     PlayerTextDrawUseBox(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][0], 1);
@@ -6899,7 +6843,10 @@ CreatePlayerTextDraws(playerid)
     PlayerTextDrawSetShadow(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][0], 0);
 
     PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][1] = CreatePlayerTextDraw(playerid, 505.000000, 181.000000, "Interior:_0/0");
-    PlayerTextDrawLetterSize(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][1], 0.300000, 1.438221);
+    PlayerTextDrawLetterSize(playerid,
+        PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][1],
+        0.300000,
+    1.438221);
     PlayerTextDrawAlignment(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][1], 1);
     PlayerTextDrawColor(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][1], -1);
     PlayerTextDrawSetShadow(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][1], 0);
@@ -6910,8 +6857,14 @@ CreatePlayerTextDraws(playerid)
     PlayerTextDrawSetShadow(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][1], 0);
 
     PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][2] = CreatePlayerTextDraw(playerid, 505.000000, 206.000000, "Anterior");
-    PlayerTextDrawLetterSize(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][2], 0.300000, 1.438221);
-    PlayerTextDrawTextSize(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][2], 546.000000, 15.000000);
+    PlayerTextDrawLetterSize(playerid,
+        PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][2],
+        0.300000,
+    1.438221);
+    PlayerTextDrawTextSize(playerid,
+        PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][2],
+        546.000000,
+    15.000000);
     PlayerTextDrawAlignment(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][2], 1);
     PlayerTextDrawColor(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][2], -1);
     PlayerTextDrawUseBox(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][2], 1);
@@ -6925,8 +6878,14 @@ CreatePlayerTextDraws(playerid)
     PlayerTextDrawSetSelectable(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][2], true);
 
     PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][3] = CreatePlayerTextDraw(playerid, 555.000000, 206.000000, "Siguiente");
-    PlayerTextDrawLetterSize(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][3], 0.300000, 1.438221);
-    PlayerTextDrawTextSize(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][3], 600.000000, 15.000000);
+    PlayerTextDrawLetterSize(playerid,
+        PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][3],
+        0.300000,
+    1.438221);
+    PlayerTextDrawTextSize(playerid,
+        PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][3],
+        600.000000,
+    15.000000);
     PlayerTextDrawAlignment(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][3], 1);
     PlayerTextDrawColor(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][3], -1);
     PlayerTextDrawUseBox(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][3], 1);
@@ -6940,8 +6899,14 @@ CreatePlayerTextDraws(playerid)
     PlayerTextDrawSetSelectable(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][3], true);
 
     PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][4] = CreatePlayerTextDraw(playerid, 505.000000, 230.000000, "Crear");
-    PlayerTextDrawLetterSize(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][4], 0.300000, 1.438221);
-    PlayerTextDrawTextSize(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][4], 533.000000, 15.000000);
+    PlayerTextDrawLetterSize(playerid,
+        PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][4],
+        0.300000,
+    1.438221);
+    PlayerTextDrawTextSize(playerid,
+        PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][4],
+        533.000000,
+    15.000000);
     PlayerTextDrawAlignment(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][4], 1);
     PlayerTextDrawColor(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][4], -1);
     PlayerTextDrawUseBox(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][4], 1);
@@ -6955,8 +6920,14 @@ CreatePlayerTextDraws(playerid)
     PlayerTextDrawSetSelectable(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][4], true);
 
     PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][5] = CreatePlayerTextDraw(playerid, 542.000000, 230.000000, "Cancelar");
-    PlayerTextDrawLetterSize(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][5], 0.300000, 1.438221);
-    PlayerTextDrawTextSize(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][5], 583.000000, 15.000000);
+    PlayerTextDrawLetterSize(playerid,
+        PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][5],
+        0.300000,
+    1.438221);
+    PlayerTextDrawTextSize(playerid,
+        PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][5],
+        583.000000,
+    15.000000);
     PlayerTextDrawAlignment(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][5], 1);
     PlayerTextDrawColor(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][5], -1);
     PlayerTextDrawUseBox(playerid, PlayerTextdraws[playerid][ptextdraw_PROPERTY_CONSTRUCTOR][5], 1);
@@ -7021,7 +6992,6 @@ CreatePlayerTextDraws(playerid)
     PlayerTextDrawFont(playerid, PlayerTextdraws[playerid][ptextdraw_TRUCK_LOAD][3], 1);
     PlayerTextDrawSetProportional(playerid, PlayerTextdraws[playerid][ptextdraw_TRUCK_LOAD][3], 1);
     PlayerTextDrawSetShadow(playerid, PlayerTextdraws[playerid][ptextdraw_TRUCK_LOAD][3], 0);
-
 
     PlayerTextdraws[playerid][ptextdraw_RECYCLE_TRASH][0] = CreatePlayerTextDraw(playerid, 320.000000, 315.000000, "");
     PlayerTextDrawLetterSize(playerid, PlayerTextdraws[playerid][ptextdraw_RECYCLE_TRASH][0], 0.298999, 1.483852);
@@ -7203,7 +7173,6 @@ CreatePlayerTextDraws(playerid)
     PlayerTextDrawSetProportional(playerid, PlayerTextdraws[playerid][ptextdraw_TUNING_SHOP], 1);
     PlayerTextDrawSetShadow(playerid, PlayerTextdraws[playerid][ptextdraw_TUNING_SHOP], 0);
 
-
     PlayerTextdraws[playerid][ptextdraw_MESSAGE] = CreatePlayerTextDraw(playerid, 320.000000, 365.000000, "_");
     PlayerTextDrawLetterSize(playerid, PlayerTextdraws[playerid][ptextdraw_MESSAGE], 0.298333, 1.376000);
     PlayerTextDrawAlignment(playerid, PlayerTextdraws[playerid][ptextdraw_MESSAGE], 2);
@@ -7214,7 +7183,6 @@ CreatePlayerTextDraws(playerid)
     PlayerTextDrawFont(playerid, PlayerTextdraws[playerid][ptextdraw_MESSAGE], 1);
     PlayerTextDrawSetProportional(playerid, PlayerTextdraws[playerid][ptextdraw_MESSAGE], 1);
     PlayerTextDrawSetShadow(playerid, PlayerTextdraws[playerid][ptextdraw_MESSAGE], 0);
-
 
     PlayerTextdraws[playerid][ptextdraw_HUD][0] = CreatePlayerTextDraw(playerid, 0.000000, 446.000000, "barraReputacion");
     PlayerTextDrawLetterSize(playerid, PlayerTextdraws[playerid][ptextdraw_HUD][0], 0.000000, 0.500000);
@@ -7335,12 +7303,12 @@ SetPlayerHud(playerid)
     if (PI[playerid][ac_CONFIG_HUD])
     {
         for (new i = 0; i < HUD_TEXTDRAWS_SIZE; i++)
-{
+        {
             TextDrawShowForPlayer(playerid, Textdraws[textdraw_HUD][i]);
         }
 
         for (new i = 0; i < HUD_PTEXTDRAWS_SIZE; i++)
-{
+        {
             PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_HUD][i]);
         }
     }
@@ -7378,6 +7346,7 @@ TogglePlayerSpectatingEx(playerid, bool:spectate)
     PLAYER_TEMP[playerid][pt_PLAYER_SPECTATE] = spectate;
     return TogglePlayerSpectating(playerid, spectate);
 }
+
 DestroyPlayerTextDraws(playerid)
 {
     for (new i; i < sizeof(PlayerTextdraws[]); i++)
@@ -7388,6 +7357,7 @@ DestroyPlayerTextDraws(playerid)
     }
     return 1;
 }
+
 ////////////////////impls
 GetPlayerVehicleAvaibleBootSlot(vehicleid)
 {
@@ -7400,6 +7370,7 @@ GetPlayerVehicleAvaibleBootSlot(vehicleid)
     }
     return -1;
 }
+
 Set_HARVEST_Checkpoint(playerid)
 {
     if (IsValidDynamicRaceCP(PLAYER_TEMP[playerid][pt_HARVERT_CHECKPOINT]))
@@ -7445,10 +7416,14 @@ Set_HARVEST_Checkpoint(playerid)
 
     new info[1];
     info[0] = CHECKPOINT_TYPE_HARVEST;
-    Streamer_SetArrayData(STREAMER_TYPE_RACE_CP, PLAYER_TEMP[playerid][pt_HARVERT_CHECKPOINT], E_STREAMER_EXTRA_ID, info);
+    Streamer_SetArrayData(STREAMER_TYPE_RACE_CP,
+        PLAYER_TEMP[playerid][pt_HARVERT_CHECKPOINT],
+        E_STREAMER_EXTRA_ID,
+    info);
 
     return 1;
 }
+
 AddVehicleComponents(vehicleid)
 {
     for (new i = 0; i != MAX_VEHICLE_COMPONENTS; i++)
@@ -7460,7 +7435,6 @@ AddVehicleComponents(vehicleid)
     }
     return 1;
 }
-
 
 stock getRandomLetter()
 {
@@ -7485,6 +7459,7 @@ UpdatePlayerPropertyContructor(playerid)
     SelectTextDrawEx(playerid, 0xe8d08fFF);
     return 1;
 }
+
 SendPlayerAction(playerid, action[])
 {
     new str_text[190];
@@ -7523,76 +7498,76 @@ RegisterNewPlayer(playerid)
     (
         srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER,
         "\
-            INSERT INTO player\
-            (\
-                name,\
-                ip,\
-                email,\
-                salt,\
-                pass,\
-                reg_date,\
-                last_connection_timestamp,\
-                level,\
-                rep,\
-                connected,\
-                playerid,\
-                time_for_rep,\
-                skin,\
-                cash,\
-                pos_x,\
-                pos_y,\
-                pos_z,\
-                angle,\
-                state,\
-                fight_style,\
-                health,\
-                hungry,\
-                thirst,\
-                config_sounds,\
-                config_audio,\
-                config_time,\
-                config_hud,\
-                config_admin,\
-                config_secure_login,\
-                phone_visible_number,\
-                doubt_channel\
-            ) \
-            VALUES\
-            (\
-                '%e', '%e', '%e', '%e', '%e', '%e', %d, %d, %d, %d, %d, %d, %d, %d, %d, %f, %f, %f, %f, %d, %f, %f, %f, %d, %d, %d, %d, %d, %d, %d, %d\
-            );\
+        INSERT INTO player\
+        (\
+        name,\
+        ip,\
+        email,\
+        salt,\
+        pass,\
+        reg_date,\
+        last_connection_timestamp,\
+        level,\
+        rep,\
+        connected,\
+        playerid,\
+        time_for_rep,\
+        skin,\
+        cash,\
+        pos_x,\
+        pos_y,\
+        pos_z,\
+        angle,\
+        state,\
+        fight_style,\
+        health,\
+        hungry,\
+        thirst,\
+        config_sounds,\
+        config_audio,\
+        config_time,\
+        config_hud,\
+        config_admin,\
+        config_secure_login,\
+        phone_visible_number,\
+        doubt_channel\
+        ) \
+        VALUES\
+        (\
+        '%e', '%e', '%e', '%e', '%e', '%e', %d, %d, %d, %d, %d, %d, %d, %d, %d, %f, %f, %f, %f, %d, %f, %f, %f, %d, %d, %d, %d, %d, %d, %d, %d\
+        );\
         ",
-            ACCOUNT_INFO[playerid][ac_NAME],
-            ACCOUNT_INFO[playerid][ac_IP],
-            ACCOUNT_INFO[playerid][ac_EMAIL],
-            ACCOUNT_INFO[playerid][ac_SALT],
-            ACCOUNT_INFO[playerid][ac_PASS],
-            ACCOUNT_INFO[playerid][ac_REG_DATE],
-            ACCOUNT_INFO[playerid][ac_LAST_CONNECTION_TIMESTAMP],
-            ACCOUNT_INFO[playerid][ac_STATE],
-            ACCOUNT_INFO[playerid][ac_LEVEL],
-            ACCOUNT_INFO[playerid][ac_REP],
-            PI[playerid][ac_CONNECTED],
-            PI[playerid][ac_PLAYERID],
-            ACCOUNT_INFO[playerid][ac_TIME_FOR_REP],
-            PI[playerid][ac_SKIN],
-            PI[playerid][ac_CASH],
-            PI[playerid][ac_POS_X],
-            PI[playerid][ac_POS_Y],
-            PI[playerid][ac_POS_Z],
-            PI[playerid][ac_ANGLE],
-            PI[playerid][ac_FIGHT_STYLE],
-            PI[playerid][ac_HEALTH],
-            PI[playerid][ac_HUNGRY],
-            PI[playerid][ac_THIRST],
-            PI[playerid][ac_CONFIG_SOUNDS],
-            PI[playerid][ac_CONFIG_AUDIO],
-            PI[playerid][ac_CONFIG_TIME],
-            PI[playerid][ac_CONFIG_HUD],
-            PI[playerid][ac_CONFIG_ADMIN],
-            PI[playerid][ac_CONFIG_SECURE_LOGIN],
-            PI[playerid][ac_PHONE_VISIBLE_NUMBER],
-            ACCOUNT_INFO[playerid][ac_DOUBT_CHANNEL]
+        ACCOUNT_INFO[playerid][ac_NAME],
+        ACCOUNT_INFO[playerid][ac_IP],
+        ACCOUNT_INFO[playerid][ac_EMAIL],
+        ACCOUNT_INFO[playerid][ac_SALT],
+        ACCOUNT_INFO[playerid][ac_PASS],
+        ACCOUNT_INFO[playerid][ac_REG_DATE],
+        ACCOUNT_INFO[playerid][ac_LAST_CONNECTION_TIMESTAMP],
+        ACCOUNT_INFO[playerid][ac_STATE],
+        ACCOUNT_INFO[playerid][ac_LEVEL],
+        ACCOUNT_INFO[playerid][ac_REP],
+        PI[playerid][ac_CONNECTED],
+        PI[playerid][ac_PLAYERID],
+        ACCOUNT_INFO[playerid][ac_TIME_FOR_REP],
+        PI[playerid][ac_SKIN],
+        PI[playerid][ac_CASH],
+        PI[playerid][ac_POS_X],
+        PI[playerid][ac_POS_Y],
+        PI[playerid][ac_POS_Z],
+        PI[playerid][ac_ANGLE],
+        PI[playerid][ac_FIGHT_STYLE],
+        PI[playerid][ac_HEALTH],
+        PI[playerid][ac_HUNGRY],
+        PI[playerid][ac_THIRST],
+        PI[playerid][ac_CONFIG_SOUNDS],
+        PI[playerid][ac_CONFIG_AUDIO],
+        PI[playerid][ac_CONFIG_TIME],
+        PI[playerid][ac_CONFIG_HUD],
+        PI[playerid][ac_CONFIG_ADMIN],
+        PI[playerid][ac_CONFIG_SECURE_LOGIN],
+        PI[playerid][ac_PHONE_VISIBLE_NUMBER],
+        ACCOUNT_INFO[playerid][ac_DOUBT_CHANNEL]
     );
     printf("%s", QUERY_BUFFER);
     MySQL_TQueryInline(srp_db, using inline OnPlayerInserted, QUERY_BUFFER );
@@ -7610,8 +7585,6 @@ RegisterNewPlayer_GPS_Site(playerid, slot)
     return 1;
 }
 
-
-
 ResetPlayerVariables(playerid)
 {
     new tmp_PI[enum_PI]; PI[playerid] = tmp_PI;
@@ -7623,7 +7596,6 @@ ResetPlayerVariables(playerid)
 
     new temp_PLAYER_POCKET[Player_Pocket_Enum];
     for (new i = 0; i != MAX_PLAYER_POCKET_OBJECTS; i++) PLAYER_POCKET[playerid][i] = temp_PLAYER_POCKET;
-
 
     new temp_PLAYER_PHONE_BOOK[Phone_Book_Enum];
     for (new i = 0; i != MAX_PHONE_CONTACTS; i++) PLAYER_PHONE_BOOK[playerid][i] = temp_PLAYER_PHONE_BOOK;
@@ -7647,8 +7619,6 @@ ResetPlayerVariables(playerid)
     return 1;
 }
 
-
-
 GetEnterExitIndexById(id)
 {
     for (new i = 0; i != sizeof ENTER_EXIT; i++)
@@ -7658,10 +7628,6 @@ GetEnterExitIndexById(id)
     }
     return -1;
 }
-
-
-
-
 
 CMD:cachear(playerid, params[])
 {
@@ -7717,13 +7683,13 @@ CMD:gpos(playerid, params[])
 {
     new Float:pos[3], Float:angle;
     if (IsPlayerInAnyVehicle(playerid))
-{
+    {
         new vehicleId = GetPlayerVehicleID(playerid);
         GetVehiclePos(vehicleId, pos[0], pos[1], pos[2]);
         GetVehicleZAngle(vehicleId, angle);
     }
     else
-{
+    {
         GetPlayerPos(playerid, pos[0], pos[1], pos[2]);
         GetPlayerFacingAngle(playerid, angle);
     }
@@ -7742,18 +7708,6 @@ CMD:cpos(playerid, params[])
     printf("{%f, %f, %f, %f, %f, %f}", pos[0], pos[1], pos[2], at[0], at[1], at[2]);
     return 1;
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 FormatDialogStrings()
 {
@@ -7813,18 +7767,18 @@ FormatDialogStrings()
 
     format(DIALOG_CREDIT_String, sizeof DIALOG_CREDIT_String,
         "\
-            Servidor: "SERVER_NAME"\n\
-            Web/foro: "SERVER_WEBSITE"\n\
-            Versión: "SERVER_VERSION"\n\
-            Fecha versión: "VERSION_DATE"\n\
-            \n\
-            "SERVER_NAME" es un servidor Roleplay nuevo por lo que actualmente\n\
-            se encuentra desarrollo, puedes dejar tus sugerencias en el foro.\n\
-            Actualmente al ser una versión inicial puede contener fallos.\n\
-            \n\
-            \n\
-            Programación:\n\
-            adri1\n\
+        Servidor: "SERVER_NAME"\n\
+        Web/foro: "SERVER_WEBSITE"\n\
+        Versión: "SERVER_VERSION"\n\
+        Fecha versión: "VERSION_DATE"\n\
+        \n\
+        "SERVER_NAME" es un servidor Roleplay nuevo por lo que actualmente\n\
+        se encuentra desarrollo, puedes dejar tus sugerencias en el foro.\n\
+        Actualmente al ser una versión inicial puede contener fallos.\n\
+        \n\
+        \n\
+        Programación:\n\
+        adri1\n\
         "
     );
 
@@ -7870,7 +7824,6 @@ FormatDialogStrings()
     return 1;
 }
 
-
 SanAndreas()
 {
     CreateTextDraws();
@@ -7896,8 +7849,6 @@ SanAndreas()
     CreateDynamic3DTextLabel("{"#PRIMARY_COLOR"}Procesadora\n{FFFFFF}Presiona ALT para soltar los minerales.", 0xFFFFFFAA, 378.3867,-37.9046,790.3587-2.0, 15);
     CreateDynamic3DTextLabel("{"#PRIMARY_COLOR"}Procesadora\n{FFFFFF}Presiona ALT para soltar los minerales.", 0xFFFFFFAA, 268.0978,-37.8627,790.3587-2.0, 15);
     CreateDynamic3DTextLabel("{"#PRIMARY_COLOR"}Procesadora\n{FFFFFF}Presiona ALT para soltar los minerales.", 0xFFFFFFAA, 234.2289,-37.7960,790.3587-2.0, 15);
-
-
 
     //auto
     CreateDynamic3DTextLabel("Usa {"#PRIMARY_COLOR"}/examen {FFFFFF}para realizar el examen por 500$.", 0xFFFFFFFF, 1063.718994, -343.093566, 2797.699951, 5.0, .testlos = true, .worldid = -1, .interiorid = -1);
@@ -7941,7 +7892,14 @@ SanAndreas()
     {
         new label_str[256];
         format(label_str, sizeof label_str, "{FF7373}%s\n{FFFFFF}Presiona {FF7373}[ H ] {FFFFFF}para ver las opciones disponibles", Clothing_Shop_Positions[i][clothing_shop_NAME]);
-        CreateDynamic3DTextLabel(label_str, 0xFFFFFFFF, Clothing_Shop_Positions[i][clothing_shop_X], Clothing_Shop_Positions[i][clothing_shop_Y], Clothing_Shop_Positions[i][clothing_shop_Z] + 0.25, 10.0, .testlos = true, .interiorid = Clothing_Shop_Positions[i][clothing_shop_INTERIOR]);
+        CreateDynamic3DTextLabel(label_str,
+            0xFFFFFFFF,
+            Clothing_Shop_Positions[i][clothing_shop_X],
+            Clothing_Shop_Positions[i][clothing_shop_Y],
+            Clothing_Shop_Positions[i][clothing_shop_Z] + 0.25,
+            10.0,
+            .testlos = true,
+        .interiorid = Clothing_Shop_Positions[i][clothing_shop_INTERIOR]);
     }
 
     // 3D Texts Pedir comida
@@ -7949,7 +7907,14 @@ SanAndreas()
     {
         new label_str[128];
         format(label_str, sizeof label_str, "{FF7373}%s\n{FFFFFF}Presiona {FF7373}[ H ] {FFFFFF}para alimentarte", Fast_Food_Positions[i][fast_food_NAME]);
-        CreateDynamic3DTextLabel(label_str, 0xFFFFFFFF, Fast_Food_Positions[i][fast_food_X], Fast_Food_Positions[i][fast_food_Y], Fast_Food_Positions[i][fast_food_Z] + 0.25, 10.0, .testlos = true, .interiorid = Fast_Food_Positions[i][fast_food_INTERIOR]);
+        CreateDynamic3DTextLabel(label_str,
+            0xFFFFFFFF,
+            Fast_Food_Positions[i][fast_food_X],
+            Fast_Food_Positions[i][fast_food_Y],
+            Fast_Food_Positions[i][fast_food_Z] + 0.25,
+            10.0,
+            .testlos = true,
+        .interiorid = Fast_Food_Positions[i][fast_food_INTERIOR]);
     }
 
     // 3D Texts Bank
@@ -7959,7 +7924,15 @@ SanAndreas()
     //Cajeros
     for (new i = 0; i < sizeof ATM_BANK; i++)
     {
-        CreateDynamicObject(ATM_BANK[i][atm_modelid], ATM_BANK[i][atm_X], ATM_BANK[i][atm_Y], ATM_BANK[i][atm_Z], ATM_BANK[i][atm_RX], ATM_BANK[i][atm_RY], ATM_BANK[i][atm_RZ], 0, 0);
+        CreateDynamicObject(ATM_BANK[i][atm_modelid],
+            ATM_BANK[i][atm_X],
+            ATM_BANK[i][atm_Y],
+            ATM_BANK[i][atm_Z],
+            ATM_BANK[i][atm_RX],
+            ATM_BANK[i][atm_RY],
+            ATM_BANK[i][atm_RZ],
+            0,
+        0);
 
         ATM_BANK[i][atm_X] += (-0.5 * floatsin(-(ATM_BANK[i][atm_RZ] - 90.0), degrees));
         ATM_BANK[i][atm_Y] += (-0.5 * floatcos(-(ATM_BANK[i][atm_RZ] - 90.0), degrees));
@@ -7992,7 +7965,7 @@ SanAndreas()
         if (SELL_INFO_VEHICLES[i][sell_info_COLOR_2] == -1) SELL_INFO_VEHICLES[i][sell_info_COLOR_2] = valid_work_vehicle_colors[random(sizeof(valid_work_vehicle_colors))];
 
         new vehicle_id = INVALID_VEHICLE_ID;
-        vehicle_id = CreateVehicle(SELL_INFO_VEHICLES[i][sel_info_vehicle_MODELID], SELL_INFO_VEHICLES[i][sell_info_SPAWN_X], SELL_INFO_VEHICLES[i][sell_info_SPAWN_Y], SELL_INFO_VEHICLES[i][sell_info_SPAWN_Z], SELL_INFO_VEHICLES[i][sell_info_SPAWN_ANGLE], SELL_INFO_VEHICLES[i][sell_info_COLOR_1], SELL_INFO_VEHICLES[i][sell_info_COLOR_2], -1, false);
+        CreateVehicle(SELL_INFO_VEHICLES[i][sel_info_vehicle_MODELID], SELL_INFO_VEHICLES[i][sell_info_SPAWN_X], SELL_INFO_VEHICLES[i][sell_info_SPAWN_Y], SELL_INFO_VEHICLES[i][sell_info_SPAWN_Z], SELL_INFO_VEHICLES[i][sell_info_SPAWN_ANGLE], SELL_INFO_VEHICLES[i][sell_info_COLOR_1], SELL_INFO_VEHICLES[i][sell_info_COLOR_2], -1, false);
 
         GLOBAL_VEHICLES[vehicle_id][gb_vehicle_VALID] = true;
         GLOBAL_VEHICLES[vehicle_id][gb_vehicle_TYPE] = VEHICLE_TYPE_SELL;
@@ -8031,7 +8004,6 @@ SanAndreas()
 
         SetVehicleToRespawnEx(vehicle_id);
 
-
         new label_str[256];
 
         if (SELL_VEHICLES[vehicle_id][sell_vehicle_VIP_LEVEL])
@@ -8041,14 +8013,14 @@ SanAndreas()
                 format
                 (
                     label_str,
-                        sizeof label_str,
-                        "\
-                            {"#PRIMARY_COLOR"}Membresía VIP requerida\n\
-                            \n\
-                            {"#PRIMARY_COLOR"}%s\n\n\
-                            {FFFFFF}Coste: {"#PRIMARY_COLOR"}%d "SERVER_COIN"\n\
-                            {FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\
-                        ", VEHICLE_INFO[GLOBAL_VEHICLES[vehicle_id][gb_vehicle_MODELID] - 400][vehicle_info_NAME], SELL_VEHICLES[vehicle_id][sell_vehicle_EXTRA], SELL_VEHICLES[vehicle_id][sell_vehicle_LEVEL]
+                    sizeof label_str,
+                    "\
+                    {"#PRIMARY_COLOR"}Membresía VIP requerida\n\
+                    \n\
+                    {"#PRIMARY_COLOR"}%s\n\n\
+                    {FFFFFF}Coste: {"#PRIMARY_COLOR"}%d "SERVER_COIN"\n\
+                    {FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\
+                    ", VEHICLE_INFO[GLOBAL_VEHICLES[vehicle_id][gb_vehicle_MODELID] - 400][vehicle_info_NAME], SELL_VEHICLES[vehicle_id][sell_vehicle_EXTRA], SELL_VEHICLES[vehicle_id][sell_vehicle_LEVEL]
                 );
             }
             else
@@ -8056,14 +8028,14 @@ SanAndreas()
                 format
                 (
                     label_str,
-                        sizeof label_str,
-                        "\
-                            {"#PRIMARY_COLOR"}Membresía VIP requerida\n\
-                            \n\
-                            {"#PRIMARY_COLOR"}%s\n\n\
-                            {FFFFFF}Precio: {"#PRIMARY_COLOR"}%s$\n\
-                            {FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\
-                        ", VEHICLE_INFO[GLOBAL_VEHICLES[vehicle_id][gb_vehicle_MODELID] - 400][vehicle_info_NAME], number_format_thousand(SELL_VEHICLES[vehicle_id][sell_vehicle_PRICE]), SELL_VEHICLES[vehicle_id][sell_vehicle_LEVEL]
+                    sizeof label_str,
+                    "\
+                    {"#PRIMARY_COLOR"}Membresía VIP requerida\n\
+                    \n\
+                    {"#PRIMARY_COLOR"}%s\n\n\
+                    {FFFFFF}Precio: {"#PRIMARY_COLOR"}%s$\n\
+                    {FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\
+                    ", VEHICLE_INFO[GLOBAL_VEHICLES[vehicle_id][gb_vehicle_MODELID] - 400][vehicle_info_NAME], number_format_thousand(SELL_VEHICLES[vehicle_id][sell_vehicle_PRICE]), SELL_VEHICLES[vehicle_id][sell_vehicle_LEVEL]
                 );
             }
         }
@@ -8074,12 +8046,12 @@ SanAndreas()
                 format
                 (
                     label_str,
-                        sizeof label_str,
-                        "\
-                            {"#PRIMARY_COLOR"}%s\n\n\
-                            {FFFFFF}Coste: {"#PRIMARY_COLOR"}%d "SERVER_COIN"\n\
-                            {FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\
-                        ", VEHICLE_INFO[GLOBAL_VEHICLES[vehicle_id][gb_vehicle_MODELID] - 400][vehicle_info_NAME], SELL_VEHICLES[vehicle_id][sell_vehicle_EXTRA], SELL_VEHICLES[vehicle_id][sell_vehicle_LEVEL]
+                    sizeof label_str,
+                    "\
+                    {"#PRIMARY_COLOR"}%s\n\n\
+                    {FFFFFF}Coste: {"#PRIMARY_COLOR"}%d "SERVER_COIN"\n\
+                    {FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\
+                    ", VEHICLE_INFO[GLOBAL_VEHICLES[vehicle_id][gb_vehicle_MODELID] - 400][vehicle_info_NAME], SELL_VEHICLES[vehicle_id][sell_vehicle_EXTRA], SELL_VEHICLES[vehicle_id][sell_vehicle_LEVEL]
                 );
             }
             else
@@ -8087,16 +8059,15 @@ SanAndreas()
                 format
                 (
                     label_str,
-                        sizeof label_str,
-                        "\
-                            {"#PRIMARY_COLOR"}%s\n\n\
-                            {FFFFFF}Precio: {"#PRIMARY_COLOR"}%s$\n\
-                            {FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\
-                        ", VEHICLE_INFO[GLOBAL_VEHICLES[vehicle_id][gb_vehicle_MODELID] - 400][vehicle_info_NAME], number_format_thousand(SELL_VEHICLES[vehicle_id][sell_vehicle_PRICE]), SELL_VEHICLES[vehicle_id][sell_vehicle_LEVEL]
+                    sizeof label_str,
+                    "\
+                    {"#PRIMARY_COLOR"}%s\n\n\
+                    {FFFFFF}Precio: {"#PRIMARY_COLOR"}%s$\n\
+                    {FFFFFF}Nivel: {"#PRIMARY_COLOR"}%d\
+                    ", VEHICLE_INFO[GLOBAL_VEHICLES[vehicle_id][gb_vehicle_MODELID] - 400][vehicle_info_NAME], number_format_thousand(SELL_VEHICLES[vehicle_id][sell_vehicle_PRICE]), SELL_VEHICLES[vehicle_id][sell_vehicle_LEVEL]
                 );
             }
         }
-
 
         SELL_VEHICLES[vehicle_id][sell_vehicle_LABEL_ID] = CreateDynamic3DTextLabel(label_str, 0xFFFFFFFF, 0.0, 0.0, 1.5, 10.0, .attachedvehicle = vehicle_id, .testlos = true, .worldid = 0, .interiorid = 0);
     }
@@ -8104,7 +8075,13 @@ SanAndreas()
     //Concesionarios
     for (new i = 0; i < sizeof SELL_VEHICLES_SHOPS_SPAWN; i++)
     {
-        CreateDynamicMapIcon(SELL_VEHICLES_SHOPS_SPAWN[i][0], SELL_VEHICLES_SHOPS_SPAWN[i][1], SELL_VEHICLES_SHOPS_SPAWN[i][2], 55, -1, 0, 0);
+        CreateDynamicMapIcon(SELL_VEHICLES_SHOPS_SPAWN[i][0],
+            SELL_VEHICLES_SHOPS_SPAWN[i][1],
+            SELL_VEHICLES_SHOPS_SPAWN[i][2],
+            55,
+            -1,
+            0,
+        0);
         CreateDynamic3DTextLabel("{"#PRIMARY_COLOR"}SALIDA DE VEHICULOS", 0xFFFFFFFF, SELL_VEHICLES_SHOPS_SPAWN[i][0], SELL_VEHICLES_SHOPS_SPAWN[i][1], SELL_VEHICLES_SHOPS_SPAWN[i][2], 10.0, .testlos = true, .worldid = 0, .interiorid = 0);
     }
 
@@ -8113,7 +8090,6 @@ SanAndreas()
     //Grua
     CreateDynamic3DTextLabel("Presiona {FF7373}[ H ] {FFFFFF}para solicitar\nel servicio de grúa a un vehículo", 0xFFFFFFFF, -508.645385, 322.147644, 2004.585937, 10.0, .testlos = true, .interiorid = 20);
 
-
     //San Andreas Vehicles
     for (new i = 0; i != sizeof San_Andreas_Vehicles; i++)
     {
@@ -8121,7 +8097,7 @@ SanAndreas()
         if (San_Andreas_Vehicles[i][san_andreas_vehicle_COLOR_1] == -1) San_Andreas_Vehicles[i][san_andreas_vehicle_COLOR_1] = valid_work_vehicle_colors[random(sizeof(valid_work_vehicle_colors))];
         if (San_Andreas_Vehicles[i][san_andreas_vehicle_COLOR_2] == -1) San_Andreas_Vehicles[i][san_andreas_vehicle_COLOR_2] = valid_work_vehicle_colors[random(sizeof(valid_work_vehicle_colors))];
 
-        new vehicle_id = INVALID_VEHICLE_ID, respawn_time = 300;
+        new respawn_time = 300;
 
         if (San_Andreas_Vehicles[i][san_andreas_vehicle_TYPE] == VEHICLE_TYPE_WORK)
         {
@@ -8131,7 +8107,7 @@ SanAndreas()
             }
         }
 
-        vehicle_id = CreateVehicle(San_Andreas_Vehicles[i][san_andreas_vehicle_MODELID], San_Andreas_Vehicles[i][san_andreas_vehicle_SPAWN_X], San_Andreas_Vehicles[i][san_andreas_vehicle_SPAWN_Y], San_Andreas_Vehicles[i][san_andreas_vehicle_SPAWN_Z], San_Andreas_Vehicles[i][san_andreas_vehicle_SPAWN_ANGLE], San_Andreas_Vehicles[i][san_andreas_vehicle_COLOR_1], San_Andreas_Vehicles[i][san_andreas_vehicle_COLOR_2], respawn_time, false);
+        new vehicle_id = CreateVehicle(San_Andreas_Vehicles[i][san_andreas_vehicle_MODELID], San_Andreas_Vehicles[i][san_andreas_vehicle_SPAWN_X], San_Andreas_Vehicles[i][san_andreas_vehicle_SPAWN_Y], San_Andreas_Vehicles[i][san_andreas_vehicle_SPAWN_Z], San_Andreas_Vehicles[i][san_andreas_vehicle_SPAWN_ANGLE], San_Andreas_Vehicles[i][san_andreas_vehicle_COLOR_1], San_Andreas_Vehicles[i][san_andreas_vehicle_COLOR_2], respawn_time, false);
         if (vehicle_id == INVALID_VEHICLE_ID) continue;
 
         GLOBAL_VEHICLES[vehicle_id][gb_vehicle_VALID] = true;
@@ -8189,12 +8165,20 @@ SanAndreas()
 
         if (San_Andreas_Barriers[i][barrier_PRICE] > 0) format(label_str, sizeof label_str, "{FF7373}Peaje\n\n{FFFFFF}Toca el {FF7373}claxón {FFFFFF}para pagar {FF7373}%s$", number_format_thousand(San_Andreas_Barriers[i][barrier_PRICE]));
         else
-{
+        {
             if (San_Andreas_Barriers[i][barrier_VEHICLE_TYPE]) format(label_str, sizeof label_str, "{FF7373}%c%s\n\n{FFFFFF}Toca el {FF7373}claxón {FFFFFF}para que te abran", toupper(work_info[ San_Andreas_Barriers[i][barrier_VEHICLE_TYPE_IN] ][work_info_NAME][0]), work_info[ San_Andreas_Barriers[i][barrier_VEHICLE_TYPE_IN] ][work_info_NAME][1]);
             else format(label_str, sizeof label_str, "{FFFFFF}Toca el {FF7373}claxón {FFFFFF}para que te abran");
         }
 
-        CreateDynamic3DTextLabel(label_str, 0xFFFFFFFF, San_Andreas_Barriers[i][barrier_X], San_Andreas_Barriers[i][barrier_Y], San_Andreas_Barriers[i][barrier_Z] + 1.5, 15.0, .worldid = San_Andreas_Barriers[i][barrier_WORLD], .interiorid = San_Andreas_Barriers[i][barrier_INTERIOR], .testlos = true);
+        CreateDynamic3DTextLabel(label_str,
+            0xFFFFFFFF,
+            San_Andreas_Barriers[i][barrier_X],
+            San_Andreas_Barriers[i][barrier_Y],
+            San_Andreas_Barriers[i][barrier_Z] + 1.5,
+            15.0,
+            .worldid = San_Andreas_Barriers[i][barrier_WORLD],
+            .interiorid = San_Andreas_Barriers[i][barrier_INTERIOR],
+        .testlos = true);
 
         San_Andreas_Barriers[i][barrier_PLAYER_X] = San_Andreas_Barriers[i][barrier_X] + (3.4 * floatsin(-(San_Andreas_Barriers[i][barrier_ROTATION] + 90.0), degrees));
         San_Andreas_Barriers[i][barrier_PLAYER_Y] = San_Andreas_Barriers[i][barrier_Y] + (3.4 * floatcos(-(San_Andreas_Barriers[i][barrier_ROTATION] + 90.0), degrees));
@@ -8243,10 +8227,29 @@ SanAndreas()
                     new label_str[256];
 
                     format(label_str, sizeof label_str, "{FF7373}Puesto de trabajo (%s)\n\n{FFFFFF}Nivel requerido: {FF7373}%d\n{FFFFFF}Presiona {FF7373} [ H ]{FFFFFF} para conseguirlo", work_info[i][work_info_NAME], work_info[i][work_info_LEVEL]);
-                    CreateDynamic3DTextLabel(label_str, 0xFFFFFFFF, obtain_work_coords[i][obtain_work_X], obtain_work_coords[i][obtain_work_Y], obtain_work_coords[i][obtain_work_Z], 10.0, .testlos = true, .interiorid = obtain_work_coords[i][obtain_work_INTERIOR]);
-                    CreateDynamicPickup(1239, 1, obtain_work_coords[i][obtain_work_X], obtain_work_coords[i][obtain_work_Y], obtain_work_coords[i][obtain_work_Z], -1, obtain_work_coords[i][obtain_work_INTERIOR]);
+                    CreateDynamic3DTextLabel(label_str,
+                        0xFFFFFFFF,
+                        obtain_work_coords[i][obtain_work_X],
+                        obtain_work_coords[i][obtain_work_Y],
+                        obtain_work_coords[i][obtain_work_Z],
+                        10.0,
+                        .testlos = true,
+                    .interiorid = obtain_work_coords[i][obtain_work_INTERIOR]);
+                    CreateDynamicPickup(1239,
+                        1,
+                        obtain_work_coords[i][obtain_work_X],
+                        obtain_work_coords[i][obtain_work_Y],
+                        obtain_work_coords[i][obtain_work_Z],
+                        -1,
+                    obtain_work_coords[i][obtain_work_INTERIOR]);
                 }
-                if (obtain_work_coords[i][obtain_work_MAP_ICON]) CreateDynamicMapIcon(obtain_work_coords[i][obtain_work_MAP_ICON_X], obtain_work_coords[i][obtain_work_MAP_ICON_Y], obtain_work_coords[i][obtain_work_MAP_ICON_Z], obtain_work_coords[i][obtain_work_MAP_ICON_ID], -1, 0, 0);
+                if (obtain_work_coords[i][obtain_work_MAP_ICON]) CreateDynamicMapIcon(obtain_work_coords[i][obtain_work_MAP_ICON_X],
+                    obtain_work_coords[i][obtain_work_MAP_ICON_Y],
+                    obtain_work_coords[i][obtain_work_MAP_ICON_Z],
+                    obtain_work_coords[i][obtain_work_MAP_ICON_ID],
+                    -1,
+                    0,
+                0);
             }
         }
     }
@@ -8346,14 +8349,11 @@ SanAndreas()
     return 1;
 }
 
-
-
 stock Float:GetSpeed(Float:vx, Float:vy, Float:vz)
 {
     new Float:vel = floatmul(floatsqroot(floatadd(floatadd(floatpower(vx, 2), floatpower(vy, 2)),  floatpower(vz, 2))), 181.5);
     return vel;
 }
-
 
 //By Kar
 stock IsVehicleDrivingForward(vehicleid)
@@ -8385,7 +8385,12 @@ CreateTrashCheckpoint(route, modelid, Float:x, Float:y, Float:z, Float:rx, Float
     if (!TRASH_OBJECTS[route][trash_route_VALID]) TRASH_OBJECTS[route][trash_route_VALID] = true;
     if (TRASH_OBJECTS[route][trash_route_OBJECTS] >= MAX_OBJECTS_PER_ROUTE) return print("---> Límite superado en array 'TRASH_OBJECTS, objects' en la función 'CreateTrashCheckpoint'.");
 
-    if (TRASH_OBJECTS[route][trash_route_OBJECTS] == 0) TRASH_OBJECTS[route][trash_route_DISTANCE] = GetDistanceBetweenPoints3D(x, y, z, obtain_work_coords[WORK_TRASH][obtain_work_X], obtain_work_coords[WORK_TRASH][obtain_work_Y], obtain_work_coords[WORK_TRASH][obtain_work_Z]);
+    if (TRASH_OBJECTS[route][trash_route_OBJECTS] == 0) TRASH_OBJECTS[route][trash_route_DISTANCE] = GetDistanceBetweenPoints3D(x,
+        y,
+        z,
+        obtain_work_coords[WORK_TRASH][obtain_work_X],
+        obtain_work_coords[WORK_TRASH][obtain_work_Y],
+    obtain_work_coords[WORK_TRASH][obtain_work_Z]);
     else
     {
         TRASH_OBJECTS[route][trash_route_DISTANCE] -= GetDistanceBetweenPoints3D(TRASH_OBJECTS[route][trash_object_X][ TRASH_OBJECTS[route][trash_route_OBJECTS] - 1], TRASH_OBJECTS[route][trash_object_Y][ TRASH_OBJECTS[route][trash_route_OBJECTS] - 1 ], TRASH_OBJECTS[route][trash_object_Z][ TRASH_OBJECTS[route][trash_route_OBJECTS] - 1 ], obtain_work_coords[WORK_TRASH][obtain_work_X], obtain_work_coords[WORK_TRASH][obtain_work_Y], obtain_work_coords[WORK_TRASH][obtain_work_Z]);
@@ -8571,7 +8576,6 @@ CreateTextDraws()
     TextDrawSetProportional(Textdraws[textdraw_GPS_MAP][3], 0);
     TextDrawSetShadow(Textdraws[textdraw_GPS_MAP][3], 0);
 
-
     Textdraws[textdraw_PLAYER_REP_BACK][0] = TextDrawCreate(500.000000, 13.000000, "box");
     TextDrawLetterSize(Textdraws[textdraw_PLAYER_REP_BACK][0], 0.000000, 0.633333);
     TextDrawTextSize(Textdraws[textdraw_PLAYER_REP_BACK][0], 605.000000, 0.000000);
@@ -8718,7 +8722,6 @@ CreateTextDraws()
     TextDrawFont(Textdraws[textdraw_SHOP][4], 1);
     TextDrawSetProportional(Textdraws[textdraw_SHOP][4], 1);
     TextDrawSetShadow(Textdraws[textdraw_SHOP][4], 0);
-
 
     Textdraws[textdraw_SHOP_ARTICLES_BOX][0] = TextDrawCreate(208.000000, 148.000000, "LD_SPAC:white");
     TextDrawLetterSize(Textdraws[textdraw_SHOP_ARTICLES_BOX][0], 0.000000, 0.000000);
@@ -8924,7 +8927,7 @@ CMD:examen(playerid, params[])
                     else
                     {
                         if (GivePlayerCash(playerid, -1750, false, true))
-{
+                        {
                             PLAYER_TEMP[playerid][pt_DL_EXAM] = true;
                             PLAYER_TEMP[playerid][pt_DL_EXAM_PROCCESS] = 0;
                             SendNotification(playerid, "Para comenzar con el examen subete a un vehículo de la autoescuela, están en el aparcamiento.");
@@ -8954,7 +8957,7 @@ CMD:bebida(playerid, params[])
                     if (PI[playerid][ac_CASH] <= 50) return SendNotification(playerid, "La bebida cuesta 50$.");
 
                     if (GivePlayerCash(playerid, -50, false, true))
-{
+                    {
                         SetPlayerSpecialAction(playerid, SPECIAL_ACTION_DRINK_BEER);
                     }
                 }
@@ -8989,7 +8992,7 @@ CMD:duda(playerid, params[])
         }
     }
 
-     SendMessageToDoubtChannel(playerid, params);
+    SendMessageToDoubtChannel(playerid, params);
     return 1;
 }
 
@@ -9017,6 +9020,7 @@ CMD:g(playerid, params[])
     ProxDetector(playerid, 25.0, str_text, COLOR_FADE1, COLOR_FADE2, COLOR_FADE3, COLOR_FADE4, COLOR_FADE5, 85);
     return 1;
 }
+
 alias:g("gritar")
 
 CMD:s(playerid, params[])
@@ -9028,6 +9032,7 @@ CMD:s(playerid, params[])
     ProxDetector(playerid, 5.0, str_text, COLOR_FADE1, COLOR_FADE2, COLOR_FADE3, COLOR_FADE4, COLOR_FADE5, 85);
     return 1;
 }
+
 alias:s("susurrar")
 
 CMD:decir(playerid, params[])
@@ -9040,7 +9045,6 @@ CMD:decir(playerid, params[])
     ProxDetector(playerid, 15.0, str_text, COLOR_FADE1, COLOR_FADE2, COLOR_FADE3, COLOR_FADE4, COLOR_FADE5, 85);
     return 1;
 }
-
 
 CMD:b(playerid, params[])
 {
@@ -9062,14 +9066,7 @@ CMD:do(playerid, params[])
     return 1;
 }
 
-
-
-
-
 #define TIME_BETWEEN_GIVE_CASH    30 // segundos
-
-
-
 
 CMD:entrar(playerid, params[])
 {
@@ -9119,7 +9116,7 @@ CMD:entrar(playerid, params[])
                         if (ENTER_EXIT[info[1]][ee_INTERIOR_TYPE] == INTERIOR_CLUB) PlayAudioStreamForPlayerEx(playerid, "https://www.dropbox.com/s/yeuwio26i7y00ly/striptease.mp3?dl=1");
                     }
                     else
-{
+                    {
                         if (ENTER_EXIT[info[1]][ee_TIME_OPEN] == -1 && ENTER_EXIT[info[1]][ee_TIME_CLOSE] == -1) SendFormatNotification(playerid, "~r~%s ~w~abrirá próximamente.", ENTER_EXIT[info[1]][ee_NAME]);
                         else SendFormatNotification(playerid, "~r~%s ~w~está cerrado, su horario es: ~r~%02d:00h ~w~- ~r~%02d:00h~w~.", ENTER_EXIT[info[1]][ee_NAME], ENTER_EXIT[info[1]][ee_TIME_OPEN], ENTER_EXIT[info[1]][ee_TIME_CLOSE]);
                     }
@@ -9133,8 +9130,11 @@ CMD:entrar(playerid, params[])
 
             if (info[2] == 2) // Está en el Pickup Exterior y quiere ir al interior
             {
-                if (PROPERTY_INFO[info[1]][property_POLICE_FORCED] && (PLAYER_WORKS[playerid][WORK_POLICE][pwork_SET] && PLAYER_TEMP[playerid][pt_WORKING_IN] == WORK_POLICE))
-{
+                if (
+                    PROPERTY_INFO[info[1]][property_POLICE_FORCED] &&
+                    (PLAYER_WORKS[playerid][WORK_POLICE][pwork_SET] &&
+                PLAYER_TEMP[playerid][pt_WORKING_IN] == WORK_POLICE))
+                {
                     new Float:z_pos = PROPERTY_INTERIORS[ PROPERTY_INFO[info[1]][property_ID_INTERIOR] ][property_INT_Z];
                     if (PROPERTY_INFO[info[1]][property_DIS_DEFAULT_INTERIOR]) z_pos += PROPERTY_EMPTY_INTERIOR_Z_OFFSET;
                     SetPlayerPosEx(playerid, PROPERTY_INTERIORS[ PROPERTY_INFO[info[1]][property_ID_INTERIOR] ][property_INT_X], PROPERTY_INTERIORS[ PROPERTY_INFO[info[1]][property_ID_INTERIOR] ][property_INT_Y], z_pos, PROPERTY_INTERIORS[ PROPERTY_INFO[info[1]][property_ID_INTERIOR] ][property_INT_ANGLE], PROPERTY_INTERIORS[ PROPERTY_INFO[info[1]][property_ID_INTERIOR] ][property_INT_INTERIOR], PROPERTY_INFO[info[1]][property_ID], false /*PROPERTY_INTERIORS[ PROPERTY_INFO[info[1]][property_ID_INTERIOR] ][property_INT_FREEZE], true*/);
@@ -9232,8 +9232,6 @@ CMD:puerta(playerid, params[])
     return 1;
 }
 
-
-
 CMD:echar(playerid, params[])
 {
     if (sscanf(params, "u", params[0])) return SendNotification(playerid, "~r~Modo de uso: ~w~/echar [PlayerID/Nombre]");
@@ -9280,7 +9278,6 @@ CMD:echar(playerid, params[])
     SendNotification(playerid, "No estás en tu propiedad o en tu vehículo.");
     return 1;
 }
-
 
 CMD:salir(playerid, params[])
 {
@@ -9335,19 +9332,6 @@ CMD:salir(playerid, params[])
     return 1;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 AddNewAd(playerid, type, price, text[], modelid, vcol1 = 0, vcol2 = 0)
 {
     new Float:rots[4], date[24];
@@ -9363,10 +9347,10 @@ AddNewAd(playerid, type, price, text[], modelid, vcol1 = 0, vcol2 = 0)
     (
         srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER,
         "\
-            INSERT INTO shop (id_player, type, price, text, modelid, rx, ry, rz, zoom, vcol1, vcol2, date)\
-            VALUES (%d, %d, %d, '%e', %d, %f, %f, %f, %f, %d, %d, '%e');\
+        INSERT INTO shop (id_player, type, price, text, modelid, rx, ry, rz, zoom, vcol1, vcol2, date)\
+        VALUES (%d, %d, %d, '%e', %d, %f, %f, %f, %f, %d, %d, '%e');\
         ",
-            ACCOUNT_INFO[playerid][ac_ID], type, price, text, modelid, rots[0], rots[1], rots[2], rots[3], vcol1, vcol2, date
+        ACCOUNT_INFO[playerid][ac_ID], type, price, text, modelid, rots[0], rots[1], rots[2], rots[3], vcol1, vcol2, date
     );
     mysql_tquery(srp_db, QUERY_BUFFER);
     return 1;
@@ -9381,10 +9365,10 @@ public OnPlayerSongFound(index, response_code, data[])
     {
         if (data[0] == '|' && data[1] == '[')
         {
-            new start_song_pos = -1, end_song_pos = -1, delimiter_pos_info = -1, counter, tmp[yt_result];
+            new end_song_pos = -1, delimiter_pos_info = -1, counter, tmp[yt_result];
             for (new i = 0; i != sizeof RESULT_YOUTUBE; i++) RESULT_YOUTUBE[i] = tmp;
 
-            start_song_pos = strfind(data, "|[");
+            new start_song_pos = strfind(data, "|[");
             while (start_song_pos != -1)
             {
                 start_song_pos = strfind(data, "|[");
@@ -9467,7 +9451,10 @@ SetPlayer_GPS_Checkpoint(playerid, Float:x, Float:y, Float:z, world, interior)
 
                         new taxi_info[1];
                         taxi_info[0] = CHECKPOINT_TYPE_GPS;
-                        Streamer_SetArrayData(STREAMER_TYPE_CP, PLAYER_TEMP[ GLOBAL_VEHICLES[vehicleid][gb_vehicle_DRIVER] ][pt_GPS_CHECKPOINT], E_STREAMER_EXTRA_ID, taxi_info);
+                        Streamer_SetArrayData(STREAMER_TYPE_CP,
+                            PLAYER_TEMP[ GLOBAL_VEHICLES[vehicleid][gb_vehicle_DRIVER] ][pt_GPS_CHECKPOINT],
+                            E_STREAMER_EXTRA_ID,
+                        taxi_info);
 
                         Streamer_Update(GLOBAL_VEHICLES[vehicleid][gb_vehicle_DRIVER], STREAMER_TYPE_CP);
                         Auto_SendPlayerAction(playerid, "configura su GPS y se lo muestra al taxista.");
@@ -9481,14 +9468,6 @@ SetPlayer_GPS_Checkpoint(playerid, Float:x, Float:y, Float:z, world, interior)
     Auto_SendPlayerAction(playerid, "configura su GPS.");
     return 1;
 }
-
-
-
-
-
-
-
-
 
 SetPlayerToys(playerid)
 {
@@ -9527,18 +9506,7 @@ SetPlayerToys(playerid)
     return 1;
 }
 
-
-
-
-
 forward OnDatabaseConnected();
-
-
-
-
-
-
-
 
 ClearPlayerChat(playerid)
 {
@@ -9555,11 +9523,8 @@ RegisterBankAccountTransaction(from_id, to_id, transaction_type, amount)
     return 1;
 }
 
-
-
-
 stock GetNombreRoca(roca)
-    {
+{
         new namer[60];
         switch (roca)
         {
@@ -9589,7 +9554,7 @@ stock GetNombreRoca(roca)
         return namer;
     }
 stock GetColorRoca(roca)
-    {
+{
         new colorr;
         switch (roca)
         {
@@ -9619,7 +9584,7 @@ stock GetColorRoca(roca)
         return colorr;
     }
 stock SetTexuraRoca(objeto,tipo)
-    {
+{
         switch (tipo)
         {
             //Mina A
@@ -9652,7 +9617,7 @@ stock SetTexuraRoca(objeto,tipo)
         return 1;
     }
 stock GetPrecioRoca(roca)
-    {
+{
         new precio;
         switch (roca)
         {
@@ -9686,7 +9651,7 @@ stock GetPrecioRoca(roca)
         return precio;
     }
 stock GetTiempoRoca(roca)
-    {
+{
         new tiempo;
         switch (roca)
         {
@@ -9728,7 +9693,7 @@ stock randomize( min, max ) // Rango aleatorio
 }
 
 stock SetMinaRoca(mina,i)
-    {
+{
         new roca;
         switch (mina)
         {
@@ -9753,7 +9718,7 @@ stock SetMinaRoca(mina,i)
         return 1;
     }
 stock EnProcesadora(playerid)
-    {
+{
         if (IsPlayerInRangeOfPoint(playerid, 2.0, 597.3271,-41.2564,791.6342))        return 1;
         else if (IsPlayerInRangeOfPoint(playerid, 2.0, 591.7543,-41.0298,791.5934)) return 1;
         else if (IsPlayerInRangeOfPoint(playerid, 2.0, 568.9272,-41.1961,791.6544)) return 1;
@@ -9770,11 +9735,22 @@ stock EnProcesadora(playerid)
         return 0;
     }
 
-
 forward TimerPicando(playerid, wood);
 public TimerPicando(playerid, wood)
 {
-    if (ProcesoPicando[playerid] < 20) SetPlayerAttachedObject(playerid,0,19631,6,0.056999,0.015000,0.132999,-87.599998,95.299995,-1.900005,1.000000,1.000000,1.000000);
+    if (ProcesoPicando[playerid] < 20) SetPlayerAttachedObject(playerid,
+        0,
+        19631,
+        6,
+        0.056999,
+        0.015000,
+        0.132999,
+        -87.599998,
+        95.299995,
+        -1.900005,
+        1.000000,
+        1.000000,
+    1.000000);
     if (ProcesoPicando[playerid] < 100)
     {
         ProcesoPicando[playerid] += GetTiempoRoca(MinaInfo[wood][w_tipo]);
@@ -9796,7 +9772,20 @@ public TimerPicando(playerid, wood)
     SetPlayerSpecialAction(playerid, SPECIAL_ACTION_CARRY);
     ApplyAnimation(playerid,"CARRY","LIFTUP",2,0,1,1,0,0);
     ApplyAnimation(playerid,"CARRY","LIFTUP",2,0,1,1,0,0);
-    SetPlayerAttachedObject(playerid,5,905,5,0.139000,0.085000,0.136000,75.700004,0.000000,0.000000,0.555000,0.409999,0.640999,colorfinal);
+    SetPlayerAttachedObject(playerid,
+        5,
+        905,
+        5,
+        0.139000,
+        0.085000,
+        0.136000,
+        75.700004,
+        0.000000,
+        0.000000,
+        0.555000,
+        0.409999,
+        0.640999,
+    colorfinal);
     ProcesoPicando[playerid] = 0;
     MinaInfo[wood][w_count] = 0;
     MinaInfo[wood][w_drop] = true;
@@ -9807,9 +9796,6 @@ public TimerPicando(playerid, wood)
     if ( MinaInfo[wood][w_count] <= 0 && IsValidDynamicObject(MinaInfo[wood][w_object])) DestroyDynamicObject( MinaInfo[wood][w_object] );
     return 1;
 }
-
-
-
 
 CreateDefaultContacts(playerid)
 {
@@ -9836,10 +9822,9 @@ CreateDefaultContacts(playerid)
     format(PLAYER_PHONE_BOOK[playerid][slot][phone_book_contact_NAME], 24, "Taxi");
     PLAYER_PHONE_BOOK[playerid][slot][phone_book_contact_PHONE_NUMBER] = 450;
     RegisterNewPlayerPhoneBook(playerid, slot);
-    slot++;
+    //slot++; //never used
     return 1;
 }
-
 
 //eSendClientMessageEx(playerid, color, form[], {Float, _}: ...)
 //{
@@ -9867,15 +9852,6 @@ CreateDefaultContacts(playerid)
 //    return (t1 == -1 ? (SendClientMessageToAll(t2, tmp)) : (SendClientMessage(t1, t2, tmp)) );
 //}*/
 
-
-
-
-
-
-
-
-
-
 //IsValidName(name[])
 //{
 //    for (new c = 0; c < strlen(name); c++)
@@ -9889,24 +9865,17 @@ CreateDefaultContacts(playerid)
 //    return true;
 //}
 
-
-
-
-
-
 RP_GetPlayerName(playerid)
 {
     new name[24];
     format(name, 24, "%s", PLAYER_TEMP[playerid][pt_NAME]);
     for (new i = 0; i < 24; i++)
-{
+    {
         if (name[i] == '_') name[i] = ' ';
     }
 
     return name;
 }
-
-
 
 RegisterNewPlayerPhoneBook(playerid, slot)
 {
@@ -9918,15 +9887,6 @@ RegisterNewPlayerPhoneBook(playerid, slot)
     MySQL_TQueryInline(srp_db,  using inline OnContactInserted, QUERY_BUFFER);
     return 1;
 }
-
-
-
-
-
-
-
-
-
 
 GetEmptyPlayerPhoneBookSlot(playerid)
 {
@@ -9947,10 +9907,6 @@ RegisterNewPlayerPocketObject(playerid, slot)
     MySQL_TQueryInline(srp_db,  using inline OnPfoodInserted, QUERY_BUFFER);
     return 1;
 }
-
-
-
-
 
 UpdateReputationTextDraws(playerid)
 {
@@ -9973,10 +9929,6 @@ UpdateReputationTextDraws(playerid)
     return 1;
 }
 
-
-
-
-
 stock SetPlayerCash(playerid, amount, bool:update = true)
 {
     PI[playerid][ac_CASH] = amount;
@@ -9990,8 +9942,6 @@ stock SetPlayerCash(playerid, amount, bool:update = true)
     }
     return 1;
 }
-
-
 
 LoadEnterExits()
 {
@@ -10008,8 +9958,20 @@ LoadEnterExits()
         ENTER_EXIT[total_enterexits][ee_INT_LABEL_ID] = CreateDynamic3DTextLabel("{FF7373}Salida\n{FFFFFF}Presiona {FF7373}[ Y ] {FFFFFF}para salir", 0xFFFFFFFF, ENTER_EXIT[total_enterexits][ee_INT_X], ENTER_EXIT[total_enterexits][ee_INT_Y], ENTER_EXIT[total_enterexits][ee_INT_Z] + 0.25, 10.0, .testlos = true, .worldid = ENTER_EXIT[total_enterexits][ee_INT_WORLD], .interiorid = ENTER_EXIT[total_enterexits][ee_INT_INTERIOR]);
         ENTER_EXIT[total_enterexits][ee_EXT_LABEL_ID] = CreateDynamic3DTextLabel(label_str, 0xFFFFFFFF, ENTER_EXIT[total_enterexits][ee_EXT_X], ENTER_EXIT[total_enterexits][ee_EXT_Y], ENTER_EXIT[total_enterexits][ee_EXT_Z] + 0.25, 10.0, .testlos = true, .worldid = ENTER_EXIT[total_enterexits][ee_EXT_WORLD], .interiorid = ENTER_EXIT[total_enterexits][ee_EXT_INTERIOR]);
 
-        if (ENTER_EXIT[total_enterexits][ee_INT_MAPICON] != -1) ENTER_EXIT[total_enterexits][ee_INT_MAPICON_ID] = CreateDynamicMapIcon(ENTER_EXIT[total_enterexits][ee_INT_X], ENTER_EXIT[total_enterexits][ee_INT_Y], ENTER_EXIT[total_enterexits][ee_INT_Z], ENTER_EXIT[total_enterexits][ee_INT_MAPICON], -1, ENTER_EXIT[total_enterexits][ee_INT_WORLD], ENTER_EXIT[total_enterexits][ee_INT_INTERIOR]);
-        if (ENTER_EXIT[total_enterexits][ee_EXT_MAPICON] != -1) ENTER_EXIT[total_enterexits][ee_EXT_MAPICON_ID] = CreateDynamicMapIcon(ENTER_EXIT[total_enterexits][ee_EXT_X], ENTER_EXIT[total_enterexits][ee_EXT_Y], ENTER_EXIT[total_enterexits][ee_EXT_Z], ENTER_EXIT[total_enterexits][ee_EXT_MAPICON], -1, ENTER_EXIT[total_enterexits][ee_EXT_WORLD], ENTER_EXIT[total_enterexits][ee_EXT_INTERIOR]);
+        if (ENTER_EXIT[total_enterexits][ee_INT_MAPICON] != -1) ENTER_EXIT[total_enterexits][ee_INT_MAPICON_ID] = CreateDynamicMapIcon(ENTER_EXIT[total_enterexits][ee_INT_X],
+            ENTER_EXIT[total_enterexits][ee_INT_Y],
+            ENTER_EXIT[total_enterexits][ee_INT_Z],
+            ENTER_EXIT[total_enterexits][ee_INT_MAPICON],
+            -1,
+            ENTER_EXIT[total_enterexits][ee_INT_WORLD],
+        ENTER_EXIT[total_enterexits][ee_INT_INTERIOR]);
+        if (ENTER_EXIT[total_enterexits][ee_EXT_MAPICON] != -1) ENTER_EXIT[total_enterexits][ee_EXT_MAPICON_ID] = CreateDynamicMapIcon(ENTER_EXIT[total_enterexits][ee_EXT_X],
+            ENTER_EXIT[total_enterexits][ee_EXT_Y],
+            ENTER_EXIT[total_enterexits][ee_EXT_Z],
+            ENTER_EXIT[total_enterexits][ee_EXT_MAPICON],
+            -1,
+            ENTER_EXIT[total_enterexits][ee_EXT_WORLD],
+        ENTER_EXIT[total_enterexits][ee_EXT_INTERIOR]);
 
         ENTER_EXIT[total_enterexits][ee_INT_PICKUP_ID] = CreateDynamicPickup(0, 1, ENTER_EXIT[total_enterexits][ee_INT_X], ENTER_EXIT[total_enterexits][ee_INT_Y], ENTER_EXIT[total_enterexits][ee_INT_Z], ENTER_EXIT[total_enterexits][ee_INT_WORLD], ENTER_EXIT[total_enterexits][ee_INT_INTERIOR]);
         ENTER_EXIT[total_enterexits][ee_EXT_PICKUP_ID] = CreateDynamicPickup(1318, 1, ENTER_EXIT[total_enterexits][ee_EXT_X], ENTER_EXIT[total_enterexits][ee_EXT_Y], ENTER_EXIT[total_enterexits][ee_EXT_Z] + 0.10, ENTER_EXIT[total_enterexits][ee_EXT_WORLD], ENTER_EXIT[total_enterexits][ee_EXT_INTERIOR]);
@@ -10017,17 +9979,23 @@ LoadEnterExits()
         info[0] = PICKUP_TYPE_ENTER_EXIT;
         info[1] = total_enterexits; // Index
         info[2] = 1; // Pickup Interior
-        Streamer_SetArrayData(STREAMER_TYPE_PICKUP, ENTER_EXIT[total_enterexits][ee_INT_PICKUP_ID], E_STREAMER_EXTRA_ID, info);
+        Streamer_SetArrayData(STREAMER_TYPE_PICKUP,
+            ENTER_EXIT[total_enterexits][ee_INT_PICKUP_ID],
+            E_STREAMER_EXTRA_ID,
+        info);
 
         info[0] = PICKUP_TYPE_ENTER_EXIT;
         info[1] = total_enterexits; // Index
         info[2] = 2; // Pickup Exterior
-        Streamer_SetArrayData(STREAMER_TYPE_PICKUP, ENTER_EXIT[total_enterexits][ee_EXT_PICKUP_ID], E_STREAMER_EXTRA_ID, info);
+        Streamer_SetArrayData(STREAMER_TYPE_PICKUP,
+            ENTER_EXIT[total_enterexits][ee_EXT_PICKUP_ID],
+            E_STREAMER_EXTRA_ID,
+        info);
         ENTER_EXIT[total_enterexits][ee_MAIN_ACTOR] = CreateInteriorActor(ENTER_EXIT[total_enterexits][ee_INTERIOR_TYPE], ENTER_EXIT[total_enterexits][ee_INT_WORLD], ENTER_EXIT[total_enterexits][ee_INT_INTERIOR]);
 
         //textdraw intimidación
         if (ENTER_EXIT[total_enterexits][ee_ROBBABLE])
-{
+        {
             ENTER_EXIT[total_enterexits][ee_TEXTDRAW] = TextDrawCreate(320.000000, 406.000000, "Intimidación:_0.00%%");
             TextDrawLetterSize(ENTER_EXIT[total_enterexits][ee_TEXTDRAW], 0.286000, 1.276444);
             TextDrawAlignment(ENTER_EXIT[total_enterexits][ee_TEXTDRAW], 2);
@@ -10044,8 +10012,6 @@ LoadEnterExits()
     }
     return 1;
 }
-
-
 
 forward OnPropertiesLoaded();
 LoadProperties()
@@ -10226,7 +10192,7 @@ LoadCrews()
                             cache_get_value_name_int(x, "permission10", CREW_RANK_INFO[i][rank_pos][crew_rank_PERMISSION][10]);
 
                             if (rank_pos == 0)
-{
+                            {
                                 for (new j = 0; j < CREW_RANK_SIZE; j++)
                                 CREW_RANK_INFO[i][rank_pos][crew_rank_PERMISSION][j] = 1;
                             }
@@ -10242,7 +10208,6 @@ LoadCrews()
     MySQL_TQueryInline(srp_db,  using inline OnCrewsLoad, "SELECT * FROM crews;");
     return 1;
 }
-
 
 LoadGangZones()
 {
@@ -10271,7 +10236,7 @@ LoadGangZones()
                 cache_get_value_name_float(i, "max_z", TERRITORIES[i][territory_MAX_Z]);
                 cache_is_value_name_null(i, "id_crew", isnull_crewid);
                 if (!isnull_crewid)
-{
+                {
                     cache_get_value_name_int(i, "id_crew", crewid);
                     cache_get_value_name_int(i, "color", color);
                 }
@@ -10324,30 +10289,6 @@ LoadGangZones()
     return 1;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 GetHospitalSpawnPosition(hospital, &Float:x, &Float:y, &Float:z, &Float:angle, &interior, &local_interior, &rp_state)
 {
     x = Hospital_Spawn_Positions[hospital][hspi_X];
@@ -10362,17 +10303,15 @@ GetHospitalSpawnPosition(hospital, &Float:x, &Float:y, &Float:z, &Float:angle, &
 
 UpdateHospitalSizeTextdrawLife(playerid)
 {
-    PlayerTextDrawTextSize(playerid, PlayerTextdraws[playerid][ptextdraw_HOSPITAL][2], 270.0 + ( PLAYER_TEMP[playerid][pt_HOSPITAL_LIFE] * 0.98), 0.000000);
+    PlayerTextDrawTextSize(playerid,
+        PlayerTextdraws[playerid][ptextdraw_HOSPITAL][2],
+        270.0 + ( PLAYER_TEMP[playerid][pt_HOSPITAL_LIFE] * 0.98),
+    0.000000);
     PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_HOSPITAL][2]);
     return 1;
 }
 
-
-
-
-
 #define MAX_INTERIOR_ACTORS 10
-
 
 CreateInteriorActor(interior_type, world, interior)
 {
@@ -10540,12 +10479,12 @@ CreateInteriorActor(interior_type, world, interior)
 
     new mainActor = INVALID_ACTOR_ID;
     for (new i; i != sizeof InteriorActorInfo; i++)
-{
+    {
         if (InteriorActorInfo[i][ia_VALID])
-{
+        {
             new tmp = CreateDynamicActor(InteriorActorInfo[i][ia_SKIN], InteriorActorInfo[i][ia_POS_X], InteriorActorInfo[i][ia_POS_Y], InteriorActorInfo[i][ia_POS_Z], InteriorActorInfo[i][ia_POS_A], true, 100.0, world, interior);
             if (i == 0)
-{
+            {
                 mainActor = tmp;
             }
         }
@@ -10553,14 +10492,6 @@ CreateInteriorActor(interior_type, world, interior)
 
     return mainActor;
 }
-
-
-
-
-
-
-
-
 
 HideToysShopTextdraws(playerid)
 {
@@ -10600,24 +10531,18 @@ RegisterNewPlayerToy(playerid, slot)
     (
         srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER,
         "\
-            INSERT INTO ptoys(id_player, name, attached, modelid, bone, offset_x, offset_y, offset_z, rot_x, rot_y, rot_z, scale_x, scale_y, scale_z, color1, color2)\
-            VALUES(%d, '%e', %d, %d, %d, %f, %f, %f, %f, %f, %f, %f, %f, %f, %d, %d);\
+        INSERT INTO ptoys(id_player, name, attached, modelid, bone, offset_x, offset_y, offset_z, rot_x, rot_y, rot_z, scale_x, scale_y, scale_z, color1, color2)\
+        VALUES(%d, '%e', %d, %d, %d, %f, %f, %f, %f, %f, %f, %f, %f, %f, %d, %d);\
         ",
-            ACCOUNT_INFO[playerid][ac_ID], PLAYER_TOYS[playerid][slot][player_toy_NAME], PLAYER_TOYS[playerid][slot][player_toy_ATTACHED], PLAYER_TOYS[playerid][slot][player_toy_MODELID],
-            PLAYER_TOYS[playerid][slot][player_toy_BONE], PLAYER_TOYS[playerid][slot][player_toy_OFFSET_X], PLAYER_TOYS[playerid][slot][player_toy_OFFSET_Y],
-            PLAYER_TOYS[playerid][slot][player_toy_OFFSET_Z], PLAYER_TOYS[playerid][slot][player_toy_ROT_X], PLAYER_TOYS[playerid][slot][player_toy_ROT_Y],
-            PLAYER_TOYS[playerid][slot][player_toy_ROT_Z], PLAYER_TOYS[playerid][slot][player_toy_SCALE_X], PLAYER_TOYS[playerid][slot][player_toy_SCALE_Y],
-            PLAYER_TOYS[playerid][slot][player_toy_SCALE_Z], PLAYER_TOYS[playerid][slot][player_toy_COLOR_1], PLAYER_TOYS[playerid][slot][player_toy_COLOR_2]
+        ACCOUNT_INFO[playerid][ac_ID], PLAYER_TOYS[playerid][slot][player_toy_NAME], PLAYER_TOYS[playerid][slot][player_toy_ATTACHED], PLAYER_TOYS[playerid][slot][player_toy_MODELID],
+        PLAYER_TOYS[playerid][slot][player_toy_BONE], PLAYER_TOYS[playerid][slot][player_toy_OFFSET_X], PLAYER_TOYS[playerid][slot][player_toy_OFFSET_Y],
+        PLAYER_TOYS[playerid][slot][player_toy_OFFSET_Z], PLAYER_TOYS[playerid][slot][player_toy_ROT_X], PLAYER_TOYS[playerid][slot][player_toy_ROT_Y],
+        PLAYER_TOYS[playerid][slot][player_toy_ROT_Z], PLAYER_TOYS[playerid][slot][player_toy_SCALE_X], PLAYER_TOYS[playerid][slot][player_toy_SCALE_Y],
+        PLAYER_TOYS[playerid][slot][player_toy_SCALE_Z], PLAYER_TOYS[playerid][slot][player_toy_COLOR_1], PLAYER_TOYS[playerid][slot][player_toy_COLOR_2]
     );
     MySQL_TQueryInline(srp_db, using inline OnPlayerToyInserted, QUERY_BUFFER);
     return 1;
 }
-
-
-
-
-
-
 
 HideClothingShopTextdraws(playerid)
 {
@@ -10646,12 +10571,6 @@ ClosePlayerClothingMenu(playerid)
     return 1;
 }
 
-
-
-
-
-
-
 stock number_format_dash(e_number) /* By adri1 - SFR3 4.3 */
 {
     new f_string[24], bool:negative;
@@ -10677,10 +10596,6 @@ stock number_format_dash(e_number) /* By adri1 - SFR3 4.3 */
 #define THIRST_HOURS_STOPPED    9 // 9 horas parado si agua esta a 100 va a 0
 #define HUNGRY_HOURS_STOPPED    12 // 12 horas parado si alimentacion esta a 100 va a 0
 
-
-
-
-
 HidePlayerHud(playerid)
 {
     KillTimer(PLAYER_TEMP[playerid][pt_TIMERS][5]);
@@ -10689,12 +10604,12 @@ HidePlayerHud(playerid)
     TextDrawHideForPlayer(playerid, Textdraws[textdraw_SERVER_TIME]);
 
     for (new i = 0; i < HUD_TEXTDRAWS_SIZE; i++)
-{
+    {
         TextDrawHideForPlayer(playerid, Textdraws[textdraw_HUD][i]);
     }
 
     for (new i = 0; i < HUD_PTEXTDRAWS_SIZE; i++)
-{
+    {
         PlayerTextDrawHide(playerid, PlayerTextdraws[playerid][ptextdraw_HUD][i]);
     }
 
@@ -10731,12 +10646,8 @@ is_open(hour, open, close)
     return false;
 }
 
-
-
 SetActorSkin(actorid, skin, &actor)
 {
-    actor = INVALID_ACTOR_ID;
-
     new Float:x, Float:y, Float:z, Float:a, vw;
     GetActorPos(actorid, x, y, z);
     GetActorFacingAngle(actorid, a);
@@ -10760,21 +10671,18 @@ stock SetActorFacingAngleEx(actorid, skin, Float:angle, &actor)
     return 1;
 }
 
-
-
-
-
-
-
 const CRASHER_PACKET = 228;
 
-
-
-
-
-
-
-AddTestVehicle(bool:static_veh, modelid, Float:X, Float:Y, Float:Z, Float:Angle, Color1, Color2, interior = 0, world = 0)
+AddTestVehicle(bool:static_veh,
+    modelid,
+    Float:X,
+    Float:Y,
+    Float:Z,
+    Float:Angle,
+    Color1,
+    Color2,
+    interior = 0,
+world = 0)
 {
     new vehicle_id = INVALID_VEHICLE_ID;
     if (static_veh) vehicle_id = AddStaticVehicleEx(modelid, X, Y, Z, Angle, Color1, Color2, -1, false);
@@ -10813,8 +10721,7 @@ AddTestVehicle(bool:static_veh, modelid, Float:X, Float:Y, Float:Z, Float:Angle,
 
 AddPersonalVehicle(playerid, modelid, Float:X, Float:Y, Float:Z, Float:Angle, Color1, Color2, Float:max_gas)
 {
-    new vehicle_id = INVALID_VEHICLE_ID;
-    vehicle_id = CreateVehicle(modelid, X, Y, Z, Angle, Color1, Color2, -1);
+    new vehicle_id = CreateVehicle(modelid, X, Y, Z, Angle, Color1, Color2, -1);
 
     if (vehicle_id == INVALID_VEHICLE_ID) return false;
 
@@ -10869,27 +10776,21 @@ RegisterNewPlayerVehicle(playerid, vehicleid)
     (
         srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER,
         "\
-            INSERT INTO pvehicles (id_player, modelid, spawn_x, spawn_y, spawn_z, spawn_angle, color1, color2, gas, max_gas)\
-            VALUES(%d, %d, %f, %f, %f, %f, %d, %d, %f, %f);\
+        INSERT INTO pvehicles (id_player, modelid, spawn_x, spawn_y, spawn_z, spawn_angle, color1, color2, gas, max_gas)\
+        VALUES(%d, %d, %f, %f, %f, %f, %d, %d, %f, %f);\
         ",
-            ACCOUNT_INFO[playerid][ac_ID], GLOBAL_VEHICLES[vehicleid][gb_vehicle_MODELID], GLOBAL_VEHICLES[vehicleid][gb_vehicle_SPAWN_X], GLOBAL_VEHICLES[vehicleid][gb_vehicle_SPAWN_Y], GLOBAL_VEHICLES[vehicleid][gb_vehicle_SPAWN_Z],
-            GLOBAL_VEHICLES[vehicleid][gb_vehicle_SPAWN_ANGLE], GLOBAL_VEHICLES[vehicleid][gb_vehicle_COLOR_1], GLOBAL_VEHICLES[vehicleid][gb_vehicle_COLOR_2], GLOBAL_VEHICLES[vehicleid][gb_vehicle_GAS],
-            GLOBAL_VEHICLES[vehicleid][gb_vehicle_MAX_GAS]
+        ACCOUNT_INFO[playerid][ac_ID], GLOBAL_VEHICLES[vehicleid][gb_vehicle_MODELID], GLOBAL_VEHICLES[vehicleid][gb_vehicle_SPAWN_X], GLOBAL_VEHICLES[vehicleid][gb_vehicle_SPAWN_Y], GLOBAL_VEHICLES[vehicleid][gb_vehicle_SPAWN_Z],
+        GLOBAL_VEHICLES[vehicleid][gb_vehicle_SPAWN_ANGLE], GLOBAL_VEHICLES[vehicleid][gb_vehicle_COLOR_1], GLOBAL_VEHICLES[vehicleid][gb_vehicle_COLOR_2], GLOBAL_VEHICLES[vehicleid][gb_vehicle_GAS],
+        GLOBAL_VEHICLES[vehicleid][gb_vehicle_MAX_GAS]
     );
     MySQL_TQueryInline(srp_db, using inline OnVehicleInserted, QUERY_BUFFER);
     return 1;
 }
 
-
-
-
-
-
-
 SetClampVehicleLabel(vehicleid)
 {
     if (PLAYER_VEHICLES[vehicleid][player_vehicle_VALID])
-{
+    {
         if (IsValidDynamic3DTextLabel(GLOBAL_VEHICLES[vehicleid][gb_vehicle_LABEL]))
         {
             DestroyDynamic3DTextLabel(GLOBAL_VEHICLES[vehicleid][gb_vehicle_LABEL]);
@@ -10897,24 +10798,20 @@ SetClampVehicleLabel(vehicleid)
         }
 
         if (PLAYER_VEHICLES[vehicleid][player_vehicle_CLAMP] > 0)
-{
+        {
             new string[256];
             format(string, sizeof string, "Cepo\nUsa {"#PRIMARY_COLOR"}/pagar {FFFFFF}para pagar la multa por %s$", number_format_thousand(PLAYER_VEHICLES[vehicleid][player_vehicle_CLAMP]));
 
             new Float:wX, Float:wY, Float:wZ;
-            GetVehicleModelInfo(GLOBAL_VEHICLES[vehicleid][gb_vehicle_MODELID], VEHICLE_MODEL_INFO_WHEELSREAR, wX, wY, wZ);
+            GetVehicleModelInfo(GLOBAL_VEHICLES[vehicleid][gb_vehicle_MODELID],
+                VEHICLE_MODEL_INFO_WHEELSREAR,
+                wX,
+                wY,
+            wZ);
             GLOBAL_VEHICLES[vehicleid][gb_vehicle_LABEL] = CreateDynamic3DTextLabel(string, -1, wX, wY, wZ, 20.0, .attachedvehicle = vehicleid);
         }
     }
 }
-
-
-
-
-
-
-
-
 
 GetPlayerIdFromAccountId(accountid)
 {
@@ -10933,12 +10830,6 @@ GetPlayerIdFromAccountId(accountid)
 
 #define NECESSARY_TIME_BETWEEN_WORKS    600 //segundos
 
-
-
-
-
-
-
 //RotateDynamicObject(objectid, Float:rotX, Float:rotY, Float:rotZ, Float:Speed)
 //{
 //
@@ -10956,10 +10847,6 @@ GetPlayerIdFromAccountId(accountid)
 //    MoveDynamicObject(objectid, X, Y, Z, SpeedConverted, rotX, rotY, rotZ);
 //    return 1;
 //}
-
-
-
-
 
 SetPlayerTruckCheckpoint(playerid, vehicleid)
 {
@@ -10989,8 +10876,6 @@ SetPlayerTruckCheckpoint(playerid, vehicleid)
     return 1;
 }
 
-
-
 CMD:basurero(playerid, params[])
 {
     if (!PLAYER_WORKS[playerid][WORK_TRASH][pwork_SET]) return SendNotification(playerid, "No eres basurero.");
@@ -11009,12 +10894,6 @@ CMD:basurero(playerid, params[])
     else CallLocalFunction("EndPlayerJob", "iib", playerid, PLAYER_TEMP[playerid][pt_WORKING_IN], true);
     return 1;
 }
-
-
-
-
-
-
 
 SetPlayerTrashCheckpoint(playerid, vehicleid)
 {
@@ -11081,12 +10960,13 @@ CancelTrashWork(driver, mate, vehicleid)
 
 UpdatePlayerTrashRecycleSize(playerid)
 {
-    PlayerTextDrawTextSize(playerid, PlayerTextdraws[playerid][ptextdraw_RECYCLE_TRASH][2], 0.0, PLAYER_TEMP[playerid][pt_RECYCLE_BIN_VALUE] * 1.3);
+    PlayerTextDrawTextSize(playerid,
+        PlayerTextdraws[playerid][ptextdraw_RECYCLE_TRASH][2],
+        0.0,
+    PLAYER_TEMP[playerid][pt_RECYCLE_BIN_VALUE] * 1.3);
     PlayerTextDrawShow(playerid, PlayerTextdraws[playerid][ptextdraw_RECYCLE_TRASH][2]);
     return 1;
 }
-
-
 
 CancelLumberjackWork(playerid)
 {
@@ -11126,8 +11006,6 @@ CreateFlashObject(Float:x, Float:y, Float:z)
     SetTimerEx("DestroyFlashObject", 1000, false, "i", oid);
     return 1;
 }
-
-
 
 ShowPlayerInventory(playerid, pid)
 {
@@ -11293,10 +11171,6 @@ CountPlayerWeapons(playerid)
     return weapons;
 }
 
-
-
-
-
 CreatePlayerTrashRouteObjects(playerid, route)
 {
     for (new i = 0; i != MAX_OBJECTS_PER_ROUTE; i++)
@@ -11327,8 +11201,6 @@ CreatePlayerFlashObject(playerid, Float:x, Float:y, Float:z)
     SetTimerEx("DestroyPlayerFlashObject", 1000, false, "ii", playerid, oid);
     return 1;
 }
-
-
 
 GetVehicleFirstPassenger(vehicleid)
 {
@@ -11369,13 +11241,6 @@ GetAvaiblePlantIndex()
     }
     return -1;
 }
-
-
-
-
-
-
-
 
 #define lc_limit_X_WEST 4000.0
 #define lc_limit_X_EAST 7500.0
@@ -11500,7 +11365,6 @@ GivePlayerWeaponEx(playerid, weapon_id, ammo)
     return 1;
 }
 
-
 CheckWeaponAndAmmo(playerid, weaponid)
 {
     if (WEAPON_INFO[weaponid][weapon_info_ANTI_CHEAT])
@@ -11554,9 +11418,6 @@ CheckWeaponAndAmmo(playerid, weaponid)
     return 1;
 }
 
-
-
-
 RegisterNewPlayerWeapon(playerid, weapon_slot)
 {
     inline OnPweaponInserted()
@@ -11582,8 +11443,6 @@ SavePlayerWeaponsData(playerid)
     }
     return 1;
 }
-
-
 
 LoadPlayerWeaponsData(playerid)
 {
@@ -11615,17 +11474,15 @@ GetVehicleModelByName(const vehname[])
 {
     new modelid = -1;
     for (new i = 0; i < sizeof VEHICLE_INFO; i++)
-{
+    {
         if (strfind(VEHICLE_INFO[i][vehicle_info_NAME], vehname, true) != -1)
-{
+        {
             modelid = i + 400;
             break;
         }
     }
     return modelid;
 }
-
-
 
 //    CMD:gotopos( playerid, params[] )
 //    {
@@ -11636,8 +11493,86 @@ GetVehicleModelByName(const vehname[])
 //    }
 //
 
+SendPoliceRadioMessage(radio, color, const message[])
+{
+    for (new i = 0, j = GetPlayerPoolSize(); i <= j; i++)
+    {
+        if (IsPlayerConnected(i) && PLAYER_TEMP[i][pt_USER_LOGGED])
+        {
+            if (PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_NORMAL)
+            {
+                if (PLAYER_WORKS[i][WORK_POLICE][pwork_SET])
+                {
+                    if (PLAYER_TEMP[i][pt_WORKING_IN] == WORK_POLICE)
+                    {
+                        if (radio == -1) SendClientMessage(i, color, message);
+                        else
+                        {
+                            if (PLAYER_TEMP[i][pt_POLICE_RADIO] == radio)
+                            {
+                                SendClientMessage(i, color, message);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return 1;
+}
 
+CheckPlayerSuperUser(playerid)
+{
+    if (ACCOUNT_INFO[playerid][ac_VIP])
+    {
+        inline OnInfoQueryLoad()
+        {
+            new rows;
+            if (cache_get_row_count(rows))
+            {
+                if (rows)
+                {
+                    mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE player SET vip = 0, vip_expire_date = '0000-00-00 00:00:00' WHERE id = %d;", ACCOUNT_INFO[playerid][ac_ID]);
+                    mysql_tquery(srp_db, QUERY_BUFFER);
 
+                    ACCOUNT_INFO[playerid][ac_VIP] = false;
+                    ACCOUNT_INFO[playerid][ac_VIP_EXPIRE_DATE][0] = EOS;
+                    SendNotification(playerid, "¡Tu VIP ha expirado! Usa /vip para comprar de nuevo.");
+                    if (GetPlayerSkin(playerid) == PI[playerid][ac_SKIN]) SetPlayerToys(playerid);
+                    ReLockPlayerVehicles(playerid, true);
+                }
+                PLAYER_TEMP[playerid][pt_LAST_SU_CHECK] = gettime();
+            }
+        }
+        mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "SELECT id FROM player WHERE id = %d AND NOW() >= vip_expire_date;", ACCOUNT_INFO[playerid][ac_ID]);
+        MySQL_TQueryInline(srp_db, using inline OnInfoQueryLoad, QUERY_BUFFER);
+    }
+    return 1;
+}
 
+SetWantedPlayerMarkers(playerid)
+{
+    for (new i = 0, j = GetPlayerPoolSize(); i <= j; i++)
+    {
+        if (IsPlayerConnected(i))
+        {
+            if (PLAYER_TEMP[i][pt_GAME_STATE] == GAME_STATE_NORMAL)
+            {
+                if (PI[i][ac_WANTED_LEVEL] > 0)
+                {
+                    SetPlayerMarkerForPlayer(playerid, i, PlayerWantedColor(i));
+                }
+            }
+        }
+    }
+    return 1;
+}
 
-
+PutPlayerInVehicleEx(playerid, vehicleid, seat)
+{
+    PLAYER_AC_INFO[playerid][CHEAT_POS][p_ac_info_IMMUNITY] = gettime() + 3;
+    PLAYER_AC_INFO[playerid][CHEAT_STATE_SPAMMER][p_ac_info_IMMUNITY] = gettime() + 3;
+    PLAYER_AC_INFO[playerid][CHEAT_PLAYER_VEHICLE_DOORS][p_ac_info_IMMUNITY] = gettime() + 5;
+    PLAYER_AC_INFO[playerid][CHEAT_VEHICLE_NOFUEL][p_ac_info_IMMUNITY] = gettime() + 15;
+    return PutPlayerInVehicle(playerid, vehicleid, seat);
+}

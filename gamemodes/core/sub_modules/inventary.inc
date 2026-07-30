@@ -159,9 +159,9 @@ hook OnPlayerDisconnect(playerid, reason)
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
     if (newstate == PLAYER_STATE_SPECTATING || newstate == PLAYER_STATE_WASTED)
-{
+    {
         if (pInventoryOpened[playerid])
-{
+        {
             CancelSelectTextDrawEx(playerid);
         }
     }
@@ -171,7 +171,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 {
     if (clickedid == Text:INVALID_TEXT_DRAW && pInventoryOpened[playerid])
-{
+    {
         DestroyPlayerInventory_TD(playerid);
     }
 }
@@ -179,20 +179,20 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 {
     if (pInventoryOpened[playerid])
-{
+    {
         for (new i = 0; i < sizeof pInventoryCategoryButtonsTd[]; i++)
-{
+        {
             if (playertextid == pInventoryCategoryButtonsTd[playerid][i] && pInventoryCurrentSection[playerid] != i)
-{
+            {
                 SetPlayerInventorySection(playerid, i);
                 return Y_HOOKS_BREAK_RETURN_1;
             }
         }
 
         for (new i = 0; i < sizeof pInventoryItems_BgTd[]; i++)
-{
+        {
             if (playertextid == pInventoryItems_BgTd[playerid][i] || playertextid == pInventoryItems_NameTd[playerid][i])
-{
+            {
                 OnPlayerClickInventoryItem(playerid, pInventoryCurrentSection[playerid], i);
                 return Y_HOOKS_BREAK_RETURN_1;
             }
@@ -204,7 +204,7 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
     if (newkeys & KEY_NO && PLAYER_TEMP[playerid][pt_GAME_STATE] == GAME_STATE_NORMAL)
-{
+    {
         PC_EmulateCommand(playerid, "/inventario");
     }
 }
@@ -213,9 +213,9 @@ ClearPlayerInventory(playerid)
 {
     new tmp_pInventoryItems[E_pInventoryItems];
     for (new i = 0; i < INVENTORY_SECTIONS; i++)
-{
+    {
         for (new j = 0; j < MAX_INVENTORY_ITEMS; j++)
-{
+        {
             pInventoryItems[playerid][i][j] = tmp_pInventoryItems;
         }
     }
@@ -224,30 +224,30 @@ ClearPlayerInventory(playerid)
 DestroyPlayerInventoryTextDraws(playerid)
 {
     for (new i = 0; i < sizeof pInventoryCategoryButtonsTd[]; i++)
-{
+    {
         if (pInventoryCategoryButtonsTd[playerid][i] != PlayerText:INVALID_TEXT_DRAW)
-{
+        {
             PlayerTextDrawDestroy(playerid, pInventoryCategoryButtonsTd[playerid][i]);
             pInventoryCategoryButtonsTd[playerid][i] = PlayerText:INVALID_TEXT_DRAW;
         }
     }
 
     for (new i = 0; i < sizeof pInventoryItems_BgTd[]; i++)
-{
+    {
         if (pInventoryItems_BgTd[playerid][i] != PlayerText:INVALID_TEXT_DRAW)
-{
+        {
             PlayerTextDrawDestroy(playerid, pInventoryItems_BgTd[playerid][i]);
             pInventoryItems_BgTd[playerid][i] = PlayerText:INVALID_TEXT_DRAW;
         }
 
         if (pInventoryItems_MdTd[playerid][i] != PlayerText:INVALID_TEXT_DRAW)
-{
+        {
             PlayerTextDrawDestroy(playerid, pInventoryItems_MdTd[playerid][i]);
             pInventoryItems_MdTd[playerid][i] = PlayerText:INVALID_TEXT_DRAW;
         }
 
         if (pInventoryItems_NameTd[playerid][i] != PlayerText:INVALID_TEXT_DRAW)
-{
+        {
             PlayerTextDrawDestroy(playerid, pInventoryItems_NameTd[playerid][i]);
             pInventoryItems_NameTd[playerid][i] = PlayerText:INVALID_TEXT_DRAW;
         }
@@ -258,7 +258,7 @@ GetInventorySectionName(section)
 {
     new name[32] = "general";
     switch (section)
-{
+    {
         case 1: name = "comida";
         case 2: name = "prendas";
         case 3: name = "armas";
@@ -277,14 +277,20 @@ CreatePlayerInventoryTextDraws(playerid)
 
     new Float:headerSizeX = (invSizeX / INVENTORY_SECTIONS);
     for (new i = 0; i < INVENTORY_SECTIONS; i++)
-{
+    {
         new name[32];
         format(name, sizeof name, "%s", GetInventorySectionName(i));
         format(name, sizeof name, "%c%s", toupper(name[0]), name[1]);
 
         pInventoryCategoryButtonsTd[playerid][i] = CreatePlayerTextDraw(playerid, currentX + (headerSizeX / 2.0), currentY, name);
-        PlayerTextDrawLetterSize(playerid, pInventoryCategoryButtonsTd[playerid][i], INVENTORY_LETTER_PROPORTION * (INVENTORY_HEADERS_SIZE_Y / 10.0), INVENTORY_HEADERS_SIZE_Y / 10.0);
-        PlayerTextDrawTextSize(playerid, pInventoryCategoryButtonsTd[playerid][i], INVENTORY_HEADERS_SIZE_Y, headerSizeX);
+        PlayerTextDrawLetterSize(playerid,
+            pInventoryCategoryButtonsTd[playerid][i],
+            INVENTORY_LETTER_PROPORTION * (INVENTORY_HEADERS_SIZE_Y / 10.0),
+        INVENTORY_HEADERS_SIZE_Y / 10.0);
+        PlayerTextDrawTextSize(playerid,
+            pInventoryCategoryButtonsTd[playerid][i],
+            INVENTORY_HEADERS_SIZE_Y,
+        headerSizeX);
         PlayerTextDrawAlignment(playerid, pInventoryCategoryButtonsTd[playerid][i], 2);
         PlayerTextDrawColor(playerid, pInventoryCategoryButtonsTd[playerid][i], pInventoryCurrentSection[playerid] == i ? INVENTORY_SELECTED_TEXT_COLOR : INVENTORY_TEXT_COLOR);
         PlayerTextDrawSetShadow(playerid, pInventoryCategoryButtonsTd[playerid][i], 0);
@@ -296,7 +302,6 @@ CreatePlayerInventoryTextDraws(playerid)
         currentX += headerSizeX;
     }
 
-
     //item
     currentX = invPosX + INVENTORY_DEFAULT_MARGIN;
     currentY += INVENTORY_HEADERS_SIZE_Y + INVENTORY_DEFAULT_MARGIN;
@@ -304,9 +309,12 @@ CreatePlayerInventoryTextDraws(playerid)
 
     new counter = 0;
     for (new i = 0; i < MAX_INVENTORY_ITEMS; i++)
-{
+    {
         pInventoryItems_BgTd[playerid][i] = CreatePlayerTextDraw(playerid, currentX, currentY, "LD_SPAC:white");
-        PlayerTextDrawTextSize(playerid, pInventoryItems_BgTd[playerid][i], INVENTORY_ITEM_SIZE_X, INVENTORY_ITEM_SIZE_Y);
+        PlayerTextDrawTextSize(playerid,
+            pInventoryItems_BgTd[playerid][i],
+            INVENTORY_ITEM_SIZE_X,
+        INVENTORY_ITEM_SIZE_Y);
         PlayerTextDrawAlignment(playerid, pInventoryItems_BgTd[playerid][i], 1);
         PlayerTextDrawColor(playerid, pInventoryItems_BgTd[playerid][i], INVENTORY_ITEM_COLOR);
         PlayerTextDrawSetShadow(playerid, pInventoryItems_BgTd[playerid][i], 0);
@@ -316,7 +324,10 @@ CreatePlayerInventoryTextDraws(playerid)
         PlayerTextDrawSetSelectable(playerid, pInventoryItems_BgTd[playerid][i], true);
 
         pInventoryItems_MdTd[playerid][i] = CreatePlayerTextDraw(playerid, currentX + INVENTORY_DEFAULT_PADDING, currentY + INVENTORY_DEFAULT_PADDING, "");
-        PlayerTextDrawTextSize(playerid, pInventoryItems_MdTd[playerid][i], INVENTORY_ITEM_SIZE_X - (INVENTORY_DEFAULT_PADDING * 2.0), INVENTORY_ITEM_SIZE_Y - (INVENTORY_DEFAULT_PADDING * 2.0));
+        PlayerTextDrawTextSize(playerid,
+            pInventoryItems_MdTd[playerid][i],
+            INVENTORY_ITEM_SIZE_X - (INVENTORY_DEFAULT_PADDING * 2.0),
+        INVENTORY_ITEM_SIZE_Y - (INVENTORY_DEFAULT_PADDING * 2.0));
         PlayerTextDrawAlignment(playerid, pInventoryItems_MdTd[playerid][i], 1);
         PlayerTextDrawColor(playerid, pInventoryItems_MdTd[playerid][i], -1);
         PlayerTextDrawSetShadow(playerid, pInventoryItems_MdTd[playerid][i], 0);
@@ -327,13 +338,13 @@ CreatePlayerInventoryTextDraws(playerid)
 
         counter++;
         if (counter >= invItemsPerRow)
-{
+        {
             counter = 0;
             currentX = invPosX + INVENTORY_DEFAULT_MARGIN;
             currentY += INVENTORY_ITEM_SIZE_Y + INVENTORY_DEFAULT_MARGIN;
         }
         else
-{
+        {
             currentX += INVENTORY_ITEM_SIZE_X + INVENTORY_DEFAULT_MARGIN;
         }
     }
@@ -343,10 +354,16 @@ CreatePlayerInventoryTextDraws(playerid)
 
     counter = 0;
     for (new i = 0; i < MAX_INVENTORY_ITEMS; i++)
-{
+    {
         pInventoryItems_NameTd[playerid][i] = CreatePlayerTextDraw(playerid, currentX + (INVENTORY_ITEM_SIZE_X / 2.0), currentY, "_");
-        PlayerTextDrawLetterSize(playerid, pInventoryItems_NameTd[playerid][i], INVENTORY_LETTER_PROPORTION * (INVENTORY_PLACEHOLDERS_SIZE_Y / 10.0), INVENTORY_PLACEHOLDERS_SIZE_Y / 10.0);
-        PlayerTextDrawTextSize(playerid, pInventoryItems_NameTd[playerid][i], INVENTORY_ITEM_SIZE_Y - 4.0, INVENTORY_ITEM_SIZE_X);
+        PlayerTextDrawLetterSize(playerid,
+            pInventoryItems_NameTd[playerid][i],
+            INVENTORY_LETTER_PROPORTION * (INVENTORY_PLACEHOLDERS_SIZE_Y / 10.0),
+        INVENTORY_PLACEHOLDERS_SIZE_Y / 10.0);
+        PlayerTextDrawTextSize(playerid,
+            pInventoryItems_NameTd[playerid][i],
+            INVENTORY_ITEM_SIZE_Y - 4.0,
+        INVENTORY_ITEM_SIZE_X);
         PlayerTextDrawAlignment(playerid, pInventoryItems_NameTd[playerid][i], 2);
         PlayerTextDrawColor(playerid, pInventoryItems_NameTd[playerid][i], 0xFFFFFF00);
         PlayerTextDrawSetShadow(playerid, pInventoryItems_NameTd[playerid][i], 0);
@@ -358,13 +375,13 @@ CreatePlayerInventoryTextDraws(playerid)
         counter++;
 
         if (counter >= invItemsPerRow)
-{
+        {
             counter = 0;
             currentX = invPosX + INVENTORY_DEFAULT_MARGIN;
             currentY += INVENTORY_ITEM_SIZE_Y + INVENTORY_DEFAULT_MARGIN;
         }
         else
-{
+        {
             currentX += INVENTORY_ITEM_SIZE_X + INVENTORY_DEFAULT_MARGIN;
         }
     }
@@ -374,11 +391,11 @@ CreatePlayerInventoryTextDraws(playerid)
 SetPlayerInventoryModelsTd(playerid)
 {
     for (new i = 0; i < MAX_INVENTORY_ITEMS; i++)
-{
+    {
         if (pInventoryItems_MdTd[playerid][i] != PlayerText:INVALID_TEXT_DRAW)
-{
+        {
             if (pInventoryItems[playerid][ pInventoryCurrentSection[playerid] ][i][pinv_VALID])
-{
+            {
                 PlayerTextDrawSetPreviewModel(playerid, pInventoryItems_MdTd[playerid][i], pInventoryItems[playerid][ pInventoryCurrentSection[playerid] ][i][pinv_MODELID]);
                 PlayerTextDrawSetPreviewRot(playerid, pInventoryItems_MdTd[playerid][i],
                     pInventoryItems[playerid][ pInventoryCurrentSection[playerid] ][i][pinv_MDL_RX],
@@ -395,7 +412,7 @@ SetPlayerInventoryModelsTd(playerid)
                 PlayerTextDrawSetString(playerid, pInventoryItems_NameTd[playerid][i], td_str);
             }
             else
-{
+            {
                 PlayerTextDrawSetPreviewModel(playerid, pInventoryItems_MdTd[playerid][i], 19300);
                 PlayerTextDrawSetPreviewRot(playerid, pInventoryItems_MdTd[playerid][i], 0.0, 0.0, 0.0, 0.0);
                 PlayerTextDrawShow(playerid, pInventoryItems_MdTd[playerid][i]);
@@ -409,7 +426,7 @@ SetPlayerInventorySection(playerid, section)
 {
     pInventoryCurrentSection[playerid] = section;
     for (new i = 0; i < sizeof pInventoryCategoryButtonsTd[]; i++)
-{
+    {
         PlayerTextDrawColor(playerid, pInventoryCategoryButtonsTd[playerid][i], pInventoryCurrentSection[playerid] == i ? INVENTORY_SELECTED_TEXT_COLOR : INVENTORY_TEXT_COLOR);
         PlayerTextDrawShow(playerid, pInventoryCategoryButtonsTd[playerid][i]);
     }
@@ -425,7 +442,7 @@ SeedPlayerInventory(playerid)
     //GENERAL
     //dinero
     if (counter < MAX_INVENTORY_ITEMS)
-{
+    {
         pInventoryItems[playerid][0][counter][pinv_VALID] = true;
         format(pInventoryItems[playerid][0][counter][pinv_NAME], 64, "%s$", number_format_thousand(PI[playerid][ac_CASH]));
         pInventoryItems[playerid][0][counter][pinv_MODELID] = 1212;
@@ -440,7 +457,7 @@ SeedPlayerInventory(playerid)
     }
 
     if (PI[playerid][ac_COINS] != 0 && counter < MAX_INVENTORY_ITEMS)
-{
+    {
         pInventoryItems[playerid][0][counter][pinv_VALID] = true;
         format(pInventoryItems[playerid][0][counter][pinv_NAME], 64, "%s "SERVER_COIN"", number_format_thousand(PI[playerid][ac_COINS]));
         pInventoryItems[playerid][0][counter][pinv_MODELID] = 19941;
@@ -454,7 +471,7 @@ SeedPlayerInventory(playerid)
     }
 
     if (PI[playerid][ac_DRIVE_LICENSE_POINTS] != 0 && counter < MAX_INVENTORY_ITEMS)
-{
+    {
         pInventoryItems[playerid][0][counter][pinv_VALID] = true;
         format(pInventoryItems[playerid][0][counter][pinv_NAME], 64, "Licencia de conducir (%d puntos)", PI[playerid][ac_DRIVE_LICENSE_POINTS]);
         pInventoryItems[playerid][0][counter][pinv_MODELID] = 19792;
@@ -468,7 +485,7 @@ SeedPlayerInventory(playerid)
     }
 
     if (PI[playerid][ac_PHONE_NUMBER] && counter < MAX_INVENTORY_ITEMS)
-{
+    {
         pInventoryItems[playerid][0][counter][pinv_VALID] = true;
         format(pInventoryItems[playerid][0][counter][pinv_NAME], 64, "Teléfono (%s)", number_format_thousand(PI[playerid][ac_PHONE_NUMBER]));
         pInventoryItems[playerid][0][counter][pinv_MODELID] = 18868;
@@ -482,7 +499,7 @@ SeedPlayerInventory(playerid)
     }
 
     if (PI[playerid][ac_GPS] && counter < MAX_INVENTORY_ITEMS)
-{
+    {
         pInventoryItems[playerid][0][counter][pinv_VALID] = true;
         format(pInventoryItems[playerid][0][counter][pinv_NAME], 64, "GPS");
         pInventoryItems[playerid][0][counter][pinv_MODELID] = 18875;
@@ -496,7 +513,7 @@ SeedPlayerInventory(playerid)
     }
 
     if (PI[playerid][ac_MP3] && counter < MAX_INVENTORY_ITEMS)
-{
+    {
         pInventoryItems[playerid][0][counter][pinv_VALID] = true;
         format(pInventoryItems[playerid][0][counter][pinv_NAME], 64, "MP3");
         pInventoryItems[playerid][0][counter][pinv_MODELID] = 18867;
@@ -510,7 +527,7 @@ SeedPlayerInventory(playerid)
     }
 
     if (PI[playerid][ac_PHONE_RESOLVER] && counter < MAX_INVENTORY_ITEMS)
-{
+    {
         pInventoryItems[playerid][0][counter][pinv_VALID] = true;
         format(pInventoryItems[playerid][0][counter][pinv_NAME], 64, "Guía telefónica");
         pInventoryItems[playerid][0][counter][pinv_MODELID] = 1239;
@@ -524,7 +541,7 @@ SeedPlayerInventory(playerid)
     }
 
     if (PI[playerid][ac_SPEAKERS] && counter < MAX_INVENTORY_ITEMS)
-{
+    {
         pInventoryItems[playerid][0][counter][pinv_VALID] = true;
         format(pInventoryItems[playerid][0][counter][pinv_NAME], 64, "Altavoces");
         pInventoryItems[playerid][0][counter][pinv_MODELID] = 2226;
@@ -538,7 +555,7 @@ SeedPlayerInventory(playerid)
     }
 
     if (PI[playerid][ac_MECHANIC_PIECES] && counter < MAX_INVENTORY_ITEMS)
-{
+    {
         pInventoryItems[playerid][0][counter][pinv_VALID] = true;
         format(pInventoryItems[playerid][0][counter][pinv_NAME], 64, "Piezas de mecánico (%s)", number_format_thousand(PI[playerid][ac_MECHANIC_PIECES]));
         pInventoryItems[playerid][0][counter][pinv_MODELID] = 1020;
@@ -551,7 +568,7 @@ SeedPlayerInventory(playerid)
     }
 
     if (PI[playerid][ac_FUEL_DRUM] && counter < MAX_INVENTORY_ITEMS)
-{
+    {
         pInventoryItems[playerid][0][counter][pinv_VALID] = true;
         format(pInventoryItems[playerid][0][counter][pinv_NAME], 64, "Bidón de gasolina (%s Litros)", number_format_thousand(PI[playerid][ac_FUEL_DRUM]));
         pInventoryItems[playerid][0][counter][pinv_MODELID] = 1650;
@@ -564,7 +581,7 @@ SeedPlayerInventory(playerid)
     }
 
     if (PI[playerid][ac_SEED_MEDICINE] && counter < MAX_INVENTORY_ITEMS)
-{
+    {
         pInventoryItems[playerid][0][counter][pinv_VALID] = true;
         format(pInventoryItems[playerid][0][counter][pinv_NAME], 64, "Semillas de medicina (%sg)", number_format_thousand(PI[playerid][ac_SEED_MEDICINE]));
         pInventoryItems[playerid][0][counter][pinv_MODELID] = 2060;
@@ -577,7 +594,7 @@ SeedPlayerInventory(playerid)
     }
 
     if (PI[playerid][ac_SEED_CANNABIS] && counter < MAX_INVENTORY_ITEMS)
-{
+    {
         pInventoryItems[playerid][0][counter][pinv_VALID] = true;
         format(pInventoryItems[playerid][0][counter][pinv_NAME], 64, "Semillas de marihuana (%sg)", number_format_thousand(PI[playerid][ac_SEED_CANNABIS]));
         pInventoryItems[playerid][0][counter][pinv_MODELID] = 2060;
@@ -590,7 +607,7 @@ SeedPlayerInventory(playerid)
     }
 
     if (PI[playerid][ac_SEED_CRACK] && counter < MAX_INVENTORY_ITEMS)
-{
+    {
         pInventoryItems[playerid][0][counter][pinv_VALID] = true;
         format(pInventoryItems[playerid][0][counter][pinv_NAME], 64, "Semillas de coca (%sg)", number_format_thousand(PI[playerid][ac_SEED_CRACK]));
         pInventoryItems[playerid][0][counter][pinv_MODELID] = 2060;
@@ -603,7 +620,7 @@ SeedPlayerInventory(playerid)
     }
 
     if (PI[playerid][ac_MEDICINE] && counter < MAX_INVENTORY_ITEMS)
-{
+    {
         pInventoryItems[playerid][0][counter][pinv_VALID] = true;
         format(pInventoryItems[playerid][0][counter][pinv_NAME], 64, "Medicamentos (%sg)", number_format_thousand(PI[playerid][ac_MEDICINE]));
         pInventoryItems[playerid][0][counter][pinv_MODELID] = 11736;
@@ -617,18 +634,28 @@ SeedPlayerInventory(playerid)
         pInventoryItems[playerid][0][counter][pinv_BUTTONS][2] = INV_BUTTON_TYPE_SELL;
         pInventoryItems[playerid][0][counter][pinv_BUTTONS][3] = INV_BUTTON_TYPE_THROW;
         if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_NORMAL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK)
-{
+        {
             new vehicleid = GetPlayerCameraTargetVehicle(playerid);
-            if (vehicleid != INVALID_VEHICLE_ID && PLAYER_VEHICLES[vehicleid][player_vehicle_VALID] && PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
-{
+            if (
+                vehicleid != INVALID_VEHICLE_ID &&
+                PLAYER_VEHICLES[vehicleid][player_vehicle_VALID] &&
+            PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
+            {
                 pInventoryItems[playerid][0][counter][pinv_BUTTONS][4] = INV_BUTTON_TYPE_SAVE;
             }
         }
         else if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_OWN_PROPERTY)
-{
+        {
             new index = GetPropertyIndexByID(PI[playerid][ac_LOCAL_INTERIOR]);
-            if (index != -1 && PROPERTY_INFO[index][property_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID] && IsPlayerInRangeOfPoint(playerid, NEARS_PLAYERS_DISTANCE, PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_X], PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_Y], PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_Z]))
-{
+            if (
+                index != -1 &&
+                PROPERTY_INFO[index][property_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID] &&
+                IsPlayerInRangeOfPoint(playerid,
+                NEARS_PLAYERS_DISTANCE,
+                PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_X],
+                PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_Y],
+            PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_Z]))
+            {
                 pInventoryItems[playerid][0][counter][pinv_BUTTONS][4] = INV_BUTTON_TYPE_SAVE;
             }
         }
@@ -636,7 +663,7 @@ SeedPlayerInventory(playerid)
     }
 
     if (PI[playerid][ac_CANNABIS] && counter < MAX_INVENTORY_ITEMS)
-{
+    {
         pInventoryItems[playerid][0][counter][pinv_VALID] = true;
         format(pInventoryItems[playerid][0][counter][pinv_NAME], 64, "Marihuana (%sg)", number_format_thousand(PI[playerid][ac_CANNABIS]));
         pInventoryItems[playerid][0][counter][pinv_MODELID] = 19896;
@@ -650,18 +677,28 @@ SeedPlayerInventory(playerid)
         pInventoryItems[playerid][0][counter][pinv_BUTTONS][2] = INV_BUTTON_TYPE_SELL;
         pInventoryItems[playerid][0][counter][pinv_BUTTONS][3] = INV_BUTTON_TYPE_THROW;
         if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_NORMAL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK)
-{
+        {
             new vehicleid = GetPlayerCameraTargetVehicle(playerid);
-            if (vehicleid != INVALID_VEHICLE_ID && PLAYER_VEHICLES[vehicleid][player_vehicle_VALID] && PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
-{
+            if (
+                vehicleid != INVALID_VEHICLE_ID &&
+                PLAYER_VEHICLES[vehicleid][player_vehicle_VALID] &&
+            PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
+            {
                 pInventoryItems[playerid][0][counter][pinv_BUTTONS][4] = INV_BUTTON_TYPE_SAVE;
             }
         }
         else if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_OWN_PROPERTY)
-{
+        {
             new index = GetPropertyIndexByID(PI[playerid][ac_LOCAL_INTERIOR]);
-            if (index != -1 && PROPERTY_INFO[index][property_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID] && IsPlayerInRangeOfPoint(playerid, NEARS_PLAYERS_DISTANCE, PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_X], PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_Y], PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_Z]))
-{
+            if (
+                index != -1 &&
+                PROPERTY_INFO[index][property_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID] &&
+                IsPlayerInRangeOfPoint(playerid,
+                NEARS_PLAYERS_DISTANCE,
+                PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_X],
+                PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_Y],
+            PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_Z]))
+            {
                 pInventoryItems[playerid][0][counter][pinv_BUTTONS][4] = INV_BUTTON_TYPE_SAVE;
             }
         }
@@ -669,7 +706,7 @@ SeedPlayerInventory(playerid)
     }
 
     if (PI[playerid][ac_CRACK] && counter < MAX_INVENTORY_ITEMS)
-{
+    {
         pInventoryItems[playerid][0][counter][pinv_VALID] = true;
         format(pInventoryItems[playerid][0][counter][pinv_NAME], 64, "Crack (%sg)", number_format_thousand(PI[playerid][ac_CRACK]));
         pInventoryItems[playerid][0][counter][pinv_MODELID] = 1575;
@@ -683,18 +720,28 @@ SeedPlayerInventory(playerid)
         pInventoryItems[playerid][0][counter][pinv_BUTTONS][2] = INV_BUTTON_TYPE_SELL;
         pInventoryItems[playerid][0][counter][pinv_BUTTONS][3] = INV_BUTTON_TYPE_THROW;
         if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_NORMAL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK)
-{
+        {
             new vehicleid = GetPlayerCameraTargetVehicle(playerid);
-            if (vehicleid != INVALID_VEHICLE_ID && PLAYER_VEHICLES[vehicleid][player_vehicle_VALID] && PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
-{
+            if (
+                vehicleid != INVALID_VEHICLE_ID &&
+                PLAYER_VEHICLES[vehicleid][player_vehicle_VALID] &&
+            PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
+            {
                 pInventoryItems[playerid][0][counter][pinv_BUTTONS][4] = INV_BUTTON_TYPE_SAVE;
             }
         }
         else if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_OWN_PROPERTY)
-{
+        {
             new index = GetPropertyIndexByID(PI[playerid][ac_LOCAL_INTERIOR]);
-            if (index != -1 && PROPERTY_INFO[index][property_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID] && IsPlayerInRangeOfPoint(playerid, NEARS_PLAYERS_DISTANCE, PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_X], PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_Y], PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_Z]))
-{
+            if (
+                index != -1 &&
+                PROPERTY_INFO[index][property_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID] &&
+                IsPlayerInRangeOfPoint(playerid,
+                NEARS_PLAYERS_DISTANCE,
+                PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_X],
+                PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_Y],
+            PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_Z]))
+            {
                 pInventoryItems[playerid][0][counter][pinv_BUTTONS][4] = INV_BUTTON_TYPE_SAVE;
             }
         }
@@ -702,7 +749,7 @@ SeedPlayerInventory(playerid)
     }
 
     if (PI[playerid][ac_MECHANIC_KITS] && counter < MAX_INVENTORY_ITEMS)
-{
+    {
         pInventoryItems[playerid][0][counter][pinv_VALID] = true;
         format(pInventoryItems[playerid][0][counter][pinv_NAME], 64, "Kits de reparación (%s)", number_format_thousand(PI[playerid][ac_MECHANIC_KITS]));
         pInventoryItems[playerid][0][counter][pinv_MODELID] = 19921;
@@ -714,10 +761,10 @@ SeedPlayerInventory(playerid)
         pInventoryItems[playerid][0][counter][pinv_BUTTONS][0] = INV_BUTTON_TYPE_GIVE;
         pInventoryItems[playerid][0][counter][pinv_BUTTONS][1] = INV_BUTTON_TYPE_THROW;
         if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_NORMAL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK)
-{
+        {
             new vehicleid = GetPlayerCameraTargetVehicle(playerid);
             if (vehicleid != INVALID_VEHICLE_ID)
-{
+            {
                 pInventoryItems[playerid][0][counter][pinv_BUTTONS][2] = INV_BUTTON_TYPE_USE;
             }
         }
@@ -725,7 +772,7 @@ SeedPlayerInventory(playerid)
     }
 
     if (PI[playerid][ac_MEDICAL_KITS] && counter < MAX_INVENTORY_ITEMS)
-{
+    {
         pInventoryItems[playerid][0][counter][pinv_VALID] = true;
         format(pInventoryItems[playerid][0][counter][pinv_NAME], 64, "Botiquines (%s)", number_format_thousand(PI[playerid][ac_MEDICAL_KITS]));
         pInventoryItems[playerid][0][counter][pinv_MODELID] = 11738;
@@ -819,32 +866,32 @@ ShowPlayerInventory_TD(playerid)
     pInventoryOpened[playerid] = true;
 
     for (new i = 0; i < sizeof inventoryBaseTds; i++)
-{
+    {
         TextDrawShowForPlayer(playerid, inventoryBaseTds[i]);
     }
 
     for (new i = 0; i < sizeof pInventoryCategoryButtonsTd[]; i++)
-{
+    {
         if (pInventoryCategoryButtonsTd[playerid][i] != PlayerText:INVALID_TEXT_DRAW)
-{
+        {
             PlayerTextDrawShow(playerid, pInventoryCategoryButtonsTd[playerid][i]);
         }
     }
 
     for (new i = 0; i < sizeof pInventoryItems_BgTd[]; i++)
-{
+    {
         if (pInventoryItems_BgTd[playerid][i] != PlayerText:INVALID_TEXT_DRAW)
-{
+        {
             PlayerTextDrawShow(playerid, pInventoryItems_BgTd[playerid][i]);
         }
 
         if (pInventoryItems_MdTd[playerid][i] != PlayerText:INVALID_TEXT_DRAW)
-{
+        {
             PlayerTextDrawShow(playerid, pInventoryItems_MdTd[playerid][i]);
         }
 
         if (pInventoryItems_NameTd[playerid][i] != PlayerText:INVALID_TEXT_DRAW)
-{
+        {
             PlayerTextDrawShow(playerid, pInventoryItems_NameTd[playerid][i]);
         }
     }
@@ -855,7 +902,7 @@ DestroyPlayerInventory_TD(playerid)
 {
     ClearPlayerInventory(playerid);
     for (new i = 0; i < sizeof inventoryBaseTds; i++)
-{
+    {
         TextDrawHideForPlayer(playerid, inventoryBaseTds[i]);
     }
     DestroyPlayerInventoryTextDraws(playerid);
@@ -866,17 +913,18 @@ DestroyPlayerInventory_TD(playerid)
 CMD:inventario(playerid, params[])
 {
     if (!pInventoryOpened[playerid])
-{
+    {
         if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_JAIL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_ARRESTED) return SendClientMessage(playerid, -1, "{"#SILVER_COLOR"}Ahora no puedes abrir el inventario.");
         SelectTextDrawEx(playerid, INVENTORY_SELECT_TEXTDRAW_COLOR);
         ShowPlayerInventory_TD(playerid);
     }
     else
-{
+    {
         CancelSelectTextDrawEx(playerid);
     }
     return 1;
 }
+
 alias:inventario("inv")
 
 IsInventoryOpened(playerid)
@@ -887,11 +935,11 @@ IsInventoryOpened(playerid)
 OnPlayerClickInventoryItem(playerid, section, index)
 {
     if (pInventoryItems[playerid][section][index][pinv_VALID])
-{
+    {
         pInventorySelectedItem[playerid] = pInventoryItems[playerid][section][index];
         CancelSelectTextDrawEx(playerid);
         switch (pInventoryItems[playerid][section][index][pinv_TYPE])
-{
+        {
             case INV_TYPE_POCKET: {
                 PLAYER_TEMP[playerid][pt_DIALOG_RESPONDED] = false;
                 PLAYER_TEMP[playerid][pt_DIALOG_ID] = DIALOG_PLAYER_POCKET;
@@ -913,7 +961,7 @@ OnPlayerClickInventoryItem(playerid, section, index)
         }
     }
     else
-{
+    {
         SendClientMessageEx(playerid, -1, "{"#RED_COLOR"}Espacio vacío.");
     }
 }
@@ -922,19 +970,20 @@ ShowInvActionsButtonsDialog(playerid)
 {
     new dialog_body[64 * MAX_INVENTORY_BUTTONS] = "", counter = 0;
     if (pInventorySelectedItem[playerid][pinv_VALID])
-{
+    {
         for (new i = 0; i < MAX_INVENTORY_BUTTONS; i++)
-{
+        {
             if (pInventorySelectedItem[playerid][pinv_BUTTONS][i] != INV_BUTTON_TYPE_NONE)
-{
+            {
                 switch (pInventorySelectedItem[playerid][pinv_BUTTONS][i])
-{
+                {
                     case INV_BUTTON_TYPE_USE: strcat(dialog_body, "- Usar\n");
                     case INV_BUTTON_TYPE_GIVE: strcat(dialog_body, "- Dar\n");
                     case INV_BUTTON_TYPE_SELL: strcat(dialog_body, "- Vender\n");
                     case INV_BUTTON_TYPE_SHOW: strcat(dialog_body, "- Mostrar\n");
                     case INV_BUTTON_TYPE_THROW: strcat(dialog_body, "- Tirar\n");
                     case INV_BUTTON_TYPE_SAVE: strcat(dialog_body, "- Guardar en el maletero/armario\n");
+                    default: return 1;
                 }
                 counter++;
             }
@@ -942,26 +991,27 @@ ShowInvActionsButtonsDialog(playerid)
     }
 
     if (counter > 0)
-{
+    {
         PLAYER_TEMP[playerid][pt_DIALOG_RESPONDED] = false;
         PLAYER_TEMP[playerid][pt_DIALOG_ID] = DIALOG_INV_ACTIONS;
         ShowPlayerDialog(playerid, DIALOG_INV_ACTIONS, DIALOG_STYLE_LIST, pInventorySelectedItem[playerid][pinv_NAME], dialog_body, "Continuar", "Cerrar");
     }
+    return 1;
 }
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
     switch (dialogid)
-{
+    {
         case DIALOG_INV_ACTIONS: {
             if (response)
-{
+            {
                 pInventroySelectedButton[playerid] = pInventorySelectedItem[playerid][pinv_BUTTONS][listitem];
                 switch (pInventroySelectedButton[playerid])
-{
+                {
                     case INV_BUTTON_TYPE_USE: {
                         switch (pInventorySelectedItem[playerid][pinv_TYPE])
-{
+                        {
                             case INV_TYPE_PHONE: PC_EmulateCommand(playerid, "/movil");
                             case INV_TYPE_GPS: PC_EmulateCommand(playerid, "/gps");
                             case INV_TYPE_MP3: PC_EmulateCommand(playerid, "/mp3");
@@ -972,10 +1022,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                             case INV_TYPE_CRACK: PC_EmulateCommand(playerid, "/consumir crack");
                             case INV_TYPE_MECHANIC_KITS: PC_EmulateCommand(playerid, "/reparar");
                             case INV_TYPE_MEDICAL_KITS: ShowNearsPlayersToPlayer(playerid, NEAR_PLAYERS_INV_GENERAL);
+                            default: return Y_HOOKS_BREAK_RETURN_1;
                         }
                     }
                     case INV_BUTTON_TYPE_GIVE, INV_BUTTON_TYPE_SELL, INV_BUTTON_TYPE_SHOW: ShowNearsPlayersToPlayer(playerid, NEAR_PLAYERS_INV_GENERAL);
                     case INV_BUTTON_TYPE_THROW, INV_BUTTON_TYPE_SAVE: ShowSelectAmountDialog(playerid, NEAR_PLAYERS_INV_GENERAL);
+                    default: return Y_HOOKS_BREAK_RETURN_1;
                 }
             }
             return Y_HOOKS_BREAK_RETURN_1;
@@ -987,12 +1039,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 hook OnNearPlayerSelected(playerid, to_player, id)
 {
     if (id == NEAR_PLAYERS_INV_GENERAL)
-{
+    {
         switch (pInventroySelectedButton[playerid])
-{
+        {
             case INV_BUTTON_TYPE_USE: {
                 switch (pInventorySelectedItem[playerid][pinv_TYPE])
-{
+                {
                     case INV_TYPE_MEDICAL_KITS: {
                         new command[128];
                         format(command, sizeof command, "/curar %d %d", to_player);
@@ -1004,7 +1056,7 @@ hook OnNearPlayerSelected(playerid, to_player, id)
             case INV_BUTTON_TYPE_SELL: ShowSelectPriceDialog(playerid, NEAR_PLAYERS_INV_GENERAL);
             case INV_BUTTON_TYPE_SHOW: {
                 switch (pInventorySelectedItem[playerid][pinv_TYPE])
-{
+                {
                     case INV_TYPE_DRIVER_LICENSE: {
                         new action[128];
                         format(action, sizeof action, "le muestra su licencia de conducir a %s.", PLAYER_TEMP[to_player][pt_RP_NAME]);
@@ -1023,7 +1075,7 @@ hook OnNearPlayerSelected(playerid, to_player, id)
 hook OnPriceSelected(playerid, price, id)
 {
     if (id == NEAR_PLAYERS_INV_GENERAL)
-{
+    {
         ShowSelectAmountDialog(playerid, NEAR_PLAYERS_INV_GENERAL);
         return Y_HOOKS_BREAK_RETURN_1;
     }
@@ -1033,7 +1085,7 @@ hook OnPriceSelected(playerid, price, id)
 hook OnAmountSelected(playerid, amount, id)
 {
     if (id == NEAR_PLAYERS_INV_GENERAL)
-{
+    {
 
         new
             command[128],
@@ -1041,10 +1093,10 @@ hook OnAmountSelected(playerid, amount, id)
             price = GetNP_PlayerLastPrice(playerid);
 
         switch (pInventroySelectedButton[playerid])
-{
+        {
             case INV_BUTTON_TYPE_GIVE: {
                 switch (pInventorySelectedItem[playerid][pinv_TYPE])
-{
+                {
                     case INV_TYPE_MONEY: format(command, sizeof command, "/dar dinero %d %d", to_player, amount);
                     case INV_TYPE_MEDICINE: format(command, sizeof command, "/dar medicamentos %d %d", to_player, amount);
                     case INV_TYPE_CANNABIS: format(command, sizeof command, "/dar marihuana %d %d", to_player, amount);
@@ -1055,7 +1107,7 @@ hook OnAmountSelected(playerid, amount, id)
             }
             case INV_BUTTON_TYPE_SELL: {
                 switch (pInventorySelectedItem[playerid][pinv_TYPE])
-{
+                {
                     case INV_TYPE_COINS: format(command, sizeof command, "/vender coins %d %d %d", to_player, amount, price);
                     case INV_TYPE_MEDICINE: format(command, sizeof command, "/vender medicamentos %d %d %d", to_player, amount, price);
                     case INV_TYPE_CANNABIS: format(command, sizeof command, "/vender marihuana %d %d %d", to_player, amount, price);
@@ -1064,7 +1116,7 @@ hook OnAmountSelected(playerid, amount, id)
             }
             case INV_BUTTON_TYPE_THROW: {
                 switch (pInventorySelectedItem[playerid][pinv_TYPE])
-{
+                {
                     case INV_TYPE_MONEY: format(command, sizeof command, "/tirar dinero %d", amount);
                     case INV_TYPE_MEDICINE: format(command, sizeof command, "/tirar medicamentos %d", amount);
                     case INV_TYPE_CANNABIS: format(command, sizeof command, "/tirar marihuana %d", amount);
@@ -1075,7 +1127,7 @@ hook OnAmountSelected(playerid, amount, id)
             }
             case INV_BUTTON_TYPE_SAVE: {
                 switch (pInventorySelectedItem[playerid][pinv_TYPE])
-{
+                {
                     case INV_TYPE_MEDICINE: format(command, sizeof command, "/guardar medicamentos %d", amount);
                     case INV_TYPE_CANNABIS: format(command, sizeof command, "/guardar marihuana %d %d", amount);
                     case INV_TYPE_CRACK: format(command, sizeof command, "/guardar crack %d", amount);

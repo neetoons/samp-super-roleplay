@@ -35,23 +35,23 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
         !pCBugging[playerid] &&
         GetPlayerState(playerid) == PLAYER_STATE_ONFOOT
     )
-{
+    {
         new weaponid = GetPlayerWeapon(playerid);
         if (weaponid > 0 && WEAPON_INFO[weaponid][weapon_info_AC_CBUG])
-{
+        {
             if (newkeys & KEY_FIRE)
-{
+            {
                 pCBugLastFiredWeapon[playerid] = gettime();
             }
             else if (newkeys & KEY_CROUCH)
-{
+            {
                 new now = gettime();
                 if (now > PLAYER_AC_INFO[playerid][CHEAT_CBUG][p_ac_info_IMMUNITY])
                 {
                     if ((now - pCBugLastFiredWeapon[playerid]) < 1)
-{
+                    {
                         if (!ac_Info[CHEAT_CBUG][ac_Interval])
-{
+                        {
                             OnPlayerCheatDetected(playerid, CHEAT_CBUG);
                             SetCBugPlayerInfo(playerid);
                         }
@@ -62,7 +62,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
                             PLAYER_AC_INFO[playerid][CHEAT_CBUG][p_ac_info_LAST_DETECTION] = now;
                             if (PLAYER_AC_INFO[playerid][CHEAT_CBUG][p_ac_info_DETECTIONS] >= ac_Info[CHEAT_CBUG][ac_Detections])
-{
+                            {
                                 OnPlayerCheatDetected(playerid, CHEAT_CBUG);
                                 SetCBugPlayerInfo(playerid);
                             }

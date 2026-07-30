@@ -51,9 +51,9 @@ hook OnPlayerDisconnect(playerid, reason)
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
     if (newstate == PLAYER_STATE_SPECTATING || newstate == PLAYER_STATE_WASTED)
-{
+    {
         if (pInKeyPress[playerid])
-{
+        {
             DestroyPlayerKeyPress(playerid);
         }
     }
@@ -63,7 +63,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
     if (pInKeyPress[playerid] && newkeys & KeyPress_Keys[ pKeyPressCurrentKey[playerid] ][keypress_KEY])
-{
+    {
         pKeyPressCurrentTouchs[playerid] ++;
         UpdatePlayerKeyPress(playerid, true);
         return Y_HOOKS_BREAK_RETURN_1;
@@ -96,12 +96,12 @@ SetPlayerKeyPress(playerid, touchs = DEFAULT_KEY_PRESS_TOUCHS)
 UpdatePlayerKeyPress(playerid, bool:callback = false)
 {
     if (pKeyPressCurrentTouchs[playerid] > pKeyPressTouchs[playerid])
-{
+    {
         DestroyPlayerKeyPress(playerid);
         CallLocalFunction("OnPlayerKeyPressFinish", "i", playerid);
     }
     else
-{
+    {
         new Float:percentage = (pKeyPressCurrentTouchs[playerid] * 100.0) / pKeyPressTouchs[playerid];
         if (percentage > 100.0) percentage = 100.0;
 
@@ -110,7 +110,7 @@ UpdatePlayerKeyPress(playerid, bool:callback = false)
         PlayerTextDrawSetString(playerid, pKeyPressTd[playerid], string);
 
         if (callback)
-{
+        {
             CallLocalFunction("OnPlayerKeyPress", "if", playerid, percentage);
         }
     }
@@ -123,7 +123,7 @@ DestroyPlayerKeyPress(playerid)
     pKeyPressCurrentTouchs[playerid] = 0;
     pKeyPressTouchs[playerid] = 0;
     if (pKeyPressTd[playerid] != PlayerText:INVALID_TEXT_DRAW)
-{
+    {
         PlayerTextDrawDestroy(playerid, pKeyPressTd[playerid]);
         pKeyPressTd[playerid] = PlayerText:INVALID_TEXT_DRAW;
     }

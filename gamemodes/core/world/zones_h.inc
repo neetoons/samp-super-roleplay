@@ -25,6 +25,7 @@ enum e_ZONEINFO
     Float:z_MaxY,
     Float:z_MaxZ,
 }
+
 new g_Zones[][e_ZONEINFO] =
 {
     // Indoor zones
@@ -412,6 +413,7 @@ enum enum_SAFE_ZONES
     safe_zone_INTERIOR,
     safe_zone_WORLD,
 }
+
 new SAFE_ZONES[][enum_SAFE_ZONES] =
 {
     {INVALID_STREAMER_ID, 1996.91,    -1449.67,    2056.86,    -1350.719, 0, 0},
@@ -439,7 +441,11 @@ GetPointZone(Float:f_Pos_X, Float:f_Pos_Y, city[], zone[])
 
     for (new i = 0; i < sizeof(g_Cities); i++)
     {
-        if (    (f_Pos_X >= g_Cities[i][z_MinX] && f_Pos_X < g_Cities[i][z_MaxX]) && (f_Pos_Y >= g_Cities[i][z_MinY] && f_Pos_Y < g_Cities[i][z_MaxY]) )
+        if (
+            (f_Pos_X >= g_Cities[i][z_MinX] &&
+            f_Pos_X < g_Cities[i][z_MaxX]) &&
+            (f_Pos_Y >= g_Cities[i][z_MinY] &&
+        f_Pos_Y < g_Cities[i][z_MaxY]))
         {
             format(city, 45, g_Cities[i][z_Name]);
             break;
@@ -448,7 +454,11 @@ GetPointZone(Float:f_Pos_X, Float:f_Pos_Y, city[], zone[])
 
     for (new i = 0; i < sizeof(g_Zones); i++)
     {
-        if (    (f_Pos_X >= g_Zones[i][z_MinX] && f_Pos_X < g_Zones[i][z_MaxX]) && (f_Pos_Y >= g_Zones[i][z_MinY] && f_Pos_Y < g_Zones[i][z_MaxY]) )
+        if (
+            (f_Pos_X >= g_Zones[i][z_MinX] &&
+            f_Pos_X < g_Zones[i][z_MaxX]) &&
+            (f_Pos_Y >= g_Zones[i][z_MinY] &&
+        f_Pos_Y < g_Zones[i][z_MaxY]))
         {
             format(zone, 45, g_Zones[i][z_Name]);
             break;

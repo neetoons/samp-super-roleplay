@@ -4,6 +4,7 @@ enum
     WORK_TYPE_NORMAL,
     WORK_TYPE_FAMILY,
 }
+
 enum _:E_WORKS
 {
     WORK_NONE = 0,
@@ -38,6 +39,7 @@ enum work_info_info
     work_info_TOP_MIN_PRIZE,
     work_info_TOP1_COINS_PRIZE
 }
+
 new work_info[][work_info_info] =
 {
     {WORK_TYPE_NONE, 0, "ninguno",                    false, 0, 0, 0,            0, 0, 0, 0},
@@ -85,6 +87,7 @@ enum obtain_work_coords_info
     Float:obtain_work_MAP_ICON_Y,
     Float:obtain_work_MAP_ICON_Z,
 }
+
 new Float:obtain_work_coords[][obtain_work_coords_info] =
 {
     {false, false, 0.0, 0.0, 0.0, 0,    false, 0, 0.0, 0.0, 0.0},

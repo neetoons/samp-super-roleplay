@@ -26,7 +26,7 @@ new
 hook OnPlayerDisconnect(playerid, reason)
 {
     if (pInjuredTimer[playerid] != -1)
-{
+    {
         KillTimer(pInjuredTimer[playerid]);
         pInjuredTimer[playerid] = -1;
     }
@@ -35,7 +35,7 @@ hook OnPlayerDisconnect(playerid, reason)
 hook OnPlayerSpawn(playerid)
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK)
-{
+    {
         SetPlayerHud(playerid);
         if (PLAYER_TEMP[playerid][pt_GAME_STATE] == GAME_STATE_DEAD) SetPlayerHealthEx(playerid, 60.0);
         SetCameraBehindPlayer(playerid);
@@ -47,7 +47,7 @@ hook OnPlayerSpawn(playerid)
         pInjuredMoving[playerid] = false;
         pInjuredMovingStep[playerid] = 0;
         if (pInjuredTimer[playerid] != -1)
-{
+        {
             KillTimer(pInjuredTimer[playerid]);
             pInjuredTimer[playerid] = -1;
         }
@@ -76,21 +76,21 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 hook OnPlayerUpdate(playerid)
 {
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK)
-{
+    {
         new Keys, ud, lr;
         GetPlayerKeys(playerid, Keys, ud, lr);
         if (ud == KEY_UP /*|| ud == KEY_DOWN || lr == KEY_LEFT || lr == KEY_RIGHT*/)
-{
+        {
             if (!pInjuredMoving[playerid])
-{
+            {
                 pInjuredMoving[playerid] = true;
                 if (pInjuredMovingStep[playerid] == 0) HealthDown(playerid);
             }
         }
         else
-{
+        {
             if (pInjuredMoving[playerid])
-{
+            {
                 pInjuredMoving[playerid] = false;
                 if (pInjuredMovingStep[playerid] == 1) HealthDown(playerid);
             }
@@ -106,21 +106,21 @@ forward HealthDown(playerid);
 public HealthDown(playerid)
 {
     if (pInjuredTimer[playerid] != -1)
-{
+    {
         KillTimer(pInjuredTimer[playerid]);
         pInjuredTimer[playerid] = -1;
     }
 
     if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK)
-{
+    {
         new Float:rx, Float:rz;
         GetPlayerCameraRotation(playerid, rx, rz);
 
         GivePlayerHealthEx(playerid, -0.3);
         if (pInjuredMoving[playerid])
-{
+        {
             switch (pInjuredMovingStep[playerid])
-{
+            {
                 case 0: {
                     ApplyAnimation(playerid, "PED", "CAR_crawloutRHS", 4.1, true, 1, 1, 0, 0, 1);
                     SetPlayerFacingAngle(playerid, rz + 90.0);
@@ -137,7 +137,7 @@ public HealthDown(playerid)
             }
         }
         else
-{
+        {
             ApplyAnimation(playerid, "SWEET", "Sweet_injuredloop", 4.1, true, 0, 0, 0, 0, 1);
             SetPlayerFacingAngle(playerid, rz);
             pInjuredMovingStep[playerid] = 0;

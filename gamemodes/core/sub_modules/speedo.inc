@@ -102,14 +102,14 @@ hook OnPlayerConnect(playerid)
 hook OnPlayerDisconnect(playerid, reason)
 {
     for (new i = 0; i < sizeof pSpeedoTd[]; i++)
-{
+    {
         PlayerTextDrawDestroy(playerid, pSpeedoTd[playerid][i]);
     }
 
     pSpeedoShown[playerid] = false;
     pLastFuelSubtraction[playerid] = 0;
     if (pSpeedoTimer[playerid] != -1)
-{
+    {
         KillTimer(pSpeedoTimer[playerid]);
         pSpeedoTimer[playerid] = -1;
     }
@@ -118,12 +118,12 @@ hook OnPlayerDisconnect(playerid, reason)
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
     if (newstate == PLAYER_STATE_DRIVER)
-{
+    {
         new vehicleid = GetPlayerVehicleID(playerid);
         if (VEHICLE_INFO[GetVehicleModel(vehicleid) - 400][vehicle_info_NORMAL_SPEEDO] && !PLAYER_TEMP[playerid][pt_IN_TUNING_GARAGE]) ShowPlayerSpeedoMeter(playerid);
     }
     else if (oldstate == PLAYER_STATE_DRIVER)
-{
+    {
         HidePlayerSpeedoMeter(playerid);
     }
 }
@@ -134,7 +134,7 @@ ShowPlayerSpeedoMeter(playerid)
     new vehicleid = GetPlayerVehicleID(playerid), modelid = GetVehicleModel(vehicleid);
     if (!VEHICLE_INFO[modelid - 400][vehicle_info_NORMAL_SPEEDO]) return 0;
     if (pSpeedoTimer[playerid] != -1)
-{
+    {
         KillTimer(pSpeedoTimer[playerid]);
         pSpeedoTimer[playerid] = -1;
     }
@@ -150,9 +150,9 @@ ShowPlayerSpeedoMeter(playerid)
     PlayerTextDrawSetString(playerid, pSpeedoTd[playerid][5], "~w~IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
 
     if (!IsInventoryOpened(playerid))
-{
+    {
         for (new i = 0; i < sizeof pSpeedoTd[]; i++)
-{
+        {
             PlayerTextDrawShow(playerid, pSpeedoTd[playerid][i]);
         }
         pSpeedoShown[playerid] = true;
@@ -169,12 +169,12 @@ HidePlayerSpeedoMeter(playerid)
     pLastFuelSubtraction[playerid] = 0;
     pSpeedoShown[playerid] = false;
     if (pSpeedoTimer[playerid] != -1)
-{
+    {
         KillTimer(pSpeedoTimer[playerid]);
         pSpeedoTimer[playerid] = -1;
     }
     for (new i = 0; i < sizeof pSpeedoTd[]; i++)
-{
+    {
         PlayerTextDrawHide(playerid, pSpeedoTd[playerid][i]);
     }
     return 1;
@@ -184,17 +184,17 @@ forward UpdatePlayerSpeedo(playerid, vehicleid, Float:maxvel);
 public UpdatePlayerSpeedo(playerid, vehicleid, Float:maxvel)
 {
     if (!IsInventoryOpened(playerid) && !pSpeedoShown[playerid])
-{
+    {
         for (new i = 0; i < sizeof pSpeedoTd[]; i++)
-{
+        {
             PlayerTextDrawShow(playerid, pSpeedoTd[playerid][i]);
         }
         pSpeedoShown[playerid] = true;
     }
     else if (IsInventoryOpened(playerid) && pSpeedoShown[playerid])
-{
+    {
         for (new i = 0; i < sizeof pSpeedoTd[]; i++)
-{
+        {
             PlayerTextDrawHide(playerid, pSpeedoTd[playerid][i]);
         }
         pSpeedoShown[playerid] = false;
@@ -280,7 +280,10 @@ public UpdatePlayerSpeedo(playerid, vehicleid, Float:maxvel)
     if (start < 33) strins(td_str, "~w~", 3 + start);
     PlayerTextDrawSetString(playerid, pSpeedoTd[playerid][5], td_str);
 
-    GetVehiclePos(vehicleid, GLOBAL_VEHICLES[vehicleid][gb_vehicle_POS][0], GLOBAL_VEHICLES[vehicleid][gb_vehicle_POS][1], GLOBAL_VEHICLES[vehicleid][gb_vehicle_POS][2]);
+    GetVehiclePos(vehicleid,
+        GLOBAL_VEHICLES[vehicleid][gb_vehicle_POS][0],
+        GLOBAL_VEHICLES[vehicleid][gb_vehicle_POS][1],
+    GLOBAL_VEHICLES[vehicleid][gb_vehicle_POS][2]);
     return 1;
 }
 

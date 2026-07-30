@@ -16,7 +16,6 @@
 #endif
 #define player_gps_h_included
 
-
 /* SYSTEM - GPS */
 enum
 {
@@ -50,4 +49,5 @@ enum Player_GPS_Enum
     player_gps_WORLD,
     player_gps_INTERIOR,
 }
+
 new PLAYER_GPS[MAX_PLAYERS][MAX_PLAYER_GPS_SAVES][Player_GPS_Enum];

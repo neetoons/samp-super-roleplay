@@ -37,6 +37,7 @@ enum enum_WEAPON_INFO
     weapon_info_MODEL,
     bool:weapon_info_DROP
 }
+
 new WEAPON_INFO[][enum_WEAPON_INFO] =
 {
     {false, false, false, false, NO_WEAPON, "Puño", 0, 250, -1, false},

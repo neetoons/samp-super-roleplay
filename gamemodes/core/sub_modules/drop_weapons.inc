@@ -44,11 +44,16 @@ hook OnPlayerDeath(playerid, killerid, reason)
 {
     new weaponid = GetPlayerWeapon(playerid);
     if (weaponid > 0)
-{
+    {
         new slot = WEAPON_INFO[weaponid][weapon_info_SLOT], ammo;
         GetPlayerWeaponData(playerid, slot, weaponid, ammo);
-        if (weaponid > 0 && ammo > 0 && WEAPON_INFO[weaponid][weapon_info_DROP] && PLAYER_WEAPONS[playerid][slot][player_weapon_VALID] && PLAYER_WEAPONS[playerid][slot][player_weapon_ID] == weaponid)
-{
+        if (
+            weaponid > 0 &&
+            ammo > 0 &&
+            WEAPON_INFO[weaponid][weapon_info_DROP] &&
+            PLAYER_WEAPONS[playerid][slot][player_weapon_VALID] &&
+            PLAYER_WEAPONS[playerid][slot][player_weapon_ID] == weaponid)
+        {
             RemovePlayerSlotWeapon(playerid, slot, true);
 
             new weaponInfo[E_DroppedWeapons];
@@ -75,32 +80,35 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
     if (newkeys &  KEY_CTRL_BACK)
     {
         if (ACCOUNT_INFO[playerid][ac_STATE] != ROLEPLAY_STATE_CRACK && ACCOUNT_INFO[playerid][ac_STATE] != ROLEPLAY_STATE_JAIL)
-{
+        {
             for (new i = 0; i < DroppedWeapons_Count; i++)
-{
+            {
                 new weaponInfo[E_DroppedWeapons];
                 weaponInfo = DroppedWeapons_Data[i];
 
-                if (GetPlayerInterior(playerid) == weaponInfo[dw_INTERIOR] && GetPlayerVirtualWorld(playerid) == weaponInfo[dw_WORLD] && IsPlayerInRangeOfPoint(playerid, 1.0, weaponInfo[dw_X], weaponInfo[dw_Y], weaponInfo[dw_Z]))
-{
+                if (
+                    GetPlayerInterior(playerid) == weaponInfo[dw_INTERIOR] &&
+                    GetPlayerVirtualWorld(playerid) == weaponInfo[dw_WORLD] &&
+                    IsPlayerInRangeOfPoint(playerid, 1.0, weaponInfo[dw_X], weaponInfo[dw_Y], weaponInfo[dw_Z]))
+                {
                     if (ACCOUNT_INFO[playerid][ac_LEVEL] < 3) SendNotification(playerid, "Deber ser nivel 3 o superior para poder recoger armas del suelo.");
                     else
-{
+                    {
                         new weapon_slot = WEAPON_INFO[ weaponInfo[dw_WEAPONID] ][weapon_info_SLOT];
                         if (PLAYER_WEAPONS[playerid][weapon_slot][player_weapon_ID] != 0)
-{
+                        {
                             SendFormatNotification(playerid, "Para recoger esta arma debes deshacerte de tu \"%s (%d)\"~w~ para tener espacio.", WEAPON_INFO[ PLAYER_WEAPONS[playerid][weapon_slot][player_weapon_ID] ][weapon_info_NAME], weapon_slot);
                         }
                         else
-{
+                        {
                             ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.1, 0, 1, 1, 0, 0, 1);
                             DestroyDynamicObject(weaponInfo[dw_OBJECTID]);
                             DestroyDynamic3DTextLabel(weaponInfo[dw_LABELID]);
                             for (new j = i; j < DroppedWeapons_Count - 1; j++)
-{
-                            DroppedWeapons_Data[j] = DroppedWeapons_Data[j + 1];
-                        }
-                        DroppedWeapons_Count--;
+                            {
+                                DroppedWeapons_Data[j] = DroppedWeapons_Data[j + 1];
+                            }
+                            DroppedWeapons_Count--;
 
                             GivePlayerWeaponEx(playerid, weaponInfo[dw_WEAPONID], weaponInfo[dw_AMMO]);
                             RegisterNewPlayerWeapon(playerid, weapon_slot);

@@ -15,7 +15,8 @@
 // Compilación
 #pragma option -(+
 #pragma option -;+
-#pragma warning disable 239, 203
+#pragma warning disable 239, 23
+//#pragma warning disable 252, 240, 204
 
 // Anti-DeAMX creado por Daniel-Cortez
 @___ww___@();
@@ -206,9 +207,35 @@ L1:
 
 #include "core/color/pallete"
 
+// con problemas--------------------------------------------
+#include "core/sub_modules/notifications"
+#include "core/sub_modules/world_time"
+#include "core/sub_modules/taximeter"
+#include "core/sub_modules/inventary"
+#include "core/sub_modules/nears_players_dialog"
+#include "core/sub_modules/attachobjecttoobjectex"
+#include "core/sub_modules/info_vars"
+#include "core/sub_modules/shield_weapon"
+#include "core/sub_modules/body_weapons"
+#include "core/sub_modules/key_press"
+#include "core/sub_modules/speedo"
+
 // se tiene que modular
+#include "core/dialog/showDialog" // se tiene que modular
+
 #include "core/main/callbacks"
+#include "core/dialog/callbacks_with_dialog" // se tiene que modular
 #include "core/main/functions"
+
+#include "core/dialog/response" // se tiene que modular
+
+#include "core/sub_modules/graffiti"
+#include "core/playerPayDay.inc"
+//jobs
+#include "core/jobs/jobs_best_employees"
+#include "core/jobs/works_tutorials"
+#include "core/jobs/warehouse/work_warehouse"
+#include "core/jobs/deliveryman/work_deliveryman"
 
 /*
 
@@ -244,9 +271,6 @@ Y88b  d88P 888  888  888 Y88b 888      X88
     888       888 "Y888888 888 888  888
 */
 
-#include "core/dialog/showDialog" // se tiene que modular
-#include "core/dialog/response" // se tiene que modular
-
 /*
 
 888b     d888               888          888
@@ -261,39 +285,20 @@ Y88b  d88P 888  888  888 Y88b 888      X88
 */
 
 // se tiene que modular
-#include "core/sub_modules/notifications"
-#include "core/sub_modules/graffiti"
-#include "core/sub_modules/taximeter"
-#include "core/sub_modules/world_time"
-#include "core/sub_modules/body_weapons"
-#include "core/sub_modules/speedo"
-#include "core/sub_modules/nears_players_dialog"
 #include "core/sub_modules/robbery"
 #include "core/sub_modules/hotdogs"
 #include "core/sub_modules/air_speedo"
-#include "core/sub_modules/notifications"
 #include "core/sub_modules/air_veh_fuel"
-#include "core/sub_modules/attachobjecttoobjectex"
-#include "core/sub_modules/info_vars"
 #include "core/sub_modules/furniture_shop"
 #include "core/sub_modules/property_objects"
-#include "core/sub_modules/key_press"
-#include "core/sub_modules/inventary"
 #include "core/sub_modules/injured"
 #include "core/sub_modules/drop_weapons"
 #include "core/sub_modules/visible_items"
 #include "core/sub_modules/boat_repair_points"
 #include "core/sub_modules/ac_anticbug"
 #include "core/sub_modules/ac_afkpos"
-#include "core/sub_modules/shield_weapon"
 #include "core/sub_modules/taser_gun_weapon"
 #include "core/sub_modules/police_pdoor_kick"
-
-//jobs
-#include "core/jobs/jobs_best_employees"
-#include "core/jobs/works_tutorials"
-#include "core/jobs/warehouse/work_warehouse"
-#include "core/jobs/deliveryman/work_deliveryman"
 
 public OnGameModeInit()
 {
@@ -311,17 +316,17 @@ public OnGameModeInit()
     SetTimer("minconnecttime", 60000, 0);
     SetTimer("BajarSegundos", 1000, true );
 
-     for ( new i; i < sizeof MinaInfo; i++ )
-        {
-            MinaInfo[i][w_zone] = CreateDynamicSphere(MinaInfo[i][RocaX], MinaInfo[i][RocaY], MinaInfo[i][RocaZ], 1.5 );
-            MinaInfo[i][w_object] = CreateDynamicObject(1207, MinaInfo[i][RocaX], MinaInfo[i][RocaY], MinaInfo[i][RocaZ], MinaInfo[i][RocaRX], MinaInfo[i][RocaRY], MinaInfo[i][RocaRZ]);
-            SetMinaRoca(MinaInfo[i][w_mina],i);
-            SetTexuraRoca(MinaInfo[i][w_object],MinaInfo[i][w_tipo]);
-            MinaInfo[i][w_use] =
-            MinaInfo[i][w_drop] = false;
-            MinaInfo[i][w_count] = 100;
-            MinaInfo[i][w_time] = 0;
-        }
+    for ( new i; i < sizeof MinaInfo; i++ )
+    {
+           MinaInfo[i][w_zone] = CreateDynamicSphere(MinaInfo[i][RocaX], MinaInfo[i][RocaY], MinaInfo[i][RocaZ], 1.5 );
+           MinaInfo[i][w_object] = CreateDynamicObject(1207, MinaInfo[i][RocaX], MinaInfo[i][RocaY], MinaInfo[i][RocaZ], MinaInfo[i][RocaRX], MinaInfo[i][RocaRY], MinaInfo[i][RocaRZ]);
+           SetMinaRoca(MinaInfo[i][w_mina],i);
+           SetTexuraRoca(MinaInfo[i][w_object],MinaInfo[i][w_tipo]);
+           MinaInfo[i][w_use] =
+           MinaInfo[i][w_drop] = false;
+           MinaInfo[i][w_count] = 100;
+           MinaInfo[i][w_time] = 0;
+    }
 
     ConnectDatabase();
 

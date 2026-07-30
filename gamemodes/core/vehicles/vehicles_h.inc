@@ -78,6 +78,7 @@ enum Global_Vehicles_Info
     Text3D:gb_vehicle_LABEL,
     gb_vehicle_LANDING_GEAR_STATUS
 }
+
 new GLOBAL_VEHICLES[MAX_VEHICLES][Global_Vehicles_Info];
 
 enum Work_Vehicles_Info
@@ -87,6 +88,7 @@ enum Work_Vehicles_Info
     work_vehicle_EXP,
     bool:work_vehicle_NEED_DUTY,
 }
+
 new WORK_VEHICLES[MAX_VEHICLES][Work_Vehicles_Info];
 
 new valid_work_vehicle_colors[] = {84, 63, 91, 63, 102, 65, 105, 72, 110, 93, 121, 93, 12, 95, 23, 1};
@@ -105,6 +107,7 @@ enum San_Andreas_Vehicles_Info
     san_andreas_vehicle_vip,
     san_andreas_vehicle_WORLD,
 }
+
 forward Float:CompressRotation(Float:rotation);
 
 new VEHICLE_COLORS[256] = //SA-MP Wiki
@@ -146,6 +149,7 @@ enum
     VOBJECT_TYPE_COUNTRY_FLAG,
     VOBJECT_TYPE_COUNTRY_PANEL,
 }
+
 enum e_VEHICLE_OBJECTS
 {
     bool:vobject_VALID,
@@ -165,6 +169,7 @@ enum e_VEHICLE_OBJECTS
     vobject_text_BOLD,
     vobject_text_FONT_COLOR,
 }
+
 new VEHICLE_OBJECTS[MAX_VEHICLES][MAX_SU_VOBJECTS][e_VEHICLE_OBJECTS];
 
 /* Tuning Object System */
@@ -175,6 +180,7 @@ enum e_Tuning_Shop_Objects
     tuning_object_NAME[24],
     tuning_object_PRICE,
 }
+
 new Tuning_Shop_Objects[][e_Tuning_Shop_Objects] =
 {
     {1000, "spl_b_mar_m", 3000},
@@ -542,8 +548,6 @@ new San_Andreas_Vehicles[][San_Andreas_Vehicles_Info] =
     {VEHICLE_TYPE_WORK, WORK_DELIVERYMAN, 0, 482, -982.969238, -628.100769, 32.160846, 89.233345, 8, 8, 0, 0},
     {VEHICLE_TYPE_WORK, WORK_DELIVERYMAN, 0, 482, -982.900451, -622.967102, 32.160846, 89.233222, 8, 8, 0, 0}
 };
-
-
 
 new San_Andreas_Barriers[][San_Andreas_Barriers_Info] = // usar VEHICLE_TYPE_NONE para que puedan pasar todos
 {

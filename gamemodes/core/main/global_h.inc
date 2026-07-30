@@ -17,7 +17,6 @@
 #endif
 #define global_h_included
 
-
 new Float:Driving_School_Points[][] =
 {
     {-2046.806640, -78.443099, 35.04331},
@@ -68,9 +67,6 @@ forward OnAmountSelected(playerid, amount, id);
 forward OnPlayerEnterInterior(playerid, index);
 forward OnPlayerExitInterior(playerid, index);
 
-
-
-
 enum e_WOOD
 {
  w_mina,
@@ -89,6 +85,7 @@ enum e_WOOD
     Float:RocaRY,
     Float:RocaRZ
 }
+
 new MinaInfo[][e_WOOD] =
 {
 {1,0,1,INVALID_STREAMER_ID,0,false,false,0,0,610.39233, -47.76829, 790.50641,   0.00000, 0.00000, 0.00000},//Mina A
@@ -186,7 +183,6 @@ new MinaInfo[][e_WOOD] =
 };
 new TimerMensaje[MAX_PLAYERS],PlayerText:MensajeTD[MAX_PLAYERS],TieneRoca[MAX_PLAYERS],TimerMinando[MAX_PLAYERS],TimerSonido[MAX_PLAYERS],ProcesoPicando[MAX_PLAYERS];
 
-
 new RandomColors[] =
 {
     0xFFFFFFFF,
@@ -225,7 +221,6 @@ new RandomColors[] =
 forward OnSanAndreasVehicleLoad(vehicleid);
 forward OnSanAndreasVehiclesLoad();
 
-
 /* RESULT_YOUTUBE */
 #define MAX_RESULTS    10
 enum yt_result
@@ -237,15 +232,10 @@ enum yt_result
 new RESULT_YOUTUBE[MAX_RESULTS][yt_result],
     PLAYER_DIALOG_MP3_RESULT[MAX_PLAYERS][MAX_RESULTS][yt_result];
 
-
 /* SYSTEM - PROPERTIES */
 forward OnDefaultPFurChanged(index);
 
-
-
-
 #define MAX_CLOSET_SLOTS    10
-
 
 //Taxis
 enum TAXI_METER_VEHICLE_Info
@@ -259,9 +249,8 @@ enum TAXI_METER_VEHICLE_Info
     Float:veh_taxi_meter_DISTANCE,
     veh_taxi_meter_TIMER,
 }
+
 new TAXI_METER_VEHICLE[MAX_VEHICLES][TAXI_METER_VEHICLE_Info];
-
-
 
 //Pizzero
 new Float:PIZZA_DELIVERY_POINT[][] =
@@ -299,6 +288,7 @@ enum PIZZA_VEHICLE_Info
     pizza_vehicle_PIZZA_POINT,
     bool:pizza_vehicle_PIZZA_POINT_DELI,
 }
+
 new PIZZA_VEHICLE[MAX_VEHICLES][PIZZA_VEHICLE_Info];
 
 //Camioneros
@@ -325,6 +315,7 @@ enum TRUCK_VEHICLE_Info
     truck_vehicle_TOTAL_POINTS,
     Float:truck_vehicle_TOTAL_DISTANCE
 }
+
 new TRUCK_VEHICLE[MAX_VEHICLES][TRUCK_VEHICLE_Info];
 
 new Float:Truck_Return_Positions[3] =
@@ -341,6 +332,7 @@ enum Truck_Content_Info
     Float:truck_content_Y,
     Float:truck_content_Z
 }
+
 new Truck_Contents[][Truck_Content_Info] =
 {
     {0, "Productos agrícolas", 950, -185.473693, -280.008880, 1.603357},
@@ -375,6 +367,7 @@ enum
     LUMBER_TREE_STATE_CUTTING,
     LUMBER_TREE_STATE_CUTTED,
 }
+
 enum LUMBER_TREES_Info
 {
     lumber_tree_MODELID,
@@ -390,6 +383,7 @@ enum LUMBER_TREES_Info
     lumber_tree_GROW_TIMER,
     lumber_tree_GROW_COUNTER,
 }
+
 new LUMBER_TREES[][LUMBER_TREES_Info] =
 {
     {657, -467.31256, -47.68515, 59.00023,   0.00000, 0.00000, 0.00000, INVALID_STREAMER_ID, Text3D:INVALID_3DTEXT_ID, LUMBER_TREE_STATE_NORMAL, -1, -1},
@@ -416,8 +410,6 @@ new LUMBER_TREES[][LUMBER_TREES_Info] =
 
 /* Basurero */
 
-
-
 enum Trash_Object_Info
 {
     bool:trash_route_VALID,
@@ -432,6 +424,7 @@ enum Trash_Object_Info
     Float:trash_object_RY[MAX_OBJECTS_PER_ROUTE],
     Float:trash_object_RZ[MAX_OBJECTS_PER_ROUTE],
 }
+
 new TRASH_OBJECTS[MAX_ROUTES][Trash_Object_Info];
 new TRASH_PLAYER_OBJECTS[MAX_PLAYERS][MAX_OBJECTS_PER_ROUTE];
 
@@ -443,6 +436,7 @@ enum TRASH_VEHICLES_INFO
     trash_vehicle_DRIVER_ID,
     trash_vehicle_PASSENGER_ID,
 }
+
 new TRASH_VEHICLES[MAX_VEHICLES][TRASH_VEHICLES_INFO];
 
 /* SYSTEM - PLAYERTEMP */
@@ -480,8 +474,6 @@ enum
     MECHANIC_OPTION_PAINTJOB,
 }
 
-
-
 enum enum_JAIL_POSITIONS
 {
     jail_INT,
@@ -491,6 +483,7 @@ enum enum_JAIL_POSITIONS
     Float:jail_ANGLE,
     jail_INTERIOR,
 }
+
 new JAIL_POSITIONS[][enum_JAIL_POSITIONS] =
 {
     {INTERIOR_POLICE_LS, 265.070129, 77.518280, 1001.039062, 270.0, 6}, //jaills
@@ -507,14 +500,13 @@ enum BUY_PROPERTIES_SITES_INFO
     site_WORLD,
     site_INTERIOR,
 }
+
 new BUY_PROPERTIES_SITES[][BUY_PROPERTIES_SITES_INFO] =
 {
     {INTERIOR_BANK_LS, 1396.613403, 1320.551635, 1501.090698, 5, 5},
     {INTERIOR_BANK_SF, 1116.351684, 1540.468750, 1451.827148, 10, 10},
     {INTERIOR_BANK_LV, 2681.990966, -615.470520, -71.658203, 15, 15}
 };
-
-
 
 enum
 {
@@ -526,6 +518,7 @@ enum
     PRODUCT_TYPE_PHONE_RESOLVER,
     PRODUCT_TYPE_SPEAKERS,
 }
+
 enum Supermarket_Enum
 {
     product_TYPE,
@@ -535,6 +528,7 @@ enum Supermarket_Enum
     Float:product_THIRST,
     product_DRUNK,
 }
+
 new Supermarket_Product_List[][Supermarket_Enum] =
 {
     {PRODUCT_TYPE_PHONE, "Teléfono", 350, 0.0, 0.0, 0},
@@ -554,7 +548,6 @@ new Supermarket_Product_List[][Supermarket_Enum] =
     {PRODUCT_TYPE_FOOD, "Whisky", 200, 0.0, 3.0, 3000}
 };
 
-
 enum Clothing_Shop_Info
 {
     clothing_shop_INTERIOR_TYPE,
@@ -565,6 +558,7 @@ enum Clothing_Shop_Info
     Float:clothing_shop_ANGLE,
     clothing_shop_INTERIOR,
 }
+
 new Clothing_Shop_Positions[][Clothing_Shop_Info] =
 {
     {INTERIOR_BINCO, "Binco", 207.733657, -100.633468, 1005.257812, 180.0, 15}, //Binco
@@ -575,7 +569,6 @@ new Clothing_Shop_Positions[][Clothing_Shop_Info] =
     {INTERIOR_ZIP, "ZIP", 161.443634, -83.589271, 1001.804687, 180.0, 18} //Zip
 };
 
-
 enum Fast_Food_Info
 {
     fast_food_INTERIOR_TYPE,
@@ -585,13 +578,13 @@ enum Fast_Food_Info
     Float:fast_food_Z,
     fast_food_INTERIOR,
 }
+
 new Fast_Food_Positions[][Fast_Food_Info] =
 {
     {INTERIOR_BURGER_SHOT, "Burger Shot", 375.913238, -67.435272, 1001.507812, 10}, // BurgerShot
     {INTERIOR_PIZZA, "Well Stacked Pizza", 375.254730, -118.804710, 1001.499511, 5}, //Pizza
     {INTERIOR_CLUCKIN_BELL, "Cluckin Bell", 368.757904, -6.018908, 1001.851562, 9} //Cluckin Bell
 };
-
 
 enum Food_Info
 {
@@ -600,6 +593,7 @@ enum Food_Info
     Float:food_HUNGRY,
     Float:food_THIRST,
 }
+
 new PIZZA_FOOD[][Food_Info] =
 {
     {"Pizza de verduras", 25, 10.0, -0.1},
@@ -690,11 +684,6 @@ new Intro_Audios[][] = {
     "https://files.yourwebsite/audio/intro/intro3.mp3"
 };
 
-
-
-
-
-
 // CONCEPTOS
 enum RuleInfo
 {
@@ -703,14 +692,11 @@ enum RuleInfo
     Rule_Pages,
 }
 
-
 #define MIN_PASS_LENGTH    6
 #define MAX_PASS_LENGTH    18
 
-
 forward OnPlayerRegister(playerid);
 forward OnPlayerLogin(playerid);
-
 
 #define MAX_PLAYER_POCKET_OBJECTS 10
 enum Player_Pocket_Enum
@@ -722,8 +708,8 @@ enum Player_Pocket_Enum
     Float:player_pocket_object_THIRST,
     player_pocket_object_DRUNK,
 }
-new PLAYER_POCKET[MAX_PLAYERS][MAX_PLAYER_POCKET_OBJECTS][Player_Pocket_Enum]; // PP (PlayerPocket)
 
+new PLAYER_POCKET[MAX_PLAYERS][MAX_PLAYER_POCKET_OBJECTS][Player_Pocket_Enum]; // PP (PlayerPocket)
 
 new
     DIALOG_FOOD_PIZZA_String[800],
@@ -738,8 +724,6 @@ new
 
 #define HidePlayerDialog(%1)        ShowPlayerDialog(%1, -1, 0, " ", " ", " ", " ")
 
-
-
 enum enum_BLACK_MARKT_WEAPONS
 {
     black_market_EXP,
@@ -747,6 +731,7 @@ enum enum_BLACK_MARKT_WEAPONS
     black_market_WEAPON_PRICE_BASE,
     black_market_WEAPON_PRICE,
 }
+
 new BLACK_MARKT_WEAPONS[][enum_BLACK_MARKT_WEAPONS] =
 {
     {0, 4, 100, 0},
@@ -766,7 +751,4 @@ new BLACK_MARKT_WEAPONS[][enum_BLACK_MARKT_WEAPONS] =
     {250, 31, 3800, 0},
     {300, 34, 6500, 0}
 };
-
-
-
 

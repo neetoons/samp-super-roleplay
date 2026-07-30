@@ -47,6 +47,7 @@ enum
     INTERIOR_AMAZON,
     INTERIOR_IKEA
 }
+
 enum Enter_Exits
 {
     ee_VISIBLE_ITEMS,
@@ -89,7 +90,6 @@ enum Enter_Exits
     ee_EXT_MAPICON_ID,
     Text3D:ee_INT_LABEL_ID,
     Text3D:ee_EXT_LABEL_ID,
-
 
     ee_INT_PICKUP_ID,    /* No son pickups decorativos */
     ee_EXT_PICKUP_ID,    /* Son pickups para identificar el id */

@@ -30,7 +30,7 @@ new
 hook OnPlayerDisconnect(playerid, reason)
 {
     for (new i = 0; i < MAX_NEARS_PLAYERS; i++)
-{
+    {
         pNearsPlayers[playerid][i] = INVALID_PLAYER_ID;
     }
     pNearsPlayers_ID[playerid] = -1;
@@ -44,14 +44,18 @@ ShowNearsPlayersToPlayer(playerid, id = -1)
     new dialog_body[64 * MAX_NEARS_PLAYERS] = "", counter = 0;
 
     for (new i = 0, j = GetPlayerPoolSize(); i <= j; i++)
-{
+    {
         if (i == playerid) continue;
         if (IsPlayerConnected(i))
-{
+        {
             new Float:pos[3];
             GetPlayerPos(i, pos[0], pos[1], pos[2]);
-            if (IsPlayerInRangeOfPoint(playerid, NEARS_PLAYERS_DISTANCE, pos[0], pos[1], pos[2]) && !PLAYER_TEMP[i][pt_PLAYER_SPECTATE])
-{
+            if (IsPlayerInRangeOfPoint(playerid,
+                NEARS_PLAYERS_DISTANCE,
+                pos[0],
+                pos[1],
+            pos[2]) && !PLAYER_TEMP[i][pt_PLAYER_SPECTATE])
+            {
                 new str[64];
                 format(str, sizeof str, "- [ID: %d] %s\n", i, PLAYER_TEMP[i][pt_RP_NAME]);
                 strcat(dialog_body, str);
@@ -65,7 +69,7 @@ ShowNearsPlayersToPlayer(playerid, id = -1)
     }
 
     if (counter > 0)
-{
+    {
         PLAYER_TEMP[playerid][pt_DIALOG_RESPONDED] = false;
         PLAYER_TEMP[playerid][pt_DIALOG_ID] = DIALOG_NEARS_PLAYERS;
         pNearsPlayers_ID[playerid] = id;
@@ -108,21 +112,21 @@ ShowSelectAmountDialog(playerid, id = -1)
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
     switch (dialogid)
-{
+    {
         case DIALOG_NEARS_PLAYERS: {
             pNearsPlayers_LastSelectedId[playerid] = response ? pNearsPlayers[playerid][listitem] : INVALID_PLAYER_ID;
             if (response)
-{
+            {
                 CallLocalFunction("OnNearPlayerSelected", "iii", playerid, pNearsPlayers_LastSelectedId[playerid], pNearsPlayers_ID[playerid]);
             }
             return Y_HOOKS_BREAK_RETURN_1;
         }
         case DIALOG_NEARS_PLAYERS_PRICE: {
             if (response)
-{
+            {
                 new amount;
                 if (!sscanf(inputtext, "d", amount))
-{
+                {
                     pNearsPlayers_LastPrice[playerid] = amount;
                     CallLocalFunction("OnPriceSelected", "iii", playerid, pNearsPlayers_LastPrice[playerid], pNearsPlayers_ID[playerid]);
                 }
@@ -132,10 +136,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
         }
         case DIALOG_NEARS_PLAYERS_AMOUNT: {
             if (response)
-{
+            {
                 new amount;
                 if (!sscanf(inputtext, "d", amount))
-{
+                {
                     pNearsPlayers_LastAmount[playerid] = amount;
                     CallLocalFunction("OnAmountSelected", "iii", playerid, pNearsPlayers_LastAmount[playerid], pNearsPlayers_ID[playerid]);
                 }

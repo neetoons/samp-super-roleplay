@@ -17,7 +17,6 @@
 #endif
 #define levels_header_included
 
-
 new ADMIN_LEVEL_AC_IMMUNITY = 3; //nivel 3 en adelante
 
 enum
@@ -39,6 +38,7 @@ enum
     CMD_DEVELOPER,
     CMD_DISABLED,
 }
+
 new ADMIN_LEVELS[][] =
 {
     "Ciudadano",

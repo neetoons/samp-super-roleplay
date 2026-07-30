@@ -37,8 +37,6 @@ enum San_Andreas_Barriers_Info
     Float:barrier_PLAYER_Z
 }
 
-
-
 enum VEHICLE_INFO_enum
 {
     bool:vehicle_info_LANDING_GEAR,
@@ -276,7 +274,6 @@ new VEHICLE_INFO[][VEHICLE_INFO_enum] =
     {false, false, false, "UtilityTrailer", 1.0, 1.00, 1000, 1, 0, 0             , 0        , true, true, true, 0, 0} // >>>> No.
 };
 
-
 enum
 {
     BOOT_TYPE_WEAPON,
@@ -292,6 +289,7 @@ enum enum_VEHICLE_BOOT
     vehicle_boot_INT,
     vehicle_boot_INT_EXTRA,
 }
+
 new VEHICLE_BOOT[MAX_VEHICLES][MAX_BOOT_SLOTS][enum_VEHICLE_BOOT];
 
 enum SELL_INFO_VEHICLES_Enum
@@ -305,6 +303,7 @@ enum SELL_INFO_VEHICLES_Enum
     sell_info_COLOR_2,
     sell_info_SHOP,
 }
+
 new SELL_INFO_VEHICLES[][SELL_INFO_VEHICLES_Enum] =
 {
     {400, -1971.730834, 305.717071, 35.281467, 112.761856, -1, -1, 0}, //conce0
@@ -446,4 +445,5 @@ enum SELL_VEHICLES_Enum
     sell_vehicle_VIP_LEVEL,
     Text3D:sell_vehicle_LABEL_ID,
 }
+
 new SELL_VEHICLES[MAX_VEHICLES][SELL_VEHICLES_Enum];

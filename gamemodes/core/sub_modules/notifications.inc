@@ -34,6 +34,7 @@ enum InformationTDN
     Hide,
     Timer
 }
+
 new TextDrawsNotification[MAX_PLAYERS][3][InformationTDN],
     counter_@[MAX_PLAYERS];
 
@@ -319,8 +320,15 @@ stock CreateTDN(playerid, TDN)
 
         TextDrawsNotification[playerid][TDN][TextDraw] = CreatePlayerTextDraw(playerid, 499.000000, TextDrawsNotification[playerid][TDN][MinPosY], TextDrawsNotification[playerid][TDN][Text]);
         PlayerTextDrawFont(playerid, TextDrawsNotification[playerid][TDN][TextDraw], 1);
-        PlayerTextDrawLetterSize(playerid, TextDrawsNotification[playerid][TDN][TextDraw], TD_NOTIFICATION_LETTER_X, TD_NOTIFICATION_LETTER_Y);
-        PlayerTextDrawTextSize(playerid, TextDrawsNotification[playerid][TDN][TextDraw], floatadd(499.000000, 107.0), 1.000000);
+        PlayerTextDrawLetterSize(playerid,
+            TextDrawsNotification[playerid][TDN][TextDraw],
+            TD_NOTIFICATION_LETTER_X,
+        TD_NOTIFICATION_LETTER_Y);
+        PlayerTextDrawTextSize(playerid,
+            TextDrawsNotification[playerid][TDN][TextDraw],
+            floatadd(499.000000,
+            107.0),
+        1.000000);
         PlayerTextDrawSetOutline(playerid, TextDrawsNotification[playerid][TDN][TextDraw], 1);
         PlayerTextDrawSetShadow(playerid, TextDrawsNotification[playerid][TDN][TextDraw], 0);
         PlayerTextDrawAlignment(playerid, TextDrawsNotification[playerid][TDN][TextDraw], 1);
@@ -360,11 +368,11 @@ HideNotifications(playerid)
     for (new cycle; cycle < 3; cycle++)
     {
         if (TextDrawsNotification[playerid][cycle][TextDraw] != PlayerText:-1)
-{
+        {
             PlayerTextDrawDestroy(playerid, TextDrawsNotification[playerid][cycle][TextDraw]);
         }
         if (TextDrawsNotification[playerid][cycle][Timer] != -1)
-{
+        {
             KillTimer(TextDrawsNotification[playerid][cycle][Timer]);
         }
         TextDrawsNotification[playerid][cycle][Use] = 0;

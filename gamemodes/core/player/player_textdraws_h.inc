@@ -41,4 +41,5 @@ enum Player_Textdraws_Enum
     PlayerText:ptextdraw_MESSAGE,
     PlayerText:ptextdraw_HUD[HUD_PTEXTDRAWS_SIZE]
 }
+
 new PlayerTextdraws[MAX_PLAYERS][Player_Textdraws_Enum];

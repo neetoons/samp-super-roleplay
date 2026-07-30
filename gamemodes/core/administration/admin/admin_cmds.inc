@@ -16,7 +16,6 @@
 #endif
 #define admin_cms_included
 
-
 flags:pm(CMD_ADMINISTRATOR)
 flags:settime(CMD_ADMINISTRATOR)
 flags:setweather(CMD_ADMINISTRATOR)

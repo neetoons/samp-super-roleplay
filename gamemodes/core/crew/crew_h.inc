@@ -35,6 +35,7 @@ enum enum_CREW_INFO
     crew_MEMBERS,
     crew_ONLINE_MEMBERS,
 }
+
 new CREW_INFO[MAX_CREWS][enum_CREW_INFO];
 
 #define MAX_TERRITORIES    100
@@ -64,8 +65,8 @@ enum enum_TERRITORIES
     territory_TIMER,
     territory_LAST_ATTACK,
 }
-new TERRITORIES[MAX_TERRITORIES][enum_TERRITORIES];
 
+new TERRITORIES[MAX_TERRITORIES][enum_TERRITORIES];
 
 /*
 Permisos de rangos
@@ -122,6 +123,7 @@ enum enum_CREW_RANK_INFO
     crew_rank_NAME[32],
     crew_rank_PERMISSION[CREW_RANK_SIZE],
 }
+
 new CREW_RANK_INFO[MAX_CREWS][MAX_CREW_RANKS][enum_CREW_RANK_INFO];
 
 forward OnTerritoriesLoaded();

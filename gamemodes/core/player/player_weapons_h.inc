@@ -24,4 +24,5 @@ enum enum_PLAYER_WEAPONS
     player_weapon_ID,
     player_weapon_AMMO,
 }
+
 new PLAYER_WEAPONS[MAX_PLAYERS][20][enum_PLAYER_WEAPONS];

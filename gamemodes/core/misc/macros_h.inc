@@ -29,7 +29,6 @@
 #define HOLDING(%0) \
     ((newkeys & (%0)) == (%0))
 
-
 #define MAX_BAD_LOGIN_ATTEMPS 3    // maximos intentos de contraseñas erroneas
 #define REP_MULTIPLIER 3    //12 rep * nivel para subir, si es nivel 1 necesita 12 rep para subir a nivel 2
 #define TIME_FOR_REP 1500000 // 25 minutos para obtener reputacion
@@ -53,7 +52,6 @@
 #define MAX_SU_VOBJECTS        10
 #define MAX_SU_PROPERTY_OBJECTS 250
 
-
 #define MAX_PLANTS    500
 
 #define MAX_VEHICLE_COMPONENTS    14
@@ -62,7 +60,6 @@ forward Float:GetDistanceBetweenPoints3D(Float:x1, Float:y1, Float:z1, Float:x2,
 forward Float:GetVehicleSpeed(vehicleid);
 forward Float:GetVehicleAirSpeed(vehicleid);
 forward Float:frandom(Float:max, Float:min, dp);
-
 
 #define MAX_TIMERS_PER_PLAYER    (22)
 #define MAX_LISTITEMS            (35)
@@ -99,12 +96,9 @@ forward Float:frandom(Float:max, Float:min, dp);
 #define MIN_TIME_BETWEEN_DOUBT    60
 #define IP_SPAM_MUTE_TIME        5 //minutos
 
-
 #define INTERVAL_HUNGRY_THIRST_DOWN    2 // 2 segundos de timer
 #define THIRST_HOURS_STOPPED    9 // 9 horas parado si agua esta a 100 va a 0
 #define HUNGRY_HOURS_STOPPED    12 // 12 horas parado si alimentacion esta a 100 va a 0
-
-
 
 #define MAX_INTERIOR_ACTORS 10
 enum Interior_Actor_Enum
@@ -145,6 +139,7 @@ IPacket:PLAYER_SYNC(playerid, BitStream:bs)
     BS_WriteOnFootSync(bs, onFootData);
     return 1;
 }
+
 */
 
 const RPC_VehicleDestroy = 136;

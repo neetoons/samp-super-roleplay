@@ -34,7 +34,7 @@ new
 hook OnScriptInit()
 {
     for (new i = 0; i < sizeof AirVehsFuelStations; i++)
-{
+    {
         CreateDynamic3DTextLabel("Usa {"#PRIMARY_COLOR"}/avion {FFFFFF}para ver opciones.", 0xFFFFFFFF, AirVehsFuelStations[i][0], AirVehsFuelStations[i][1], AirVehsFuelStations[i][2], 100.0, .testlos = false, .interiorid = 0, .worldid = 0);
         new areaId = CreateDynamicCylinder(AirVehsFuelStations[i][0], AirVehsFuelStations[i][1], AirVehsFuelStations[i][2] - 10.0, AirVehsFuelStations[i][2] + 10.0, 30.0, 0, 0);
         Streamer_SetArrayData(STREAMER_TYPE_AREA, areaId, E_STREAMER_EXTRA_ID, { AREA_TYPE_AIRVEH_FUEL });
@@ -49,7 +49,7 @@ hook OnPlayerDisconnect(playerid, reason)
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
     if (newstate == PLAYER_STATE_SPECTATING || newstate == PLAYER_STATE_WASTED)
-{
+    {
         DestroyPlayerAirVehRefuelling(playerid);
     }
     return 1;
@@ -58,13 +58,13 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 DestroyPlayerAirVehRefuelling(playerid)
 {
     if (pAirVehFuelingTimer[playerid] != -1)
-{
+    {
         KillTimer(pAirVehFuelingTimer[playerid]);
         pAirVehFuelingTimer[playerid] = -1;
     }
 
     if (pAirVehRefuellingTd[playerid] != PlayerText:INVALID_TEXT_DRAW)
-{
+    {
         PlayerTextDrawDestroy(playerid, pAirVehRefuellingTd[playerid]);
         pAirVehRefuellingTd[playerid] = PlayerText:INVALID_TEXT_DRAW;
     }
@@ -91,7 +91,7 @@ CMD:avion(playerid, params[])
 
     new vehicleid = GetPlayerVehicleID(playerid);
     if (Vehicle_IsPlane(vehicleid) || Vehicle_IsHelicopter(vehicleid))
-{
+    {
         new info[3];
         Streamer_GetArrayData(STREAMER_TYPE_AREA, PLAYER_TEMP[playerid][pt_LAST_AREA_ID], E_STREAMER_EXTRA_ID, info);
         if (info[0] != AREA_TYPE_AIRVEH_FUEL || !IsPlayerInDynamicArea(playerid, PLAYER_TEMP[playerid][pt_LAST_AREA_ID])) return SendNotification(playerid, "No estás en el lugar adecuado.");
@@ -105,7 +105,7 @@ CMD:avion(playerid, params[])
         format(dialog_str, sizeof dialog_str, "1. Rellenar combustible\n2. Reparar (%s$)\n", number_format_thousand(REPAIR_PLANE_PRICE));
 
         if (PLAYER_VEHICLES[vehicleid][player_vehicle_VALID] && PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
-{
+        {
             new string[128];
             format(string, sizeof string, "3. Cambiar color primario (%s$)\n4. Cambiar color secundario (%s$)", number_format_thousand(PAINT_PLANE_PRICE), number_format_thousand(PAINT_PLANE_PRICE));
             strcat(dialog_str, string);
@@ -128,7 +128,7 @@ public OnVehAirRefuellingUpdate(playerid, vehicleid)
     if (GLOBAL_VEHICLES[vehicleid][gb_vehicle_GAS] > GLOBAL_VEHICLES[vehicleid][gb_vehicle_MAX_GAS]) GLOBAL_VEHICLES[vehicleid][gb_vehicle_GAS] = GLOBAL_VEHICLES[vehicleid][gb_vehicle_MAX_GAS];
 
     if (pAirVehRefuellingTd[playerid] != PlayerText:INVALID_TEXT_DRAW)
-{
+    {
         new Float:percentage = (GLOBAL_VEHICLES[vehicleid][gb_vehicle_GAS] * 100.0) / GLOBAL_VEHICLES[vehicleid][gb_vehicle_MAX_GAS];
         if (percentage > 100.0) percentage = 100.0;
 
@@ -142,18 +142,18 @@ public OnVehAirRefuellingUpdate(playerid, vehicleid)
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
     switch (dialogid)
-{
+    {
         case DIALOG_PLANE_OPTIONS: {
             if (response)
-{
+            {
                 switch (listitem)
-{
+                {
                     case 0: {
                         DestroyPlayerAirVehRefuelling(playerid);
                         CreatePlayerAirVehRefuellingTDs(playerid);
 
                         if (pAirVehRefuellingTd[playerid] != PlayerText:INVALID_TEXT_DRAW)
-{
+                        {
                             PlayerTextDrawShow(playerid, pAirVehRefuellingTd[playerid]);
                         }
 
@@ -161,7 +161,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     }
                     case 1: {
                         if (GivePlayerCash(playerid, -REPAIR_PLANE_PRICE, true, true))
-{
+                        {
                             RepairVehicleEx(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID], playerid);
                             SendNotification(playerid, "Vehículo reparado.");
                         }
@@ -170,7 +170,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     case 2, 3: {
                         new vehicleid = PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID];
                         if (PLAYER_VEHICLES[vehicleid][player_vehicle_VALID] && PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
-{
+                        {
                             PLAYER_TEMP[playerid][pt_MECHANIC_COLOR_SLOT] = listitem - 2;
                             ShowDialog(playerid, DIALOG_PLANE_SELECT_COLOR);
                         }
@@ -181,9 +181,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
         }
         case DIALOG_PLANE_SELECT_COLOR: {
             if (response)
-{
+            {
                 if (GivePlayerCash(playerid, -PAINT_PLANE_PRICE, true, true))
-{
+                {
                     switch (PLAYER_TEMP[playerid][pt_MECHANIC_COLOR_SLOT])
                     {
                         case 0: GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_COLOR_1] = listitem;

@@ -57,6 +57,7 @@ enum e_ac_Info
     ac_Detections, //enviar aviso cuando llege a este num en los seg de abajo
     ac_Interval,
 }
+
 new ac_Info[][e_ac_Info] = /* Valores por defecto si no se carga de AC.txt */
 {
     {"armas",                    true, true,        1, 0},
@@ -95,4 +96,5 @@ enum e_PLAYER_AC_INFO
     p_ac_info_LAST_DETECTION,
     p_ac_info_IMMUNITY, //gettime + seconds
 }
+
 new PLAYER_AC_INFO[MAX_PLAYERS][sizeof(ac_Info)][e_PLAYER_AC_INFO];

@@ -41,7 +41,7 @@ new
 hook OnScriptInit()
 {
     for (new i = 0; i < MAX_PROPERTIES; i++)
-{
+    {
         PropertyObjects_Count[i] = 0;
     }
 }
@@ -88,10 +88,24 @@ hook OnPropertiesLoaded()
                 new property_index = GetPropertyIndexByID(id_property);
                 total_objects[property_index] ++;
                 if (total_objects[property_index] > MAX_SU_PROPERTY_OBJECTS)
-{
+                {
                     continue;
                 }
-                CreatePropertyFurnitureObject(false, property_index, id, id_property, modelid, x, y, z, rx, ry, rz, texture0, texture1, texture2, texture3);
+                CreatePropertyFurnitureObject(false,
+                    property_index,
+                    id,
+                    id_property,
+                    modelid,
+                    x,
+                    y,
+                    z,
+                    rx,
+                    ry,
+                    rz,
+                    texture0,
+                    texture1,
+                    texture2,
+                texture3);
             }
         }
     }
@@ -109,19 +123,19 @@ CreatePropertyFurnitureObject(bool:update, property_index, id_object, id_propert
 
     new texture_modelid, texture_txdname[64], texture_texturename[64], texture_color;
     if (strlen(texture0) > 0 && !sscanf(texture0, "p<,>ds[64]s[64]d", texture_modelid, texture_txdname, texture_texturename, texture_color))
-{
+    {
         SetDynamicObjectMaterial(objectid, 0, texture_modelid, texture_txdname, texture_texturename, texture_color);
     }
     if (strlen(texture1) > 0 && !sscanf(texture1, "p<,>ds[64]s[64]d", texture_modelid, texture_txdname, texture_texturename, texture_color))
-{
+    {
         SetDynamicObjectMaterial(objectid, 1, texture_modelid, texture_txdname, texture_texturename, texture_color);
     }
     if (strlen(texture2) > 0 && !sscanf(texture2, "p<,>ds[64]s[64]d", texture_modelid, texture_txdname, texture_texturename, texture_color))
-{
+    {
         SetDynamicObjectMaterial(objectid, 2, texture_modelid, texture_txdname, texture_texturename, texture_color);
     }
     if (strlen(texture3) > 0 && !sscanf(texture3, "p<,>ds[64]s[64]d", texture_modelid, texture_txdname, texture_texturename, texture_color))
-{
+    {
         SetDynamicObjectMaterial(objectid, 3, texture_modelid, texture_txdname, texture_texturename, texture_color);
     }
 
@@ -129,7 +143,7 @@ CreatePropertyFurnitureObject(bool:update, property_index, id_object, id_propert
     PropertyObjects_Count[property_index] ++;
 
     if (update)
-{
+    {
         UpdatePObjectDB(id_object, 1, modelid, x, y, z, rx, ry, rz, texture0, texture1, texture2, texture3);
     }
     return objectid;
@@ -159,10 +173,10 @@ RegisterPropertyObject(property_index, id_property, modelid, create = 0, Float:x
     {
         new id = cache_insert_id();
         if (id > 0 && create)
-{
+        {
             new objectid = CreatePropertyFurnitureObject(false, property_index, id, id_property, modelid, x, y, z, rx, ry, rz, texture0, texture1, texture2, texture3);
             if (editWhenCreate && forplayerid != INVALID_PLAYER_ID)
-{
+            {
                 Streamer_Update(forplayerid, STREAMER_TYPE_OBJECT);
 
                 pPObjectCurrentModelID[forplayerid] = modelid;
@@ -176,8 +190,8 @@ RegisterPropertyObject(property_index, id_property, modelid, create = 0, Float:x
     mysql_format(
         srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER,
         "\
-            INSERT INTO property_objects(`create`, modelid, x, y, z, rx, ry, rz, texture0, texture1, texture2, texture3, id_property)\
-            VALUES(%d, %d, %f, %f, %f, %f, %f, %f, '%e', '%e', '%e', '%e', %d);\
+        INSERT INTO property_objects(`create`, modelid, x, y, z, rx, ry, rz, texture0, texture1, texture2, texture3, id_property)\
+        VALUES(%d, %d, %f, %f, %f, %f, %f, %f, '%e', '%e', '%e', '%e', %d);\
         ",
         create, modelid, x, y, z, rx, ry, rz, texture0, texture1, texture2, texture3, id_property
     );
@@ -194,7 +208,7 @@ DeletePropertyObjects(property_index, bool:db_delete = true)
     PropertyObjects_Count[property_index] = 0;
 
     if (db_delete)
-{
+    {
         mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "DELETE FROM property_objects WHERE id_property = %d;", PROPERTY_INFO[property_index][property_ID]);
         mysql_tquery(srp_db, QUERY_BUFFER);
     }
@@ -204,18 +218,18 @@ DeletePropertyObject(property_index, id_object, objectid, bool:uncreate = false)
 {
     new index = -1;
     for (new i = 0; i < PropertyObjects_Count[property_index]; i++)
-{
+    {
         if (PropertyObjects_Data[property_index][i] == objectid)
-{
+        {
             index = i;
             break;
         }
     }
 
     if (index != -1)
-{
+    {
         for (new j = index; j < PropertyObjects_Count[property_index] - 1; j++)
-{
+        {
             PropertyObjects_Data[property_index][j] = PropertyObjects_Data[property_index][j + 1];
         }
         PropertyObjects_Count[property_index] --;
@@ -223,12 +237,12 @@ DeletePropertyObject(property_index, id_object, objectid, bool:uncreate = false)
     DestroyDynamicObject(objectid);
 
     if (uncreate)
-{
+    {
         mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE property_objects SET `create` = 0 WHERE id = %d;", id_object);
         mysql_tquery(srp_db, QUERY_BUFFER);
     }
     else
-{
+    {
         mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "DELETE FROM property_objects WHERE id = %d;", id_object);
         mysql_tquery(srp_db, QUERY_BUFFER);
     }
@@ -237,12 +251,12 @@ DeletePropertyObject(property_index, id_object, objectid, bool:uncreate = false)
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
     switch (dialogid)
-{
+    {
         case DIALOG_PROPERTY_OBJECTS_MENU: {
             if (response)
-{
+            {
                 switch (listitem)
-{
+                {
                     case 0: { //editar
                         SelectObject(playerid);
                     }
@@ -266,7 +280,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
         }
         case DIALOG_POBJECTS_DELETE_ALL: {
             if (response)
-{
+            {
                 new property_index = PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED];
                 DeletePropertyObjects(property_index);
                 SendNotification(playerid, "Se han eliminado todos los muebles.");
@@ -275,14 +289,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
         }
         case DIALOG_POBJECT_EDIT: {
             if (response)
-{
+            {
                 switch (listitem)
-{
+                {
                     case 0: EditDynamicObject(playerid, pPObjectCurrentObjectID[playerid]);
                     case 1: { //texturizar
                         new dialog_body[32 * 4];
                         for (new i = 0; i < 4; i++)
-{
+                        {
                             new string[32];
                             format(string, sizeof string, "Índice %d\n", i);
                             strcat(dialog_body, string);
@@ -297,16 +311,19 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                         new limit = ACCOUNT_INFO[playerid][ac_VIP] ? MAX_SU_PROPERTY_OBJECTS : MAX_NU_PROPERTY_OBJECTS;
                         if (CountPropertyObjects(PROPERTY_INFO[property_index][property_ID]) >= limit) SendNotification(playerid, "No puedes añadir más muebles a esta propiedad.");
                         else
-{
-                            if (GivePlayerCash(playerid, -GetPObjectModelPrice(pPObjectCurrentModelID[playerid]), true, true))
-{
+                        {
+                            if (GivePlayerCash(playerid,
+                                -GetPObjectModelPrice(pPObjectCurrentModelID[playerid]),
+                                true,
+                            true))
+                            {
                                 inline OnQueryLoaded()
                                 {
                                     new rows;
                                     if (cache_get_row_count(rows))
                                     {
                                         if (rows)
-{
+                                        {
                                             new
                                                 modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz,
                                                 bool:isnull_texture0, texture0[256],
@@ -336,7 +353,22 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
                                             cache_get_value_name_int(0, "id_property", id_property);
 
-                                            RegisterPropertyObject(property_index, id_property, modelid, 1, x, y, z, rx, ry, rz, texture0, texture1, texture2, texture3, true, playerid);
+                                            RegisterPropertyObject(property_index,
+                                                id_property,
+                                                modelid,
+                                                1,
+                                                x,
+                                                y,
+                                                z,
+                                                rx,
+                                                ry,
+                                                rz,
+                                                texture0,
+                                                texture1,
+                                                texture2,
+                                                texture3,
+                                                true,
+                                            playerid);
                                             SendNotification(playerid, "El mueble ha sido clonado.");
                                         }
                                     }
@@ -349,7 +381,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     }
                     case 3: { //guardar
                         new property_index = PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED];
-                        DeletePropertyObject(property_index, pPObjectCurrentID[playerid], pPObjectCurrentObjectID[playerid], true);
+                        DeletePropertyObject(property_index,
+                            pPObjectCurrentID[playerid],
+                            pPObjectCurrentObjectID[playerid],
+                        true);
                         SendNotification(playerid, "El mueble se ha guardado correctamente.");
                     }
                     case 4: { //eliminar
@@ -363,18 +398,18 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
         }
         case DIALOG_POBJECT_TEXTURE_INDEX: {
             if (response)
-{
+            {
                 pPObjectTextureIndex[playerid] = listitem;
 
                 PLAYER_TEMP[playerid][pt_DIALOG_RESPONDED] = false;
                 PLAYER_TEMP[playerid][pt_DIALOG_ID] = DIALOG_POBJECT_TEXTURE;
                 ShowPlayerDialog(playerid, DIALOG_POBJECT_TEXTURE, DIALOG_STYLE_INPUT, "Introduce la textura",
                     "\
-                        Introduce la textura que deseas aplicar, el formato es el siguiente:\n\n\
-                        \t[Model ID] [TXD Name] [Texture Name] [Color AARRGGBB (opcional)]\n\
-                        \tPor ejemplo: 18202 w_towncs_t concretebig4256128 0xFFFFFFFF\n\n\
-                        No introduzcas nada para eliminar la textura actual.\n\
-                        Puedes ver las texturas en {"#PRIMARY_COLOR"}"TEXTURES_WEBPAGE"\
+                    Introduce la textura que deseas aplicar, el formato es el siguiente:\n\n\
+                    \t[Model ID] [TXD Name] [Texture Name] [Color AARRGGBB (opcional)]\n\
+                    \tPor ejemplo: 18202 w_towncs_t concretebig4256128 0xFFFFFFFF\n\n\
+                    No introduzcas nada para eliminar la textura actual.\n\
+                    Puedes ver las texturas en {"#PRIMARY_COLOR"}"TEXTURES_WEBPAGE"\
                     ",
                 "Continuar", "Cerrar");
             }
@@ -383,10 +418,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
         }
         case DIALOG_POBJECT_TEXTURE: {
             if (response)
-{
+            {
                 new property_index = PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED];
                 if (strlen(inputtext) > 0)
-{
+                {
                     new modelid, txdname[64], texturename[64], inputColor[32];
                     if (!sscanf(inputtext, "ds[64]s[64]s[32]", modelid, txdname, texturename, inputColor))
 { }
@@ -396,19 +431,30 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
                     new color = 0;
                     if (strlen(inputColor) > 0)
-{
+                    {
                         if (inputColor[0] == '0' && inputColor[1] == 'x') color = HexToInt(inputColor[2]);
                         if (inputColor[0] == '#') color = HexToInt(inputColor[1]);
                         else color = HexToInt(inputColor);
                     }
 
-                    UpdatePObjectTexture(pPObjectCurrentID[playerid], pPObjectCurrentObjectID[playerid], pPObjectTextureIndex[playerid], modelid, txdname, texturename, color);
+                    UpdatePObjectTexture(pPObjectCurrentID[playerid],
+                        pPObjectCurrentObjectID[playerid],
+                        pPObjectTextureIndex[playerid],
+                        modelid,
+                        txdname,
+                        texturename,
+                    color);
                     SendNotification(playerid, "Textura del mueble actualizada.");
                     ShowEditPObjectDialog(playerid);
                 }
                 else
-{
-                    DeletePObjectTexture(property_index, pPObjectCurrentID[playerid], pPObjectCurrentObjectID[playerid], pPObjectTextureIndex[playerid], true, playerid);
+                {
+                    DeletePObjectTexture(property_index,
+                        pPObjectCurrentID[playerid],
+                        pPObjectCurrentObjectID[playerid],
+                        pPObjectTextureIndex[playerid],
+                        true,
+                    playerid);
                     SendNotification(playerid, "Textura del mueble eliminada.");
                 }
             }
@@ -426,9 +472,9 @@ hook OnPlayerDisconnect(playerid, reason)
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
     if (newstate == PLAYER_STATE_SPECTATING || newstate == PLAYER_STATE_WASTED)
-{
+    {
         if (pPUObjectsMenuOpened[playerid])
-{
+        {
             CancelSelectTextDrawEx(playerid);
         }
     }
@@ -438,7 +484,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 {
     if (clickedid == Text:INVALID_TEXT_DRAW && pPUObjectsMenuOpened[playerid])
-{
+    {
         DestroyPlayerPUObjectsMenu(playerid);
     }
 }
@@ -446,12 +492,12 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 {
     if (pPUObjectsMenuOpened[playerid])
-{
+    {
         if (playertextid == pUncreatedPObjectsTd[playerid][9])
 { //<<
             if ((gettime() - pPUObjectsMenuLastPageChange[playerid]) < 1) SendNotification(playerid, "Cálmate.");
             else
-{
+            {
                 pPUObjectsMenuCurrentPage[playerid] --;
                 if (pPUObjectsMenuCurrentPage[playerid] < 0) pPUObjectsMenuCurrentPage[playerid] = pPUObjectsMenuTotalPages[playerid] - 1;
                 UpdatePUObjectsTextDraws(playerid);
@@ -462,7 +508,7 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 { //>>
             if ((gettime() - pPUObjectsMenuLastPageChange[playerid]) < 1) SendNotification(playerid, "Cálmate.");
             else
-{
+            {
                 pPUObjectsMenuCurrentPage[playerid] ++;
                 if (pPUObjectsMenuCurrentPage[playerid] > pPUObjectsMenuTotalPages[playerid] - 1) pPUObjectsMenuCurrentPage[playerid] = 0;
                 UpdatePUObjectsTextDraws(playerid);
@@ -470,12 +516,12 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
             return Y_HOOKS_BREAK_RETURN_1;
         }
         else
-{
+        {
             new mdlTdStartIndex = 2;
             for (new i = 0; i < UNCREATED_POBJECTS_PER_PAGE; i++)
-{
+            {
                 if (playertextid == pUncreatedPObjectsTd[playerid][mdlTdStartIndex])
-{
+                {
                     CancelSelectTextDrawEx(playerid);
 
                     inline OnQueryLoaded()
@@ -484,7 +530,7 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
                         if (cache_get_row_count(rows))
                         {
                             if (rows)
-{
+                            {
                                 new
                                     id, modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz,
                                     bool:isnull_texture0, texture0[256],
@@ -516,7 +562,7 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
                                 cache_get_value_name_int(0, "id_property", id_property);
 
                                 if (x == 0.0 && y == 0.0 && z == 0.0)
-{
+                                {
                                     new Float:pos[3], Float:angle;
                                     GetPlayerPos(playerid, pos[0], pos[1], pos[2]);
                                     GetPlayerFacingAngle(playerid, angle);
@@ -556,9 +602,9 @@ CreatePlayerPUObjectsMenu(playerid, property_index)
     CreateUncreatedPObjectsTds(playerid);
 
     for (new i = 0; i < sizeof pUncreatedPObjectsTd[]; i++)
-{
+    {
         if (pUncreatedPObjectsTd[playerid][i] != PlayerText:INVALID_TEXT_DRAW)
-{
+        {
             PlayerTextDrawShow(playerid, pUncreatedPObjectsTd[playerid][i]);
         }
     }
@@ -577,20 +623,20 @@ UpdatePUObjectsTextDraws(playerid)
     new id_property = PROPERTY_INFO[property_index][property_ID];
 
     for (new i = 0; i < UNCREATED_POBJECTS_PER_PAGE; i++)
-{
+    {
         pPUObjectsMenuIds[playerid][i] = 0;
     }
 
     new string[128];
     if (pPUObjectsMenuTotalPages[playerid] > 1)
-{
+    {
         format(string, sizeof string, "Página_%d/%d", pPUObjectsMenuCurrentPage[playerid] + 1, pPUObjectsMenuTotalPages[playerid]);
         FixTextDrawString(string);
         PlayerTextDrawShow(playerid, pUncreatedPObjectsTd[playerid][9]);
         PlayerTextDrawShow(playerid, pUncreatedPObjectsTd[playerid][10]);
     }
     else
-{
+    {
         format(string, sizeof string, "Página_1/1");
         FixTextDrawString(string);
         PlayerTextDrawHide(playerid, pUncreatedPObjectsTd[playerid][9]);
@@ -617,15 +663,15 @@ UpdatePUObjectsTextDraws(playerid)
 
         new mdlTdStartIndex = 2;
         for (new i = 0; i < UNCREATED_POBJECTS_PER_PAGE; i++)
-{
+        {
             if (modelids[i] == 0)
-{
+            {
                 PlayerTextDrawBackgroundColor(playerid, pUncreatedPObjectsTd[playerid][mdlTdStartIndex], -2139062172);
                 PlayerTextDrawSetSelectable(playerid, pUncreatedPObjectsTd[playerid][mdlTdStartIndex], false);
                 PlayerTextDrawSetPreviewModel(playerid, pUncreatedPObjectsTd[playerid][mdlTdStartIndex], 19483);
             }
             else
-{
+            {
                 PlayerTextDrawBackgroundColor(playerid, pUncreatedPObjectsTd[playerid][mdlTdStartIndex], -2139062017);
                 PlayerTextDrawSetSelectable(playerid, pUncreatedPObjectsTd[playerid][mdlTdStartIndex], true);
                 PlayerTextDrawSetPreviewModel(playerid, pUncreatedPObjectsTd[playerid][mdlTdStartIndex], modelids[i]);
@@ -642,9 +688,9 @@ UpdatePUObjectsTextDraws(playerid)
 DestroyPlayerPUObjectsMenu(playerid)
 {
     for (new i = 0; i < sizeof pUncreatedPObjectsTd[]; i++)
-{
+    {
         if (pUncreatedPObjectsTd[playerid][i] != PlayerText:INVALID_TEXT_DRAW)
-{
+        {
             PlayerTextDrawDestroy(playerid, pUncreatedPObjectsTd[playerid][i]);
             pUncreatedPObjectsTd[playerid][i] = PlayerText:INVALID_TEXT_DRAW;
         }
@@ -655,7 +701,7 @@ DestroyPlayerPUObjectsMenu(playerid)
     pPUObjectsMenuTotalPages[playerid] = 0;
     pPUObjectsMenuLastPageChange[playerid] = 0;
     for (new i = 0; i < UNCREATED_POBJECTS_PER_PAGE; i++)
-{
+    {
         pPUObjectsMenuIds[playerid][i] = 0;
     }
 }
@@ -793,9 +839,9 @@ hook OnPlayerSelectDynObject(playerid, STREAMER_TAG_OBJECT:objectid, modelid, Fl
     Streamer_GetArrayData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_EXTRA_ID, info);
 
     if (info[0] == OBJECT_TYPE_FURNITURE)
-{
+    {
         if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_OWN_PROPERTY && PI[playerid][ac_LOCAL_INTERIOR] == info[2])
-{
+        {
             CancelEdit(playerid);
             pPObjectCurrentModelID[playerid] = modelid;
             pPObjectCurrentObjectID[playerid] = objectid;
@@ -813,9 +859,9 @@ hook OnPlayerEditDynObject(playerid, STREAMER_TAG_OBJECT:objectid, response, Flo
     Streamer_GetArrayData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_EXTRA_ID, info);
 
     if (info[0] == OBJECT_TYPE_FURNITURE)
-{
+    {
         switch (response)
-{
+        {
             case EDIT_RESPONSE_CANCEL: {
                 new Float:pos[3], Float:rot[3];
                 Streamer_GetFloatData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_X, pos[0]);
@@ -858,20 +904,20 @@ UpdatePObjectDB(id_object, create, modelid, Float:x, Float:y, Float:z, Float:rx 
     mysql_format(
         srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER,
         "\
-            UPDATE property_objects SET \
-                `create` = %d,\
-                modelid = %d,\
-                x = %f,\
-                y = %f,\
-                z = %f,\
-                rx = %f,\
-                ry = %f,\
-                rz = %f,\
-                texture0 = '%e',\
-                texture1 = '%e',\
-                texture2 = '%e',\
-                texture3 = '%e' \
-            WHERE id = %d;\
+        UPDATE property_objects SET \
+        `create` = %d,\
+        modelid = %d,\
+        x = %f,\
+        y = %f,\
+        z = %f,\
+        rx = %f,\
+        ry = %f,\
+        rz = %f,\
+        texture0 = '%e',\
+        texture1 = '%e',\
+        texture2 = '%e',\
+        texture3 = '%e' \
+        WHERE id = %d;\
         ",
         create,
         modelid,
@@ -891,14 +937,14 @@ UpdatePObjectDB_Positions(id_object, Float:x, Float:y, Float:z, Float:rx, Float:
     mysql_format(
         srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER,
         "\
-            UPDATE property_objects SET \
-                x = %f,\
-                y = %f,\
-                z = %f,\
-                rx = %f,\
-                ry = %f,\
-                rz = %f \
-            WHERE id = %d;\
+        UPDATE property_objects SET \
+        x = %f,\
+        y = %f,\
+        z = %f,\
+        rx = %f,\
+        ry = %f,\
+        rz = %f \
+        WHERE id = %d;\
         ",
         x, y, z,
         rx, ry, rz,
@@ -912,9 +958,9 @@ UpdatePObjectDB_Texture(id_object, materialindex, texture[] = "")
     mysql_format(
         srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER,
         "\
-            UPDATE property_objects SET \
-                texture%d = '%e' \
-            WHERE id = %d;\
+        UPDATE property_objects SET \
+        texture%d = '%e' \
+        WHERE id = %d;\
         ",
         materialindex,
         texture,
@@ -933,22 +979,27 @@ UpdatePObjectTexture(id_object, objectid, materialindex, modelid, txdname[], tex
     mysql_tquery(srp_db, QUERY_BUFFER);
 }
 
-DeletePObjectTexture(property_index, id_object, objectid, materialindex, bool:menuDialogWhenCreate = false, forplayerid = INVALID_PLAYER_ID)
+DeletePObjectTexture(property_index,
+    id_object,
+    objectid,
+    materialindex,
+    bool:menuDialogWhenCreate = false,
+forplayerid = INVALID_PLAYER_ID)
 {
     new index = -1;
     for (new i = 0; i < PropertyObjects_Count[property_index]; i++)
-{
+    {
         if (PropertyObjects_Data[property_index][i] == objectid)
-{
+        {
             index = i;
             break;
         }
     }
 
     if (index != -1)
-{
+    {
         for (new j = index; j < PropertyObjects_Count[property_index] - 1; j++)
-{
+        {
             PropertyObjects_Data[property_index][j] = PropertyObjects_Data[property_index][j + 1];
         }
         PropertyObjects_Count[property_index] --;
@@ -962,7 +1013,7 @@ DeletePObjectTexture(property_index, id_object, objectid, materialindex, bool:me
         if (cache_get_row_count(rows))
         {
             if (rows)
-{
+            {
                 new
                     id, modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz,
                     bool:isnull_texture0, texture0[256],
@@ -995,7 +1046,7 @@ DeletePObjectTexture(property_index, id_object, objectid, materialindex, bool:me
 
                 new newObjectid = CreatePropertyFurnitureObject(false, property_index, id_object, id_property, modelid, x, y, z, rx, ry, rz, texture0, texture1, texture2, texture3);
                 if (menuDialogWhenCreate && forplayerid != INVALID_PLAYER_ID)
-{
+                {
                     Streamer_Update(forplayerid, STREAMER_TYPE_OBJECT);
                     pPObjectCurrentModelID[forplayerid] = modelid;
                     pPObjectCurrentObjectID[forplayerid] = newObjectid;
@@ -1017,7 +1068,10 @@ hook OnDefaultPFurChanged(index)
 
         new Float:z_pos;
         Streamer_GetFloatData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_Z, z_pos);
-        Streamer_SetFloatData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_Z, z_pos + (PROPERTY_INFO[index][property_DIS_DEFAULT_INTERIOR] ? PROPERTY_EMPTY_INTERIOR_Z_OFFSET : -PROPERTY_EMPTY_INTERIOR_Z_OFFSET));
+        Streamer_SetFloatData(STREAMER_TYPE_OBJECT,
+            objectid,
+            E_STREAMER_Z,
+        z_pos + (PROPERTY_INFO[index][property_DIS_DEFAULT_INTERIOR] ? PROPERTY_EMPTY_INTERIOR_Z_OFFSET : -PROPERTY_EMPTY_INTERIOR_Z_OFFSET));
     }
 
     mysql_format(srp_db, QUERY_BUFFER, sizeof QUERY_BUFFER, "UPDATE property_objects SET z = z + (%f) WHERE x != 0.0 AND y != 0.0 and z != 0.0 AND id_property = %d;", (PROPERTY_INFO[index][property_DIS_DEFAULT_INTERIOR] ? PROPERTY_EMPTY_INTERIOR_Z_OFFSET : -PROPERTY_EMPTY_INTERIOR_Z_OFFSET), PROPERTY_INFO[index][property_ID]);

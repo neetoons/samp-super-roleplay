@@ -48,7 +48,7 @@ stock AttachObjectToObjectEx(Float:oX, Float:oY, Float:oZ, Float:oRX, Float:oRY,
     Z = pos[2];
     RX = rot[0];
     RY = rot[1];
-     RZ = rot[2];
+    RZ = rot[2];
 }
 
 stock EDIT_FloatEulerFix(&Float:rot_x, &Float:rot_y, &Float:rot_z)

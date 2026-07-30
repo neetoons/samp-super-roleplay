@@ -29,7 +29,7 @@ hook OnPlayerConnect(playerid)
 hook OnPlayerUpdate(playerid)
 {
     if (GetPlayerState(playerid) == PLAYER_STATE_ONFOOT && pUpdateWeaponsInBody[playerid])
-{
+    {
         UpdateWeaponsInBody(playerid);
     }
     return Y_HOOKS_CONTINUE_RETURN_1;
@@ -38,7 +38,7 @@ hook OnPlayerUpdate(playerid)
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
     if (oldstate == PLAYER_STATE_ONFOOT)
-{
+    {
         new vehicleid = GetPlayerVehicleID(playerid);
         if (vehicleid && Vehicle_IsBike(vehicleid)) return Y_HOOKS_CONTINUE_RETURN_1;
         RemovePlayerArmedWeapons(playerid);
@@ -73,14 +73,14 @@ UpdateWeaponsInBody(playerid)
 {
     RemovePlayerArmedWeapons(playerid);
     for (new i = 0; i != sizeof PLAYER_WEAPONS[]; i++)
-{
+    {
         if (!PLAYER_WEAPONS[playerid][i][player_weapon_VALID]) continue;
 
         new weaponId;
         weaponId = PLAYER_WEAPONS[playerid][i][player_weapon_ID];
         if (GetPlayerWeapon(playerid) == weaponId) continue;
         switch (weaponId)
-{
+        {
             case 25: SetPlayerAttachedObject(playerid, 9, 349, 1, 0.2219, -0.1959, 0.1300, 0.4000, 162.6999, 5.4000, 1.0000, 1.0000, 1.0000, 0xFFFFFFFF, 0xFFFFFFFF);
             case 26: SetPlayerAttachedObject(playerid, 9, 350, 1, 0.2249, -0.1550, -0.1110, 171.0000, 162.6000, -1.5999, 1.0000, 1.0000, 1.0000, 0xFFFFFFFF, 0xFFFFFFFF);
             case 27: SetPlayerAttachedObject(playerid, 9, 351, 1, 0.2249, -0.1820, 0.1909, 176.2999, 22.6000, -172.6999, 1.0000, 1.0000, 1.0000, 0xFFFFFFFF, 0xFFFFFFFF);
@@ -111,8 +111,20 @@ UpdateWeaponsInBody(playerid)
             case 15: SetPlayerAttachedObject(playerid, 7, 326, 1, 0.3190, -0.1019, -0.0429, 15.0999, -50.9997, -167.0001, 1.0000, 1.0000, 1.0000, 0xFFFFFFFF, 0xFFFFFFFF);
             case 47: {
                 if (!IsPlayerShieldInUse(playerid))
-{
-                    SetPlayerAttachedObject(playerid, 7, 18637, 6, -0.359999, 0.042999, -0.114999, 102.600006, -2.499998, 17.300006, 1.000000, 1.000000, 1.000000);
+                {
+                    SetPlayerAttachedObject(playerid,
+                        7,
+                        18637,
+                        6,
+                        -0.359999,
+                        0.042999,
+                        -0.114999,
+                        102.600006,
+                        -2.499998,
+                        17.300006,
+                        1.000000,
+                        1.000000,
+                    1.000000);
                 }
             }
         }

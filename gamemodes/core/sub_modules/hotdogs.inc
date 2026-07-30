@@ -86,7 +86,7 @@ new HotdogsFood[][E_HotdogsFood] = {
 hook OnScriptInit()
 {
     for (new i = 0; i < sizeof Hotdogs; i++)
-{
+    {
         new tmp = CreateDynamicObject(1340, Hotdogs[i][hotdog_X], Hotdogs[i][hotdog_Y], Hotdogs[i][hotdog_Z], 0.0, 0.0, Hotdogs[i][hotdog_RZ], .interiorid = Hotdogs[i][hotdog_INTERIOR], .worldid = Hotdogs[i][hotdog_WORLD], .streamdistance = 600.0, .drawdistance = 600.0);
         SetDynamicObjectMaterial(tmp, 0, -1, "none", "none", 0xFFFFFFFF);
 
@@ -95,7 +95,13 @@ hook OnScriptInit()
         pos[0] = Hotdogs[i][hotdog_X] + (1.0 * floatsin(-rz, degrees));
         pos[1] = Hotdogs[i][hotdog_Y] + (1.0 * floatcos(-rz, degrees));
         pos[2] = Hotdogs[i][hotdog_Z];
-        CreateDynamicActor(168, pos[0], pos[1], pos[2], rz + 180.0, .interiorid = Hotdogs[i][hotdog_INTERIOR], .worldid = Hotdogs[i][hotdog_WORLD]);
+        CreateDynamicActor(168,
+            pos[0],
+            pos[1],
+            pos[2],
+            rz + 180.0,
+            .interiorid = Hotdogs[i][hotdog_INTERIOR],
+        .worldid = Hotdogs[i][hotdog_WORLD]);
 
         pos[0] = Hotdogs[i][hotdog_X] - (1.0 * floatsin(-rz, degrees));
         pos[1] = Hotdogs[i][hotdog_Y] - (1.0 * floatcos(-rz, degrees));
@@ -124,7 +130,6 @@ CMD:comida(playerid, params[])
 
     if (!IsPlayerInRangeOfPoint(playerid, 1.0, pos[0], pos[1], pos[2])) return 1;
 
-
     new dialog_body[64 * sizeof HotdogsFood];
     format(dialog_body, sizeof dialog_body, "{FFFFFF}Producto\t{FFFFFF}Precio\n");
     for (new i = 0; i != sizeof HotdogsFood; i++)
@@ -145,7 +150,10 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
     if (newkeys & KEY_CTRL_BACK)
     {
         new info[3];
-        Streamer_GetArrayData(STREAMER_TYPE_PICKUP, PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID], E_STREAMER_EXTRA_ID, info);
+        Streamer_GetArrayData(STREAMER_TYPE_PICKUP,
+            PLAYER_TEMP[playerid][pt_LAST_PICKUP_ID],
+            E_STREAMER_EXTRA_ID,
+        info);
         if (info[0] == PICKUP_TYPE_HOTDOG)
         {
             new Float:pos[3];
@@ -162,14 +170,14 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
     if (dialogid == DIALOG_HOTDOG)
-{
+    {
         if (response)
-{
+        {
             if (GivePlayerCash(playerid, -HotdogsFood[listitem][hotdogFood_PRICE], true, true))
-{
+            {
                 Add_Hungry_Thirst(playerid, HotdogsFood[listitem][hotdogFood_HUNGRY], HotdogsFood[listitem][hotdogFood_THIRST]);
                 if (HotdogsFood[listitem][hotdogFood_DRUNK] > 0)
-{
+                {
                     GivePlayerDrunkLevel(playerid, HotdogsFood[listitem][hotdogFood_DRUNK]);
                 }
                 PlayerPlaySoundEx(playerid, 1058, 0.0, 0.0, 0.0);

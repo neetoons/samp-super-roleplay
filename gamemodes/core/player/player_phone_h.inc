@@ -40,5 +40,6 @@ enum Phone_Book_Enum
     phone_book_contact_NAME[24],
     phone_book_contact_PHONE_NUMBER
 }
+
 new PLAYER_PHONE_BOOK[MAX_PLAYERS][MAX_PHONE_CONTACTS][Phone_Book_Enum]; //PB = PhoneBook
 

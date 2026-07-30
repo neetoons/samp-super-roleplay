@@ -58,7 +58,7 @@ CMD:allanar(playerid, params[])
 hook OnPlayerDisconnect(playerid, reason)
 {
     if (pPoliceForcingPDoor[playerid] != -1)
-{
+    {
         PROPERTY_INFO[ pPoliceForcingPDoor[playerid] ][property_POLICE_FORCING] = false;
         pPoliceForcingPDoor[playerid] = -1;
     }
@@ -67,9 +67,9 @@ hook OnPlayerDisconnect(playerid, reason)
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
     if (newstate == PLAYER_STATE_SPECTATING || newstate == PLAYER_STATE_WASTED)
-{
+    {
         if (pPoliceForcingPDoor[playerid] != -1)
-{
+        {
             PROPERTY_INFO[ pPoliceForcingPDoor[playerid] ][property_POLICE_FORCING] = false;
             pPoliceForcingPDoor[playerid] = -1;
         }
@@ -80,12 +80,12 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 hook OnPlayerKeyPressFinish(playerid)
 {
     if (pPoliceForcingPDoor[playerid] != -1)
-{
+    {
         new propertyIndex = pPoliceForcingPDoor[playerid];
         PROPERTY_INFO[propertyIndex][property_POLICE_FORCING] = false;
         PROPERTY_INFO[propertyIndex][property_POLICE_FORCED] = true;
         if (PROPERTY_INFO[propertyIndex][property_POLICE_FORCE_TIMER] != -1)
-{
+        {
             KillTimer(PROPERTY_INFO[propertyIndex][property_POLICE_FORCE_TIMER]);
             PROPERTY_INFO[propertyIndex][property_POLICE_FORCE_TIMER] = -1;
         }

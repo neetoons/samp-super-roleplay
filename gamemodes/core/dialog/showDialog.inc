@@ -167,14 +167,14 @@ ShowDialog(playerid, dialogid)
 
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption,
                 "{"#SILVER_COLOR"}1. Retirar dinero\n{"#SILVER_COLOR"}2. Depositar dinero\n{"#SILVER_COLOR"}3. Transferir dinero\n{"#SILVER_COLOR"}4. Últimas transacciones",
-            "Continuar", "Cerrar");
+                "Continuar", "Cerrar");
             return 1;
         }
         case DIALOG_CREATE_BANK_ACCOUNT:
         {
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Crear cuenta bancaria",
                 "{"#SILVER_COLOR"}Bienvenido, actualmente no tienes una cuenta bancaria.\n\nPara disfrutar de los beneficios de una cuenta bancaria\npuedes crearla ahora mismo con un depósito minimo de 500$.",
-            "Crear", "Cerrar");
+                "Crear", "Cerrar");
             return 1;
         }
         case DIALOG_BANK_WITHDRAW:
@@ -317,23 +317,30 @@ ShowDialog(playerid, dialogid)
             new dialog_body[1024] = "- Dar\n- Vender\n- Eliminar\n";
 
             if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_NORMAL || ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_CRACK)
-{
+            {
                 new vehicleid = GetPlayerCameraTargetVehicle(playerid);
-                if (vehicleid != INVALID_VEHICLE_ID && PLAYER_VEHICLES[vehicleid][player_vehicle_VALID] && PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
-{
+                if (
+                    vehicleid != INVALID_VEHICLE_ID &&
+                    PLAYER_VEHICLES[vehicleid][player_vehicle_VALID] &&
+                    PLAYER_VEHICLES[vehicleid][player_vehicle_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID])
+                {
                     strcat(dialog_body, "- Guardar en el maletero");
                 }
             }
             else if (ACCOUNT_INFO[playerid][ac_STATE] == ROLEPLAY_STATE_OWN_PROPERTY)
-{
+            {
                 new index = GetPropertyIndexByID(PI[playerid][ac_LOCAL_INTERIOR]);
 
                 if (index != -1)
-{
+                {
                     new Float:z_pos = PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_Z];
                     if (PROPERTY_INFO[index][property_DIS_DEFAULT_INTERIOR]) z_pos += PROPERTY_EMPTY_INTERIOR_Z_OFFSET;
-                    if (PROPERTY_INFO[index][property_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID] && IsPlayerInRangeOfPoint(playerid, NEARS_PLAYERS_DISTANCE, PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_X], PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_Y], z_pos))
-{
+                    if (PROPERTY_INFO[index][property_OWNER_ID] == ACCOUNT_INFO[playerid][ac_ID] && IsPlayerInRangeOfPoint(playerid,
+                        NEARS_PLAYERS_DISTANCE,
+                        PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_X],
+                        PROPERTY_CLOSET_POS[ PROPERTY_INFO[index][property_ID_INTERIOR] ][property_closet_Y],
+                        z_pos))
+                    {
                         strcat(dialog_body, "- Guardar en el armario");
                     }
                 }
@@ -380,7 +387,9 @@ ShowDialog(playerid, dialogid)
             if (contacts > 0)
             {
                 PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] = MAX_PHONE_CONTACTS + 20;
-                strcat(dialog, "{c4290d}- Eliminar todo\n"); listitem++;
+                strcat(dialog, "{c4290d}- Eliminar todo\n");
+                //never used
+                //listitem++;
             }
 
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "Mi teléfono - Agenda", dialog, "Continuar", "Atrás");
@@ -535,7 +544,8 @@ ShowDialog(playerid, dialogid)
             if (sites > 0)
             {
                 PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] = MAX_PLAYER_GPS_SAVES + 20;
-                strcat(dialog, "{c4290d}- Eliminar todo\n"); listitem++;
+                strcat(dialog, "{c4290d}- Eliminar todo\n");
+                //listitem++; //never used
             }
 
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "GPS - Mis lugares", dialog, "Continuar", "Atrás");
@@ -1042,10 +1052,10 @@ ShowDialog(playerid, dialogid)
 
             new dialog[250];
             format(dialog, sizeof dialog,
-            "Precio en mercado: %s$\n\nPrecio mínimo de venta: %s$\nPrecio máximo de venta: %s$\n\n¿Por cuánto quieres vender esta propiedad?",
-            number_format_thousand(PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_PRICE]),
-            number_format_thousand(min_price),
-            number_format_thousand(max_price));
+                "Precio en mercado: %s$\n\nPrecio mínimo de venta: %s$\nPrecio máximo de venta: %s$\n\n¿Por cuánto quieres vender esta propiedad?",
+                number_format_thousand(PROPERTY_INFO[ PLAYER_TEMP[playerid][pt_PLAYER_PROPERTY_SELECTED] ][property_PRICE]),
+                number_format_thousand(min_price),
+                number_format_thousand(max_price));
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, caption, dialog, "Continuar", "Atrás");
             return 1;
         }
@@ -1132,10 +1142,10 @@ ShowDialog(playerid, dialogid)
 
             new dialog[250];
             format(dialog, sizeof dialog,
-            "Precio en mercado: %s$\n\nPrecio mínimo de venta: %s$\nPrecio máximo de venta: %s$\n\n¿Por cuánto quieres vender este vehículo?",
-            number_format_thousand(VEHICLE_INFO[ GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_PLAYER_VEHICLE_SELECTED] ][gb_vehicle_MODELID] - 400 ][vehicle_info_PRICE]),
-            number_format_thousand(min_price),
-            number_format_thousand(max_price));
+                "Precio en mercado: %s$\n\nPrecio mínimo de venta: %s$\nPrecio máximo de venta: %s$\n\n¿Por cuánto quieres vender este vehículo?",
+                number_format_thousand(VEHICLE_INFO[ GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_PLAYER_VEHICLE_SELECTED] ][gb_vehicle_MODELID] - 400 ][vehicle_info_PRICE]),
+                number_format_thousand(min_price),
+                number_format_thousand(max_price));
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, caption, dialog, "Continuar", "Atrás");
             return 1;
         }
@@ -1283,14 +1293,14 @@ ShowDialog(playerid, dialogid)
 
             new dialog[450];
             format(dialog, sizeof dialog,
-            "\
+                "\
                 {"#SILVER_COLOR"}Opción\t{"#BLUE_COLOR"}Piezas necesarias\t{"#SILVER_COLOR"}Estimación\n\
                 {"#SILVER_COLOR"}Reparación completa\t{"#BLUE_COLOR"}10\t{"#SILVER_COLOR"}500$\n\
-            ");
+                ");
 
             for (new i; i != sizeof Mechanic_Areas; i++)
                 if (IsPlayerInDynamicArea(playerid, Mechanic_Areas[i]))
-                {
+            {
                     new paintjobs = VehiclePaintjob( GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_MODELID] );
                     strcat(dialog, "{"#SILVER_COLOR"}Pintar vehículo\t{"#BLUE_COLOR"}5\t{"#SILVER_COLOR"}250$\n");
                     if (PLAYER_WORKS[playerid][WORK_MECHANIC][pwork_LEVEL] >= 100)
@@ -1361,15 +1371,15 @@ ShowDialog(playerid, dialogid)
             format(dialog, sizeof dialog,
 
                 "\
-                    {"#SILVER_COLOR"}El mecánico %s te ofrece:\n\
-                        \t%s\n\
-                    \n\
-                    {"#SILVER_COLOR"}Precio: %s$\n\
-                    ¿Quieres aceptarlo?\n\
+                {"#SILVER_COLOR"}El mecánico %s te ofrece:\n\
+                \t%s\n\
+                \n\
+                {"#SILVER_COLOR"}Precio: %s$\n\
+                ¿Quieres aceptarlo?\n\
                 ",
-                    PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_MECHANIC_PID] ][pt_RP_NAME],
-                    PLAYER_TEMP[playerid][pt_MECHANIC_TEXT],
-                    number_format_thousand(PLAYER_TEMP[playerid][pt_MECHANIC_PRICE])
+                PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_MECHANIC_PID] ][pt_RP_NAME],
+                PLAYER_TEMP[playerid][pt_MECHANIC_TEXT],
+                number_format_thousand(PLAYER_TEMP[playerid][pt_MECHANIC_PRICE])
             );
 
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Mecánico", dialog, "Aceptar", "Cancelar");
@@ -1387,7 +1397,6 @@ ShowDialog(playerid, dialogid)
         {
             new caption[60];
             format(caption, sizeof caption, "Pintar %s", VEHICLE_INFO[ GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID] ][gb_vehicle_MODELID] - 400 ][vehicle_info_NAME]);
-
 
             new dialog[15 * (sizeof(VEHICLE_COLORS) + 1) ];
             for (new i = 0; i != sizeof VEHICLE_COLORS; i++)
@@ -1418,7 +1427,7 @@ ShowDialog(playerid, dialogid)
                             cache_get_value_name_int(i, "id", id);
                             PLAYER_TUNING_MENU[playerid][count][tuning_menu_ID] = GetVehicleComponentIndexFromId(PLAYER_TEMP[playerid][pt_SELECTED_MECHANIC_VEHICLE_ID], id);
                             if (PLAYER_TUNING_MENU[playerid][count][tuning_menu_ID] != -1)
-{
+                            {
                                 cache_get_value_name(i, "part", part);
                                 cache_get_value_name(i, "name", name);
                                 cache_get_value_name_int(i, "pieces", PLAYER_TUNING_MENU[playerid][count][tuning_menu_PIECES]);
@@ -1616,10 +1625,10 @@ ShowDialog(playerid, dialogid)
         {
             new dialog[150];
             format(dialog, sizeof dialog, "%s te quiere vender algo.\n\nTipo: alimento\nNombre: %s\nPrecio: %s$\n\n¿Quieres comprárselo?",
-                                    PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pt_RP_NAME],
-                                    PLAYER_POCKET[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][ PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA] ][player_pocket_object_NAME],
-                                    number_format_thousand(PLAYER_TEMP[playerid][pt_TRICK_PRICE])
-                                );
+                PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pt_RP_NAME],
+                PLAYER_POCKET[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][ PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA] ][player_pocket_object_NAME],
+                number_format_thousand(PLAYER_TEMP[playerid][pt_TRICK_PRICE])
+            );
 
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Ventas", dialog, "Aceptar", "Cancelar");
             return 1;
@@ -1628,10 +1637,10 @@ ShowDialog(playerid, dialogid)
         {
             new dialog[150];
             format(dialog, sizeof dialog, "%s te quiere vender algo.\n\nTipo: medicamento\nCantidad: %dg\nPrecio: %s$\n\n¿Quieres comprárselo?",
-                                    PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pt_RP_NAME],
-                                    PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA],
-                                    number_format_thousand(PLAYER_TEMP[playerid][pt_TRICK_PRICE])
-                                );
+                PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pt_RP_NAME],
+                PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA],
+                number_format_thousand(PLAYER_TEMP[playerid][pt_TRICK_PRICE])
+            );
 
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Ventas", dialog, "Aceptar", "Cancelar");
             return 1;
@@ -1640,10 +1649,10 @@ ShowDialog(playerid, dialogid)
         {
             new dialog[150];
             format(dialog, sizeof dialog, "%s te quiere vender algo.\n\nTipo: marihuana\nCantidad: %dg\nPrecio: %s$\n\n¿Quieres comprárselo?",
-                                    PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pt_RP_NAME],
-                                    PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA],
-                                    number_format_thousand(PLAYER_TEMP[playerid][pt_TRICK_PRICE])
-                                );
+                PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pt_RP_NAME],
+                PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA],
+                number_format_thousand(PLAYER_TEMP[playerid][pt_TRICK_PRICE])
+            );
 
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Ventas", dialog, "Aceptar", "Cancelar");
             return 1;
@@ -1652,10 +1661,10 @@ ShowDialog(playerid, dialogid)
         {
             new dialog[150];
             format(dialog, sizeof dialog, "%s te quiere vender algo.\n\nTipo: crack\nCantidad: %dg\nPrecio: %s$\n\n¿Quieres comprárselo?",
-                                    PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pt_RP_NAME],
-                                    PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA],
-                                    number_format_thousand(PLAYER_TEMP[playerid][pt_TRICK_PRICE])
-                                );
+                PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pt_RP_NAME],
+                PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA],
+                number_format_thousand(PLAYER_TEMP[playerid][pt_TRICK_PRICE])
+            );
 
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Ventas", dialog, "Aceptar", "Cancelar");
             return 1;
@@ -1664,10 +1673,10 @@ ShowDialog(playerid, dialogid)
         {
             new dialog[150];
             format(dialog, sizeof dialog, "%s te quiere vender %d "SERVER_COIN"\nPrecio: %s$\n\n¿Quieres comprárselo?",
-                                    PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pt_RP_NAME],
-                                    PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA],
-                                    number_format_thousand(PLAYER_TEMP[playerid][pt_TRICK_PRICE])
-                                );
+                PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pt_RP_NAME],
+                PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA],
+                number_format_thousand(PLAYER_TEMP[playerid][pt_TRICK_PRICE])
+            );
 
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Ventas", dialog, "Aceptar", "Cancelar");
             return 1;
@@ -1676,11 +1685,11 @@ ShowDialog(playerid, dialogid)
         {
             new dialog[180];
             format(dialog, sizeof dialog, "%s te quiere vender algo.\n\nTipo: arma\nNombre: %s\nMunición: %s\nPrecio: %s$\n\n¿Quieres comprárselo?",
-                                    PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pt_RP_NAME],
-                                    WEAPON_INFO[ PLAYER_WEAPONS[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][ PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA] ][player_weapon_ID] ][weapon_info_NAME],
-                                    number_format_thousand(PLAYER_WEAPONS[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][ PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA] ][player_weapon_AMMO]),
-                                    number_format_thousand(PLAYER_TEMP[playerid][pt_TRICK_PRICE])
-                                );
+                PLAYER_TEMP[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][pt_RP_NAME],
+                WEAPON_INFO[ PLAYER_WEAPONS[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][ PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA] ][player_weapon_ID] ][weapon_info_NAME],
+                number_format_thousand(PLAYER_WEAPONS[ PLAYER_TEMP[playerid][pt_TRICK_SELLER_PID] ][ PLAYER_TEMP[playerid][pt_TRICK_SELLER_EXTRA] ][player_weapon_AMMO]),
+                number_format_thousand(PLAYER_TEMP[playerid][pt_TRICK_PRICE])
+            );
 
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Ventas", dialog, "Aceptar", "Cancelar");
             return 1;
@@ -1722,7 +1731,7 @@ ShowDialog(playerid, dialogid)
             format(caption, sizeof caption, "Maletero de %s (%d espacios disponibles)", VEHICLE_INFO[GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_DIALOG_BOT_VEHICLE] ][gb_vehicle_MODELID] - 400][vehicle_info_NAME], max_slots - listitem);
 
             PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] = MAX_BOOT_SLOTS + 20;
-            strcat(dialog, "{c4290d}- Eliminar todo\n"); listitem++;
+            strcat(dialog, "{c4290d}- Eliminar todo\n");
 
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, caption, dialog, "Continuar", "Cerrar");
         }
@@ -1804,9 +1813,9 @@ ShowDialog(playerid, dialogid)
                         PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = id;
                     }
 
-                    PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = -2;
+                    //PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = -2; //never used
                     strcat(dialog, "{c9c9c9}- Siguiente\n");
-                    PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = -3;
+                    //PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = -3; //never used
                     strcat(dialog, "{c9c9c9}- Anterior\n");
                     ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "policías", dialog, "Continuar", "Cerrar");
                 }
@@ -1925,19 +1934,19 @@ ShowDialog(playerid, dialogid)
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, ""SERVER_NAME" v"SERVER_VERSION"",
 
                 "\
-                    {"#SILVER_COLOR"}- General\n\
-                    {"#SILVER_COLOR"}- Información\n\
-                    {"#SILVER_COLOR"}- Personaje\n\
-                    {"#SILVER_COLOR"}- Propiedades\n\
-                    {"#SILVER_COLOR"}- Reportar\n\
-                    {"#SILVER_COLOR"}- Trabajos\n\
-                    {"#SILVER_COLOR"}- Vehículos\n\
-                    {"#SILVER_COLOR"}- Bandas\n\
-                    {"#PRIMARY_COLOR"}- Membresía VIP\n\
-                    {"#PRIMARY_COLOR"}- Verificación en dos pasos\n\
+                {"#SILVER_COLOR"}- General\n\
+                {"#SILVER_COLOR"}- Información\n\
+                {"#SILVER_COLOR"}- Personaje\n\
+                {"#SILVER_COLOR"}- Propiedades\n\
+                {"#SILVER_COLOR"}- Reportar\n\
+                {"#SILVER_COLOR"}- Trabajos\n\
+                {"#SILVER_COLOR"}- Vehículos\n\
+                {"#SILVER_COLOR"}- Bandas\n\
+                {"#PRIMARY_COLOR"}- Membresía VIP\n\
+                {"#PRIMARY_COLOR"}- Verificación en dos pasos\n\
                 "
 
-            , "Continuar", "Cerrar");
+                , "Continuar", "Cerrar");
             return 1;
         }
         case DIALOG_HELP_GENERAL:
@@ -1945,30 +1954,30 @@ ShowDialog(playerid, dialogid)
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "General",
 
                 "\
-                    {FFFFFF}Un día del juego dura tres horas reales.\n\
-                    \n\
-                    Para subir de nivel necesitas rellenar la reputación, puedes verlo gráficamente\n\
-                    en la barra que aparece en la parte superior derecha que representa tu reputación.\n\
-                    La reputación se aumenta cada {"#PRIMARY_COLOR"}25 minutos,{FFFFFF} cuando la reputación llegue\n\
-                    al límite podrás subir al siguiente nivel con el comando {"#SILVER_COLOR"}/comprarnivel.\n\
-                    {FFFFFF}El pago de juego(payday) se recibe cada tres reputaciones {"#PRIMARY_COLOR"}(75 minutos).\n\
-                    {FFFFFF}Puedes utilizar {"#SILVER_COLOR"}/csave{FFFFFF} para guardar los datos de tu cuenta.\n\
-                    \n\
-                    Utiliza {"#SILVER_COLOR"}/estadisticas{FFFFFF} para ver tus estadísticas, utiliza {"#SILVER_COLOR"}/exp{FFFFFF} para ver tus habilidades.\n\
-                    En el nivel uno no podrás agredir a otros jugadores, tampoco podrás tener armas\n\
-                    hasta el nivel tres.\n\
-                    Utiliza {"#SILVER_COLOR"}/nombre{FFFFFF} para cambiar tu nombre.\n\
-                    Utiliza {"#SILVER_COLOR"}/correo{FFFFFF} para cambiar tu correo electrónico.\n\
-                    Utiliza {"#SILVER_COLOR"}/pass{FFFFFF} para cambiar la contraseña de tu cuenta.\n\
-                    Para ver el tiempo que te queda en la cárcel utiliza {"#SILVER_COLOR"}/tiempo.\n\
-                    \n\
-                    {FFFFFF}Para utilizar el canal de dudas utiliza el comando {"#SILVER_COLOR"}/duda{FFFFFF} seguido de tu duda.\n\
-                    Para deshabilitar o volver a habilitar el canal de dudas usa {"#SILVER_COLOR"}/dudas.\n\
-                    \n\
-                    {FFFFFF}Utiliza {"#SILVER_COLOR"}/panel {FFFFFF}para configuraciones básicas de tu cuenta.\n\
-                    \n\
+                {FFFFFF}Un día del juego dura tres horas reales.\n\
+                \n\
+                Para subir de nivel necesitas rellenar la reputación, puedes verlo gráficamente\n\
+                en la barra que aparece en la parte superior derecha que representa tu reputación.\n\
+                La reputación se aumenta cada {"#PRIMARY_COLOR"}25 minutos,{FFFFFF} cuando la reputación llegue\n\
+                al límite podrás subir al siguiente nivel con el comando {"#SILVER_COLOR"}/comprarnivel.\n\
+                {FFFFFF}El pago de juego(payday) se recibe cada tres reputaciones {"#PRIMARY_COLOR"}(75 minutos).\n\
+                {FFFFFF}Puedes utilizar {"#SILVER_COLOR"}/csave{FFFFFF} para guardar los datos de tu cuenta.\n\
+                \n\
+                Utiliza {"#SILVER_COLOR"}/estadisticas{FFFFFF} para ver tus estadísticas, utiliza {"#SILVER_COLOR"}/exp{FFFFFF} para ver tus habilidades.\n\
+                En el nivel uno no podrás agredir a otros jugadores, tampoco podrás tener armas\n\
+                hasta el nivel tres.\n\
+                Utiliza {"#SILVER_COLOR"}/nombre{FFFFFF} para cambiar tu nombre.\n\
+                Utiliza {"#SILVER_COLOR"}/correo{FFFFFF} para cambiar tu correo electrónico.\n\
+                Utiliza {"#SILVER_COLOR"}/pass{FFFFFF} para cambiar la contraseña de tu cuenta.\n\
+                Para ver el tiempo que te queda en la cárcel utiliza {"#SILVER_COLOR"}/tiempo.\n\
+                \n\
+                {FFFFFF}Para utilizar el canal de dudas utiliza el comando {"#SILVER_COLOR"}/duda{FFFFFF} seguido de tu duda.\n\
+                Para deshabilitar o volver a habilitar el canal de dudas usa {"#SILVER_COLOR"}/dudas.\n\
+                \n\
+                {FFFFFF}Utiliza {"#SILVER_COLOR"}/panel {FFFFFF}para configuraciones básicas de tu cuenta.\n\
+                \n\
                 "
-            , "Cerrar", "");
+                , "Cerrar", "");
             return 1;
         }
         case DIALOG_HELP_INFO:
@@ -1981,39 +1990,39 @@ ShowDialog(playerid, dialogid)
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Personaje",
 
                 "\
-                    {FFFFFF}Para poder localizar cualquier punto en San Andreas te recomandamos que compres\n\
-                    un GPS en cualquier tienda {FF846A}24/7.{FFFFFF} Desde el GPS podrás localizarlo todo, tus vehículos,\n\
-                    tus propiedades, trabajos, lugares de interés, etc.\n\
-                    \n\
-                    Utiliza tu teléfono para llamar a la policía, mecánico, taxi... o para hablar con\n\
-                    alguien, por defecto tendrás varios contactos en la agenda pero puedes eliminarlos\n\
-                    o añadir más, puedes tener hasta 20 contactos, todo esto se hace desde {"#SILVER_COLOR"}/movil{FFFFFF} o {"#SILVER_COLOR"}/celular.\n\
-                    \n\
-                    {FFFFFF}En las tiendas {FF846A}24/7{FFFFFF} puedes comprar guías para saber el número de cualquier jugador.\n\
-                    Para evitar aparecer en la guía utiliza {"#SILVER_COLOR"}/sguia.\n\
-                    \n\
-                    {FFFFFF}Las barras en la esquina superior derecha representan tu nivel de hidratación y de alimentación,\n\
-                    si los niveles llegan muy abajo tu personaje se empezará a sentir mal y empezarás a perder vida.\n\
-                    Los niveles bajarán según tu actividad física, corriendo te dará sed más pronto que caminando.\n\
-                    Para alimentarte ve a un restaurante de cómida rápida o a un {FF846A}24/7{FFFFFF} donde podrás comprar alimentos,\n\
-                    que podrás consumir el cualquier momento con {"#SILVER_COLOR"}/alimentos{FFFFFF} o {"#SILVER_COLOR"}/consumir.\n\
-                    \n\
-                    {FFFFFF}Puedes dar objetos con el comando {"#SILVER_COLOR"}/dar,{FFFFFF} para más información utiliza {"#SILVER_COLOR"}/man dar.\n\
-                    {FFFFFF}Puedes deshacerte de tus objetos con el comando {"#SILVER_COLOR"}/tirar,{FFFFFF} para más información utiliza {"#SILVER_COLOR"}/man tirar.\n\
-                    {FFFFFF}Puedes vender objetos con el comando {"#SILVER_COLOR"}/vender, para más información utiliza {"#SILVER_COLOR"}/man vender.\n\
-                    {FFFFFF}Para consumir consumibles que lleves contigo utiliza {"#SILVER_COLOR"}/consumir.\n\
-                    \n\
-                    {FFFFFF}Puedes cambiar la ropa de tu personaje en cualquier tienda de ropa, también\n\
-                    podrás comprarte accesorios y ponertelos o quitartelos {"#SILVER_COLOR"}(/accesorios).\n\
-                    \n\
-                    {FFFFFF}Si tienes nivel de búsqueda o estás arrestado y mueres irás a la cárcel después de recuperarte.\n\
-                    Cuando te arresten los policías te pueden requisar tus pertenencias ilegales {FF846A}(armas y drogas).\n\
-                    \n\
-                    {FFFFFF}Utiliza {"#SILVER_COLOR"}/inv{FFFFFF} o pulsa {"#SILVER_COLOR"}N {FFFFFF}para ver todo lo que llevas encima.\n\
-                    {FFFFFF}Utiliza {"#SILVER_COLOR"}/estilo{FFFFFF} para cambiar el estilo de tu personaje.\n\
-                    \n\
+                {FFFFFF}Para poder localizar cualquier punto en San Andreas te recomandamos que compres\n\
+                un GPS en cualquier tienda {FF846A}24/7.{FFFFFF} Desde el GPS podrás localizarlo todo, tus vehículos,\n\
+                tus propiedades, trabajos, lugares de interés, etc.\n\
+                \n\
+                Utiliza tu teléfono para llamar a la policía, mecánico, taxi... o para hablar con\n\
+                alguien, por defecto tendrás varios contactos en la agenda pero puedes eliminarlos\n\
+                o añadir más, puedes tener hasta 20 contactos, todo esto se hace desde {"#SILVER_COLOR"}/movil{FFFFFF} o {"#SILVER_COLOR"}/celular.\n\
+                \n\
+                {FFFFFF}En las tiendas {FF846A}24/7{FFFFFF} puedes comprar guías para saber el número de cualquier jugador.\n\
+                Para evitar aparecer en la guía utiliza {"#SILVER_COLOR"}/sguia.\n\
+                \n\
+                {FFFFFF}Las barras en la esquina superior derecha representan tu nivel de hidratación y de alimentación,\n\
+                si los niveles llegan muy abajo tu personaje se empezará a sentir mal y empezarás a perder vida.\n\
+                Los niveles bajarán según tu actividad física, corriendo te dará sed más pronto que caminando.\n\
+                Para alimentarte ve a un restaurante de cómida rápida o a un {FF846A}24/7{FFFFFF} donde podrás comprar alimentos,\n\
+                que podrás consumir el cualquier momento con {"#SILVER_COLOR"}/alimentos{FFFFFF} o {"#SILVER_COLOR"}/consumir.\n\
+                \n\
+                {FFFFFF}Puedes dar objetos con el comando {"#SILVER_COLOR"}/dar,{FFFFFF} para más información utiliza {"#SILVER_COLOR"}/man dar.\n\
+                {FFFFFF}Puedes deshacerte de tus objetos con el comando {"#SILVER_COLOR"}/tirar,{FFFFFF} para más información utiliza {"#SILVER_COLOR"}/man tirar.\n\
+                {FFFFFF}Puedes vender objetos con el comando {"#SILVER_COLOR"}/vender, para más información utiliza {"#SILVER_COLOR"}/man vender.\n\
+                {FFFFFF}Para consumir consumibles que lleves contigo utiliza {"#SILVER_COLOR"}/consumir.\n\
+                \n\
+                {FFFFFF}Puedes cambiar la ropa de tu personaje en cualquier tienda de ropa, también\n\
+                podrás comprarte accesorios y ponertelos o quitartelos {"#SILVER_COLOR"}(/accesorios).\n\
+                \n\
+                {FFFFFF}Si tienes nivel de búsqueda o estás arrestado y mueres irás a la cárcel después de recuperarte.\n\
+                Cuando te arresten los policías te pueden requisar tus pertenencias ilegales {FF846A}(armas y drogas).\n\
+                \n\
+                {FFFFFF}Utiliza {"#SILVER_COLOR"}/inv{FFFFFF} o pulsa {"#SILVER_COLOR"}N {FFFFFF}para ver todo lo que llevas encima.\n\
+                {FFFFFF}Utiliza {"#SILVER_COLOR"}/estilo{FFFFFF} para cambiar el estilo de tu personaje.\n\
+                \n\
                 "
-            , "Cerrar", "");
+                , "Cerrar", "");
             return 1;
         }
         case DIALOG_HELP_PROPERTIES:
@@ -2021,27 +2030,27 @@ ShowDialog(playerid, dialogid)
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Propiedades",
 
                 "\
-                    {FFFFFF}Puedes encontrar diferentes propiedades en todo {FF846A}San Andreas,{FFFFFF} para comprarla tendrás que saber la\n\
-                    ID de la propiedad e ir a cualquier banco para comprarla, el dinero se descuenta de la cuenta bancaria.\n\
-                    \n\
-                    Puedes localizar tus propiedades con el GPS.\n\
-                    Puedes dejar pasar a cualquiera a tu propiedad, solo tiene que tocar el timbre\n\
-                    y tu elijes si quieres dejarlo pasar o no.\n\
-                    \n\
-                    Si quieres echar a alguien que está dentro de tu propiedad utiliza el comando {"#SILVER_COLOR"}/echar.\n\
-                    {FFFFFF}Dentro de la propiedad sitúate en la puerta interior y pon {"#SILVER_COLOR"}/casa,{FFFFFF} desde ahí podras\n\
-                    cambiar el nombre de la propiedad para así localizarla más fácilmente en el GPS.\n\
-                    {FFFFFF}también podrás echar a todos los huéspedes de tu propiedad.\n\
-                    Si tienes un MP3 podrás poner música en él y hacer que se reproduzca para toda la gente\n\
-                    que haya dentro de la propiedad.\n\
-                    \n\
-                    Si quieres vender tu propiedad puedes hacerlo en {"#PRIMARY_COLOR"}\"Gobierno San Andreas\"{FFFFFF}, localizaló en el GPS.\n\
-                    Puedes vendersela al banco al instante, pero te darán solo el 25% de lo que te costó {FF846A}(50% VIP).\n\
-                    {FFFFFF}también se la puedes vender a otro jugador, dentro de un rango de precio pre-establecido.\n\
-                    Para vender tu propiedad a un jugador puedes ponerla en {"#SILVER_COLOR"}/tienda.\n\
-                    \n\
+                {FFFFFF}Puedes encontrar diferentes propiedades en todo {FF846A}San Andreas,{FFFFFF} para comprarla tendrás que saber la\n\
+                ID de la propiedad e ir a cualquier banco para comprarla, el dinero se descuenta de la cuenta bancaria.\n\
+                \n\
+                Puedes localizar tus propiedades con el GPS.\n\
+                Puedes dejar pasar a cualquiera a tu propiedad, solo tiene que tocar el timbre\n\
+                y tu elijes si quieres dejarlo pasar o no.\n\
+                \n\
+                Si quieres echar a alguien que está dentro de tu propiedad utiliza el comando {"#SILVER_COLOR"}/echar.\n\
+                {FFFFFF}Dentro de la propiedad sitúate en la puerta interior y pon {"#SILVER_COLOR"}/casa,{FFFFFF} desde ahí podras\n\
+                cambiar el nombre de la propiedad para así localizarla más fácilmente en el GPS.\n\
+                {FFFFFF}también podrás echar a todos los huéspedes de tu propiedad.\n\
+                Si tienes un MP3 podrás poner música en él y hacer que se reproduzca para toda la gente\n\
+                que haya dentro de la propiedad.\n\
+                \n\
+                Si quieres vender tu propiedad puedes hacerlo en {"#PRIMARY_COLOR"}\"Gobierno San Andreas\"{FFFFFF}, localizaló en el GPS.\n\
+                Puedes vendersela al banco al instante, pero te darán solo el 25% de lo que te costó {FF846A}(50% VIP).\n\
+                {FFFFFF}también se la puedes vender a otro jugador, dentro de un rango de precio pre-establecido.\n\
+                Para vender tu propiedad a un jugador puedes ponerla en {"#SILVER_COLOR"}/tienda.\n\
+                \n\
                 "
-            , "Cerrar", "");
+                , "Cerrar", "");
             return 1;
         }
         case DIALOG_HELP_REPORT:
@@ -2049,13 +2058,13 @@ ShowDialog(playerid, dialogid)
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Reportar",
 
                 "\
-                    {FFFFFF}Para un reporte simple utiliza {"#SILVER_COLOR"}/reportar ID{FFFFFF} para reportar a un jugador.\n\
-                    \n\
-                    Para reportes más detallado debes publicarlos en el foro aportando imágenes.\n\
-                    Los reportes de fallos o bugs también deberás hacerlo en el foro junto con imágenes.\n\
-                    \n\
+                {FFFFFF}Para un reporte simple utiliza {"#SILVER_COLOR"}/reportar ID{FFFFFF} para reportar a un jugador.\n\
+                \n\
+                Para reportes más detallado debes publicarlos en el foro aportando imágenes.\n\
+                Los reportes de fallos o bugs también deberás hacerlo en el foro junto con imágenes.\n\
+                \n\
                 "
-            , "Cerrar", "");
+                , "Cerrar", "");
             return 1;
         }
         case DIALOG_HELP_VEHICLES:
@@ -2063,38 +2072,38 @@ ShowDialog(playerid, dialogid)
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Vehículos",
 
                 "\
-                    {FF846A}GENERAL\n\
-                    {FFFFFF}Para arrancar o detener un vehículo presiona {"#SILVER_COLOR"}~k~~CONVERSATION_YES~ {FFFFFF}o utiliza {"#SILVER_COLOR"}/motor.\n\
-                    {FFFFFF}Utiliza {"#SILVER_COLOR"}/luces{FFFFFF} para encender o apagar las luces del vehículos.\n\
-                    Si tu vehículo se daña tendrás que llamar a un mecánico desde tu móvil para que lo repare.\n\
-                    \n\
-                    Cada vehículo tiene su cantidad máxima del depósito de gasolina.\n\
-                    Para repostar el vehículo debes ir a cualquier gasolinera, puedes localizarlas con el GPS.\n\
-                    también puedes comprar un bidón de gasolina para {"#SILVER_COLOR"}/vertir{FFFFFF} gasolina en cualquier momento.\n\
-                    Si tienes un MP3 puedes poner una canción en el vehículo con el comando {"#SILVER_COLOR"}/vmp3.\n\
-                    \n\
-                    \n\
-                    {FF846A}VEHICULOS PERSONALES\n\
-                    {FFFFFF}Para comprarlos ve a cualquier concesionario.\n\
-                    El dinero para comprarlo es el de la cuenta bancaria.\n\
-                    Para localizar tus vehículos utiliza el GPS.\n\
-                    \n\
-                    Utiliza {"#SILVER_COLOR"}/abrir{FFFFFF} para abrir las puertes de tu vehículo, utiliza {"#SILVER_COLOR"}/cerrar{FFFFFF} para cerrarlas.\n\
-                    Puedes estacionar tu vehículo con el comando {"#SILVER_COLOR"}/estacionar.\n\
-                    {FFFFFF}Cuando tu vehículo sea destruido recibirás uno nuevo en tu último estacionamiento.\n\
-                    Para pintar, tunear o modificar tu vehículo tendrás que hacerlo en el mecánico.\n\
-                    \n\
-                    Puedes guardar cosas en el maletero del vehículo con el comando {"#SILVER_COLOR"}/guardar.\n\
-                    {FFFFFF}Para sacar cosas del maletero puedes utilizar {"#SILVER_COLOR"}/maletero.\n\
-                    \n\
-                    {FFFFFF}Si quieres vender tu vehículo puedes hacerlo en \"Gobierno San Andreas\", localizaló en el GPS.\n\
-                    Puedes venderselo al banco, pero te darán solo el 25% de lo que te costó (50% VIP).\n\
-                    también se la puedes vender a otro jugador, dentro de un rango de precio pre-establecido.\n\
-                    Para vender tu vehículo a un jugador puedes ponerlo en {"#SILVER_COLOR"}/tienda.\n\
-                    {FFFFFF}Al vender tu vehículo se venderá con todo lo que haya en el maletero.\n\
-                    \n\
+                {FF846A}GENERAL\n\
+                {FFFFFF}Para arrancar o detener un vehículo presiona {"#SILVER_COLOR"}~k~~CONVERSATION_YES~ {FFFFFF}o utiliza {"#SILVER_COLOR"}/motor.\n\
+                {FFFFFF}Utiliza {"#SILVER_COLOR"}/luces{FFFFFF} para encender o apagar las luces del vehículos.\n\
+                Si tu vehículo se daña tendrás que llamar a un mecánico desde tu móvil para que lo repare.\n\
+                \n\
+                Cada vehículo tiene su cantidad máxima del depósito de gasolina.\n\
+                Para repostar el vehículo debes ir a cualquier gasolinera, puedes localizarlas con el GPS.\n\
+                también puedes comprar un bidón de gasolina para {"#SILVER_COLOR"}/vertir{FFFFFF} gasolina en cualquier momento.\n\
+                Si tienes un MP3 puedes poner una canción en el vehículo con el comando {"#SILVER_COLOR"}/vmp3.\n\
+                \n\
+                \n\
+                {FF846A}VEHICULOS PERSONALES\n\
+                {FFFFFF}Para comprarlos ve a cualquier concesionario.\n\
+                El dinero para comprarlo es el de la cuenta bancaria.\n\
+                Para localizar tus vehículos utiliza el GPS.\n\
+                \n\
+                Utiliza {"#SILVER_COLOR"}/abrir{FFFFFF} para abrir las puertes de tu vehículo, utiliza {"#SILVER_COLOR"}/cerrar{FFFFFF} para cerrarlas.\n\
+                Puedes estacionar tu vehículo con el comando {"#SILVER_COLOR"}/estacionar.\n\
+                {FFFFFF}Cuando tu vehículo sea destruido recibirás uno nuevo en tu último estacionamiento.\n\
+                Para pintar, tunear o modificar tu vehículo tendrás que hacerlo en el mecánico.\n\
+                \n\
+                Puedes guardar cosas en el maletero del vehículo con el comando {"#SILVER_COLOR"}/guardar.\n\
+                {FFFFFF}Para sacar cosas del maletero puedes utilizar {"#SILVER_COLOR"}/maletero.\n\
+                \n\
+                {FFFFFF}Si quieres vender tu vehículo puedes hacerlo en \"Gobierno San Andreas\", localizaló en el GPS.\n\
+                Puedes venderselo al banco, pero te darán solo el 25% de lo que te costó (50% VIP).\n\
+                también se la puedes vender a otro jugador, dentro de un rango de precio pre-establecido.\n\
+                Para vender tu vehículo a un jugador puedes ponerlo en {"#SILVER_COLOR"}/tienda.\n\
+                {FFFFFF}Al vender tu vehículo se venderá con todo lo que haya en el maletero.\n\
+                \n\
                 "
-            , "Cerrar", "");
+                , "Cerrar", "");
             return 1;
         }
         case DIALOG_HELP_WORKS:
@@ -2114,14 +2123,14 @@ ShowDialog(playerid, dialogid)
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Bandas",
 
                 "\
-                    {FFFFFF}Utiliza {"#SILVER_COLOR"}/banda{FFFFFF} para crear una banda o administrar la tuya.\n\
-                    {FFFFFF}Al entrar a una banda puedes conquistar territorios por todo San Andreas.\n\
-                    \n\
-                    {FFFFFF}Visita {FF846A}"SERVER_WEBSITE" {FFFFFF}para más información.\n\
-                    \n\
+                {FFFFFF}Utiliza {"#SILVER_COLOR"}/banda{FFFFFF} para crear una banda o administrar la tuya.\n\
+                {FFFFFF}Al entrar a una banda puedes conquistar territorios por todo San Andreas.\n\
+                \n\
+                {FFFFFF}Visita {FF846A}"SERVER_WEBSITE" {FFFFFF}para más información.\n\
+                \n\
                 "
 
-            , "Cerrar", "");
+                , "Cerrar", "");
             return 1;
         }
         case DIALOG_HELP_SU:
@@ -2129,31 +2138,31 @@ ShowDialog(playerid, dialogid)
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Membresía VIP",
 
                 "\
-                    {"#SILVER_COLOR"}Puedes comprar VIP por 30 días con el comando /vip.\n\
-                    {"#SILVER_COLOR"}Se compra con "SERVER_COIN", para ver como comprar esta moneda visita nuestra web.\n\
-                    \n\
-                    {"#PRIMARY_COLOR"}Ventajas\n\
-                    {"#SILVER_COLOR"}- Tener "#MAX_SU_WORKS" trabajos.\n\
-                    {"#SILVER_COLOR"}- Tener "#MAX_SU_VEHICLES" vehículos.\n\
-                    {"#SILVER_COLOR"}- Tener "#MAX_SU_TOYS" accesorios.\n\
-                    {"#SILVER_COLOR"}- Tener "#MAX_SU_PROPERTIES" propiedades.\n\
-                    {"#SILVER_COLOR"}- Tener "#MAX_SU_PROPERTY_OBJECTS" muebles por propiedad.\n\
-                    {"#SILVER_COLOR"}- No pagas seguro de propiedades ni vehículos en el Payday.\n\
-                    {"#SILVER_COLOR"}- No pierdes chaleco al morir.\n\
-                    {"#SILVER_COLOR"}- Al vender un vehículo o propiedad al banco recibes un 50%.\n\
-                    {"#SILVER_COLOR"}- Te recuperas el doble de rápido en el hospital.\n\
-                    {"#SILVER_COLOR"}- Al recuperarte tu vida es del 100%.\n\
-                    {"#SILVER_COLOR"}- Reducción de la condena a la mitad.\n\
-                    {"#SILVER_COLOR"}- Cuando un médico te cura vida al 50%.\n\
-                    {"#SILVER_COLOR"}- Comprar armas en mercado negro sin pertenecer a banda.\n\
-                    {"#SILVER_COLOR"}- Comprar armas sin esperar 5 minutos por cada compra.\n\
-                    {"#SILVER_COLOR"}- Pagas extras de 300$ en algunos trabajos.\n\
-                    \n\
-                    {"#SILVER_COLOR"}Visita {"#PRIMARY_COLOR"}"SERVER_WEBSITE" {"#SILVER_COLOR"}para más información.\n\
-                    \n\
+                {"#SILVER_COLOR"}Puedes comprar VIP por 30 días con el comando /vip.\n\
+                {"#SILVER_COLOR"}Se compra con "SERVER_COIN", para ver como comprar esta moneda visita nuestra web.\n\
+                \n\
+                {"#PRIMARY_COLOR"}Ventajas\n\
+                {"#SILVER_COLOR"}- Tener "#MAX_SU_WORKS" trabajos.\n\
+                {"#SILVER_COLOR"}- Tener "#MAX_SU_VEHICLES" vehículos.\n\
+                {"#SILVER_COLOR"}- Tener "#MAX_SU_TOYS" accesorios.\n\
+                {"#SILVER_COLOR"}- Tener "#MAX_SU_PROPERTIES" propiedades.\n\
+                {"#SILVER_COLOR"}- Tener "#MAX_SU_PROPERTY_OBJECTS" muebles por propiedad.\n\
+                {"#SILVER_COLOR"}- No pagas seguro de propiedades ni vehículos en el Payday.\n\
+                {"#SILVER_COLOR"}- No pierdes chaleco al morir.\n\
+                {"#SILVER_COLOR"}- Al vender un vehículo o propiedad al banco recibes un 50%.\n\
+                {"#SILVER_COLOR"}- Te recuperas el doble de rápido en el hospital.\n\
+                {"#SILVER_COLOR"}- Al recuperarte tu vida es del 100%.\n\
+                {"#SILVER_COLOR"}- Reducción de la condena a la mitad.\n\
+                {"#SILVER_COLOR"}- Cuando un médico te cura vida al 50%.\n\
+                {"#SILVER_COLOR"}- Comprar armas en mercado negro sin pertenecer a banda.\n\
+                {"#SILVER_COLOR"}- Comprar armas sin esperar 5 minutos por cada compra.\n\
+                {"#SILVER_COLOR"}- Pagas extras de 300$ en algunos trabajos.\n\
+                \n\
+                {"#SILVER_COLOR"}Visita {"#PRIMARY_COLOR"}"SERVER_WEBSITE" {"#SILVER_COLOR"}para más información.\n\
+                \n\
                 "
 
-            , "Cerrar", "");
+                , "Cerrar", "");
             return 1;
         }
         case DIALOG_HELP_SECURE_LOGIN:
@@ -2161,16 +2170,16 @@ ShowDialog(playerid, dialogid)
             new string[512];
             format(string, sizeof string,
                 "\
-                    Activa la verificación en dos pasos para proteger tu cuenta.\n\
-                    Cuando tu IP cambie se enviará un correo electrónico para\n\
-                    poder verificiar el inicio de sesión\n\
-                    \n\
-                    Tu dirección de correo electrónico actual es: %s.\n\
-                    Puedes cambiar tu correo con el comando /correo.\n\
-                    \n\
-                    Para activar o desactivar la verificación en dos pasos utiliza el comando /panel.\
+                Activa la verificación en dos pasos para proteger tu cuenta.\n\
+                Cuando tu IP cambie se enviará un correo electrónico para\n\
+                poder verificiar el inicio de sesión\n\
+                \n\
+                Tu dirección de correo electrónico actual es: %s.\n\
+                Puedes cambiar tu correo con el comando /correo.\n\
+                \n\
+                Para activar o desactivar la verificación en dos pasos utiliza el comando /panel.\
                 ",
-                    ACCOUNT_INFO[playerid][ac_EMAIL]
+                ACCOUNT_INFO[playerid][ac_EMAIL]
             );
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Verificación en dos pasos", string, "Cerrar", "");
             return 1;
@@ -2205,9 +2214,9 @@ ShowDialog(playerid, dialogid)
                         PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = id;
                     }
 
-                    PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = -2;
+                    //PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = -2; //never used
                     strcat(dialog, "{c9c9c9}- Siguiente\n");
-                    PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = -3;
+                    //PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = -3; //never used
                     strcat(dialog, "{c9c9c9}- Anterior\n");
                     ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "Administradores", dialog, "Continuar", "Cerrar");
                 }
@@ -2374,17 +2383,17 @@ ShowDialog(playerid, dialogid)
             new dialog[360];
             format(dialog, sizeof dialog,
 
-                    "\
-                        {"#SILVER_COLOR"}Nombre de la banda: %s\n\
-                        {"#SILVER_COLOR"}Color de la banda: {%06x}color %d\n\
-                        {"#SILVER_COLOR"}Coste de creación: 600.000$\n\
-                        \n\
-                        {"#SILVER_COLOR"}¿Quieres crear esta banda?\n\
-                        {"#SILVER_COLOR"}Una vez creada podrás crear rangos, modificarlos y mucho más.\n\
-                        \n\
-                    ",
-                        PLAYER_TEMP[playerid][pt_CREATE_CREW_NAME],
-                        RandomColors[ PLAYER_TEMP[playerid][pt_CREATE_CREW_COLOR] ] >>> 8, PLAYER_TEMP[playerid][pt_CREATE_CREW_COLOR] + 1
+                "\
+                {"#SILVER_COLOR"}Nombre de la banda: %s\n\
+                {"#SILVER_COLOR"}Color de la banda: {%06x}color %d\n\
+                {"#SILVER_COLOR"}Coste de creación: 600.000$\n\
+                \n\
+                {"#SILVER_COLOR"}¿Quieres crear esta banda?\n\
+                {"#SILVER_COLOR"}Una vez creada podrás crear rangos, modificarlos y mucho más.\n\
+                \n\
+                ",
+                PLAYER_TEMP[playerid][pt_CREATE_CREW_NAME],
+                RandomColors[ PLAYER_TEMP[playerid][pt_CREATE_CREW_COLOR] ] >>> 8, PLAYER_TEMP[playerid][pt_CREATE_CREW_COLOR] + 1
             );
 
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Crear banda", dialog, "Crear", "Cerrar");
@@ -2440,7 +2449,7 @@ ShowDialog(playerid, dialogid)
 
             strcat(dialog, "Abandonar banda\n");
             PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] = CREW_RANK_SIZE + 1;
-            listitem++;
+            //listitem++; //never used
 
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, dialog, "Continuar", "Cerrar");
             return 1;
@@ -2470,9 +2479,9 @@ ShowDialog(playerid, dialogid)
                         count++;
                     }
 
-                    PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = -2;
+                    //PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = -2; neverused
                     strcat(dialog, "{c9c9c9}- Siguiente\n");
-                    PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = -3;
+                    //PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = -3; //never used
                     strcat(dialog, "{c9c9c9}- Anterior\n");
                     ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, caption, dialog, "Continuar", "Cerrar");
                 }
@@ -2513,9 +2522,9 @@ ShowDialog(playerid, dialogid)
                         PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = id;
                     }
 
-                    PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = -2;
+                    //PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = -2; //never used
                     strcat(dialog, "{c9c9c9}- Siguiente\n");
-                    PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = -3;
+                    //PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = -3; //never used
                     strcat(dialog, "{c9c9c9}- Anterior\n");
                     ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "Echar a un miembro", dialog, "Continuar", "Cerrar");
                 }
@@ -2647,19 +2656,19 @@ ShowDialog(playerid, dialogid)
                         format(dialog, sizeof dialog,
 
                             "\
-                                Rango que se eliminará:\n\
-                                    \t'%s'\n\
-                                \n\
-                                Miembros afectados: %d\n\
-                                El nuevo rango de estos miembros será:\n\
-                                    \t'%s'\n\
-                                \n\
-                                ¿Seguro que quieres eliminar el rango? Esta opción no se puede deshacer.\n\
-                                \n\
+                            Rango que se eliminará:\n\
+                            \t'%s'\n\
+                            \n\
+                            Miembros afectados: %d\n\
+                            El nuevo rango de estos miembros será:\n\
+                            \t'%s'\n\
+                            \n\
+                            ¿Seguro que quieres eliminar el rango? Esta opción no se puede deshacer.\n\
+                            \n\
                             ",
-                                CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PLAYER_TEMP[playerid][pt_CREW_SELECTED_RANK] ][crew_rank_NAME],
-                                affected_members,
-                                CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PLAYER_TEMP[playerid][pt_CREW_SELECTED_NEW_RANK] ][crew_rank_NAME]
+                            CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PLAYER_TEMP[playerid][pt_CREW_SELECTED_RANK] ][crew_rank_NAME],
+                            affected_members,
+                            CREW_RANK_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][ PLAYER_TEMP[playerid][pt_CREW_SELECTED_NEW_RANK] ][crew_rank_NAME]
                         );
                         ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Eliminar rango", dialog, "Eliminar", "Cancelar");
 
@@ -2692,16 +2701,16 @@ ShowDialog(playerid, dialogid)
                         format(dialog, sizeof dialog,
 
                             "\
-                                Banda: %s\n\
-                                Miembros: %d\n\
-                                Territorios: %d\n\
-                                \n\
-                                ¿De verdad quieres borrar la banda?\n\
-                                \n\
+                            Banda: %s\n\
+                            Miembros: %d\n\
+                            Territorios: %d\n\
+                            \n\
+                            ¿De verdad quieres borrar la banda?\n\
+                            \n\
                             ",
-                                CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_NAME],
-                                affected_members,
-                                crew_territories
+                            CREW_INFO[ PLAYER_TEMP[playerid][pt_CREW_INDEX] ][crew_NAME],
+                            affected_members,
+                            crew_territories
                         );
                         ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Eliminar banda", dialog, "Eliminar", "Cancelar");
                     }
@@ -2741,9 +2750,9 @@ ShowDialog(playerid, dialogid)
                         PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = id;
                     }
 
-                    PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = -2;
+                    //PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = -2; //never used
                     strcat(dialog, "{c9c9c9}- Siguiente\n");
-                    PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = -3;
+                    //PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = -3; //never used
                     strcat(dialog, "{c9c9c9}- Anterior\n");
                     ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "Modificar rango de un miembro", dialog, "Continuar", "Cerrar");
                 }
@@ -2869,23 +2878,23 @@ ShowDialog(playerid, dialogid)
             format(dialog, sizeof dialog,
 
                 "\
-                    PROPIEDADES\t%.4f\n\
-                    VEHICULOS\t%.4f\n\
-                    TOYS\t%.4f\n\
-                    SKINS\t%.4f\n\
-                    ARMAS\t%.4f\n\
-                    VIP\t%d "SERVER_COIN"\n\
-                    VIP JOB EXTRA PAY\t%d\n\
-                    CHANGE NAME\t%d "SERVER_COIN"\n\
+                PROPIEDADES\t%.4f\n\
+                VEHICULOS\t%.4f\n\
+                TOYS\t%.4f\n\
+                SKINS\t%.4f\n\
+                ARMAS\t%.4f\n\
+                VIP\t%d "SERVER_COIN"\n\
+                VIP JOB EXTRA PAY\t%d\n\
+                CHANGE NAME\t%d "SERVER_COIN"\n\
                 ",
-                    MULTIPLIER_PROPERITES,
-                    MULTIPLIER_VEHICLES,
-                    MULTIPLIER_TOYS,
-                    MULTIPLIER_SKINS,
-                    MULTIPLIER_WEAPONS,
-                    SU_SD_PRICE,
-                    SU_WORK_EXTRA_PAY,
-                    CHANGE_NAME_SD_PRICE
+                MULTIPLIER_PROPERITES,
+                MULTIPLIER_VEHICLES,
+                MULTIPLIER_TOYS,
+                MULTIPLIER_SKINS,
+                MULTIPLIER_WEAPONS,
+                SU_SD_PRICE,
+                SU_WORK_EXTRA_PAY,
+                CHANGE_NAME_SD_PRICE
             );
 
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST, "Multiplicadores", dialog, "Continuar", "Cerrar");
@@ -2923,15 +2932,15 @@ ShowDialog(playerid, dialogid)
             format(dialog, sizeof dialog,
 
                 "\
-                    Fecha actual: %s\n\
-                    Fecha caducidad: %s\n\
-                    \n\
-                    Renuevalo 30 días más por %d "SERVER_COIN".\n\
-                    \n\
+                Fecha actual: %s\n\
+                Fecha caducidad: %s\n\
+                \n\
+                Renuevalo 30 días más por %d "SERVER_COIN".\n\
+                \n\
                 ",
-                    current_date,
-                    ACCOUNT_INFO[playerid][ac_VIP_EXPIRE_DATE],
-                    SU_SD_PRICE
+                current_date,
+                ACCOUNT_INFO[playerid][ac_VIP_EXPIRE_DATE],
+                SU_SD_PRICE
             );
 
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "VIP", dialog, "Cerrar", "Renovar");
@@ -3024,14 +3033,14 @@ ShowDialog(playerid, dialogid)
             new dialog[145];
             format(dialog, sizeof dialog,
 
-                    "\
-                        Color original\n\
-                        {%06x}Veh Color 1\n\
-                        {%06x}Veh Color 2\n\
-                        {FFFFFF}Otro (ARGB)\n\
-                    ",
-                    VEHICLE_COLORS[ GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][gb_vehicle_COLOR_1] ] >>> 8,
-                    VEHICLE_COLORS[ GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][gb_vehicle_COLOR_2] ] >>> 8
+                "\
+                Color original\n\
+                {%06x}Veh Color 1\n\
+                {%06x}Veh Color 2\n\
+                {FFFFFF}Otro (ARGB)\n\
+                ",
+                VEHICLE_COLORS[ GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][gb_vehicle_COLOR_1] ] >>> 8,
+                VEHICLE_COLORS[ GLOBAL_VEHICLES[ PLAYER_TEMP[playerid][pt_TUNING_GARAGE_VEHICLEID] ][gb_vehicle_COLOR_2] ] >>> 8
             );
 
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, caption, dialog, "Continuar", "Atrás");
@@ -3097,43 +3106,43 @@ ShowDialog(playerid, dialogid)
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, "Selecciona país",
 
                 "\
-                    Alemania\n\
-                    Argentina\n\
-                    Austria\n\
-                    Belgica\n\
-                    Bolivia\n\
-                    Bulgaria\n\
-                    Chile\n\
-                    Colombia\n\
-                    El Salvador\n\
-                    España\n\
-                    Estonia\n\
-                    Francia\n\
-                    Guatemala\n\
-                    Holanda\n\
-                    Hungrúa\n\
-                    India\n\
-                    Indonesia\n\
-                    Irlanda\n\
-                    Italia\n\
-                    Lituania\n\
-                    Luxemburgo\n\
-                    Madagascar\n\
-                    Malta\n\
-                    Malí\n\
-                    México\n\
-                    Nigeria\n\
-                    Panamá\n\
-                    Paraguay\n\
-                    Perú\n\
-                    Polonia\n\
-                    Rumanía\n\
-                    Rusia\n\
-                    Ucrania\n\
-                    Venezuela\n\
+                Alemania\n\
+                Argentina\n\
+                Austria\n\
+                Belgica\n\
+                Bolivia\n\
+                Bulgaria\n\
+                Chile\n\
+                Colombia\n\
+                El Salvador\n\
+                España\n\
+                Estonia\n\
+                Francia\n\
+                Guatemala\n\
+                Holanda\n\
+                Hungrúa\n\
+                India\n\
+                Indonesia\n\
+                Irlanda\n\
+                Italia\n\
+                Lituania\n\
+                Luxemburgo\n\
+                Madagascar\n\
+                Malta\n\
+                Malí\n\
+                México\n\
+                Nigeria\n\
+                Panamá\n\
+                Paraguay\n\
+                Perú\n\
+                Polonia\n\
+                Rumanía\n\
+                Rusia\n\
+                Ucrania\n\
+                Venezuela\n\
                 "
 
-            , "Continuar", "Atrás");
+                , "Continuar", "Atrás");
             return 1;
         }
         case DIALOG_PLAYER_CONFIG:
@@ -3142,23 +3151,23 @@ ShowDialog(playerid, dialogid)
             format(dialog, sizeof dialog,
 
                 "\
-                    Audios del servidor\t%s\n\
-                    Barras indicadoras (hud)\t%s\n\
-                    Ver sanciones, kicks, baneos\t%s\n\
-                    Número en guía telefónica\t%s\n\
-                    Sonidos del servidor\t%s\n\
-                    Mostrar hora del servidor\t%s\n\
-                    Canal de dudas\t%s\n\
-                    Verificación en dos pasos\t%s\
+                Audios del servidor\t%s\n\
+                Barras indicadoras (hud)\t%s\n\
+                Ver sanciones, kicks, baneos\t%s\n\
+                Número en guía telefónica\t%s\n\
+                Sonidos del servidor\t%s\n\
+                Mostrar hora del servidor\t%s\n\
+                Canal de dudas\t%s\n\
+                Verificación en dos pasos\t%s\
                 ",
-                    (PI[playerid][ac_CONFIG_AUDIO] ? "Sí" : "No"),
-                    (PI[playerid][ac_CONFIG_HUD] ? "Sí" : "No"),
-                    (PI[playerid][ac_CONFIG_ADMIN] ? "Sí" : "No"),
-                    (PI[playerid][ac_PHONE_VISIBLE_NUMBER] ? "Sí" : "No"),
-                    (PI[playerid][ac_CONFIG_SOUNDS] ? "Sí" : "No"),
-                    (PI[playerid][ac_CONFIG_TIME] ? "Sí" : "No"),
-                    (ACCOUNT_INFO[playerid][ac_DOUBT_CHANNEL] ? "Sí" : "No"),
-                    (PI[playerid][ac_CONFIG_SECURE_LOGIN] ? "Sí" : "No")
+                (PI[playerid][ac_CONFIG_AUDIO] ? "Sí" : "No"),
+                (PI[playerid][ac_CONFIG_HUD] ? "Sí" : "No"),
+                (PI[playerid][ac_CONFIG_ADMIN] ? "Sí" : "No"),
+                (PI[playerid][ac_PHONE_VISIBLE_NUMBER] ? "Sí" : "No"),
+                (PI[playerid][ac_CONFIG_SOUNDS] ? "Sí" : "No"),
+                (PI[playerid][ac_CONFIG_TIME] ? "Sí" : "No"),
+                (ACCOUNT_INFO[playerid][ac_DOUBT_CHANNEL] ? "Sí" : "No"),
+                (PI[playerid][ac_CONFIG_SECURE_LOGIN] ? "Sí" : "No")
             );
 
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST, "Panel de configuración del usuario", dialog, "Cambiar", "Cerrar");
@@ -3202,10 +3211,10 @@ ShowDialog(playerid, dialogid)
                         PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = id;
                     }
 
-                    PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = -2;
+                    //PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = -2; //never used
                     strcat(dialog, "{c9c9c9}- Siguiente\n");
 
-                    PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = -3;
+                    //PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = -3; //never used
                     strcat(dialog, "{c9c9c9}- Anterior\n");
                     ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "BYC", dialog, "Continuar", "Cerrar");
                 }
@@ -3240,10 +3249,10 @@ ShowDialog(playerid, dialogid)
                         PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = id;
                     }
 
-                    PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = -2;
+                    //PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = -2; //never used
                     strcat(dialog, "{c9c9c9}- Siguiente\n");
 
-                    PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = -3;
+                    //PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][count++] = -3; //never used
                     strcat(dialog, "{c9c9c9}- Anterior\n");
                     ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, "BYC", dialog, "Continuar", "Cerrar");
                 }
@@ -3307,7 +3316,7 @@ ShowDialog(playerid, dialogid)
                     }
 
                     PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] = i;
-                    listitem++;
+                    //listitem++; //never used
                 }
             }
 
@@ -3315,7 +3324,8 @@ ShowDialog(playerid, dialogid)
             format(caption, sizeof caption, "Armario (%d espacios disponibles)", max_slots - listitem);
 
             PLAYER_TEMP[playerid][pt_PLAYER_LISTITEM][listitem] = MAX_CLOSET_SLOTS + 20;
-            strcat(dialog, "{c4290d}- Eliminar todo\n"); listitem++;
+            strcat(dialog, "{c4290d}- Eliminar todo\n");
+            //listitem++; //never used
 
             ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, caption, dialog, "Continuar", "Cerrar");
         }

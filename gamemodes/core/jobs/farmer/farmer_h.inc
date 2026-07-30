@@ -39,6 +39,7 @@ enum seed_info_enum
     seed_info_NAME[24],
     seed_info_PRICE,
 }
+
 new seed_info[][seed_info_enum] =
 {
     {TYPE_LEGAL, PLANT_TYPE_MEDICINE, 0, "Medicina", 50},
@@ -51,13 +52,13 @@ enum plant_info_enum
     plant_info_SEEDS,
     plant_info_NAME[24],
 }
+
 new plant_info[][plant_info_enum] =
 {
     {2, "Medicamento"},
     {4, "Marihuana"},
     {10, "Crack"}
 };
-
 
 enum PLANTS_ENUM
 {
@@ -74,6 +75,7 @@ enum PLANTS_ENUM
     plant_TIMER,
     plant_IMMUNITY,
 }
+
 new PLANTS[MAX_PLANTS][PLANTS_ENUM];
 
 enum
