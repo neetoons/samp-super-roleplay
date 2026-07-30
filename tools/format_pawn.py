@@ -258,6 +258,12 @@ def step_case_braces(text):
                         j += 1
 
                     if body_lines:
+                        # If already Allman-braced (first body line is just {), skip
+                        first_line = body_lines[0].strip()
+                        if first_line == '{' or first_line.startswith('{'):
+                            result.append(line)
+                            i += 1
+                            continue
                         result.append(f"{indent}{case_hdr}{{")
                         for bl in body_lines:
                             result.append(bl)
@@ -269,10 +275,8 @@ def step_case_braces(text):
                         i += 1
                         continue
                 else:
-                    # Single-line case body
-                    result.append(f"{indent}{case_hdr}{{")
-                    result.append(f"{indent}    {body}")
-                    result.append(f"{indent}}}")
+                    # Single-line case body — leave as-is
+                    result.append(line)
                     i += 1
                     continue
 
@@ -281,6 +285,81 @@ def step_case_braces(text):
         return '\n'.join(result)
 
     return stateful_transform(text, transform)
+
+
+def step_call_continuation_indent(text):
+    def _parens_in_line(line, start_in_string=False):
+        count = 0
+        in_string = start_in_string
+        i = 0
+        while i < len(line):
+            ch = line[i]
+            if ch == '\\':
+                i += 1
+                if i < len(line) and line[i] in '\\"ntr':
+                    i += 1
+                continue
+            if ch == '"':
+                in_string = not in_string
+            elif not in_string and ch == '(':
+                count += 1
+            elif not in_string and ch == ')':
+                count -= 1
+            i += 1
+        return count, in_string
+
+    lines = text.split('\n')
+    result = list(lines)
+
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        stripped = line.strip()
+        if not stripped or stripped.startswith('//') or stripped.startswith('/*') or stripped.startswith('#'):
+            i += 1
+            continue
+
+        net, _ = _parens_in_line(stripped)
+
+        if net > 0:
+            base_indent = re.match(r'^(\s*)', line).group(1)
+            base_len = len(base_indent)
+            target_arg = ' ' * (base_len + 4)
+
+            depth = net
+            in_string = False  # track string state across lines
+            j = i + 1
+            while j < len(lines) and depth > 0:
+                cur = lines[j]
+                cur_strip = cur.strip()
+
+                if not cur_strip or cur_strip.startswith('//') or cur_strip.startswith('/*') or cur_strip.startswith('#'):
+                    j += 1
+                    continue
+
+                cur_net, in_string = _parens_in_line(cur_strip, in_string)
+
+                cur_indent = re.match(r'^(\s*)', cur).group(1)
+                rest = cur[len(cur_indent):]
+
+                if depth + cur_net <= 0:
+                    stripped_rest = rest.strip()
+                    content_part = stripped_rest.rstrip(');,')
+                    if content_part.strip():
+                        result[j] = target_arg + stripped_rest
+                    else:
+                        result[j] = base_indent + stripped_rest
+                else:
+                    result[j] = target_arg + rest.strip()
+
+                depth += cur_net
+                j += 1
+
+            i = j
+        else:
+            i += 1
+
+    return '\n'.join(result)
 
 
 def step_indent_braces(text):
@@ -419,6 +498,7 @@ def format_path(path):
     text = step_case_braces(text)
     text = step_indent_braces(text)
     text = step_long_lines(text)
+    text = step_call_continuation_indent(text)
 
     if text != original:
         with open(path, 'wb') as f:
@@ -439,6 +519,7 @@ def format_text(raw_text: str) -> str:
     text = step_case_braces(text)
     text = step_indent_braces(text)
     text = step_long_lines(text)
+    text = step_call_continuation_indent(text)
     return text
 
 

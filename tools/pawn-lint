@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+set -u
+
+FILE="${1:?Usage: pawn-lint <file>}"
+[ -f "$FILE" ] || { echo "pawn-lint: error: file not found: $FILE" >&2; exit 1; }
+FILE=$(realpath "$FILE")
+
+DIR="$FILE"
+while [ "$DIR" != "/" ]; do
+    DIR=$(dirname "$DIR")
+    if [ -f "$DIR/gamemodes/srp.pwn" ]; then
+        PROJECT_ROOT="$DIR"
+        break
+    fi
+done
+if [ -z "${PROJECT_ROOT:-}" ]; then
+    echo "pawn-lint: error: project root not found" >&2
+    exit 1
+fi
+
+INCLUDE_ARGS=()
+[ -d "$PROJECT_ROOT/pawno/include" ] && INCLUDE_ARGS+=("-i$PROJECT_ROOT/pawno/include")
+if [ -n "${YSI_INCLUDE:-}" ] && [ -d "$YSI_INCLUDE" ]; then
+    INCLUDE_ARGS+=("-i$YSI_INCLUDE")
+else
+    YSI_STORE=$(ls -d /nix/store/*ysi-includes*/include 2>/dev/null | head -1)
+    [ -n "$YSI_STORE" ] && INCLUDE_ARGS+=("-i$YSI_STORE")
+fi
+
+cd "$PROJECT_ROOT/gamemodes"
+RELATIVE_PATH=$(realpath --relative-to="$PROJECT_ROOT/gamemodes" "$FILE")
+
+pawncc -Dgamemodes "${INCLUDE_ARGS[@]}" -d3 -Z "-(+" "-;+" srp.pwn 2>&1 \
+    | grep -F -- "$RELATIVE_PATH" || true
