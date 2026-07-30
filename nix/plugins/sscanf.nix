@@ -3,8 +3,8 @@
 let
   src = fetchFromGitHub {
     owner = "Y-Less"; repo = "sscanf";
-    rev = "143f301ac6b30e6855ff14d57fd0bd1c909c6891";
-    hash = "sha256-XZYzn1nnKc0LdFWC7R2YupuNvwzUuWGTOon99Pysgrk=";
+    rev = "27f0b725095bf40ed9c4d772acd7300b02be632b";
+    hash = "sha256-13w2qv6pgdk9pm7k2q6hpnvibcqj167vyp8zga6a23i8s6jlbc3q";
   };
 
   subhook-src = fetchFromGitHub {
@@ -40,7 +40,7 @@ let
 in
 stdenv.mkDerivation {
   pname = "sscanf";
-  version = "2.13.8";
+  version = "2.15.1";
   inherit src;
   nativeBuildInputs = [ cmake ninja ];
   prePatch = ''

@@ -70,7 +70,7 @@ Por ejemplo si el precio base de un vehículo es de 1.000$ si ponemos el multipl
 | [Pawn.Regex](https://github.com/katursis/Pawn.Regex)               |   1.2.3   |
 | [Pawn.Raknet](https://github.com/katursis/Pawn.RakNet)             |   1.6.0   |
 | [Pawn.Plus](https://github.com/IS4Code/PawnPlus)                   |   1.5.1   |
-| [sscanf](https://github.com/Y-Less/sscanf)                         |  2.13.8   |
+| [sscanf](https://github.com/Y-Less/sscanf)                         |  2.15.1   |
 | [streamer](https://github.com/samp-incognito/samp-streamer-plugin) |   2.9.6   |
 | [MapAndreas](https://github.com/philip1337/samp-plugin-mapandreas) |     -     |
 

@@ -1,5 +1,5 @@
 /*
- *  sscanf 2.13.8
+ *  sscanf 2.15.1
  *
  *  Version: MPL 1.1
  *
@@ -103,14 +103,24 @@
 
 /// <p/>
 
-#define SSCANF_STATIC__
 #if defined __PawnBuild
-	#if __PawnBuild == 11
-		// `const static` support.
-		#undef SSCANF_STATIC__
-		#define SSCANF_STATIC__ static
+	#if __PawnBuild == 0
+		#undef __PawnBuild
+		#define __pawn_build 0
+	#else
+		#define __pawn_build __PawnBuild
 	#endif
 #else
+	#define __pawn_build 0
+#endif
+
+#define SSCANF_STATIC__
+#if __pawn_build >= 11
+	// `const static` support.
+	#undef SSCANF_STATIC__
+	#define SSCANF_STATIC__ static
+#endif
+#if __pawn_build == 0
 	#if !defined SSCANF_NO_NICE_FEATURES
 		#error sscanf utilises community compiler features.  Use `#define SSCANF_NO_NICE_FEATURES` to live without (if you can call that living) or better yet download it here: github.com/pawn-lang/compiler/releases
 	#endif
@@ -124,11 +134,11 @@
  */
 #if defined GetDistanceFromMeToPoint
 	// NPC script.
-	static stock SSCANF_NPC = 1;
+	const SSCANF_NPC = 1;
 	#define SSCANF_NPC (1)
 	#pragma library sscanf
 #else
-	static stock SSCANF_NPC = 0;
+	const SSCANF_NPC = 0;
 	#define SSCANF_NPC (0)
 #endif
 
@@ -138,8 +148,8 @@
  * The sscanf major version number.
  * </remarks>
  */
-static stock SSCANF_VERSION_MAJOR =  2;
-#define SSCANF_VERSION_MAJOR  2
+const SSCANF_VERSION_MAJOR = 2;
+#define SSCANF_VERSION_MAJOR 2
 
 /**
  * <library>sscanf</library>
@@ -147,8 +157,8 @@ static stock SSCANF_VERSION_MAJOR =  2;
  * The sscanf minor version number.
  * </remarks>
  */
-static stock SSCANF_VERSION_MINOR = 13;
-#define SSCANF_VERSION_MINOR 13
+const SSCANF_VERSION_MINOR = 15;
+#define SSCANF_VERSION_MINOR 15
 
 /**
  * <library>sscanf</library>
@@ -156,8 +166,8 @@ static stock SSCANF_VERSION_MINOR = 13;
  * The sscanf build number.
  * </remarks>
  */
-static stock SSCANF_VERSION_BUILD = 8;
-#define SSCANF_VERSION_BUILD  8
+const SSCANF_VERSION_BUILD = 1;
+#define SSCANF_VERSION_BUILD 1
 
 /**
  * <library>sscanf</library>
@@ -165,7 +175,7 @@ static stock SSCANF_VERSION_BUILD = 8;
  * The sscanf version as a string.  E.g. <c>"2.8.1"</c>.
  * </remarks>
  */
-static stock SSCANF_VERSION_STRING[] = #SSCANF_VERSION_MAJOR "." #SSCANF_VERSION_MINOR "." #SSCANF_VERSION_BUILD;
+stock const SSCANF_VERSION_STRING[] = #SSCANF_VERSION_MAJOR "." #SSCANF_VERSION_MINOR "." #SSCANF_VERSION_BUILD;
 #define SSCANF_VERSION_STRING #SSCANF_VERSION_MAJOR "." #SSCANF_VERSION_MINOR "." #SSCANF_VERSION_BUILD
 
 /**
@@ -210,6 +220,7 @@ forward BCD(number);
  * </remarks>
  */
 const SSCANF_VERSION = BCD(SSCANF_VERSION_MAJOR.SSCANF_VERSION_MINOR.SSCANF_VERSION_BUILD);
+#define SSCANF_VERSION (BCD(SSCANF_VERSION_MAJOR.SSCANF_VERSION_MINOR.SSCANF_VERSION_BUILD))
 
 /**
  * <library>sscanf</library>
@@ -223,7 +234,8 @@ const SSCANF_VERSION = BCD(SSCANF_VERSION_MAJOR.SSCANF_VERSION_MINOR.SSCANF_VERS
  * </code>
  * </remarks>
  */
-stock const SSCANF_VERSION_BCD = SSCANF_VERSION;
+const SSCANF_VERSION_BCD = SSCANF_VERSION;
+#define SSCANF_VERSION_BCD SSCANF_VERSION
 
 #define sscanf_%0\32; sscanf_
 #define SSCANF:%0(%1) forward sscanf_%0(%1);public sscanf_%0(%1)
@@ -235,6 +247,87 @@ stock const SSCANF_VERSION_BCD = SSCANF_VERSION;
 #if defined sscanf && !defined SSCANF_GetClosestString
 	#error sscanf already defined, or used before inclusion.
 #endif
+
+/// <p/>
+
+/**
+ * <library>sscanf</library>
+ * <remarks>
+ * There are almost 100 different unique error codes, but many of them can often
+ * be dealt with in the same way.  For example - <em><b>1011</b> - An int was
+ * wanted, but the input didn't match</em> and <em><b>1012</b> - A number was
+ * wanted, but the input didn't match</em> can probably usually use the same
+ * result processing (especially since they can never be returned by the same
+ * specifier).  Hence the errors are grouped together in to a few large groups
+ * for ease of processing.
+ * </remarks>
+ */
+enum sscanf_error:SSCANF_ERRORS__ (+= 65536)
+{
+	UNKNOWN_SSCANF_ERROR = -1,
+	SSCANF_ERROR_NONE,
+	SSCANF_ERROR_NATIVE = 65536,
+	SSCANF_ERROR_SPECIFIER,
+	SSCANF_ERROR_INVALID,
+	SSCANF_ERROR_MISSING,
+	SSCANF_ERROR_EXCESS,
+	SSCANF_ERROR_COLOUR,
+	SSCANF_ERROR_OVERFLOW,
+	SSCANF_ERROR_NOT_FOUND,
+	SSCANF_ERROR_NO_ALTS
+}
+static stock sscanf_error:_@SSCANF_ERROR() { return SSCANF_ERRORS__; }
+
+// We use both `enum` and `#define` together so that `#emit` and arrays will
+// both work.  See the open.mp documentation for more details.
+#define UNKNOWN_SSCANF_ERROR                   (sscanf_error:-1)
+#define SSCANF_ERROR_NONE                      (sscanf_error:0)      // 0 << 16
+#define SSCANF_ERROR_NATIVE                    (sscanf_error:65536)  // 1 << 16
+#define SSCANF_ERROR_SPECIFIER                 (sscanf_error:131072) // 2 << 16
+#define SSCANF_ERROR_INVALID                   (sscanf_error:196608) // 3 << 16
+#define SSCANF_ERROR_MISSING                   (sscanf_error:262144) // 4 << 16
+#define SSCANF_ERROR_EXCESS                    (sscanf_error:327680) // 5 << 16
+#define SSCANF_ERROR_COLOUR                    (sscanf_error:393216) // 6 << 16
+#define SSCANF_ERROR_OVERFLOW                  (sscanf_error:458752) // 7 << 16
+#define SSCANF_ERROR_NOT_FOUND                 (sscanf_error:524288) // 8 << 16
+#define SSCANF_ERROR_NO_ALTS                   (sscanf_error:589824) // 9 << 16
+
+/**
+ * <library>sscanf</library>
+ * <param name="specifier">The index of the problem specifier.</param>
+ * <param name="error">The code or category of the potential problem.</param>
+ * <remarks>
+ * Combine a specifier index and error code together for use as a return value
+ * from <c>sscanf</c>.
+ * </remarks>
+ */
+forward SSCANF_ERROR(specifier, sscanf_error:error);
+
+#define SSCANF_ERROR(%0,%1) (((_:@ss_S:@ss_0:@ss_1:@ss_2:@ss_3:@ss_4:@ss_5:@ss_6:@ss_7:@ss_8:@ss_9:((%1)))<<16)|(((_:(%1))>>>16)<<16)|(%0))
+
+// Allows for all these variations:
+//
+//   SSCANF_ERROR(3, NATIVE)
+//   SSCANF_ERROR(3, SSCANF_ERROR_EXCESS)
+//   SSCANF_ERROR(3, 1001)
+//   SSCANF_ERROR(3, sscanf_error:262144)
+//
+// However, the tags aren't checked, because there are two allowed, and that's
+// hard to do in a macro.
+#define @ss_S:@ss_0:@ss_1:@ss_2:@ss_3:@ss_4:@ss_5:@ss_6:@ss_7:@ss_8:@ss_9:((%0\32%1))) @ss_S:@ss_0:@ss_1:@ss_2:@ss_3:@ss_4:@ss_5:@ss_6:@ss_7:@ss_8:@ss_9:((%0%1)))
+#define @ss_0:@ss_1:@ss_2:@ss_3:@ss_4:@ss_5:@ss_6:@ss_7:@ss_8:@ss_9:((NONE)))<<16)|(((_:(%9)) ((SSCANF_ERROR_NONE)))<<16)|(((_:(SSCANF_ERROR_NONE))
+#define @ss_1:@ss_2:@ss_3:@ss_4:@ss_5:@ss_6:@ss_7:@ss_8:@ss_9:((NATIVE)))<<16)|(((_:(%9)) ((SSCANF_ERROR_NATIVE)))<<16)|(((_:(SSCANF_ERROR_NATIVE))
+#define @ss_2:@ss_3:@ss_4:@ss_5:@ss_6:@ss_7:@ss_8:@ss_9:((SPECIFIER)))<<16)|(((_:(%9)) ((SSCANF_ERROR_SPECIFIER)))<<16)|(((_:(SSCANF_ERROR_SPECIFIER))
+#define @ss_3:@ss_4:@ss_5:@ss_6:@ss_7:@ss_8:@ss_9:((INVALID)))<<16)|(((_:(%9)) ((SSCANF_ERROR_INVALID)))<<16)|(((_:(SSCANF_ERROR_INVALID))
+#define @ss_4:@ss_5:@ss_6:@ss_7:@ss_8:@ss_9:((MISSING)))<<16)|(((_:(%9)) ((SSCANF_ERROR_MISSING)))<<16)|(((_:(SSCANF_ERROR_MISSING))
+#define @ss_5:@ss_6:@ss_7:@ss_8:@ss_9:((EXCESS)))<<16)|(((_:(%9)) ((SSCANF_ERROR_EXCESS)))<<16)|(((_:(SSCANF_ERROR_EXCESS))
+#define @ss_6:@ss_7:@ss_8:@ss_9:((COLOUR)))<<16)|(((_:(%9)) ((SSCANF_ERROR_COLOUR)))<<16)|(((_:(SSCANF_ERROR_COLOUR))
+#define @ss_7:@ss_8:@ss_9:((OVERFLOW)))<<16)|(((_:(%9)) ((SSCANF_ERROR_OVERFLOW)))<<16)|(((_:(SSCANF_ERROR_OVERFLOW))
+#define @ss_8:@ss_9:((NOT_FOUND)))<<16)|(((_:(%9)) ((SSCANF_ERROR_NOT_FOUND)))<<16)|(((_:(SSCANF_ERROR_NOT_FOUND))
+#define @ss_9:((NO_ALTS)))<<16)|(((_:(%9)) ((SSCANF_ERROR_NO_ALTS)))<<16)|(((_:(SSCANF_ERROR_NO_ALTS))
+
+// Consume spaces.
+#define SSCANF_ERROR_%0\32 SSCANF_ERROR_
 
 /**
  * <library>sscanf</library>
@@ -305,6 +398,53 @@ stock const SSCANF_VERSION_BCD = SSCANF_VERSION;
  * </remarks>
  */
 /* */ native bool:SSCANF_IsConnected(playerid);
+
+/**
+ * <library>sscanf</library>
+ * <remarks>
+ * Gets the error code set by the most recent call to any other <b>sscanf</b>
+ * function.  Calling this function does <b>not</b> clear the error, unlike some
+ * other implementations.  To do that call <c>SSCANF_ClearLastError</c>.
+ * </remarks>
+ */
+native SSCANF_GetLastError();
+
+/**
+ * <library>sscanf</library>
+ * <remarks>
+ * Gets the index of the specifier that generated the last error.  When the
+ * error was in an alternate this will return the final underlying specifier
+ * that had an error, while <c>sscanf</c> itself will just return an index of
+ * <c>1</c> for "no matching alternative".  This is the only place where the
+ * two may be different.
+ * </remarks>
+ */
+native SSCANF_GetErrorSpecifier();
+
+/**
+ * <library>sscanf</library>
+ * <remarks>
+ * Resets the error code from any previous <b>sscanf</b> function call.  Note
+ * that calling any other function also resets this value, but with more
+ * side-effects.
+ * </remarks>
+ */
+native SSCANF_ClearLastError();
+
+/**
+ * <library>sscanf</library>
+ * <param name="error">The exact error code.</param>
+ * <remarks>
+ * There are almost 100 different unique error codes, but many of them can often
+ * be dealt with in the same way.  For example - <em><b>1011</b> - An int was
+ * wanted, but the input didn't match</em> and <em><b>1012</b> - A number was
+ * wanted, but the input didn't match</em> can probably usually use the same
+ * result processing (especially since they can never be returned by the same
+ * specifier).  Hence the errors are grouped together in to a few large groups
+ * for ease of processing.
+ * </remarks>
+ */
+native sscanf_error:SSCANF_GetErrorCategory(error);
 
 /**
  * <library>sscanf</library>
@@ -500,7 +640,7 @@ static stock SSCANF_Version(version[] = "", size = sizeof (version))
  * </remarks>
  */
 
-#if defined __PawnBuild
+#if __pawn_build > 4
 	// On old compilers, only issue the warning at the call site.
 	#pragma warning push
 	#pragma warning disable 234
@@ -509,7 +649,7 @@ static stock SSCANF_Version(version[] = "", size = sizeof (version))
 #pragma deprecated - include <sscanf2> first.
 forward sscanf(const data[], const format[], {T_WEAPON, Float, _}:...);
 
-#if defined __PawnBuild
+#if __pawn_build > 4
 	#pragma warning pop
 #endif
 
@@ -518,7 +658,7 @@ forward sscanf(const data[], const format[], {T_WEAPON, Float, _}:...);
 native sscanf(const data[], const format[], {T_WEAPON, Float, _}:...);
 */
 
-#if defined __PawnBuild
+#if __pawn_build > 4
 	#define sscanf( SSCANF__(__file,__line,
 #else
 	// `-1` because the old compiler doesn't have `__line` so we can't know
@@ -543,7 +683,7 @@ native sscanf(const data[], const format[], {T_WEAPON, Float, _}:...);
  * </remarks>
  */
 
-#if defined __PawnBuild
+#if __pawn_build > 4
 	// On old compilers, only issue the warning at the call site.
 	#pragma warning push
 	#pragma warning disable 234
@@ -552,7 +692,7 @@ native sscanf(const data[], const format[], {T_WEAPON, Float, _}:...);
 #pragma deprecated - include <sscanf2> first.
 forward unformat(const data[], const format[], {T_WEAPON, Float, _}:...);
 
-#if defined __PawnBuild
+#if __pawn_build > 4
 	#pragma warning pop
 #endif
 
@@ -561,7 +701,7 @@ forward unformat(const data[], const format[], {T_WEAPON, Float, _}:...);
 native unformat(const data[], const format[], {T_WEAPON, Float, _}:...);
 */
 
-#if defined __PawnBuild
+#if __pawn_build > 4
 	#define unformat( SSCANF__(__file,__line,
 #else
 	// `-1` because the old compiler doesn't have `__line` so we can't know
@@ -816,6 +956,54 @@ stock const MATCH_NAME_SIMILARITY[] = "MATCH_NAME_SIMILARITY";
 /**
  * <library>sscanf</library>
  * <remarks>
+ * The <c>ERROR_CODE_IN_RET</c> option as a constant string so you can get
+ * compile-time spell checking on the name.  The return value from <c>sscanf</c>
+ * is <c>0</c> for no error, or the index of the specifier that failed.  If you
+ * get a failure you can call <c>SSCANF_GetLastError</c> to get the exact error
+ * code, or you can set this option to <c>true</c> to have the return value also
+ * include this error value in the return, ORed with the index.
+ * </remarks>
+ *
+ * <code>
+ *     SSCANF_Option(ERROR_CODE_IN_RET, 1); // Failures return `spec | code &lt;&lt; 16`.<br />
+ *     SSCANF_Option(ERROR_CODE_IN_RET, 0); // Failures return only the bad specifier index.
+ * </code>
+ */
+stock const ERROR_CODE_IN_RET[] = "ERROR_CODE_IN_RET";
+
+/**
+ * <library>sscanf</library>
+ * <remarks>
+ * The <c>WARNINGS_AS_ERRORS</c> option as a constant string so you can get
+ * compile-time spell checking on the name.  This setting allows <c>sscanf</c>
+ * to fail when a warning is given, as well as an error.
+ *
+ * <code>
+ *     SSCANF_Option(WARNINGS_AS_ERRORS, 1); // Warnings will cause `sscanf` to fail.<br />
+ *     SSCANF_Option(WARNINGS_AS_ERRORS, 0); // Warnings will not fail `sscanf` function calls.
+ * </code>
+ * </remarks>
+ */
+stock const WARNINGS_AS_ERRORS[] = "WARNINGS_AS_ERRORS";
+
+/**
+ * <library>sscanf</library>
+ * <remarks>
+ * The <c>ERROR_CATEGORY_ONLY</c> option as a constant string so you can get
+ * compile-time spell checking on the name.  When <c>ERROR_CODE_IN_RET</c> is
+ * enabled returns the error category instead of the exact error code.
+ *
+ * <code>
+ *     SSCANF_Option(ERROR_CATEGORY_ONLY, 1); // `sscanf` failures will return `sscanf_error:`<br />
+ *     SSCANF_Option(ERROR_CATEGORY_ONLY, 0); // `sscanf` failures will return the exact error.
+ * </code>
+ * </remarks>
+ */
+stock const ERROR_CATEGORY_ONLY[] = "ERROR_CATEGORY_ONLY";
+
+/**
+ * <library>sscanf</library>
+ * <remarks>
  * Has sscanf been initialised at least once already in this script?  Avoids the
  * need to define <c>FILTERSCRIPT</c> by including <c>OnFilterScriptInit</c>
  * and <c>OnGameModeInit</c> (plus <c>OnNPCModeInit</c>) and seeing which one
@@ -870,7 +1058,7 @@ static stock _SSCANF_IncludeStates() <_ALS : _ALS_go> {}
 /// Generic initialisation code called from a range of different init publics.
 /// </remarks>
 /// <!--
-#if !defined __PawnBuild /// <p/>
+#if __pawn_build == 0 /// <p/>
 	forward SSCANF_RunInit(); /// <p/>
 	/// There's a bug in the old compiler with the pawndoc generation for
 	/// functions containing <c>state</c>.  This little trick starts an XML
@@ -1174,7 +1362,7 @@ forward OnCachedInit();
 #define SSCANF_Leave
 #define SSCANF_IsConnected
 
-#if defined __PawnBuild
+#if __pawn_build > 4
 	#define extract%0->%1; EXTRN%1;UNFORMAT__(__file,__line,_:EXTRV:EXTRX:%0,""#,%1,,);
 #else
 	#define extract%0->%1; EXTRN%1;UNFORMAT__(SSCANF_EXT_,-1,_:EXTRV:EXTRX:%0,""#,%1,,);
@@ -1296,7 +1484,7 @@ stock SSCANF_GetSimilarString(const input[], const candidates[][], Float:thresho
  */
 stock SSCANF_GetSimilarValue(const input[], const candidates[][], const results[], fail = cellmin, Float:threshold = 0.111111, count = sizeof (candidates), check = sizeof (results))
 {
-	// assert(count == check);
+	assert(count == check);
 	new closest = SSCANF_GetSimilarString(input, candidates, threshold, count);
 	if (closest == cellmin)
 	{
@@ -1322,7 +1510,7 @@ stock SSCANF_GetSimilarValue(const input[], const candidates[][], const results[
  * </remarks>
  */
 
-#if defined __PawnBuild
+#if __pawn_build > 4
 	// On old compilers, only issue the warning at the call site.
 	#pragma warning push
 	#pragma warning disable 234
@@ -1346,7 +1534,7 @@ stock SSCANF_GetClosestString(const input[], const candidates[][], threshold = c
 	return closest;
 }
 
-#if defined __PawnBuild
+#if __pawn_build > 4
 	#pragma warning pop
 #endif
 
@@ -1370,7 +1558,7 @@ stock SSCANF_GetClosestString(const input[], const candidates[][], threshold = c
  * </remarks>
  */
 
-#if defined __PawnBuild
+#if __pawn_build > 4
 	// On old compilers, only issue the warning at the call site.
 	#pragma warning push
 	#pragma warning disable 234
@@ -1379,7 +1567,7 @@ stock SSCANF_GetClosestString(const input[], const candidates[][], threshold = c
 #pragma deprecated Use `SSCANF_GetSimilarValue` for more human results.
 stock SSCANF_GetClosestValue(const input[], const candidates[][], const results[], fail = cellmin, threshold = cellmax, count = sizeof (candidates), check = sizeof (results))
 {
-	// assert(count == check);
+	assert(count == check);
 	new closest = SSCANF_GetClosestString(input, candidates, threshold, count);
 	if (closest == cellmin)
 	{
@@ -1388,7 +1576,7 @@ stock SSCANF_GetClosestValue(const input[], const candidates[][], const results[
 	return results[closest];
 }
 
-#if defined __PawnBuild
+#if __pawn_build > 4
 	#pragma warning pop
 #endif
 
@@ -1400,6 +1588,7 @@ stock SSCANF_GetClosestValue(const input[], const candidates[][], const results[
  * weapon by Levenshtein distance to the input.
  * </remarks>
  */
+
 #if defined SSCANF_NO_K_WEAPON
 	/* */ native SSCANF_no_k_weapon();
 	#define SSCANF_no_k_weapon()
@@ -1488,6 +1677,7 @@ stock SSCANF_GetClosestValue(const input[], const candidates[][], const results[
  * vehicle by Levenshtein distance to the input.
  * </remarks>
  */
+
 #if defined SSCANF_NO_K_VEHICLE
 	/* */ native SSCANF_no_k_vehicle();
 	#define SSCANF_no_k_vehicle()
@@ -1742,8 +1932,492 @@ stock SSCANF_GetClosestValue(const input[], const candidates[][], const results[
 	}
 #endif
 
+/**
+ * <library>sscanf</library>
+ * <param name="option">The global setting to retrieve.</param>
+ * <remarks>
+ * Internal function to help print debug information.
+ * </remarks>
+ */
+
+static stock SSCANF_PrintOption(const option[])
+{
+	new
+		spaces[] = "                                ";
+	printf(" |     %s:%.*s%s   |", option, 26 - strlen(option), spaces, SSCANF_GetOption__(option) ? (" on") : ("off"));
+}
+
+/**
+ * <library>sscanf</library>
+ * <remarks>
+ * Internal function to help print debug information.
+ * </remarks>
+ */
+
+static stock SSCANF_EnumerateErrors()
+{
+	new
+		tmp[24],
+		upper1 = 1,
+		upper2 = 1001,
+		gap[] = " |                                      |",
+		sscanf_error:category = SSCANF_ERROR_NONE;
+	while (SSCANF_GetErrorCategory(upper1) != UNKNOWN_SSCANF_ERROR)
+	{
+		++upper1;
+	}
+	--upper1;
+	while (SSCANF_GetErrorCategory(upper2) != UNKNOWN_SSCANF_ERROR)
+	{
+		++upper2;
+	}
+	--upper2;
+	format(tmp, sizeof (tmp), "1 - %d, 1001 - %d", upper1, upper2);
+	printf(" | Known Errors: %-20s   |", tmp);
+	printf(gap);
+	printf(" | Categories:                          |");
+	printf(gap);
+	for (new bool:larger = true; larger; category += sscanf_error:0x10000)
+	{
+		new
+			c,
+			count = 0;
+		larger = false;
+		for (new i = 1; i <= upper1; ++i)
+		{
+			c = SSCANF_GetErrorCategory(i);
+			if (c == category)
+			{
+				++count;
+			}
+			else if (c > category)
+			{
+				larger = true;
+			}
+		}
+		for (new i = 1001; i <= upper2; ++i)
+		{
+			c = SSCANF_GetErrorCategory(i);
+			if (c == category)
+			{
+				++count;
+			}
+			else if (c > category)
+			{
+				larger = true;
+			}
+		}
+		switch (sscanf_error:category)
+		{
+		case SSCANF_ERROR_NONE:
+			printf(" |     NONE      (0x%06x):%9d   |", category, count);
+		case SSCANF_ERROR_NATIVE:
+			printf(" |     NATIVE    (0x%06x):%9d   |", category, count);
+		case SSCANF_ERROR_SPECIFIER:
+			printf(" |     SPECIFIER (0x%06x):%9d   |", category, count);
+		case SSCANF_ERROR_INVALID:
+			printf(" |     INVALID   (0x%06x):%9d   |", category, count);
+		case SSCANF_ERROR_MISSING:
+			printf(" |     MISSING   (0x%06x):%9d   |", category, count);
+		case SSCANF_ERROR_EXCESS:
+			printf(" |     EXCESS    (0x%06x):%9d   |", category, count);
+		case SSCANF_ERROR_COLOUR:
+			printf(" |     COLOUR    (0x%06x):%9d   |", category, count);
+		case SSCANF_ERROR_OVERFLOW:
+			printf(" |     OVERFLOW  (0x%06x):%9d   |", category, count);
+		case SSCANF_ERROR_NOT_FOUND:
+			printf(" |     NOT_FOUND (0x%06x):%9d   |", category, count);
+		case SSCANF_ERROR_NO_ALTS:
+			printf(" |     NO_ALTS   (0x%06x):%9d   |", category, count);
+		default:
+			printf(" |     ???       (0x%06x):%9d   |", category, count);
+		}
+	}
+}
+
+/**
+ * <library>sscanf</library>
+ * <remarks>
+ * Print a lot of useful debugging information to the console.
+ * </remarks>
+ */
+
+stock SSCANF_Debug()
+{
+	new
+		line[] = " ----------------------------------------",
+		gap[] = " |                                      |",
+		on[] = " on",
+		off[] = "off",
+		forms = SSCANF_GetOption__(SSCANF_COLOUR_FORMS) & 127,
+		Float:similarity = Float:SSCANF_GetOption__(MATCH_NAME_SIMILARITY),
+		v1 = SSCANF_VERSION_BCD,
+		v2 = SSCANF_VersionBCD();
+	printf(line);
+	printf(gap);
+	printf(" |                sscanf                |");
+	printf(gap);
+	printf(" | Include%s           %d.%d%d.%d%d   |", v1 > v2 ? (" (newer):") : (":        "), v1 >>> 16, v1 >>> 12 & 0xF, v1 >>> 8 & 0xF, v1 >>> 4 & 0xF, v1 & 0xF);
+	printf(" | Plugin%s            %d.%d%d.%d%d   |", v2 > v1 ? (" (newer):") : (":        "), v2 >>> 16, v2 >>> 12 & 0xF, v2 >>> 8 & 0xF, v2 >>> 4 & 0xF, v2 & 0xF);
+	printf(gap);
+	printf(" | __pawn_build:           %10d   |", __pawn_build);
+	#if __pawn_build == 0
+		printf(" | SSCANF_NO_NICE_FEATURES              |");
+	#endif
+	#if SSCANF_NPC
+		printf(" | SSCANF_NPC                           |");
+	#endif
+	#if defined SSCANF_NO_PLAYERS
+		printf(" | SSCANF_NO_PLAYERS                    |");
+	#endif
+	#if defined SSCANF_NO_K_WEAPON
+		printf(" | SSCANF_NO_K_WEAPON                   |");
+	#endif
+	#if defined SSCANF_NO_K_VEHICLE
+		printf(" | SSCANF_NO_K_VEHICLE                  |");
+	#endif
+	printf(gap);
+	printf(line);
+	printf(gap);
+	printf(" | Options:                             |");
+	printf(gap);
+    SSCANF_PrintOption(OLD_DEFAULT_NAME);
+    SSCANF_PrintOption(MATCH_NAME_PARTIAL);
+    SSCANF_PrintOption(CELLMIN_ON_MATCHES);
+    SSCANF_PrintOption(SSCANF_QUIET);
+    SSCANF_PrintOption(OLD_DEFAULT_KUSTOM);
+	printf(" |     SSCANF_ALPHA:             0x%02x   |", SSCANF_GetOption__(SSCANF_ALPHA));
+	printf(" |     SSCANF_COLOUR_FORMS:      0x%02x   |", forms);
+	printf(" |         #RGB       (0x01):     %s   |", forms & 0x01 ? on : off);
+	printf(" |         #RRGGBB    (0x02):     %s   |", forms & 0x02 ? on : off);
+	printf(" |         0xRRGGBB   (0x04):     %s   |", forms & 0x04 ? on : off);
+	printf(" |         RRGGBB     (0x08):     %s   |", forms & 0x08 ? on : off);
+	printf(" |         {RRGGBB}   (0x10):     %s   |", forms & 0x10 ? on : off);
+	printf(" |         0xRRGGBBAA (0x20):     %s   |", forms & 0x20 ? on : off);
+	printf(" |         RRGGBBAA   (0x40):     %s   |", forms & 0x40 ? on : off);
+    //SSCANF_PrintOption(SSCANF_COLOUR_FORMS);
+    SSCANF_PrintOption(SSCANF_ARGB);
+    SSCANF_PrintOption(MATCH_NAME_FIRST);
+	if (similarity < 0.0)
+	{
+		printf(" |     MATCH_NAME_SIMILARITY:     off   |");
+	}
+	else
+	{
+		printf(" |     MATCH_NAME_SIMILARITY:  %6.3f   |", similarity);
+	}
+    SSCANF_PrintOption(ERROR_CODE_IN_RET);
+    SSCANF_PrintOption(WARNINGS_AS_ERRORS);
+    SSCANF_PrintOption(ERROR_CATEGORY_ONLY);
+	printf(gap);
+	printf(line);
+	printf(gap);
+	SSCANF_EnumerateErrors();
+	printf(gap);
+	printf(line);
+	printf(gap);
+	printf(" | Last Error:                          |");
+	printf(gap);
+	printf(" |     Code:               %10d   |", SSCANF_GetLastError());
+	printf(" |     Index:              %10d   |", SSCANF_GetErrorSpecifier());
+	printf(" |     Category:           %10d   |", SSCANF_GetErrorCategory(SSCANF_GetLastError()));
+	printf(gap);
+	printf(line);
+}
+
 // Fix the compiler crash when both the PAWN and Plugin versions of sscanf are
 // found by renaming the old version at declaration.  (fixes.inc compatible
 // naming scheme: "BAD_Function()").
 #define SSCANF__(%0:...) BAD_sscanf(%0:...)
+
+#endinput
+
+// Where is all started.  Preserved forever for posterity!
+
+// [sic]
+
+/*----------------------------------------------------------------------------*-
+Function:
+	sscanf
+Params:
+	string[] - String to extract parameters from.
+	format[] - Parameter types to get.
+	{Float,_}:... - Data return variables.
+Return:
+	0 - Successful, not 0 - fail.
+Notes:
+	A fail is either insufficient variables to store the data or insufficient
+	data for the format string - excess data is disgarded.
+ 
+	A string in the middle of the input data is extracted as a single word, a
+	string at the end of the data collects all remaining text.
+ 
+	The format codes are:
+ 
+	c - A character.
+	d, i - An integer.
+	h, x - A hex number (e.g. a colour).
+	f - A float.
+	s - A string.
+	z - An optional string.
+	pX - An additional delimiter where X is another character.
+	'' - Encloses a litteral string to locate.
+	u - User, takes a name, part of a name or an id and returns the id if they're connected.
+ 
+	Now has IsNumeric integrated into the code.
+ 
+	Added additional delimiters in the form of all whitespace and an
+	optioanlly specified one in the format string.
+-*----------------------------------------------------------------------------*/
+ 
+stock sscanf(string[], format[], {Float,_}:...)
+{
+	#if defined isnull
+		if (isnull(string))
+	#else
+		if (string[0] == 0 || (string[0] == 1 && string[1] == 0))
+	#endif
+		{
+			return format[0];
+		}
+	#pragma tabsize 4
+	new
+		formatPos = 0,
+		stringPos = 0,
+		paramPos = 2,
+		paramCount = numargs(),
+		delim = ' ';
+	while (string[stringPos] && string[stringPos] <= ' ')
+	{
+		stringPos++;
+	}
+	while (paramPos < paramCount && string[stringPos])
+	{
+		switch (format[formatPos++])
+		{
+			case '\0':
+			{
+				return 0;
+			}
+			case 'i', 'd':
+			{
+				new
+					neg = 1,
+					num = 0,
+					ch = string[stringPos];
+				if (ch == '-')
+				{
+					neg = -1;
+					ch = string[++stringPos];
+				}
+				do
+				{
+					stringPos++;
+					if ('0' <= ch <= '9')
+					{
+						num = (num * 10) + (ch - '0');
+					}
+					else
+					{
+						return -1;
+					}
+				}
+				while ((ch = string[stringPos]) > ' ' && ch != delim);
+				setarg(paramPos, 0, num * neg);
+			}
+			case 'h', 'x':
+			{
+				new
+					num = 0,
+					ch = string[stringPos];
+				do
+				{
+					stringPos++;
+					switch (ch)
+					{
+						case 'x', 'X':
+						{
+							num = 0;
+							continue;
+						}
+						case '0' .. '9':
+						{
+							num = (num << 4) | (ch - '0');
+						}
+						case 'a' .. 'f':
+						{
+							num = (num << 4) | (ch - ('a' - 10));
+						}
+						case 'A' .. 'F':
+						{
+							num = (num << 4) | (ch - ('A' - 10));
+						}
+						default:
+						{
+							return -1;
+						}
+					}
+				}
+				while ((ch = string[stringPos]) > ' ' && ch != delim);
+				setarg(paramPos, 0, num);
+			}
+			case 'c':
+			{
+				setarg(paramPos, 0, string[stringPos++]);
+			}
+			case 'f':
+			{
+ 
+				new changestr[16], changepos = 0, strpos = stringPos;     
+				while(changepos < 16 && string[strpos] && string[strpos] != delim)
+				{
+					changestr[changepos++] = string[strpos++];
+    				} 
+				changestr[changepos] = '\0'; 
+				setarg(paramPos,0,_:floatstr(changestr)); 
+			} 
+			case 'p':
+			{
+				delim = format[formatPos++];
+				continue;
+			}
+			case '\'':
+			{
+				new
+					end = formatPos - 1,
+					ch;
+				while ((ch = format[++end]) && ch != '\'') {}
+				if (!ch)
+				{
+					return -1;
+				}
+				format[end] = '\0';
+				if ((ch = strfind(string, format[formatPos], false, stringPos)) == -1)
+				{
+					if (format[end + 1])
+					{
+						return -1;
+					}
+					return 0;
+				}
+				format[end] = '\'';
+				stringPos = ch + (end - formatPos);
+				formatPos = end + 1;
+			}
+			case 'u':
+			{
+				new
+					end = stringPos - 1,
+					id = 0,
+					bool:num = true,
+					ch;
+				while ((ch = string[++end]) && ch != delim)
+				{
+					if (num)
+					{
+						if ('0' <= ch <= '9')
+						{
+							id = (id * 10) + (ch - '0');
+						}
+						else
+						{
+							num = false;
+						}
+					}
+				}
+				if (num && IsPlayerConnected(id))
+				{
+					setarg(paramPos, 0, id);
+				}
+				else
+				{
+					#if !defined foreach
+						#define foreach(%1,%2) for (new %2 = 0; %2 < MAX_PLAYERS; %2++) if (IsPlayerConnected(%2))
+						#define __SSCANF_FOREACH__
+					#endif
+					string[end] = '\0';
+					num = false;
+					new
+						name[MAX_PLAYER_NAME];
+					id = end - stringPos;
+					foreach (Player, playerid)
+					{
+						GetPlayerName(playerid, name, sizeof (name));
+						if (!strcmp(name, string[stringPos], true, id))
+						{
+							setarg(paramPos, 0, playerid);
+							num = true;
+							break;
+						}
+					}
+					if (!num)
+					{
+						setarg(paramPos, 0, INVALID_PLAYER_ID);
+					}
+					string[end] = ch;
+					#if defined __SSCANF_FOREACH__
+						#undef foreach
+						#undef __SSCANF_FOREACH__
+					#endif
+				}
+				stringPos = end;
+			}
+			case 's', 'z':
+			{
+				new
+					i = 0,
+					ch;
+				if (format[formatPos])
+				{
+					while ((ch = string[stringPos++]) && ch != delim)
+					{
+						setarg(paramPos, i++, ch);
+					}
+					if (!i)
+					{
+						return -1;
+					}
+				}
+				else
+				{
+					while ((ch = string[stringPos++]))
+					{
+						setarg(paramPos, i++, ch);
+					}
+				}
+				stringPos--;
+				setarg(paramPos, i, '\0');
+			}
+			default:
+			{
+				continue;
+			}
+		}
+		while (string[stringPos] && string[stringPos] != delim && string[stringPos] > ' ')
+		{
+			stringPos++;
+		}
+		while (string[stringPos] && (string[stringPos] == delim || string[stringPos] <= ' '))
+		{
+			stringPos++;
+		}
+		paramPos++;
+	}
+	do
+	{
+		if ((delim = format[formatPos++]) > ' ')
+		{
+			if (delim == '\'')
+			{
+				while ((delim = format[formatPos++]) && delim != '\'') {}
+			}
+			else if (delim != 'z')
+			{
+				return delim;
+			}
+		}
+	}
+	while (delim > ' ');
+	return 0;
+}
 
