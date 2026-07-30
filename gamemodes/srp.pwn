@@ -98,7 +98,7 @@ L1:
 
 */
 
-#define SERVER_VERSION    "2.4.8"
+#define SERVER_VERSION    "3.0.0"
 #define VERSION_DATE    "30/08/2020"
 
 /* Config */

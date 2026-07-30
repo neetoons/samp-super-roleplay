@@ -69,7 +69,7 @@ let
 in
 stdenv.mkDerivation {
   pname = "samp-super-roleplay";
-  version = "2.4.8";
+  version = "3.0.0";
 
   inherit src;
 
