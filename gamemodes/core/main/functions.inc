@@ -7507,6 +7507,7 @@ RegisterNewPlayer(playerid)
         pass,\
         reg_date,\
         last_connection_timestamp,\
+        state,\
         level,\
         rep,\
         connected,\
@@ -7518,7 +7519,6 @@ RegisterNewPlayer(playerid)
         pos_y,\
         pos_z,\
         angle,\
-        state,\
         fight_style,\
         health,\
         hungry,\
